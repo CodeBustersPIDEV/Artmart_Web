@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Apply index{% endblock %}
+
+{% block body %}
+    <h1>Apply index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ApplyId</th>
+                <th>Status</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for apply in applies %}
+            <tr>
+                <td>{{ apply.applyId }}</td>
+                <td>{{ apply.status }}</td>
+                <td>
+                    <a href="{{ path('app_apply_show', {'applyId': apply.applyId}) }}">show</a>
+                    <a href="{{ path('app_apply_edit', {'applyId': apply.applyId}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_apply_new') }}">Create new</a>
+{% endblock %}
