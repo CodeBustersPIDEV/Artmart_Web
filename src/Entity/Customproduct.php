@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Entity;
-
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -48,7 +47,7 @@ class Customproduct
 
     public function getClient(): ?User
     {
-        return $this->client;
+        return $this->client ?? null;
     }
 
     public function setClient(?User $client): self
@@ -57,11 +56,12 @@ class Customproduct
 
         return $this;
     }
-
-    public function getProduct(): ?Product
-    {
-        return $this->product;
-    }
+   
+    public function getProduct(): ?User
+        {
+            return $this->product ?? null;
+        }
+ 
 
     public function setProduct(?Product $product): self
     {

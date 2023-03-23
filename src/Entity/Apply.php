@@ -67,7 +67,7 @@ class Apply
 
     public function getArtist(): ?User
     {
-        return $this->artist;
+        return $this->artist ?? null;
     }
 
     public function setArtist(?User $artist): self
@@ -79,7 +79,7 @@ class Apply
 
     public function getCustomproduct(): ?Customproduct
     {
-        return $this->customproduct;
+        return $this->customproduct ?? null;
     }
 
     public function setCustomproduct(?Customproduct $customproduct): self

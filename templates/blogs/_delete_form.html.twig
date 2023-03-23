@@ -1,0 +1,12 @@
+<form
+	method="post"
+	action="{{ path('app_blogs_delete', { blogs_ID: blog.getBlogsId() }) }}"
+	onsubmit="return confirm('Are you sure you want to delete this item?');"
+>
+	<input
+		type="hidden"
+		name="_token"
+		value="{{ csrf_token('delete' ~ blog.getBlogsId()) }}"
+	/>
+	<button class="btn">Delete</button>
+</form>
