@@ -1,40 +1,28 @@
-<!DOCTYPE html>
-<html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<link rel="stylesheet" href="{{ asset('assets/Blog/CSS/BlogCard.css') }}">
-	</head>
-	<body>
-			<article >
-				<div class="article-wrapper">
-					<figure>
-						<img src="https://picsum.photos/id/1011/800/450" alt="" />
-					</figure>
-					<div class="article-body">
-						<h2>{{ blog.title }}</h2>
-						<p id="blog_content">
-							{{ blog.content }}
-						</p>
-            <a href="{{ path('app_blogs_show', { blogs_ID: blog.getBlogsId() }) }}"
-					>Read more <span class="sr-only">about this is some title</span>
-          <svg
-								xmlns="http://www.w3.org/2000/svg"
-								class="icon"
-								viewBox="0 0 20 20"
-								fill="currentColor"
-							>
-								<path
-									fill-rule="evenodd"
-									d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z"
-									clip-rule="evenodd"
-								/>
-							</svg></a
+<link rel="stylesheet" href="{{ asset('assets/Blog/CSS/BlogCard.css') }}" />
+<article>
+	<div class="article-wrapper">
+		<figure>
+			<img src="https://picsum.photos/id/1011/800/450" alt="" />
+		</figure>
+		<div class="article-body">
+			<h2>{{ blog.title }}</h2>
+			<p id="blog_content">
+				{{ blog.content }}
+			</p>
+			<a href="{{ path('app_blogs_show', { blogs_ID: blog.getBlogsId() }) }}"
+				>Read more <span class="sr-only">about this is some title</span>
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					class="icon"
+					viewBox="0 0 20 20"
+					fill="currentColor"
 				>
-					</div>
-				</div>
-			</article>
-		</section>
-	</body>
-</html>
+					<path
+						fill-rule="evenodd"
+						d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z"
+						clip-rule="evenodd"
+					/></svg
+			></a>
+		</div>
+	</div>
+</article>

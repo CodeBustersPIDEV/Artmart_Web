@@ -3,6 +3,7 @@ block body %} {% import "base.html.twig" as base %}
 <link rel="stylesheet" href="{{ asset('assets/Blog/CSS/BlogList.css') }}" />
 <h1>Blogs index</h1>
 
+{#
 <table class="table" border="2">
 	<thead>
 		<tr>
@@ -42,6 +43,7 @@ block body %} {% import "base.html.twig" as base %}
 		{% endfor %}
 	</tbody>
 </table>
+#}
 <section class="articles">
 	{% for blog in blogs %}
 	{{ base.card(blog) }}
