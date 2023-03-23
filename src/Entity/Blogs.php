@@ -3,13 +3,11 @@
 namespace App\Entity;
 
 use Doctrine\DBAL\Types\Types;
+use App\Repository\BlogsRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Blogs
- *
- * @ORM\Table(name="blogs", indexes={@ORM\Index(name="author", columns={"author"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass=BlogsRepository::class)
  */
 class Blogs
 {
@@ -20,7 +18,7 @@ class Blogs
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $blogsId;
+    private $blogs_ID;
 
     /**
      * @var string
@@ -55,7 +53,7 @@ class Blogs
      *
      * @ORM\Column(name="nb_views", type="integer", nullable=false)
      */
-    private $nbViews;
+    private $nbViews = '0';
 
     /**
      * @var \User
@@ -69,7 +67,7 @@ class Blogs
 
     public function getBlogsId(): ?int
     {
-        return $this->blogsId;
+        return $this->blogs_ID;
     }
 
     public function getTitle(): ?string
@@ -134,7 +132,7 @@ class Blogs
 
     public function getAuthor(): ?User
     {
-        return $this->author;
+        return $this->author ?? null;
     }
 
     public function setAuthor(?User $author): self
@@ -143,6 +141,4 @@ class Blogs
 
         return $this;
     }
-
-
 }

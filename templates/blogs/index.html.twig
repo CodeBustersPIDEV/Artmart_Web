@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %} {% block title %}Blogs index{% endblock %} {%
+block body %} {% import "base.html.twig" as base %}
+<link rel="stylesheet" href="{{ asset('assets/Blog/CSS/BlogList.css') }}" />
+<h1>Blogs index</h1>
+
+<table class="table" border="2">
+	<thead>
+		<tr>
+			<th>Blogs_ID</th>
+			<th>Title</th>
+			<th>Content</th>
+			<th>Date</th>
+			<th>Rating</th>
+			<th>NbViews</th>
+			<th>Author</th>
+			<th>Actions</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for blog in blogs %}
+		<tr>
+			<td>{{ blog.getBlogsId() }}</td>
+			<td>{{ blog.title }}</td>
+			<td>{{ blog.content }}</td>
+			<td>{{ blog.date ? blog.date|date('Y-m-d H:i:s') : '' }}</td>
+			<td>{{ blog.rating }}</td>
+			<td>{{ blog.nbViews }}</td>
+			<td>{{ blog.author.name }}</td>
+			<td>
+				<a href="{{ path('app_blogs_show', { blogs_ID: blog.getBlogsId() }) }}"
+					>show</a
+				>
+				<a href="{{ path('app_blogs_edit', { blogs_ID: blog.getBlogsId() }) }}"
+					>edit</a
+				>
+			</td>
+		</tr>
+		{% else %}
+		<tr>
+			<td colspan="7">no records found</td>
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>
+<section class="articles">
+	{% for blog in blogs %}
+	{{ base.card(blog) }}
+	{% else %}
+	<h2>no records found</h2>
+	{% endfor %}
+</section>
+<a href="{{ path('app_blogs_new') }}">Create new</a>
+{% endblock %}
