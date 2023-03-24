@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Customproduct index{% endblock %}
+
+{% block body %}
+    <h1>Customproduct index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>CustomProductId</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for customproduct in customproducts %}
+            <tr>
+                <td>{{ customproduct.customProductId }}</td>
+                <td>
+                    <a href="{{ path('app_customproduct_show', {'customProductId': customproduct.customProductId}) }}">show</a>
+                    <a href="{{ path('app_customproduct_edit', {'customProductId': customproduct.customProductId}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="2">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_customproduct_new') }}">Create new</a>
+{% endblock %}

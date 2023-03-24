@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\EntityManagerInterface;
 
 /**
  * Customproduct
@@ -9,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="customproduct", indexes={@ORM\Index(name="client_ID", columns={"client_ID"}), @ORM\Index(name="product_ID", columns={"product_ID"})})
  * @ORM\Entity
  */
-class Customproduct
+class Customproduct 
 {
     /**
      * @var int
@@ -33,7 +34,7 @@ class Customproduct
     /**
      * @var \Product
      *
-     * @ORM\ManyToOne(targetEntity="Product")
+   * @ORM\ManyToOne(targetEntity="Product", cascade={"remove"})
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="product_ID", referencedColumnName="product_ID")
      * })
@@ -57,10 +58,10 @@ class Customproduct
         return $this;
     }
    
-    public function getProduct(): ?User
-        {
-            return $this->product ?? null;
-        }
+    public function getProduct(): ?Product
+    {
+        return $this->product;
+    }
  
 
     public function setProduct(?Product $product): self
@@ -69,6 +70,9 @@ class Customproduct
 
         return $this;
     }
+
+
+
 
 
 }
