@@ -164,4 +164,37 @@ class Product
         {
             return $this->getName();
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /**
+        * @var Categories
+        *
+        * @ORM\ManyToOne(targetEntity="App\Entity\Categories")
+        * @ORM\JoinColumn(name="category_ID", referencedColumnName="categories_ID", nullable=false)
+        */
+       private $category;
+   
+       public function getCategory(): ?Categories
+       {
+           return $this->category;
+       }
+   
+       public function setCategory(Categories $category): self
+       {
+           $this->category = $category;
+   
+           return $this;
+       }
+   
 }

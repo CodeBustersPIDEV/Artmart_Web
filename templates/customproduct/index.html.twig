@@ -3,19 +3,19 @@
 {% block title %}Customproduct index{% endblock %}
 
 {% block body %}
-    <h1>Customproduct index</h1>
+    <h1>Customproduct list</h1>
 
     <table class="table">
         <thead>
             <tr>
-                <th>CustomProductId</th>
-                <th>actions</th>
+                <th>Product Name</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
         {% for customproduct in customproducts %}
             <tr>
-                <td>{{ customproduct.customProductId }}</td>
+                <td>{{ customproduct.product.name }}</td>
                 <td>
                     <a href="{{ path('app_customproduct_show', {'customProductId': customproduct.customProductId}) }}">show</a>
                     <a href="{{ path('app_customproduct_edit', {'customProductId': customproduct.customProductId}) }}">edit</a>

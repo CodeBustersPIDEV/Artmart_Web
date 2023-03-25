@@ -37,6 +37,7 @@ public function new(Request $request, EntityManagerInterface $entityManager): Re
         $product = $form->get('product')->getData();
         $customproduct->setProduct($product);
         $customproduct->setClient($form->get('client')->getData());
+        
 
         $entityManager->persist($customproduct);
         $entityManager->flush();
