@@ -3,8 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\Blogs;
+use App\Entity\Media;
 use App\Form\BlogsType;
 use App\Repository\BlogsRepository;
+use App\Repository\MediaRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -41,10 +43,11 @@ class BlogsController extends AbstractController
     }
 
     #[Route('/{blogs_ID}', name: 'app_blogs_show', methods: ['GET'])]
-    public function show(Blogs $blog): Response
+    public function show(Blogs $blog, MediaRepository $MediaRepository): Response
     {
         return $this->render('blogs/show.html.twig', [
             'blog' => $blog,
+            'blog_media' => $MediaRepository->findOneMediaByBlogID($blog->getBlogsId()),
         ]);
     }
 
