@@ -10,7 +10,16 @@ body %}
 		</tr>
 		<tr>
 			<th>Blog's media</th>
-			<td><img src="{{ blog_media.getFilePath() }}" alt="Example" /></td>
+			<td>
+				{% if blog_media != null %}
+				<img src="{{ blog_media.getFilePath() }}" alt="Blog Media" />
+				{% else %}
+				<img
+					src="{{ asset('assets/Blog/img/default-product.png') }}"
+					alt="Blog Media"
+				/>
+				{% endif %}
+			</td>
 		</tr>
 		<tr>
 			<th>Title</th>

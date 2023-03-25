@@ -1,21 +1,8 @@
 <link rel="stylesheet" href="{{ asset('assets/Blog/CSS/BlogCard.css') }}" />
 <style>
-	/* 
-=========================
-Fonts
-=========================
 
-font-family: 'Outfit', sans-serif;
-
-*/
 
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap');
-
-/* 
-========================
-Variables
-========================
-*/
 
 
 :root {
@@ -39,10 +26,6 @@ Variables
 
   --var-para: normal normal 300 1em/1.55em 'Outfit', sans-serif;
 
-		  --img-scale: 1.001;
-  --title-color: black;
-  --link-icon-translate: -20px;
-  --link-icon-opacity: 0;
 }
 
 /* 
@@ -73,18 +56,18 @@ Font Styling
 =========================
 */
 
-.card-container > h1 {
+h1 {
   font: var(--var-heading);
   color: var(--var-lightest);
   padding: 1.2em 0;
 }
 
-.card-container > h2 {
+h2 {
   font: var(--var-small-heading);
   color: var(--var-lightest);
 }
 
-.card-container > p {
+p {
   font: var(--var-para);
   color: var(--var-soft-blue);
 }
@@ -142,6 +125,8 @@ div.coin-base,
 a.hero-image-container {
   position: relative;
   display: block;
+  aspect-ratio: 16 / 9;
+
 }
 
 
@@ -164,6 +149,7 @@ img.eye {
 
 .hero-image-container::after {
   content: '';
+    aspect-ratio: 16 / 9;
   background-image: url("https://i.postimg.cc/9MtT4GZY/view.png");
   background-position: center;
   background-repeat: no-repeat;
@@ -183,6 +169,7 @@ img.eye {
 
 .hero-image-container:hover::after {
   opacity: 1;
+    aspect-ratio: 16 / 9;
 }
 
 .small-image {
@@ -222,7 +209,11 @@ img.eye {
 </style>
 <div class="card-container">
       <a href="{{ path('app_blogs_show', { blogs_ID: blog.getBlogsId() }) }}" class="hero-image-container">
-        <img class="hero-image" src={{blog_media.getFilePath()}} alt="Spinning glass cube"/>
+        {% if blog_media != null %}
+            <img class="hero-image" src={{blog_media.getFilePath()}} alt="Spinning glass cube"/>
+          {% else %}
+            <img class="hero-image" src="{{ asset ('assets/Blog/img/default-product.png') }}" alt="Spinning glass cube"/>
+		    {% endif %}
       </a>
       <main class="main-content">
         <h1><a href="{{ path('app_blogs_show', { blogs_ID: blog.getBlogsId() }) }}">{{blog.title}}</a></h1>

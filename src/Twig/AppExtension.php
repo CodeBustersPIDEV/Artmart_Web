@@ -8,7 +8,12 @@ use Twig\TwigFunction;
 
 class AppExtension extends AbstractExtension
 {
-  public MediaRepository $MediaRepository;
+  private MediaRepository $MediaRepository;
+
+  public function __construct(MediaRepository $MediaRepository)
+  {
+    $this->MediaRepository = $MediaRepository;
+  }
 
   public function getFunctions(): array
   {

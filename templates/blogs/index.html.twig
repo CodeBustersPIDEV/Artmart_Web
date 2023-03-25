@@ -45,9 +45,9 @@ block body %} {% import "base.html.twig" as base %}
 </table>
 #}
 <section class="articles">
-	{% for blog in blogs %} {%
-	{{ base.card(blog, getBlogsMedia("blog.getBlogsId()")) }}
-	%} {% else %}
+	{% for blog in blogs %}
+	{{ base.card(blog, getBlogsMedia(blog.getBlogsId())) }}
+	{% else %}
 	<h2>no records found</h2>
 	{% endfor %}
 </section>
