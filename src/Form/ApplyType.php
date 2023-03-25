@@ -1,7 +1,8 @@
 <?php
 
 namespace App\Form;
-
+use App\Entity\Customproduct;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use App\Entity\Apply;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -14,7 +15,10 @@ class ApplyType extends AbstractType
         $builder
             ->add('status')
             ->add('artist')
-            ->add('customproduct')
+            ->add('customproduct', EntityType::class, [
+                'class' => customproduct::class,
+                'choice_label' => 'product.name',
+            ])
         ;
     }
 
