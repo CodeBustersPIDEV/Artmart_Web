@@ -34,7 +34,7 @@ class Customproduct
     /**
      * @var \Product
      *
-   * @ORM\ManyToOne(targetEntity="Product", cascade={"remove"})
+   * @ORM\ManyToOne(targetEntity="Product", cascade={"remove"}, cascade={"persist"})
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="product_ID", referencedColumnName="product_ID")
      * })
@@ -71,8 +71,18 @@ class Customproduct
         return $this;
     }
 
+    private $productId;
+    public function getProductId(): ?int
+    {
+        return $this->productId;
+    }
 
+    public function setProductId(int $productId): self
+    {
+        $this->productId = $productId;
 
+        return $this;
+    }
 
 
 }

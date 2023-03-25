@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Customproduct;
+use App\Entity\Product;
 use App\Form\CustomproductType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -26,25 +27,29 @@ class CustomproductController extends AbstractController
     }
 
     #[Route('/new', name: 'app_customproduct_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
-    {
-        $customproduct = new Customproduct();
-        $form = $this->createForm(CustomproductType::class, $customproduct);
-        $form->handleRequest($request);
+public function new(Request $request, EntityManagerInterface $entityManager): Response
+{
+    $customproduct = new Customproduct();
+    $form = $this->createForm(CustomproductType::class, $customproduct);
+    $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-         
-            $entityManager->persist($customproduct);
-            $entityManager->flush();
+    if ($form->isSubmitted() && $form->isValid()) {
+        $product = $form->get('product')->getData();
+        $customproduct->setProduct($product);
+        $customproduct->setClient($form->get('client')->getData());
 
-            return $this->redirectToRoute('app_customproduct_index', [], Response::HTTP_SEE_OTHER);
-        }
+        $entityManager->persist($customproduct);
+        $entityManager->flush();
 
-        return $this->renderForm('customproduct/new.html.twig', [
-            'customproduct' => $customproduct,
-            'form' => $form,
-        ]);
+        return $this->redirectToRoute('app_customproduct_index', [], Response::HTTP_SEE_OTHER);
     }
+
+    return $this->renderForm('customproduct\new.html.twig', [
+        'customproduct' => $customproduct,
+        'form' => $form,
+    ]);
+}
+
 
     #[Route('/{customProductId}', name: 'app_customproduct_show', methods: ['GET'])]
 public function show(Customproduct $customproduct): Response

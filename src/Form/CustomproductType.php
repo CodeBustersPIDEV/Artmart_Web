@@ -6,14 +6,20 @@ use App\Entity\Customproduct;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-
+use Doctrine\ORM\EntityRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use App\Entity\Product;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 class CustomproductType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('client')
-            ->add('product')
+        
+    
+            ->add('product', ProductType::class)
+            ->add('save', SubmitType::class)
         ;
     }
 
@@ -22,5 +28,10 @@ class CustomproductType extends AbstractType
         $resolver->setDefaults([
             'data_class' => Customproduct::class,
         ]);
+    }
+
+    public function getBlockPrefix()
+    {
+        return '';
     }
 }

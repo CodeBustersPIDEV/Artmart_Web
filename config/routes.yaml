@@ -1,3 +1,7 @@
 #index:
 #    path: /
 #    controller: App\Controller\DefaultController::index
+app_customproduct_new:
+    path: /customproducts/new
+    controller: App\Controller\CustomproductController::new
+

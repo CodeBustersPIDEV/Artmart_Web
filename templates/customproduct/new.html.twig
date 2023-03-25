@@ -1,11 +1,17 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New Customproduct{% endblock %}
-
 {% block body %}
-    <h1>Create new Customproduct</h1>
+    <h1>Create Custom Product</h1>
 
-    {{ include('customproduct/_form.html.twig') }}
-
-    <a href="{{ path('app_customproduct_index') }}">back to list</a>
+    {{ form_start(form) }}
+         {{ form_row(form.client) }}
+        {{ form_row(form.product.categoryId) }}
+        {{ form_row(form.product.name) }}
+        {{ form_row(form.product.description) }}
+        {{ form_row(form.product.dimensions) }}
+        {{ form_row(form.product.weight) }}
+        {{ form_row(form.product.material) }}
+        {{ form_row(form.product.image) }}
+        {{ form_row(form.save) }}
+    {{ form_end(form) }}
 {% endblock %}
