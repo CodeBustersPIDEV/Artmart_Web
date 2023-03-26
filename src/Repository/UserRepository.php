@@ -2,29 +2,27 @@
 
 namespace App\Repository;
 
-use App\Entity\Blogs;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Component\Validator\Constraints\Date;
 
 /**
- * @extends ServiceEntityRepository<Blogs>
+ * @extends ServiceEntityRepository<User>
  *
- * @method Blogs|null find($id, $lockMode = null, $lockVersion = null)
- * @method Blogs|null findOneBy(array $criteria, array $orderBy = null)
- * @method Blogs[]    findAll()
- * @method Blogs[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method User|null find($id, $lockMode = null, $lockVersion = null)
+ * @method User|null findOneBy(array $criteria, array $orderBy = null)
+ * @method User[]    findAll()
+ * @method User[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class BlogsRepository extends ServiceEntityRepository
+class UserRepository extends ServiceEntityRepository
 {
   public function __construct(ManagerRegistry $registry)
   {
-    parent::__construct($registry, Blogs::class);
+    parent::__construct($registry, User::class);
   }
 
-  public function save(Blogs $entity, bool $flush = false): void
+  public function save(User $entity, bool $flush = false): void
   {
-    $entity->setDate(new \DateTime());
     $this->getEntityManager()->persist($entity);
 
     if ($flush) {
@@ -32,7 +30,7 @@ class BlogsRepository extends ServiceEntityRepository
     }
   }
 
-  public function remove(Blogs $entity, bool $flush = false): void
+  public function remove(User $entity, bool $flush = false): void
   {
     $this->getEntityManager()->remove($entity);
 
@@ -44,7 +42,7 @@ class BlogsRepository extends ServiceEntityRepository
 
 
   //    /**
-  //     * @return Blogs[] Returns an array of Blogs objects
+  //     * @return User[] Returns an array of User objects
   //     */
   //    public function findByExampleField($value): array
   //    {
@@ -58,7 +56,7 @@ class BlogsRepository extends ServiceEntityRepository
   //        ;
   //    }
 
-  //    public function findOneBySomeField($value): ?Blogs
+  //    public function findOneBySomeField($value): ?User
   //    {
   //        return $this->createQueryBuilder('c')
   //            ->andWhere('c.exampleField = :val')

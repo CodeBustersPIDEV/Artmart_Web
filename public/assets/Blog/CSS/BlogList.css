@@ -1,8 +1,13 @@
-.articles {
-  display: grid;
-  max-width: 1200px;
-  margin-inline: auto;
-  padding-inline: 24px;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 24px;
-}
+	.articles {
+	  /* display: flex;
+		justify-content: center;
+		align-items: center;
+		flex-wrap: wrap; */
+
+	  display: inline-flex;
+	  flex-direction: row;
+	  flex-wrap: wrap;
+	  justify-content: space-between;
+	  align-items: center;
+	  align-content: center;
+	}

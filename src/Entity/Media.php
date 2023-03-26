@@ -3,12 +3,16 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\BlogsRepository;
 
 /**
  * Media
  *
  * @ORM\Table(name="media", indexes={@ORM\Index(name="blog_id", columns={"blog_id"})})
  * @ORM\Entity
+ */
+/**
+ * @ORM\Entity(repositoryClass=MediaRepository::class)
  */
 class Media
 {
@@ -50,7 +54,7 @@ class Media
      *   @ORM\JoinColumn(name="blog_id", referencedColumnName="blogs_ID")
      * })
      */
-    private $blog;
+    private $blog_id;
 
     public function getMediaId(): ?int
     {
@@ -95,15 +99,13 @@ class Media
 
     public function getBlog(): ?Blogs
     {
-        return $this->blog;
+        return $this->blog_id->getBlogsId() ?? null;
     }
 
     public function setBlog(?Blogs $blog): self
     {
-        $this->blog = $blog;
+        $this->blog_id = $blog->getBlogsId();
 
         return $this;
     }
-
-
 }

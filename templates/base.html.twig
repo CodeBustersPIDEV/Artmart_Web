@@ -19,7 +19,8 @@
 		{% endblock %}
 	</head>
 	<body>
-		{% block body %}{% endblock %} {% macro card(blog) %} {% include
-		'blogs/blogCards.html.twig' with {blog: blog} only %} {% endmacro %}
+		{% block body %}{% endblock %} {% macro card(blog,blog_media) %} {% include
+		'blogs/blogCards.html.twig' with {blog: blog,blog_media:blog_media} only %}
+		{% endmacro %}
 	</body>
 </html>
