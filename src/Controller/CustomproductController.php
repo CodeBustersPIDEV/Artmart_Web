@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Apply;
+use Symfony\Component\Routing\RouterInterface;
 
 use App\Entity\User;
 
@@ -31,6 +32,20 @@ class CustomproductController extends AbstractController
     }
 
     
+  
+
+
+    #[Route('/customproduct', name: 'app_customproduct_artist', methods: ['GET'])]
+    public function artist(EntityManagerInterface $entityManager): Response
+    {
+        $customproducts = $entityManager
+            ->getRepository(Customproduct::class)
+            ->findAll();
+    
+        return $this->render('customproduct/artist.html.twig', [
+            'customproducts' => $customproducts,
+        ]);
+    }
 
     #[Route('/new', name: 'app_customproduct_new', methods: ['GET', 'POST'])]
 public function new(Request $request, EntityManagerInterface $entityManager): Response
@@ -101,8 +116,9 @@ public function show(Customproduct $customproduct): Response
         return $this->redirectToRoute('app_customproduct_index', [], Response::HTTP_SEE_OTHER);
     }
 
+    #[Route('/customproduct/{customProductId}/apply', name: 'app_customproduct_apply', methods: ['GET', 'POST'])]
+    public function apply(int $customProductId, RouterInterface $router): Response
 
-    public function apply(int $customProductId): Response
     {
         $entityManager = $this->getDoctrine()->getManager();
     
@@ -117,7 +133,7 @@ public function show(Customproduct $customproduct): Response
     
         if ($existingApply) {
             $this->addFlash('warning', 'An apply already exists for this custom product.');
-            return $this->redirectToRoute('app_customproduct_index', ['customProductId' => $customProductId]);
+            return $this->redirectToRoute('app_apply_pending');
         }
     
         $apply = new Apply();
@@ -130,14 +146,8 @@ public function show(Customproduct $customproduct): Response
     
         $this->addFlash('success', 'Applied successfully.');
     
-        return $this->redirectToRoute('app_customproduct_index', ['customProductId' => $customProductId]);
+        // Redirect to the filtered list of applies with status 'pending', 'done', or 'refused'
+        return $this->redirectToRoute('app_apply_pending');
     }
     
-
-
-
-  
-    
-
-
 }

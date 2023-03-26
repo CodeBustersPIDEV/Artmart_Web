@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}artmart{% endblock %}
+
+{% block body %}
+    <h1>accepted works</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ApplyId</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for apply in applies %}
+            <tr>
+                <td>{{ apply.applyId }}</td>
+                <td>{{ apply.status }}</td>
+                <td>
+                    {% if apply.status == 'in progress' %}
+                        <form method="POST" action="{{ path('app_apply_mark_done') }}">
+                            <input type="hidden" name="applyId" value="{{ apply.applyId }}">
+                            <button type="submit" onclick="return confirmMarkDone()" class="btn btn-success">Mark as Done</button>
+                        </form>
+                    {% endif %}
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+{% block javascripts %}
+    <script>
+        function confirmMarkDone() {
+            return confirm('Are you sure you want to mark this apply as done?');
+        }
+    </script>
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}artmart{% endblock %}
+
+{% block body %}
+    <h1>Demands</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ApplyId</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for apply in applies %}
+            <tr>
+                <td>{{ apply.applyId }}</td>
+                <td>{{ apply.status }}</td>
+                <td>
+                    {% if apply.status == 'pending' %}
+                        <form method="POST" action="{{ path('app_apply_mark_accept') }}">
+                            <input type="hidden" name="applyId" value="{{ apply.applyId }}">
+                            <button type="submit" onclick="return confirmMarkaccept()" class="btn btn-success">accept</button>
+                        </form>
+                         <form method="POST" action="{{ path('app_apply_mark_refused') }}">
+                            <input type="hidden" name="applyId" value="{{ apply.applyId }}">
+                            <button type="submit" onclick="return confirmMarkrefuse()" class="btn btn-success">refuse</button>
+                        </form>
+                    {% endif %}
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+{% block javascripts %}
+    <script>
+        function confirmMarkaccept() {
+            return confirm('Are you sure you want to accepti this demand?');
+        }
+         function confirmMarkrefuse() {
+            return confirm('Are you sure you want to refuse this demand?');
+        }
+    </script>
+{% endblock %}

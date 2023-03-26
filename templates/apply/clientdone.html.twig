@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Your Applications list{% endblock %}
+
+{% block body %}
+    <h1>custom products demands</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ApplyId</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for apply in applies %}
+            <tr>
+           <td>{{ apply.applyId }}</td>
+                <td>{{ apply.status }}</td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="2">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

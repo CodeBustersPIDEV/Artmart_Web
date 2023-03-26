@@ -5,8 +5,3 @@ app_customproduct_new:
     path: /customproducts/new
     controller: App\Controller\CustomproductController::new
     
-app_customproduct_apply:
-    path: '/customproduct/{customProductId}/apply'
-    controller: App\Controller\CustomproductController::apply
-    methods: ['POST']
-

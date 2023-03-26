@@ -17,9 +17,11 @@
             <tr>
                 <td>{{ customproduct.product.name }}</td>
                 <td>
-                    <a href="{{ path('app_customproduct_show', {'customProductId': customproduct.customProductId}) }}">show</a>
-                    <a href="{{ path('app_customproduct_edit', {'customProductId': customproduct.customProductId}) }}">edit</a>
-               
+            
+                 <form action="{{ path('app_customproduct_apply', {'customProductId': customproduct.customProductId}) }}" method="post">
+    <button id="applyBtn-{{ customproduct.customProductId }}" type="submit" class="btn btn-primary">Apply</button>
+</form>
+
                 </td>
             </tr>
         {% else %}
@@ -29,12 +31,7 @@
         {% endfor %}
         </tbody>
     </table>
-
-    <a href="{{ path('app_customproduct_new') }}">Create new</a>
-<a href="{{ path('app_customproduct_artist') }}">Go to artist page</a>
-<a href="{{ path('app_apply_clients') }}">Demands</a>
-<a href="{{ path('app_apply_clientdone') }}">check your custom product progress</a>
-
+<a href="{{ path('app_apply_accepted') }}">Go to accepted works</a>
 
     {% block javascripts %}
     {{ parent() }}
