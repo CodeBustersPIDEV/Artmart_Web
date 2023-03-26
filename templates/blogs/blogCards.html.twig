@@ -126,7 +126,11 @@ a.hero-image-container {
   position: relative;
   display: block;
   aspect-ratio: 16 / 9;
+  overflow: hidden;
+}
 
+.hero-image:hover{
+  scale: 1.1;
 }
 
 
@@ -148,8 +152,8 @@ img.eye {
 }
 
 .hero-image-container::after {
+aspect-ratio: 16 / 9;
   content: '';
-    aspect-ratio: 16 / 9;
   background-image: url("https://i.postimg.cc/9MtT4GZY/view.png");
   background-position: center;
   background-repeat: no-repeat;
@@ -169,7 +173,6 @@ img.eye {
 
 .hero-image-container:hover::after {
   opacity: 1;
-    aspect-ratio: 16 / 9;
 }
 
 .small-image {

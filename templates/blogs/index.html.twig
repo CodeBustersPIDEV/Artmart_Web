@@ -1,6 +1,21 @@
 {% extends 'base.html.twig' %} {% block title %}Blogs index{% endblock %} {%
 block body %} {% import "base.html.twig" as base %}
 <link rel="stylesheet" href="{{ asset('assets/Blog/CSS/BlogList.css') }}" />
+<style>
+	.articles {
+		/* display: flex;
+		justify-content: center;
+		align-items: center;
+		flex-wrap: wrap; */
+
+		display: inline-flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+		justify-content: space-between;
+		align-items: center;
+		align-content: center;
+	}
+</style>
 <h1>Blogs index</h1>
 
 {#

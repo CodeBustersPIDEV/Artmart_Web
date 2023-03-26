@@ -1,8 +1,13 @@
-.articles {
-  display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    justify-content: center;
-    align-items: center;
-    align-content: center;
-}
+	.articles {
+	  /* display: flex;
+		justify-content: center;
+		align-items: center;
+		flex-wrap: wrap; */
+
+	  display: inline-flex;
+	  flex-direction: row;
+	  flex-wrap: wrap;
+	  justify-content: space-between;
+	  align-items: center;
+	  align-content: center;
+	}
