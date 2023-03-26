@@ -10,6 +10,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Entity\Apply;
+
+use App\Entity\User;
+
 
 #[Route('/customproduct')]
 class CustomproductController extends AbstractController
@@ -25,6 +29,8 @@ class CustomproductController extends AbstractController
             'customproducts' => $customproducts,
         ]);
     }
+
+    
 
     #[Route('/new', name: 'app_customproduct_new', methods: ['GET', 'POST'])]
 public function new(Request $request, EntityManagerInterface $entityManager): Response
@@ -94,4 +100,44 @@ public function show(Customproduct $customproduct): Response
 
         return $this->redirectToRoute('app_customproduct_index', [], Response::HTTP_SEE_OTHER);
     }
+
+
+    public function apply(int $customProductId): Response
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+    
+        $customProduct = $entityManager->getRepository(Customproduct::class)->find($customProductId);
+    
+        if (!$customProduct) {
+            throw $this->createNotFoundException('Unable to find Customproduct entity.');
+        }
+    
+        // Check if a previous apply exists for this custom product
+        $existingApply = $entityManager->getRepository(Apply::class)->findOneBy(['customproduct' => $customProduct]);
+    
+        if ($existingApply) {
+            $this->addFlash('warning', 'An apply already exists for this custom product.');
+            return $this->redirectToRoute('app_customproduct_index', ['customProductId' => $customProductId]);
+        }
+    
+        $apply = new Apply();
+        $apply->setStatus('pending');
+        $apply->setArtist($entityManager->getRepository(User::class)->find(1));
+        $apply->setCustomproduct($customProduct);
+    
+        $entityManager->persist($apply);
+        $entityManager->flush();
+    
+        $this->addFlash('success', 'Applied successfully.');
+    
+        return $this->redirectToRoute('app_customproduct_index', ['customProductId' => $customProductId]);
+    }
+    
+
+
+
+  
+    
+
+
 }

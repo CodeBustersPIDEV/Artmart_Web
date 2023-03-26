@@ -25,6 +25,19 @@ class ApplyController extends AbstractController
         ]);
     }
 
+
+    #[Route('/', name: 'app_apply_index1', methods: ['GET'])]
+    public function index1(EntityManagerInterface $entityManager): Response
+    {
+        $applies = $entityManager
+            ->getRepository(Apply::class)
+            ->findBy(['status' => ['pending', 'done', 'refused']]);
+
+        return $this->render('apply/index.html.twig', [
+            'applies' => $applies,
+        ]);
+    }
+
     #[Route('/new', name: 'app_apply_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
@@ -81,4 +94,9 @@ class ApplyController extends AbstractController
 
         return $this->redirectToRoute('app_apply_index', [], Response::HTTP_SEE_OTHER);
     }
+
+
+
+
+    
 }

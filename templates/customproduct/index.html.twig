@@ -19,6 +19,10 @@
                 <td>
                     <a href="{{ path('app_customproduct_show', {'customProductId': customproduct.customProductId}) }}">show</a>
                     <a href="{{ path('app_customproduct_edit', {'customProductId': customproduct.customProductId}) }}">edit</a>
+                     <form action="{{ path('app_customproduct_apply', {'customProductId': customproduct.customProductId}) }}" method="post">
+                   <button id="applyBtn-{{ customproduct.customProductId }}" type="submit" class="btn btn-primary">Apply</button>
+
+                </form>
                 </td>
             </tr>
         {% else %}
@@ -30,4 +34,17 @@
     </table>
 
     <a href="{{ path('app_customproduct_new') }}">Create new</a>
+
+    {% block javascripts %}
+    {{ parent() }}
+    <script>
+        {% for customproduct in customproducts %}
+            document.getElementById("applyBtn-{{ customproduct.customProductId }}").addEventListener("click", function() {
+                this.disabled = true;
+            });
+        {% endfor %}
+    </script>
+
+    
+{% endblock %}
 {% endblock %}
