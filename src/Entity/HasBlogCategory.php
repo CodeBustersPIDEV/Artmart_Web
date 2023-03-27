@@ -48,7 +48,7 @@ class HasBlogCategory
 
     public function getBlog(): ?Blogs
     {
-        return $this->blog;
+        return $this->blog ?? null;
     }
 
     public function setBlog(?Blogs $blog): self
@@ -60,7 +60,7 @@ class HasBlogCategory
 
     public function getCategory(): ?Blogcategories
     {
-        return $this->category;
+        return $this->category ?? null;
     }
 
     public function setCategory(?Blogcategories $category): self
@@ -69,6 +69,4 @@ class HasBlogCategory
 
         return $this;
     }
-
-
 }

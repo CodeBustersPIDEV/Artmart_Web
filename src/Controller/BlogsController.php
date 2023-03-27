@@ -8,6 +8,9 @@ use App\Form\BlogsType;
 use App\Repository\BlogsRepository;
 use App\Repository\MediaRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -15,6 +18,26 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/blogs')]
 class BlogsController extends AbstractController
 {
+    private $filesystem;
+
+    public function __construct(Filesystem $filesystem)
+    {
+        $this->filesystem = $filesystem;
+    }
+
+    // #[Route('/upload-image', name: 'upload_image', methods: ['POST'])]
+    public function uploadImage(UploadedFile $file, string $destinationFilePath): void
+    {
+        // Get the original filename of the uploaded file
+        $filename = $file->getClientOriginalName();
+
+        // Create the destination directory if it doesn't exist
+        $this->filesystem->mkdir(dirname($destinationFilePath));
+
+        // Move the uploaded file to the destination
+        $file->move($destinationFilePath, $filename);
+    }
+
     #[Route('/', name: 'app_blogs_index', methods: ['GET'])]
     public function index(BlogsRepository $blogsRepository): Response
     {
@@ -31,6 +54,9 @@ class BlogsController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $file = $form->get('file')->getData();
+            $destinationFilePath = $this->getParameter('kernel.project_dir') . '/public/assets/Blog/img/BlogImages/';
+            $this->uploadImage($file, $destinationFilePath);
             $blogsRepository->save($blog, true);
 
             return $this->redirectToRoute('app_blogs_index', [], Response::HTTP_SEE_OTHER);
