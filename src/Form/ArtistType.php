@@ -6,6 +6,8 @@ use App\Entity\Artist;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use App\Entity\User;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
 class ArtistType extends AbstractType
 {
@@ -13,8 +15,11 @@ class ArtistType extends AbstractType
     {
         $builder
             ->add('bio')
-            ->add('user')
-        ;
+            ->add('user', EntityType::class, [
+                'class' => User::class,
+                'choice_label' => 'username',
+            ]);
+        
     }
 
     public function configureOptions(OptionsResolver $resolver): void

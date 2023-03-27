@@ -8,38 +8,21 @@
     <table class="table">
         <thead>
             <tr>
-                <th>UserId</th>
                 <th>Name</th>
                 <th>Email</th>
-                <th>Birthday</th>
-                <th>Phonenumber</th>
                 <th>Role</th>
                 <th>Username</th>
-                <th>Password</th>
-                <th>Picture</th>
-                <th>Blocked</th>
-                <th>Enabled</th>
-                <th>Dateofcreation</th>
-                <th>Token</th>
                 <th>actions</th>
             </tr>
         </thead>
         <tbody>
         {% for user in users %}
             <tr>
-                <td>{{ user.userId }}</td>
                 <td>{{ user.name }}</td>
                 <td>{{ user.email }}</td>
-                <td>{{ user.birthday ? user.birthday|date('Y-m-d') : '' }}</td>
-                <td>{{ user.phonenumber }}</td>
                 <td>{{ user.role }}</td>
                 <td>{{ user.username }}</td>
-                <td>{{ user.password }}</td>
-                <td>{{ user.picture }}</td>
-                <td>{{ user.blocked ? 'Yes' : 'No' }}</td>
-                <td>{{ user.enabled ? 'Yes' : 'No' }}</td>
-                <td>{{ user.dateofcreation ? user.dateofcreation|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ user.token }}</td>
+                
                 <td>
                     <a href="{{ path('app_user_show', {'userId': user.userId}) }}">show</a>
                     <a href="{{ path('app_user_edit', {'userId': user.userId}) }}">edit</a>

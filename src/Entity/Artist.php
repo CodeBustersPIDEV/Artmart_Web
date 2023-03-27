@@ -10,14 +10,14 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="artist", indexes={@ORM\Index(name="user_ID", columns={"user_ID"})})
  * @ORM\Entity
  */
-class Artist
+class Artist extends User
 {
-    /**
+  /**
      * @var int
      *
-     * @ORM\Column(name="artist_ID", type="integer", nullable=false)
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @ORM\GeneratedValue(strategy="AUTO")
+      * @ORM\Column(name="client_ID", type="integer")
      */
     private $artistId;
 
@@ -38,10 +38,10 @@ class Artist
     /**
      * @var \User
      *
-     * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="user_ID", referencedColumnName="user_ID")
-     * })
+     *@ORM\ManyToOne(targetEntity=User::class, cascade={"persist"})
+     * @ORM\JoinColumn(nullable=false)
+     * 
+     * 
      */
     private $user;
 
@@ -49,7 +49,6 @@ class Artist
     {
         return $this->artistId;
     }
-
     public function getNbrArtwork(): ?int
     {
         return $this->nbrArtwork;
@@ -85,6 +84,4 @@ class Artist
 
         return $this;
     }
-
-
 }

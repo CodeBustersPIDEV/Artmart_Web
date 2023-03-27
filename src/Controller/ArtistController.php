@@ -33,9 +33,10 @@ class ArtistController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $artist->setUser($form->get('user')->getData()); // set the user property to the selected user entity
+            $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($artist);
             $entityManager->flush();
-
             return $this->redirectToRoute('app_artist_index', [], Response::HTTP_SEE_OTHER);
         }
 

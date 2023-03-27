@@ -33,6 +33,8 @@ class ClientController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $client->setUser($form->get('user')->getData()); // set the user property to the selected user entity
+            $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($client);
             $entityManager->flush();
 

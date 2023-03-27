@@ -93,12 +93,14 @@ class User
     private $enabled = 'NULL';
 
     /**
-     * @var \DateTime|null
-     *
-     * @ORM\Column(name="dateOfCreation", type="datetime", nullable=true, options={"default"="current_timestamp()"})
+     * @ORM\Column(name="dateOfCreation", type="datetime", options={"default": "CURRENT_TIMESTAMP"})
      */
-    private $dateofcreation = 'current_timestamp()';
-
+    private $dateofcreation;
+    public function __construct()
+    {
+        $this->dateofcreation = new \DateTime();
+    }
+   
     /**
      * @var string|null
      *

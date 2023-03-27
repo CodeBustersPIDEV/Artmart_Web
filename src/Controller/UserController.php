@@ -3,12 +3,15 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Entity\Artist;
+use App\Entity\Client;
 use App\Form\UserType;
+use Webpatser\Uuid\Uuid;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 #[Route('/user')]
 class UserController extends AbstractController
@@ -33,9 +36,30 @@ class UserController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($user);
-            $entityManager->flush();
+            $role = $form->get('role')->getData();
 
+            if ($role == 'client') {
+                $client = new Client();
+                $client->setNbrDemands(0);
+                $client->setNbrOrders(0);
+                $user = $form->getData();
+                $client->setUser($user);
+                $entityManager->persist($user);
+                $entityManager->flush();
+                $userId = $user->getUserId();
+                $client->setUserId($userId);
+                $entityManager->persist($client);
+                $entityManager->flush();
+            } elseif ($role == 'artist') {
+                $artist = new Artist();
+                $artist->setNbrArtwork(0);
+                $artist->setBio("");
+                $user = $form->getData();
+                $artist->setUser($user);
+                $entityManager->persist($user);
+                $entityManager->persist($artist);
+                $entityManager->flush();
+            }
             return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -44,7 +68,6 @@ class UserController extends AbstractController
             'form' => $form,
         ]);
     }
-
     #[Route('/{userId}', name: 'app_user_show', methods: ['GET'])]
     public function show(User $user): Response
     {
@@ -74,7 +97,7 @@ class UserController extends AbstractController
     #[Route('/{userId}', name: 'app_user_delete', methods: ['POST'])]
     public function delete(Request $request, User $user, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$user->getUserId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $user->getUserId(), $request->request->get('_token'))) {
             $entityManager->remove($user);
             $entityManager->flush();
         }

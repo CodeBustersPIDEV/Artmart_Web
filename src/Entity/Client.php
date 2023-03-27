@@ -15,9 +15,9 @@ class Client
     /**
      * @var int
      *
-     * @ORM\Column(name="client_ID", type="integer", nullable=false)
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @ORM\GeneratedValue(strategy="AUTO")
+      * @ORM\Column(name="client_ID", type="integer")
      */
     private $clientId;
 
@@ -31,23 +31,46 @@ class Client
     /**
      * @var int
      *
+     * @ORM\Column(name="user_ID", type="integer", nullable=false)
+     */
+    private $userID;
+
+    /**
+     * @var int
+     *
      * @ORM\Column(name="nbr_demands", type="integer", nullable=false)
+     *
      */
     private $nbrDemands;
 
     /**
      * @var \User
      *
-     * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="user_ID", referencedColumnName="user_ID")
-     * })
+     * 
+     *  @ORM\ManyToOne(targetEntity=User::class, cascade={"persist"})
+     * @ORM\JoinColumn(nullable=false)
      */
     private $user;
 
     public function getClientId(): ?int
     {
         return $this->clientId;
+    }
+    public function setClientId(int $ClientId): self
+    {
+        $this->clientId = $ClientId;
+
+        return $this;
+    }
+    public function getUserId(): ?int
+    {
+        return $this->userID;
+    }
+    public function setUserId(int $UserId): self
+    {
+        $this->userID = $UserId;
+
+        return $this;
     }
 
     public function getNbrOrders(): ?int
@@ -85,6 +108,4 @@ class Client
 
         return $this;
     }
-
-
 }
