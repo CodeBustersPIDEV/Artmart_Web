@@ -1,19 +1,10 @@
 <?php
-
 namespace App\Repository;
 
 use App\Entity\Apply;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
-/**
- * @extends ServiceEntityRepository<Apply>
- *
- * @method Apply|null find($id, $lockMode = null, $lockVersion = null)
- * @method Apply|null findOneBy(array $criteria, array $orderBy = null)
- * @method Apply[]    findAll()
- * @method Apply[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
- */
 class ApplyRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
@@ -21,46 +12,21 @@ class ApplyRepository extends ServiceEntityRepository
         parent::__construct($registry, Apply::class);
     }
 
-    public function save(Apply $entity, bool $flush = false): void
+    public function findAllByArtistId(int $artistId): array
     {
-        $this->getEntityManager()->persist($entity);
+        $qb = $this->createQueryBuilder('a');
+        $qb->where('a.artist = :artistId')
+            ->setParameter('artistId', $artistId);
 
-        if ($flush) {
-            $this->getEntityManager()->flush();
-        }
+        return $qb->getQuery()->getResult();
     }
 
-    public function remove(Apply $entity, bool $flush = false): void
+    public function findAllByCustomProductId(int $customProductId): array
     {
-        $this->getEntityManager()->remove($entity);
+        $qb = $this->createQueryBuilder('a');
+        $qb->where('a.customproduct = :customProductId')
+            ->setParameter('customProductId', $customProductId);
 
-        if ($flush) {
-            $this->getEntityManager()->flush();
-        }
+        return $qb->getQuery()->getResult();
     }
-
-//    /**
-//     * @return Apply[] Returns an array of Apply objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('a')
-//            ->andWhere('a.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('a.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
-
-//    public function findOneBySomeField($value): ?Apply
-//    {
-//        return $this->createQueryBuilder('a')
-//            ->andWhere('a.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
 }

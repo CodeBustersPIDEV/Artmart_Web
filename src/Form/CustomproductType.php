@@ -19,7 +19,7 @@ class CustomproductType extends AbstractType
         $builder
             ->add('client')
             ->add('product', ProductType::class)
-        
+
         ;
     }
 
