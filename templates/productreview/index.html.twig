@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Productreview index{% endblock %}
+
+{% block body %}
+    <h1>Productreview index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ReviewId</th>
+                <th>ReadyProductId</th>
+                <th>UserId</th>
+                <th>Title</th>
+                <th>Text</th>
+                <th>Rating</th>
+                <th>Date</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for productreview in productreviews %}
+            <tr>
+                <td>{{ productreview.reviewId }}</td>
+                <td>{{ productreview.readyProductId }}</td>
+                <td>{{ productreview.userId }}</td>
+                <td>{{ productreview.title }}</td>
+                <td>{{ productreview.text }}</td>
+                <td>{{ productreview.rating }}</td>
+                <td>{{ productreview.date ? productreview.date|date('Y-m-d H:i:s') : '' }}</td>
+                <td>
+                    <a href="{{ path('app_productreview_show', {'reviewId': productreview.reviewId}) }}">show</a>
+                    <a href="{{ path('app_productreview_edit', {'reviewId': productreview.reviewId}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="8">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_productreview_new') }}">Create new</a>
+{% endblock %}
