@@ -8,7 +8,7 @@ use App\Entity\Customproduct;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -19,7 +19,7 @@ class CustomproductType extends AbstractType
         $builder
             ->add('client')
             ->add('product', ProductType::class)
-
+        
         ;
     }
 
@@ -27,6 +27,7 @@ class CustomproductType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Customproduct::class,
+            
         ]);
     }
 

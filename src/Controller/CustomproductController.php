@@ -106,7 +106,7 @@ public function show(Customproduct $customproduct): Response
     #[Route('/{customProductId}/edit', name: 'app_customproduct_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Customproduct $customproduct, EntityManagerInterface $entityManager): Response
     {
-
+   
         $form = $this->createForm(CustomproductType::class, $customproduct);
         $form->handleRequest($request);
         $product = $form->get('product')->getData();
@@ -126,6 +126,7 @@ public function show(Customproduct $customproduct): Response
 
             $product->setImage($newFilename);
         }
+   
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
