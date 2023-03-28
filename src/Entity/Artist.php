@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use App\Repository\ArtistRepository;
+
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -10,14 +12,18 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="artist", indexes={@ORM\Index(name="user_ID", columns={"user_ID"})})
  * @ORM\Entity
  */
+/**
+ * @ORM\Entity(repositoryClass=ArtistRepository::class)
+ */
 class Artist
 {
+
     /**
      * @var int
      *
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-     * @ORM\Column(name="client_ID", type="integer")
+     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\Column(name="artist_ID", type="integer")
      */
     private $artistId;
 
@@ -44,7 +50,9 @@ class Artist
      * @var \User
      *
      *@ORM\ManyToOne(targetEntity=User::class, cascade={"persist"})
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="user_ID", referencedColumnName="user_ID")
+     * })
      * 
      * 
      */
@@ -92,7 +100,7 @@ class Artist
 
     public function getUser(): ?User
     {
-        return $this->user;
+        return $this->user ?? null;
     }
 
     public function setUser(?User $user): self

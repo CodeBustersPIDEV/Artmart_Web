@@ -74,7 +74,7 @@ class Admin
 
     public function getUser(): ?User
     {
-        return $this->user;
+        return $this->user ?? null;
     }
 
     public function setUser(?User $user): self
