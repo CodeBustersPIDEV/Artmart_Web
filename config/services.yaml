@@ -5,6 +5,7 @@
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
   destinationPath: "C:\\xampp\\htdocs\\PIDEV\\BlogUploads\\"
+  product_images_directory: '%kernel.project_dir%/public/imagescustom'
   file_base_url:
     host: "http://localhost"
     path: "PIDEV/BlogUploads"
@@ -28,5 +29,3 @@ services:
       - "../src/Kernel.php"
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
-parameters:
-    product_images_directory: '%kernel.project_dir%/public/imagescustom'
