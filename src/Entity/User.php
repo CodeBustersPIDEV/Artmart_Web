@@ -100,7 +100,7 @@ class User
     {
         $this->dateofcreation = new \DateTime();
     }
-   
+
     /**
      * @var string|null
      *
@@ -256,13 +256,10 @@ class User
 
         return $this;
     }
- 
-    
-        public function __toString(): string
-        {
-            return $this->getName();
-        }
+
+
+    public function __toString(): string
+    {
+        return $this->getName();
     }
-    
-
-
+}

@@ -20,7 +20,12 @@ class Admin
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $adminId;
-
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="user_ID", type="integer", nullable=false)
+     */
+    private $userId;
     /**
      * @var string|null
      *
@@ -43,6 +48,18 @@ class Admin
         return $this->adminId;
     }
 
+    public function getUserId(): ?int
+    {
+        return $this->userId;
+    }
+
+    public function setUserId(int $userId): self
+    {
+        $this->userId = $userId;
+
+        return $this;
+    }
+
     public function getDepartment(): ?string
     {
         return $this->department;
@@ -57,7 +74,7 @@ class Admin
 
     public function getUser(): ?User
     {
-        return $this->user;
+        return $this->user ?? null;
     }
 
     public function setUser(?User $user): self
@@ -66,6 +83,4 @@ class Admin
 
         return $this;
     }
-
-
 }
