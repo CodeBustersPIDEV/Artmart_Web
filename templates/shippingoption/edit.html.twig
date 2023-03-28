@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Shippingoption{% endblock %}
+
+{% block body %}
+    <h1>Edit Shippingoption</h1>
+
+    {{ include('shippingoption/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_shippingoption_index') }}">back to list</a>
+
+    {{ include('shippingoption/_delete_form.html.twig') }}
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Orderstatus index{% endblock %}
+
+{% block body %}
+    <h1>Orderstatus index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>OrderstatusId</th>
+                <th>Status</th>
+                <th>Date</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for orderstatus in orderstatuses %}
+            <tr>
+                <td>{{ orderstatus.orderstatusId }}</td>
+                <td>{{ orderstatus.status }}</td>
+                <td>{{ orderstatus.date ? orderstatus.date|date('Y-m-d') : '' }}</td>
+                <td>
+                    <a href="{{ path('app_orderstatus_show', {'orderstatusId': orderstatus.orderstatusId}) }}">show</a>
+                    <a href="{{ path('app_orderstatus_edit', {'orderstatusId': orderstatus.orderstatusId}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_orderstatus_new') }}">Create new</a>
+{% endblock %}
