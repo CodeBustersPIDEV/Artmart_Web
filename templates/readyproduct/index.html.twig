@@ -17,20 +17,17 @@
         </thead>
         <tbody>
        {% for readyproduct in readyproducts %}
-    {% set product = readyproduct.getProduct() %}
-    <tr>
-        <td>{{ readyproduct.readyProductId }}</td>
-        <td>{{ readyproduct.price }}</td>
-        <td>{{ product.categoryId }}</td>
-        <td>{{ product.name }}</td>
-        <td>{{ product.description }}</td>
-        <td>{{ product.dimensions }}</td>
-        <td>{{ product.weight }}</td>
-        <td>{{ product.material }}</td>
-        <td>{{ product.image }}</td>
-        <td>{{ readyproduct.userId }}</td>
-        <td>
-        {% else %}
+            <tr>
+                <td>{{ readyproduct.readyProductId }}</td>
+                <td>{{ readyproduct.price }}</td>
+                <td>{{ readyproduct.productId }}</td>
+                <td>{{ readyproduct.userId }}</td>
+                <td>
+                    <a href="{{ path('app_readyproduct_show', {'readyProductId': readyproduct.readyProductId}) }}">show</a>
+                    <a href="{{ path('app_readyproduct_edit', {'readyProductId': readyproduct.readyProductId}) }}">edit</a>
+                </td>
+            </tr>
+          {% else %}
             <tr>
                 <td colspan="5">no records found</td>
             </tr>
