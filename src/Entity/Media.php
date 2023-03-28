@@ -108,4 +108,16 @@ class Media
 
         return $this;
     }
+
+    public function getBlogId(): ?Blogs
+    {
+        return $this->blog_id;
+    }
+
+    public function setBlogId(?Blogs $blog_id): self
+    {
+        $this->blog_id = $blog_id;
+
+        return $this;
+    }
 }

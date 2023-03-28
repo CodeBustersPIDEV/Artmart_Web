@@ -10,14 +10,14 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="artist", indexes={@ORM\Index(name="user_ID", columns={"user_ID"})})
  * @ORM\Entity
  */
-class Artist extends User
+class Artist
 {
-  /**
+    /**
      * @var int
      *
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-      * @ORM\Column(name="client_ID", type="integer")
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @ORM\Column(name="client_ID", type="integer")
      */
     private $artistId;
 
