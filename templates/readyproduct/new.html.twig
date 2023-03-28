@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Readyproduct{% endblock %}
+
+{% block body %}
+    <h1>Create new Readyproduct</h1>
+
+    {{ include('readyproduct/_form.html.twig') }}
+
+    <a href="{{ path('app_readyproduct_index') }}">back to list</a>
+{% endblock %}
