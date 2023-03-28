@@ -1,13 +1,53 @@
-	.articles {
-	  /* display: flex;
+.articles {
+	/* display: flex;
 		justify-content: center;
 		align-items: center;
 		flex-wrap: wrap; */
 
-	  display: inline-flex;
-	  flex-direction: row;
-	  flex-wrap: wrap;
-	  justify-content: space-between;
-	  align-items: center;
-	  align-content: center;
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	align-items: center;
+	align-content: center;
+}
+
+/* For Tablet View */
+@media screen and (min-device-width: 768px) and (max-device-width: 1024px) {
+	.articles {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		flex-wrap: wrap;
 	}
+}
+
+/* For Mobile Portrait View */
+@media screen and (max-device-width: 480px) and (orientation: portrait) {
+	.articles {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		flex-wrap: wrap;
+	}
+}
+
+/* For Mobile Landscape View */
+@media screen and (max-device-width: 640px) and (orientation: landscape) {
+	.articles {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		flex-wrap: wrap;
+	}
+}
+
+/* For Mobile Phones Portrait or Landscape View */
+@media screen and (max-device-width: 640px) {
+	.articles {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		flex-wrap: wrap;
+	}
+}

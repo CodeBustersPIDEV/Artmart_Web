@@ -1,7 +1,231 @@
 {% extends 'base.html.twig' %} {% block title %}Blogs{% endblock %} {% block
 body %}
-<h1>Blogs</h1>
+<link rel="stylesheet" href="{{ asset('assets/Blog/CSS/BlogPage.css') }}" />
+<style>
+	/* =================================
+------------------------------------
+  SUNZINE | Photography HTML Template
+  Version: 1.0
+  Copyright By: ColorLib
+ ------------------------------------
+ ====================================*/
 
+	/*----------------------------------------*/
+	/* Template default CSS
+/*----------------------------------------*/
+
+	@import url("https://fonts.googleapis.com/css2?family=Aldrich&family=Raleway:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap");
+
+	html,
+	body {
+		height: 100%;
+		font-family: "Raleway", sans-serif;
+		-webkit-font-smoothing: antialiased;
+	}
+
+	h2,
+	h3,
+	h4,
+	h5,
+	h6 {
+		margin: 0;
+		color: #111111;
+		font-family: "Aldrich", sans-serif;
+	}
+
+	h2 {
+		font-size: 36px;
+		line-height: 1.4;
+	}
+
+	h3 {
+		font-size: 30px;
+	}
+
+	h4 {
+		font-size: 24px;
+	}
+
+	h5 {
+		font-size: 18px;
+	}
+
+	h6 {
+		font-size: 16px;
+	}
+
+	p {
+		font-family: "Raleway", sans-serif;
+		font-size: 16px;
+		color: #707070;
+		line-height: 1.8;
+	}
+
+	img {
+		max-width: 100%;
+	}
+
+	input:focus,
+	button:focus,
+	textarea:focus {
+		outline: none;
+	}
+
+	a:hover,
+	a:focus {
+		text-decoration: none;
+		outline: none;
+	}
+
+	ul {
+		padding: 0;
+		margin: 0;
+	}
+
+	@media (min-width: 1200px) {
+		.container {
+			max-width: 1200px;
+		}
+	}
+
+	/*-------------------
+   Blog Single Page
+ --------------------*/
+
+	.blog__single {
+		padding: 100px 59px;
+	}
+
+	@media (max-width: 576px) {
+		.blog__single {
+			padding: 100px 0;
+		}
+	}
+
+	/* .blog__post__content{
+
+	} */
+
+	.blog__post__content p {
+		margin-bottom: 50px;
+	}
+
+	.blog__post__content h4 {
+		margin-bottom: 20px;
+	}
+
+	.blog__post__content img {
+		margin-bottom: 40px;
+	}
+
+	.blog__post__content blockquote {
+		padding: 25px 10px 5px 65px;
+		margin-bottom: 40px;
+		position: relative;
+		background-image: url("../img/quote.png");
+		background-repeat: no-repeat;
+		background-position: left top;
+	}
+
+	@media (max-width: 576px) {
+		.blog__post__content blockquote {
+			padding: 80px 10px 30px;
+		}
+	}
+
+	.blog__post__content blockquote p {
+		font-style: italic;
+		font-size: 20px;
+		margin-bottom: 30px;
+		line-height: 1.4;
+	}
+
+	.blog__post__content blockquote h6 {
+		color: #0ece91;
+	}
+
+	.blog__post__content blockquote h6 span {
+		font-family: "Raleway", sans-serif;
+		color: #707070;
+	}
+
+	.post__cata {
+		font-size: 16px;
+		font-family: "Raleway", sans-serif;
+		color: #0ece91;
+		text-transform: uppercase;
+		margin-bottom: 20px;
+	}
+
+	.post__title {
+		font-size: 32px;
+		text-transform: uppercase;
+		margin-bottom: 25px;
+	}
+
+	@media (max-width: 576px) {
+		.post__title {
+			font-size: 24px;
+		}
+	}
+
+	.post__date {
+		font-size: 16px;
+		font-family: "Raleway", sans-serif;
+		color: #b7b7b7;
+		margin-bottom: 30px;
+	}
+
+	.post__footer {
+		margin-bottom: 70px;
+	}
+
+	.post__tags a {
+		display: inline-block;
+		font-family: "Raleway", sans-serif;
+		color: #707070;
+		font-size: 14px;
+		padding: 5px 21px;
+		margin-bottom: 5px;
+		margin-right: 2px;
+		background-color: #f3f3f3;
+	}
+
+	.post__share {
+		text-align: right;
+	}
+
+	@media only screen and (min-width: 576px) and (max-width: 767px),
+		(max-width: 576px) {
+		.post__share {
+			text-align: left;
+			padding-top: 35px;
+		}
+	}
+
+	.post__share a {
+		display: inline-block;
+		font-size: 16px;
+		color: #707070;
+		margin-left: 30px;
+	}
+
+	.post__share a:first-child {
+		margin-left: 0;
+	}
+
+	.tags__wedget a {
+		display: inline-block;
+		font-family: "Raleway", sans-serif;
+		color: #707070;
+		font-size: 14px;
+		padding: 5px 21px;
+		margin-bottom: 10px;
+		margin-right: 6px;
+		background-color: #f3f3f3;
+	}
+</style>
+{#
 <table class="table">
 	<tbody>
 		<tr>
@@ -43,6 +267,67 @@ body %}
 		</tr>
 	</tbody>
 </table>
+#}
+
+<div class="blog__single">
+	<div class="container">
+		<div class="row">
+			{#
+			<div class="col-lg-9">
+				#}
+				<article class="blog__post__content">
+					<div class="row">
+						<div class="part1 col">
+							<div class="post__cata">Sport</div>
+							<h2 class="post__title">{{ blog.title }}</h2>
+							<div class="post__date">
+								Posted By <a href="#">{{ blog.author.name }}</a> On
+								{{ blog.date ? blog.date|date('Y-m-d ') : '' }}
+							</div>
+							{% if blog_media != null %}
+							<img
+								class="hero-image"
+								src="{{ blog_media.getFilePath() }}"
+								alt="Spinning glass cube"
+							/>
+							{% else %}
+							<img
+								class="hero-image"
+								src="{{ asset('assets/Blog/img/default-product.png') }}"
+								alt="Spinning glass cube"
+							/>
+							{% endif %}
+						</div>
+						<div class="part2 col">
+							<p>{{ blog.content }}</p>
+							<div class="post__footer">
+								<div class="row">
+									<div class="col-md-6">
+										<div class="post__tags">
+											<a href="#">Creative</a>
+											<a href="#">Unique</a>
+											<a href="#">Photography</a>
+										</div>
+									</div>
+									<div class="col-md-6">
+										<div class="post__share">
+											<a href="#"><i class="fa fa-facebook"></i></a>
+											<a href="#"><i class="fa fa-twitter"></i></a>
+											<a href="#"><i class="fa fa-google"></i></a>
+											<a href="#"><i class="fa fa-pinterest"></i></a>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</article>
+				{#
+			</div>
+			#}
+		</div>
+	</div>
+</div>
 
 <a href="{{ path('app_blogs_index') }}">back to list</a>
 

@@ -21,11 +21,11 @@
 		--var-para: normal normal 300 1em/1.55em "Outfit", sans-serif;
 	}
 
-	/* 
-=======================
-Setup
-=======================
-*/
+	/*
+	=======================
+	Setup
+	=======================
+	*/
 
 	img {
 		width: 100%;
@@ -37,17 +37,17 @@ Setup
 		color: inherit;
 	}
 
-	/* 
+	/*
 
-Eye view
+	Eye view
 
-https://i.postimg.cc/9MtT4GZY/view.png' border='0' alt='view */
+	https://i.postimg.cc/9MtT4GZY/view.png' border='0' alt='view */
 
 	/*
-=========================
-Font Styling
-=========================
-*/
+	=========================
+	Font Styling
+	=========================
+	*/
 
 	h1 {
 		font: var(--var-heading);
@@ -75,32 +75,90 @@ Font Styling
 		color: white;
 	}
 
-	/* 
-=====================
-Classes
-=====================
-*/
+	/*
+	=====================
+	Classes
+	=====================
+	*/
 
 	/* LAYOUT */
 
 	.card-container {
-		width: 100%;
-		max-width: 400px;
-		margin: 2em auto;
-		background-color: var(--var-card-dark);
-		border-radius: 15px;
-		margin-bottom: 1rem;
-		padding: 2rem;
 		--img-scale: 1.001;
 		--title-color: black;
 		--link-icon-translate: -20px;
 		--link-icon-opacity: 0;
+		width: 100%;
+		max-width: 100%;
+		margin: 2em auto;
+		background-color: var(--var-card-dark);
+		margin-bottom: 1rem;
+		border-radius: 15px;
+		padding: 2rem;
 		position: relative;
 		border-radius: 16px;
 		box-shadow: none;
 		transform-origin: center;
 		transition: all 0.4s ease-in-out;
-		overflow: hidden;
+		display: flex;
+		flex-direction: row;
+	}
+
+	/* For Tablet View */
+	@media screen and (min-device-width: 768px) and (max-device-width: 1024px) {
+		.card-container {
+			width: 100%;
+			max-width: 400px;
+			margin: 2em auto;
+			background-color: var(--var-card-dark);
+			border-radius: 15px;
+			margin-bottom: 1rem;
+			padding: 2rem;
+		}
+	}
+
+	/* For Mobile Portrait View */
+	@media screen and (max-device-width: 480px) and (orientation: portrait) {
+		.card-container {
+			width: 100%;
+			max-width: 400px;
+			margin: 2em auto;
+			background-color: var(--var-card-dark);
+			border-radius: 15px;
+			margin-bottom: 1rem;
+			padding: 2rem;
+		}
+	}
+
+	/* For Mobile Landscape View */
+	@media screen and (max-device-width: 640px) and (orientation: landscape) {
+		.card-container {
+			width: 100%;
+			max-width: 400px;
+			margin: 2em auto;
+			background-color: var(--var-card-dark);
+			border-radius: 15px;
+			margin-bottom: 1rem;
+			padding: 2rem;
+		}
+	}
+
+	/* For Mobile Phones Portrait or Landscape View */
+	@media screen and (max-device-width: 640px) {
+		.card-container {
+			width: 100%;
+			max-width: 400px;
+			margin: 2em auto;
+			background-color: var(--var-card-dark);
+			border-radius: 15px;
+			margin-bottom: 1rem;
+			padding: 2rem;
+		}
+	}
+
+	.main-content,
+	.card_attribute {
+		margin: 15px;
 	}
 
 	div.flex-row {
@@ -125,12 +183,20 @@ Classes
 	a.hero-image-container {
 		position: relative;
 		display: block;
-		aspect-ratio: 16 / 9;
 		overflow: hidden;
 	}
 
-	.hero-image:hover {
-		scale: 1.1;
+	.hero-image {
+		border-radius: 15px;
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		aspect-ratio: 1/1;
+		object-fit: cover;
+		/* scale the image to cover the entire container */
+		object-position: center center;
+		/* center the image */
 	}
 
 	/* Details */
@@ -150,7 +216,6 @@ Classes
 	}
 
 	.hero-image-container::after {
-		aspect-ratio: 16 / 9;
 		content: "";
 		background-image: url("https://i.postimg.cc/9MtT4GZY/view.png");
 		background-position: center;
@@ -167,6 +232,7 @@ Classes
 		z-index: 2;
 		opacity: 0;
 		transition: opacity 0.3s ease-out;
+		overflow: hidden;
 	}
 
 	.hero-image-container:hover::after {

@@ -4,6 +4,10 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
+  destinationPath: "C:\\xampp\\htdocs\\PIDEV\\BlogUploads\\"
+  file_base_url:
+    host: "http://localhost"
+    path: "PIDEV/BlogUploads"
 
 services:
   App\Form\Type\BlogCategoryType:
