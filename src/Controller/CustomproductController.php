@@ -3,7 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\Customproduct;
-use App\Entity\Product;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
+
 use App\Form\CustomproductType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -48,30 +49,47 @@ class CustomproductController extends AbstractController
     }
 
     #[Route('/new', name: 'app_customproduct_new', methods: ['GET', 'POST'])]
-public function new(Request $request, EntityManagerInterface $entityManager): Response
-{
-    $customproduct = new Customproduct();
-    $form = $this->createForm(CustomproductType::class, $customproduct);
-    $form->handleRequest($request);
-
-    if ($form->isSubmitted() && $form->isValid()) {
-        $product = $form->get('product')->getData();
-        $customproduct->setProduct($product);
-        $customproduct->setClient($form->get('client')->getData());
-        
-
-        $entityManager->persist($customproduct);
-        $entityManager->flush();
-
-        return $this->redirectToRoute('app_customproduct_index', [], Response::HTTP_SEE_OTHER);
+    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $customproduct = new Customproduct();
+        $form = $this->createForm(CustomproductType::class, $customproduct);
+        $form->handleRequest($request);
+    
+        if ($form->isSubmitted() && $form->isValid()) {
+            $product = $form->get('product')->getData();
+            $customproduct->setProduct($product);
+            $customproduct->setClient($form->get('client')->getData());
+            
+            $imageFile = $form->get('product')->get('image')->getData();
+            if ($imageFile) {
+                $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+                $newFilename = $originalFilename.'-'.uniqid().'.'.$imageFile->guessExtension();
+    
+                try {
+                    $imageFile->move(
+                        $this->getParameter('product_images_directory'),
+                        $newFilename
+                    );
+                } catch (FileException $e) {
+                    // handle exception if something happens during file upload
+                }
+    
+                $product->setImage($newFilename);
+            }
+    
+            $entityManager->persist($product);
+            $entityManager->persist($customproduct);
+            $entityManager->flush();
+    
+            return $this->redirectToRoute('app_customproduct_index', [], Response::HTTP_SEE_OTHER);
+        }
+    
+        return $this->renderForm('customproduct\new.html.twig', [
+            'customproduct' => $customproduct,
+            'form' => $form,
+        ]);
     }
-
-    return $this->renderForm('customproduct\new.html.twig', [
-        'customproduct' => $customproduct,
-        'form' => $form,
-    ]);
-}
-
+    
 
     #[Route('/{customProductId}', name: 'app_customproduct_show', methods: ['GET'])]
 public function show(Customproduct $customproduct): Response
@@ -88,9 +106,27 @@ public function show(Customproduct $customproduct): Response
     #[Route('/{customProductId}/edit', name: 'app_customproduct_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Customproduct $customproduct, EntityManagerInterface $entityManager): Response
     {
+   
         $form = $this->createForm(CustomproductType::class, $customproduct);
         $form->handleRequest($request);
+        $product = $form->get('product')->getData();
+        $imageFile = $form->get('product')->get('image')->getData();
+        if ($imageFile) {
+            $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+            $newFilename = $originalFilename.'-'.uniqid().'.'.$imageFile->guessExtension();
 
+            try {
+                $imageFile->move(
+                    $this->getParameter('product_images_directory'),
+                    $newFilename
+                );
+            } catch (FileException $e) {
+                // handle exception if something happens during file upload
+            }
+
+            $product->setImage($newFilename);
+        }
+   
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 

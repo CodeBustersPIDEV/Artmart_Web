@@ -2,46 +2,82 @@
 
 {% block title %}Customproduct{% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        img {
+            max-width: 200px;
+            max-height: 200px;
+        }
+
+        .button-group {
+            margin-top: 16px;
+        }
+
+        .button-group a {
+            margin-right: 8px;
+        }
+
+        .delete-form {
+            display: inline-block;
+        }
+    </style>
+{% endblock %}
+
 {% block body %}
     <h1>Customproduct</h1>
 
-    <table class="table">
+    <table>
         <tbody>
-            
             <tr>
-                <th>Product</th>
+                <th>Product:</th>
                 <td>{{ product.name }}</td>
             </tr>
-              <tr>
-                <th>category</th>
+            <tr>
+                <th>Category:</th>
                 <td>{{ product.category }}</td>
             </tr>
-              <tr>
-                <th>Description</th>
+            <tr>
+                <th>Description:</th>
                 <td>{{ product.description }}</td>
             </tr>
             <tr>
-                <th>dimensions</th>
+                <th>Dimensions:</th>
                 <td>{{ product.dimensions }}</td>
             </tr>
-                <tr>
-                <th>weight</th>
+            <tr>
+                <th>Weight:</th>
                 <td>{{ product.weight }}</td>
             </tr>
-               <tr>
-                <th>material</th>
+            <tr>
+                <th>Material:</th>
                 <td>{{ product.material }}</td>
             </tr>
-                <tr>
-                <th>image</th>
-                <td>{{ product.image }}</td>
+            <tr>
+                <th>Image:</th>
+                <td><img src="{{ asset('imagescustom/' ~ product.image) }}" alt="Product Image"></td>
             </tr>
         </tbody>
     </table>
 
-    <a href="{{ path('app_customproduct_index') }}">back to list</a>
-
-    <a href="{{ path('app_customproduct_edit', {'customProductId': customproduct.customProductId}) }}">edit</a>
-
-    {{ include('customproduct/_delete_form.html.twig') }}
+    <div class="button-group">
+        <a href="{{ path('app_customproduct_index') }}" class="btn btn-secondary">Back to list</a>
+        <a href="{{ path('app_customproduct_edit', {'customProductId': customproduct.customProductId}) }}" class="btn btn-primary">Edit</a>
+        {{ include('customproduct/_delete_form.html.twig') }}
+    </div>
 {% endblock %}
