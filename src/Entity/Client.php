@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use App\Repository\ClientRepository;
+
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -10,6 +12,9 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="client", indexes={@ORM\Index(name="user_ID", columns={"user_ID"})})
  * @ORM\Entity
  */
+/**
+ * @ORM\Entity(repositoryClass=ClientRepository::class)
+ */
 class Client
 {
     /**
@@ -17,7 +22,7 @@ class Client
      *
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
-      * @ORM\Column(name="client_ID", type="integer")
+     * @ORM\Column(name="client_ID", type="integer")
      */
     private $clientId;
 
@@ -48,7 +53,9 @@ class Client
      *
      * 
      *  @ORM\ManyToOne(targetEntity=User::class, cascade={"persist"})
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="user_ID", referencedColumnName="user_ID")
+     * })
      */
     private $user;
 
@@ -99,7 +106,7 @@ class Client
 
     public function getUser(): ?User
     {
-        return $this->user;
+        return $this->user ?? null;
     }
 
     public function setUser(?User $user): self

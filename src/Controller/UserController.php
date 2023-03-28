@@ -6,6 +6,9 @@ use App\Entity\User;
 use App\Entity\Artist;
 use App\Entity\Client;
 use App\Form\UserType;
+use App\Repository\ArtistRepository;
+use App\Repository\ClientRepository;
+use App\Repository\UserRepository;
 use Webpatser\Uuid\Uuid;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -29,37 +32,42 @@ class UserController extends AbstractController
     }
 
     #[Route('/new', name: 'app_user_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, UserRepository $userRepository, ArtistRepository $artistRepository, ClientRepository $clientRepository): Response
     {
         $user = new User();
+        $addedUser = new User();
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $role = $form->get('role')->getData();
+            $email = $form->get('email')->getData();
 
-            if ($role == 'client') {
+            if ($role === 'client') {
+                // $user = new Client();
                 $client = new Client();
                 $client->setNbrDemands(0);
                 $client->setNbrOrders(0);
-                $user = $form->getData();
-                $client->setUser($user);
-                $entityManager->persist($user);
-                $entityManager->flush();
-                $userId = $user->getUserId();
-                $client->setUserId($userId);
-                $entityManager->persist($client);
-                $entityManager->flush();
-            } elseif ($role == 'artist') {
+            } elseif ($role === 'artist') {
+                // $user = new Artist();
                 $artist = new Artist();
                 $artist->setNbrArtwork(0);
                 $artist->setBio("");
-                $user = $form->getData();
-                $artist->setUser($user);
-                $entityManager->persist($user);
-                $entityManager->persist($artist);
-                $entityManager->flush();
             }
+
+            // $user->setRole($role);
+            $userRepository->save($user, true);
+
+            if ($role === 'client') {
+                $addedUser = $userRepository->findOneUserByEmail($email);
+                $client->setUser($addedUser);
+                $clientRepository->save($client, true);
+            } elseif ($role === 'artist') {
+                $addedUser = $userRepository->findOneUserByEmail($email);
+                $artist->setUser($addedUser);
+                $artistRepository->save($artist, true);
+            }
+
             return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
         }
 
