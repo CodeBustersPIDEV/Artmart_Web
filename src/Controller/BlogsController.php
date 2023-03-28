@@ -8,6 +8,10 @@ use App\Form\BlogsType;
 use App\Repository\BlogsRepository;
 use App\Repository\MediaRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
+// use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -15,6 +19,35 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/blogs')]
 class BlogsController extends AbstractController
 {
+    private $filesystem;
+    private MediaRepository $mediaRepository;
+
+    public function __construct(Filesystem $filesystem, MediaRepository $mediaRepository)
+    {
+        $this->filesystem = $filesystem;
+        $this->mediaRepository = $mediaRepository;
+    }
+
+    // #[Route('/upload-image', name: 'upload_image', methods: ['POST'])]
+    public function uploadImage(UploadedFile $file, Media $media, Blogs $addedBlog): void
+    {
+        $destinationFilePath = $this->getParameter('destinationPath');
+        // Get the original filename of the uploaded file
+        $filename = $file->getClientOriginalName();
+        if (!is_uploaded_file($file->getPathname())) {
+            throw new FileException('File was not uploaded via HTTP POST.');
+        }
+
+        if (!is_dir($destinationFilePath)) {
+            // Create the directory
+            mkdir($destinationFilePath, 0777, true);
+        }
+        // Move the uploaded file to the destination
+        $file->move($destinationFilePath, $filename);
+
+        $this->mediaRepository->save($media, $file, $addedBlog, true);
+    }
+
     #[Route('/', name: 'app_blogs_index', methods: ['GET'])]
     public function index(BlogsRepository $blogsRepository): Response
     {
@@ -24,14 +57,20 @@ class BlogsController extends AbstractController
     }
 
     #[Route('/new', name: 'app_blogs_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, BlogsRepository $blogsRepository): Response
+    public function new(Request $request, BlogsRepository $blogsRepository,): Response
     {
         $blog = new Blogs();
+        $addedBlog = new Blogs();
+        $media = new Media();
         $form = $this->createForm(BlogsType::class, $blog);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $file = $form->get('file')->getData();
             $blogsRepository->save($blog, true);
+            $title = $form->get('title')->getData();
+            $addedBlog = $blogsRepository->findOneByTitle($title);
+            $this->uploadImage($file, $media, $addedBlog);
 
             return $this->redirectToRoute('app_blogs_index', [], Response::HTTP_SEE_OTHER);
         }

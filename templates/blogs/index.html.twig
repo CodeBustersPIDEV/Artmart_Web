@@ -3,17 +3,57 @@ block body %} {% import "base.html.twig" as base %}
 <link rel="stylesheet" href="{{ asset('assets/Blog/CSS/BlogList.css') }}" />
 <style>
 	.articles {
-		/* display: flex;
-		justify-content: center;
-		align-items: center;
-		flex-wrap: wrap; */
-
-		display: inline-flex;
+		margin: 20px;
+		display: flex;
 		flex-direction: row;
 		flex-wrap: wrap;
 		justify-content: space-between;
 		align-items: center;
 		align-content: center;
+	}
+
+	/* For Tablet View */
+	@media screen and (min-device-width: 768px) and (max-device-width: 1024px) {
+		.articles {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			flex-wrap: wrap;
+			margin: 20px;
+		}
+	}
+
+	/* For Mobile Portrait View */
+	@media screen and (max-device-width: 480px) and (orientation: portrait) {
+		.articles {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			flex-wrap: wrap;
+			margin: 20px;
+		}
+	}
+
+	/* For Mobile Landscape View */
+	@media screen and (max-device-width: 640px) and (orientation: landscape) {
+		.articles {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			flex-wrap: wrap;
+			margin: 20px;
+		}
+	}
+
+	/* For Mobile Phones Portrait or Landscape View */
+	@media screen and (max-device-width: 640px) {
+		.articles {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			flex-wrap: wrap;
+			margin: 20px;
+		}
 	}
 </style>
 <h1>Blogs index</h1>

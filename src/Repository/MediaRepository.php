@@ -2,9 +2,12 @@
 
 namespace App\Repository;
 
+use App\Entity\Blogs;
 use App\Entity\Media;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
  * @extends ServiceEntityRepository<Media>
@@ -16,13 +19,28 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class MediaRepository extends ServiceEntityRepository
 {
-  public function __construct(ManagerRegistry $registry)
+  private $container;
+
+  public function __construct(ManagerRegistry $registry, ContainerInterface $container)
   {
     parent::__construct($registry, Media::class);
+    $this->container = $container;
   }
 
-  public function save(Media $entity, bool $flush = false): void
+  public function setMediaInfo(Blogs $blog, UploadedFile $file, $entity, $fileBaseUrl)
   {
+    $extension = strtoupper(pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION));
+    $entity->setFileName(pathinfo($file->getClientOriginalName(), PATHINFO_BASENAME));
+    $entity->setFileType($extension);
+    $entity->setFilePath(implode('/', $fileBaseUrl) . '/' . pathinfo($file->getClientOriginalName(), PATHINFO_BASENAME));
+    $entity->setBlog($blog);
+  }
+
+  public function save(Media $entity, UploadedFile $file, Blogs $blog, bool $flush = false): void
+  {
+    $fileBaseUrl = $this->container->getParameter('file_base_url');
+    $filePath = sprintf('%s%s', $fileBaseUrl['host'], $fileBaseUrl['path']);
+    $this->setMediaInfo($blog, $file,  $entity, $fileBaseUrl);
     $this->getEntityManager()->persist($entity);
 
     if ($flush) {
