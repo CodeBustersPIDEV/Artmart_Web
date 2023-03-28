@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Receipt{% endblock %}
+
+{% block body %}
+    <h1>Receipt</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>ReceiptId</th>
+                <td>{{ receipt.receiptId }}</td>
+            </tr>
+            <tr>
+                <th>Orderid</th>
+                <td>{{ receipt.orderid }}</td>
+            </tr>
+            <tr>
+                <th>Productid</th>
+                <td>{{ receipt.productid }}</td>
+            </tr>
+            <tr>
+                <th>Quantity</th>
+                <td>{{ receipt.quantity }}</td>
+            </tr>
+            <tr>
+                <th>Price</th>
+                <td>{{ receipt.price }}</td>
+            </tr>
+            <tr>
+                <th>Tax</th>
+                <td>{{ receipt.tax }}</td>
+            </tr>
+            <tr>
+                <th>Totalcost</th>
+                <td>{{ receipt.totalcost }}</td>
+            </tr>
+            <tr>
+                <th>Date</th>
+                <td>{{ receipt.date ? receipt.date|date('Y-m-d') : '' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_receipt_index') }}">back to list</a>
+
+    <a href="{{ path('app_receipt_edit', {'receiptId': receipt.receiptId}) }}">edit</a>
+
+    {{ include('receipt/_delete_form.html.twig') }}
+{% endblock %}

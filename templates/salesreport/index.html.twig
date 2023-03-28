@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Salesreport index{% endblock %}
+
+{% block body %}
+    <h1>Salesreport index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>SalesreportId</th>
+                <th>Productid</th>
+                <th>Totalsales</th>
+                <th>Averagesalesperday</th>
+                <th>Date</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for salesreport in salesreports %}
+            <tr>
+                <td>{{ salesreport.salesreportId }}</td>
+                <td>{{ salesreport.productid }}</td>
+                <td>{{ salesreport.totalsales }}</td>
+                <td>{{ salesreport.averagesalesperday }}</td>
+                <td>{{ salesreport.date ? salesreport.date|date('Y-m-d') : '' }}</td>
+                <td>
+                    <a href="{{ path('app_salesreport_show', {'salesreportId': salesreport.salesreportId}) }}">show</a>
+                    <a href="{{ path('app_salesreport_edit', {'salesreportId': salesreport.salesreportId}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_salesreport_new') }}">Create new</a>
+{% endblock %}

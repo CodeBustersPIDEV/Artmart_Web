@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Orderrefund index{% endblock %}
+
+{% block body %}
+    <h1>Orderrefund index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>OrderrefundId</th>
+                <th>Refundamount</th>
+                <th>Reason</th>
+                <th>Date</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for orderrefund in orderrefunds %}
+            <tr>
+                <td>{{ orderrefund.orderrefundId }}</td>
+                <td>{{ orderrefund.refundamount }}</td>
+                <td>{{ orderrefund.reason }}</td>
+                <td>{{ orderrefund.date ? orderrefund.date|date('Y-m-d') : '' }}</td>
+                <td>
+                    <a href="{{ path('app_orderrefund_show', {'orderrefundId': orderrefund.orderrefundId}) }}">show</a>
+                    <a href="{{ path('app_orderrefund_edit', {'orderrefundId': orderrefund.orderrefundId}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_orderrefund_new') }}">Create new</a>
+{% endblock %}

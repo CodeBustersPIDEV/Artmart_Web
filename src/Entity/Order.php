@@ -95,6 +95,13 @@ class Order
         return $this->orderId;
     }
 
+    public function setOrderId(?int $id): self
+    {
+        $this->orderId = $id;
+
+        return $this;
+    }
+
     public function getQuantity(): ?int
     {
         return $this->quantity;
@@ -119,15 +126,15 @@ class Order
         return $this;
     }
 
-    public function getOrderdate(): ?\DateTimeInterface
+    public function getOrderdate(): ?string
     {
-        return $this->orderdate;
+        return $this->orderdate instanceof \DateTimeInterface ? $this->orderdate->format('Y-m-d H:i:s') : null;
     }
 
-    public function setOrderdate(?\DateTimeInterface $orderdate): self
+    public function setOrderdate(?string $orderdate): self
     {
-        $this->orderdate = $orderdate;
-
+        $date = \DateTime::createFromFormat('Y-m-d', $orderdate);
+    
         return $this;
     }
 

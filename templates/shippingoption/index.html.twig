@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Shippingoption index{% endblock %}
+
+{% block body %}
+    <h1>Shippingoption index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ShippingoptionId</th>
+                <th>Name</th>
+                <th>Carrier</th>
+                <th>Shippingspeed</th>
+                <th>Shippingfee</th>
+                <th>Availableregions</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for shippingoption in shippingoptions %}
+            <tr>
+                <td>{{ shippingoption.shippingoptionId }}</td>
+                <td>{{ shippingoption.name }}</td>
+                <td>{{ shippingoption.carrier }}</td>
+                <td>{{ shippingoption.shippingspeed }}</td>
+                <td>{{ shippingoption.shippingfee }}</td>
+                <td>{{ shippingoption.availableregions }}</td>
+                <td>
+                    <a href="{{ path('app_shippingoption_show', {'shippingoptionId': shippingoption.shippingoptionId}) }}">show</a>
+                    <a href="{{ path('app_shippingoption_edit', {'shippingoptionId': shippingoption.shippingoptionId}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="7">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_shippingoption_new') }}">Create new</a>
+{% endblock %}
