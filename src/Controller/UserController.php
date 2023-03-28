@@ -37,26 +37,24 @@ class UserController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $role = $form->get('role')->getData();
+            $user = $form->getData();
+            $entityManager->persist($user);
+            $entityManager->flush();
+                        $userId = $user->getUserId();
 
             if ($role == 'client') {
                 $client = new Client();
                 $client->setNbrDemands(0);
                 $client->setNbrOrders(0);
-                $user = $form->getData();
-                $client->setUser($user);
-                $entityManager->persist($user);
-                $entityManager->flush();
-                $userId = $user->getUserId();
                 $client->setUserId($userId);
+                $client->setUser($user);
                 $entityManager->persist($client);
                 $entityManager->flush();
             } elseif ($role == 'artist') {
                 $artist = new Artist();
                 $artist->setNbrArtwork(0);
-                $artist->setBio("");
-                $user = $form->getData();
+                $artist->setUserId($userId);
                 $artist->setUser($user);
-                $entityManager->persist($user);
                 $entityManager->persist($artist);
                 $entityManager->flush();
             }

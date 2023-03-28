@@ -27,7 +27,12 @@ class Artist
      * @ORM\Column(name="nbr_artwork", type="integer", nullable=false)
      */
     private $nbrArtwork;
-
+/**
+     * @var int
+     *
+     * @ORM\Column(name="user_ID", type="integer", nullable=false)
+     */
+    private $userId;
     /**
      * @var string|null
      *
@@ -52,6 +57,18 @@ class Artist
     public function getNbrArtwork(): ?int
     {
         return $this->nbrArtwork;
+    }
+
+    public function getUserId(): ?int
+    {
+        return $this->userId;
+    }
+
+    public function setUserId(int $userId): self
+    {
+        $this->userId = $userId;
+
+        return $this;
     }
 
     public function setNbrArtwork(int $nbrArtwork): self
