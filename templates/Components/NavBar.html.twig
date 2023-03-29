@@ -1,12 +1,15 @@
-<link rel="stylesheet" href="{{ asset('assets/Components/NavBar.css') }}" /> {#
-/*
+<link rel="stylesheet" href="{{ asset('assets/Components/NavBar.css') }}" />
+
 <style>
 	.logo {
 		width: 125px;
 		display: flex;
 		justify-content: flex-start;
 		align-items: center;
-		/* transform: translateX(-90%); */
+		transform: translateX(-40%);
+	}
+	.logo_img {
+		width: 125px;
 	}
 	.userButtons {
 		display: flex;
@@ -125,10 +128,14 @@
 		margin-left: 5px;
 	}
 </style>
-*/ #}
+
 <nav class="navMenu">
 	<div class="logo">
-		<img src="{{ asset('assets/ArtMart_Logo.png') }}" alt="ArtMart Logo" />
+		<img
+			src="{{ asset('assets/ArtMart_Logo.png') }}"
+			class="logo_img"
+			alt="ArtMart Logo"
+		/>
 	</div>
 	<div class="options">
 		<a href="{{ path('app_blogs_index') }}">Home</a>

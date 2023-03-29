@@ -100,7 +100,20 @@
   display: flex;
   justify-content: flex-start;
   align-items: center;
+  transform: translateX(-40%);
 }
+
+.logo_img {
+  width: 125px;
+}
+
+.userButtons {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  /* align-items: center; */
+}
+
 .btns {
   position: relative;
   background: #444;
@@ -109,7 +122,7 @@
   text-transform: uppercase;
   border: none;
   letter-spacing: 1px;
-  font-size: 14px;
+  font-size: 18px;
   padding: 5px 15px;
   transition: 0.2s;
 }
@@ -203,4 +216,12 @@
   100% {
     box-shadow: #27272c;
   }
+}
+
+.signIn_btn {
+  margin-right: 5px;
+}
+
+.signUp_btn {
+  margin-left: 5px;
 }
