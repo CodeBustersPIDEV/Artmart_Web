@@ -1,4 +1,5 @@
-<link rel="stylesheet" href="{{ asset('assets/Blog/CSS/BlogCard.css') }}" />
+<link rel="stylesheet" href="{{ asset('assets/Blog/CSS/BlogCard.css') }}" /> {#
+/*
 <style>
 	@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap");
 
@@ -278,6 +279,7 @@
 			rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
 	}
 </style>
+*/ #}
 <div class="card-container">
 	<a
 		href="{{ path('app_blogs_show', { blogs_ID: blog.getBlogsId() }) }}"
@@ -327,9 +329,23 @@
 			/>
 			<p>
 				Posted By
-				<span
-					><a href="#">{{ blog.author.name }}</a></span
-				>
+				<span>
+					{# {% if blog.author.role === "artist" %}
+					<a href="{{ path('app_artist_show', { userId: user.userId }) }}">{{
+						blog.author.name
+					}}</a>
+					{% else if blog.author.role === "client" %}
+					<a href="{{ path('app_client_show', { userId: user.userId }) }}">{{
+						blog.author.name
+					}}</a>
+					#}
+					<a
+						href="{{
+							path('app_user_show', { userId: blog.author.getUserId() })
+						}}"
+						>{{ blog.author.name }}</a
+					>
+				</span>
 			</p>
 		</div>
 		<a
