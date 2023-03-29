@@ -1,41 +1,41 @@
-{% extends 'base.html.twig' %}
+{% extends 'base.html.twig' %} {% import "base.html.twig" as base %}{% block
+title %}Order index{% endblock %} {% block body %}
+{{ base.NavBar() }}
+<table class="table">
+	<thead>
+		<tr>
+			<th>OrderId</th>
+			<th>Quantity</th>
+			<th>Shippingaddress</th>
+			<th>Orderdate</th>
+			<th>Totalcost</th>
+			<th>actions</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for order in orders %}
+		<tr>
+			<td>{{ order.orderId }}</td>
+			<td>{{ order.quantity }}</td>
+			<td>{{ order.shippingaddress }}</td>
+			<td>{{ order.orderdate ? order.orderdate|date('Y-m-d') : '' }}</td>
+			<td>{{ order.totalcost }}</td>
+			<td>
+				<a href="{{ path('app_order_show', { orderId: order.orderId }) }}"
+					>show</a
+				>
+				<a href="{{ path('app_order_edit', { orderId: order.orderId }) }}"
+					>edit</a
+				>
+			</td>
+		</tr>
+		{% else %}
+		<tr>
+			<td colspan="6">no records found</td>
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>
 
-{% block title %}Order index{% endblock %}
-
-{% block body %}
-    <h1>Order index</h1>
-
-    <table class="table">
-        <thead>
-            <tr>
-                <th>OrderId</th>
-                <th>Quantity</th>
-                <th>Shippingaddress</th>
-                <th>Orderdate</th>
-                <th>Totalcost</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for order in orders %}
-            <tr>
-                <td>{{ order.orderId }}</td>
-                <td>{{ order.quantity }}</td>
-                <td>{{ order.shippingaddress }}</td>
-                <td>{{ order.orderdate ? order.orderdate|date('Y-m-d') : '' }}</td>
-                <td>{{ order.totalcost }}</td>
-                <td>
-                    <a href="{{ path('app_order_show', {'orderId': order.orderId}) }}">show</a>
-                    <a href="{{ path('app_order_edit', {'orderId': order.orderId}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="6">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-
-    <a href="{{ path('app_order_new') }}">Create new</a>
+<a href="{{ path('app_order_new') }}">Create new</a>
 {% endblock %}

@@ -1,35 +1,45 @@
-{% extends 'base.html.twig' %}
+{% extends 'base.html.twig' %} {% import "base.html.twig" as base %}{% block
+title %}Blogcategories index{% endblock %} {% block body %}
+{{ base.NavBar() }}
+<table class="table">
+	<thead>
+		<tr>
+			<th>CategoriesId</th>
+			<th>Name</th>
+			<th>actions</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for blogcategory in blogcategories %}
+		<tr>
+			<td>{{ blogcategory.categoriesId }}</td>
+			<td>{{ blogcategory.name }}</td>
+			<td>
+				<a
+					href="{{
+						path('app_blogcategories_show', {
+							categoriesId: blogcategory.categoriesId
+						})
+					}}"
+					>show</a
+				>
+				<a
+					href="{{
+						path('app_blogcategories_edit', {
+							categoriesId: blogcategory.categoriesId
+						})
+					}}"
+					>edit</a
+				>
+			</td>
+		</tr>
+		{% else %}
+		<tr>
+			<td colspan="3">no records found</td>
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>
 
-{% block title %}Blogcategories index{% endblock %}
-
-{% block body %}
-    <h1>Blogcategories index</h1>
-
-    <table class="table">
-        <thead>
-            <tr>
-                <th>CategoriesId</th>
-                <th>Name</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for blogcategory in blogcategories %}
-            <tr>
-                <td>{{ blogcategory.categoriesId }}</td>
-                <td>{{ blogcategory.name }}</td>
-                <td>
-                    <a href="{{ path('app_blogcategories_show', {'categoriesId': blogcategory.categoriesId}) }}">show</a>
-                    <a href="{{ path('app_blogcategories_edit', {'categoriesId': blogcategory.categoriesId}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="3">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-
-    <a href="{{ path('app_blogcategories_new') }}">Create new</a>
+<a href="{{ path('app_blogcategories_new') }}">Create new</a>
 {% endblock %}

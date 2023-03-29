@@ -1,40 +1,36 @@
-{% extends 'base.html.twig' %}
+{% extends 'base.html.twig' %} {% import "base.html.twig" as base %}{% block
+title %}User index{% endblock %} {% block body %}
+{{ base.NavBar() }}
+<table class="table">
+	<thead>
+		<tr>
+			<th>Name</th>
+			<th>Email</th>
+			<th>Role</th>
+			<th>Username</th>
+			<th>actions</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for user in users %}
+		<tr>
+			<td>{{ user.name }}</td>
+			<td>{{ user.email }}</td>
+			<td>{{ user.role }}</td>
+			<td>{{ user.username }}</td>
 
-{% block title %}User index{% endblock %}
+			<td>
+				<a href="{{ path('app_user_show', { userId: user.userId }) }}">show</a>
+				<a href="{{ path('app_user_edit', { userId: user.userId }) }}">edit</a>
+			</td>
+		</tr>
+		{% else %}
+		<tr>
+			<td colspan="14">no records found</td>
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>
 
-{% block body %}
-    <h1>User index</h1>
-
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Role</th>
-                <th>Username</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for user in users %}
-            <tr>
-                <td>{{ user.name }}</td>
-                <td>{{ user.email }}</td>
-                <td>{{ user.role }}</td>
-                <td>{{ user.username }}</td>
-                
-                <td>
-                    <a href="{{ path('app_user_show', {'userId': user.userId}) }}">show</a>
-                    <a href="{{ path('app_user_edit', {'userId': user.userId}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="14">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-
-    <a href="{{ path('app_user_new') }}">Create new</a>
+<a href="{{ path('app_user_new') }}">Create new</a>
 {% endblock %}
