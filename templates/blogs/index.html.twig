@@ -4,7 +4,11 @@ block body %} {% import "base.html.twig" as base %}
 <link rel="stylesheet" href="{{ asset('assets/Blog/CSS/BlogList.css') }}" />
 <style>
 	.articles {
-		margin: 20px;
+		/* display: flex;
+		justify-content: center;
+		align-items: center;
+		flex-wrap: wrap; */
+
 		display: flex;
 		flex-direction: row;
 		flex-wrap: wrap;
@@ -20,7 +24,6 @@ block body %} {% import "base.html.twig" as base %}
 			justify-content: center;
 			align-items: center;
 			flex-wrap: wrap;
-			margin: 20px;
 		}
 	}
 
@@ -31,7 +34,6 @@ block body %} {% import "base.html.twig" as base %}
 			justify-content: center;
 			align-items: center;
 			flex-wrap: wrap;
-			margin: 20px;
 		}
 	}
 
@@ -42,7 +44,6 @@ block body %} {% import "base.html.twig" as base %}
 			justify-content: center;
 			align-items: center;
 			flex-wrap: wrap;
-			margin: 20px;
 		}
 	}
 
@@ -53,8 +54,31 @@ block body %} {% import "base.html.twig" as base %}
 			justify-content: center;
 			align-items: center;
 			flex-wrap: wrap;
-			margin: 20px;
 		}
+	}
+	.btn-holder {
+		position: sticky;
+		z-index: 100;
+		bottom: 0;
+		display: inline-flex;
+		flex-direction: row-reverse;
+		flex-wrap: nowrap;
+		justify-content: flex-start;
+		align-items: center;
+		align-content: flex-start;
+	}
+	.post_btn {
+		text-decoration: none;
+		width: 125px;
+		background: #2cb3f0;
+		border-radius: 15px;
+		margin: auto;
+		padding: 5px;
+		color: white;
+		text-align: center;
+		font-size: 23px;
+		box-shadow: 0 10px 25px -5px rgba(44, 179, 240, 0.6);
+		cursor: pointer;
 	}
 </style>
 {{ base.NavBar() }}
@@ -107,5 +131,7 @@ block body %} {% import "base.html.twig" as base %}
 	<h2>no records found</h2>
 	{% endfor %}
 </section>
-<a href="{{ path('app_blogs_new') }}">Create new</a>
+<div class="btn-holder">
+	<a href="{{ path('app_blogs_new') }}" class="post_btn">Create new</a>
+</div>
 {% endblock %}
