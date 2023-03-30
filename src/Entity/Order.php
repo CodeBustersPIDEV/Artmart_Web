@@ -36,19 +36,19 @@ class Order
      */
     private $shippingaddress = 'NULL';
 
-    /**
-     * @var \DateTime|null
-     *
-     * @ORM\Column(name="OrderDate", type="date", nullable=true, options={"default"="current_timestamp()"})
-     */
-    private $orderdate = 'current_timestamp()';
+/**
+ * @var \DateTime|null
+ *
+ * @ORM\Column(name="OrderDate", type="date", nullable=true, options={"default": "CURRENT_TIMESTAMP"})
+ */
+private $orderdate;
 
     /**
      * @var string|null
      *
-     * @ORM\Column(name="TotalCost", type="decimal", precision=10, scale=2, nullable=true, options={"default"="NULL"})
+     * @ORM\Column(name="TotalCost", type="decimal", precision=10, scale=2, nullable=true)
      */
-    private $totalcost = 'NULL';
+    private $totalcost;
 
     /**
      * @var \User
@@ -131,12 +131,20 @@ class Order
         return $this->orderdate instanceof \DateTimeInterface ? $this->orderdate->format('Y-m-d H:i:s') : null;
     }
 
-    public function setOrderdate(?string $orderdate): self
+    public function setOrderdate($orderdate): self
     {
-        $date = \DateTime::createFromFormat('Y-m-d', $orderdate);
+        if (is_string($orderdate)) {
+            $orderdate = \DateTime::createFromFormat('Y-m-d', $orderdate);
+        }
+    
+        if (!($orderdate instanceof \DateTimeInterface)) {
+            throw new \InvalidArgumentException(sprintf('Expected a \DateTimeInterface object, got "%s"', gettype($orderdate)));
+        }
+    
+        $this->orderdate = $orderdate;
     
         return $this;
-    }
+    }    
 
     public function getTotalcost(): ?string
     {
@@ -198,5 +206,8 @@ class Order
         return $this;
     }
 
-
+    public function __toString(): string
+    {
+        return $this->getShippingaddress();
+    }
 }

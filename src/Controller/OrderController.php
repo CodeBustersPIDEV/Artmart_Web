@@ -3,18 +3,12 @@
 namespace App\Controller;
 
 use App\Entity\Order;
-use App\Entity\User;
-use App\Entity\Product;
-use App\Entity\Paymentoption;
-use App\Entity\Shippingoption;
 use App\Form\OrderType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Validator\Constraints\DateTime;
-use mysqli;
 
 #[Route('/order')]
 class OrderController extends AbstractController
@@ -22,35 +16,9 @@ class OrderController extends AbstractController
     #[Route('/', name: 'app_order_index', methods: ['GET'])]
     public function index(EntityManagerInterface $entityManager): Response
     {
-        
-        $conn = new mysqli("localhost", "root", "", "artmart");
-        if ($conn->connect_error) {
-            die("Connection failed: " . $conn->connect_error);
-        }
-        
-        $stmt = $conn->prepare('SELECT * FROM `order`');
-        $stmt->execute();
-        $result = $stmt->get_result();
-        
-        $orders = array();
-        while ($row = $result->fetch_assoc()) {
-            $order = new Order();
-            $user = $this->getDoctrine()->getRepository(User::class)->find($row['UserID']);
-            $product = $this->getDoctrine()->getRepository(Product::class)->find($row['ProductID']);
-            $shippingOption = $this->getDoctrine()->getRepository(Shippingoption::class)->find($row['ShippingMethod']);
-            $paymentOption = $this->getDoctrine()->getRepository(Paymentoption::class)->find($row['PaymentMethod']);
-            
-            $order->setOrderId($row['order_ID']);
-            $order->setUserId($user);
-            $order->setProductId($product);
-            $order->setQuantity($row['Quantity']);
-            $order->setShippingMethod($shippingOption);
-            $order->setShippingAddress($row['ShippingAddress']);
-            $order->setPaymentMethod($paymentOption);
-            $order->setOrderDate($row['OrderDate']);
-            $order->setTotalCost($row['TotalCost']);
-            $orders[] = $order;
-        }
+        $orders = $entityManager
+            ->getRepository(Order::class)
+            ->findAll();
 
         return $this->render('order/index.html.twig', [
             'orders' => $orders,
@@ -63,72 +31,44 @@ class OrderController extends AbstractController
         $order = new Order();
         $form = $this->createForm(OrderType::class, $order);
         $form->handleRequest($request);
-
+    
         if ($form->isSubmitted() && $form->isValid()) {
-            $order = $form->getData(); // create a new Order object from the submitted form data
+            $totalcost = $form->get('totalcost')->getData();
+            if (!is_numeric($totalcost) && $totalcost !== null) {
+                $form->get('totalcost')->addError(new FormError('Total cost must be a numeric string.'));
+                return $this->renderForm('order/new.html.twig', [
+                    'order' => $order,
+                    'form' => $form,
+                ]);
+            }
+    
             $entityManager->persist($order);
             $entityManager->flush();
-
+    
             return $this->redirectToRoute('app_order_index', [], Response::HTTP_SEE_OTHER);
         }
-
+    
         return $this->renderForm('order/new.html.twig', [
             'order' => $order,
             'form' => $form,
         ]);
     }
 
-    #[Route('/gui', name: 'app_order_menu', methods: ['GET'])]
-    public function indexMenu(EntityManagerInterface $entityManager): Response
+    #[Route('/{orderId}', name: 'app_order_show', methods: ['GET'])]
+    public function show(Order $order): Response
     {
-        
-        return $this->render('order/orderGui.html.twig', [
+        return $this->render('order/show.html.twig', [
+            'order' => $order,
         ]);
     }
 
-    #[Route('/{orderId}', name: 'app_order_show', methods: ['GET'])]
-    public function show(int $orderId, EntityManagerInterface $entityManager): Response
-    {
-        $conn = new mysqli("localhost", "root", "", "artmart");
-        if ($conn->connect_error) {
-            die("Connection failed: " . $conn->connect_error);
-        }
-        
-        $stmt = $conn->prepare('SELECT * FROM `order` WHERE order_ID = ?');
-        $stmt->bind_param('i', $orderId);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        
-        $order = null;
-        while ($row = $result->fetch_assoc()) {
-            $order = new Order();
-            $user = $this->getDoctrine()->getRepository(User::class)->find($row['UserID']);
-            $product = $this->getDoctrine()->getRepository(Product::class)->find($row['ProductID']);
-            $shippingOption = $this->getDoctrine()->getRepository(Shippingoption::class)->find($row['ShippingMethod']);
-            $paymentOption = $this->getDoctrine()->getRepository(Paymentoption::class)->find($row['PaymentMethod']);
-            
-            $order->setOrderId($row['order_ID']);
-            $order->setUserId($user);
-            $order->setProductId($product);
-            $order->setQuantity($row['Quantity']);
-            $order->setShippingMethod($shippingOption);
-            $order->setShippingAddress($row['ShippingAddress']);
-            $order->setPaymentMethod($paymentOption);
-            $order->setOrderDate($row['OrderDate']);
-            $order->setTotalCost($row['TotalCost']);
-        }
-    
-
-return $this->render('order/show.html.twig', [
-    'order' => $order,
-]);
-}
-
     #[Route('/{orderId}/edit', name: 'app_order_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Order $order, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, $orderId, EntityManagerInterface $entityManager): Response
     {
-        $form = $this->createForm(OrderType::class, $order);
+        $order = $entityManager->getRepository(Order::class)->find($orderId);
+        $form = $this->createForm(OrderType::class, null);
         $form->handleRequest($request);
+
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
@@ -153,4 +93,10 @@ return $this->render('order/show.html.twig', [
         return $this->redirectToRoute('app_order_index', [], Response::HTTP_SEE_OTHER);
     }
 
+    #[Route('/order/gui', name: 'app_order_gui', methods: ['GET'])]
+    public function indexGui(EntityManagerInterface $entityManager): Response
+    {
+        return $this->render('order/orderGui.html.twig', [
+        ]);
+    }
 }
