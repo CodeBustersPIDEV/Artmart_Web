@@ -26,10 +26,8 @@
 		{% endblock %}
 	</head>
 	<body>
-		{% block body %}{% endblock %}{% macro NavBar() %} 
-		{% include
-		'Components/NavBar.html.twig' %} 
-		{% endmacro %} {% macro
+		{% block body %}{% endblock %}{% macro NavBar() %} {% include
+		'Components/NavBar.html.twig' %} {% endmacro %} {% macro
 		card(blog,blog_media) %} {% include 'blogs/blogCards.html.twig' with {blog:
 		blog,blog_media:blog_media} only %} {% endmacro %}
 		<script

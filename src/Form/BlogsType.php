@@ -4,9 +4,11 @@ namespace App\Form;
 
 use App\Entity\Blogcategories;
 use App\Entity\Blogs;
+use App\Entity\Tags;
 use App\Entity\User;
 use App\Form\Type\BlogCategoryType;
 use App\Repository\BlogcategoriesRepository;
+use App\Repository\TagsRepository;
 use App\Repository\UserRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -18,24 +20,35 @@ class BlogsType extends AbstractType
 {
     private UserRepository $UserRepository;
     private BlogcategoriesRepository $blogcategoriesRepository;
+    private TagsRepository $tagsRepository;
 
-    public function __construct(UserRepository $UserRepository, BlogcategoriesRepository $blogcategoriesRepository)
+    public function __construct(UserRepository $UserRepository, BlogcategoriesRepository $blogcategoriesRepository, TagsRepository $tagsRepository)
     {
         $this->UserRepository = $UserRepository;
         $this->blogcategoriesRepository = $blogcategoriesRepository;
+        $this->tagsRepository = $tagsRepository;
     }
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('title')
             ->add('content')
-            ->add('categories',  EntityType::class, [
+            ->add('category',  EntityType::class, [
                 'mapped' => false,
                 'class' => Blogcategories::class,
                 'choice_label' => 'name',
                 'choices' => $this->blogcategoriesRepository->findAll(),
                 'placeholder' => 'Choose an option', // optional
 
+            ])
+            ->add('tags', EntityType::class, [
+                'mapped' => false,
+                'class' => Tags::class,
+                'choice_label' => 'name',
+                'multiple' => true,
+                // 'expanded' => true,
+                'choices' => $this->tagsRepository->findAll(),
+                'placeholder' => 'Choose an option', // optional
             ])
             ->add('author', EntityType::class, [
                 'class' => User::class,
