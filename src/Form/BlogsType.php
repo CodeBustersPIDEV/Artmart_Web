@@ -29,11 +29,14 @@ class BlogsType extends AbstractType
         $builder
             ->add('title')
             ->add('content')
-            ->add('categories', BlogCategoryType::class, [
+            ->add('categories',  EntityType::class, [
                 'mapped' => false,
+                'class' => Blogcategories::class,
+                'choice_label' => 'name',
+                'choices' => $this->blogcategoriesRepository->findAll(),
+                'placeholder' => 'Choose an option', // optional
+
             ])
-            ->add('rating')
-            ->add('nbViews')
             ->add('author', EntityType::class, [
                 'class' => User::class,
                 'choices' => $this->UserRepository->findAll(),

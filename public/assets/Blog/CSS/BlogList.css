@@ -1,53 +1,79 @@
-.articles {
-	/* display: flex;
+	.articles {
+		/* display: flex;
 		justify-content: center;
 		align-items: center;
 		flex-wrap: wrap; */
 
-	display: flex;
-	flex-direction: row;
-	flex-wrap: wrap;
-	justify-content: space-between;
-	align-items: center;
-	align-content: center;
-}
-
-/* For Tablet View */
-@media screen and (min-device-width: 768px) and (max-device-width: 1024px) {
-	.articles {
 		display: flex;
-		justify-content: center;
-		align-items: center;
+		flex-direction: row;
 		flex-wrap: wrap;
+		justify-content: space-between;
+		align-items: center;
+		align-content: center;
 	}
-}
 
-/* For Mobile Portrait View */
-@media screen and (max-device-width: 480px) and (orientation: portrait) {
-	.articles {
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		flex-wrap: wrap;
+	/* For Tablet View */
+	@media screen and (min-device-width: 768px) and (max-device-width: 1024px) {
+		.articles {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			flex-wrap: wrap;
+		}
 	}
-}
 
-/* For Mobile Landscape View */
-@media screen and (max-device-width: 640px) and (orientation: landscape) {
-	.articles {
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		flex-wrap: wrap;
+	/* For Mobile Portrait View */
+	@media screen and (max-device-width: 480px) and (orientation: portrait) {
+		.articles {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			flex-wrap: wrap;
+		}
 	}
-}
 
-/* For Mobile Phones Portrait or Landscape View */
-@media screen and (max-device-width: 640px) {
-	.articles {
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		flex-wrap: wrap;
+	/* For Mobile Landscape View */
+	@media screen and (max-device-width: 640px) and (orientation: landscape) {
+		.articles {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			flex-wrap: wrap;
+		}
 	}
-}
+
+	/* For Mobile Phones Portrait or Landscape View */
+	@media screen and (max-device-width: 640px) {
+		.articles {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			flex-wrap: wrap;
+		}
+	}
+
+	.btn-holder {
+		position: sticky;
+		z-index: 100;
+		bottom: 0;
+		display: inline-flex;
+		flex-direction: row-reverse;
+		flex-wrap: nowrap;
+		justify-content: flex-start;
+		align-items: center;
+		align-content: flex-start;
+	}
+
+	.post_btn {
+		text-decoration: none;
+		width: 125px;
+		background: #2cb3f0;
+		border-radius: 15px;
+		margin: auto;
+		padding: 5px;
+		color: white;
+		text-align: center;
+		font-size: 23px;
+		box-shadow: 0 10px 25px -5px rgba(44, 179, 240, 0.6);
+		cursor: pointer;
+	}

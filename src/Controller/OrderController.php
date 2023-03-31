@@ -78,6 +78,14 @@ class OrderController extends AbstractController
         ]);
     }
 
+    #[Route('/gui', name: 'app_order_menu', methods: ['GET'])]
+    public function indexMenu(EntityManagerInterface $entityManager): Response
+    {
+        
+        return $this->render('order/orderGui.html.twig', [
+        ]);
+    }
+
     #[Route('/{orderId}', name: 'app_order_show', methods: ['GET'])]
     public function show(int $orderId, EntityManagerInterface $entityManager): Response
     {
@@ -144,4 +152,5 @@ return $this->render('order/show.html.twig', [
 
         return $this->redirectToRoute('app_order_index', [], Response::HTTP_SEE_OTHER);
     }
+
 }

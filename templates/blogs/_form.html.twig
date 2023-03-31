@@ -1,4 +1,47 @@
-{{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
-{{ form_end(form) }}
+<div class="container">
+	<div class="row">
+		<div class="col-sm-12">
+			{{ form_start(form, {'attr': {'class': 'form-floating'}}) }}
+			<div class="form-group">
+				{{ form_label(form.title, null, {'label_attr': {'class': 'form-label'}})
+				}}
+				{{ form_widget(form.title, {'attr': {'class': 'form-control', 'placeholder': 'Title', 'id': 'title'
+				}}) }}
+			</div>
+
+			<div class="form-group">
+				{{ form_label(form.content, null, {'label_attr': {'class': 'form-label'
+				}}) }}
+				{{ form_widget(form.content, {'attr': {'class': 'form-control', 'placeholder': 'Content', 'id': 'content'
+				}}) }}
+			</div>
+
+			<div class="form-group">
+				{{ form_label(form.categories, null, {'label_attr': {'class': 'form-label'
+				}}) }}
+				{{ form_widget(form.categories, {'attr': {'class': 'form-control select2', 'id': 'categories'
+				}}) }}
+			</div>
+
+			<div class="form-group">
+				{{ form_label(form.author, null, {'label_attr': {'class': 'form-label'
+				}}) }}
+				{{ form_widget(form.author, {'attr': {'class': 'form-control select2', 'id': 'author'
+				}}) }}
+			</div>
+
+			<div class="form-group">
+				{{ form_label(form.file, null, {'label_attr': {'class': 'form-label'}})
+				}}
+				{{ form_widget(form.file, {'attr': {'class': 'form-control-file', 'id': 'file'
+				}}) }}
+			</div>
+
+			<button type="submit" class="btn btn-primary">
+				{{ button_label|default('Post') }}
+			</button>
+
+			{{ form_end(form) }}
+		</div>
+	</div>
+</div>

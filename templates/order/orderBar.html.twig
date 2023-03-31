@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %} 
+{% import "base.html.twig" as base %}
+{% block body %}
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand" href="#">Welcome Admin</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNavDropdown">
+    <ul class="navbar-nav">
+      <li class="nav-item active">
+        <a class="nav-link" href="/order">Orders</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/orderrefund">Orders Refund</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/orderstatus">Orders Status</a>
+      </li>      
+      <li class="nav-item">
+        <a class="nav-link" href="/orderupdate">Orders Update</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/paymentoption">Payment Option</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/shippingoption">Shipping Option</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+{% endblock %}

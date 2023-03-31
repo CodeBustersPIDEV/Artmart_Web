@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %} 
+{% import "base.html.twig" as base %}
+{% block body %}
+
+{% include('Components/NavBar.html.twig') %}
+  <div class="container px-4 py-5" id="featured-3">
+    <h2 class="pb-2 border-bottom">Order's Menu</h2>
+    <div class="row g-4 py-5 row-cols-1 row-cols-lg-3">
+      <div class="feature col">
+        <h3 class="fs-2">Admin</h3>
+        <a href="/order" class="icon-link">
+          Go To Dashboard
+        </a>
+      </div>
+      <div class="feature col">
+        <h3 class="fs-2">Client</h3>
+        <a href="/" class="icon-link">
+          Go To Cart
+        </a>
+      </div>
+    </div>
+  </div>
+{% endblock %}
