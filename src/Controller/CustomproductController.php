@@ -31,11 +31,6 @@ class CustomproductController extends AbstractController
             'customproducts' => $customproducts,
         ]);
     }
-
-    
-  
-
-
     #[Route('/customproduct', name: 'app_customproduct_artist', methods: ['GET'])]
     public function artist(EntityManagerInterface $entityManager): Response
     {
