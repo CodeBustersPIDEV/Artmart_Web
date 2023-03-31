@@ -1,11 +1,11 @@
-{% extends 'base.html.twig' %}
-
-{% block title %}Shippingoption index{% endblock %}
-
+{% extends 'base.html.twig' %} 
+{% import "base.html.twig" as base %}
 {% block body %}
-    <h1>Shippingoption index</h1>
 
-    <table class="table">
+{% include('Components/NavBar.html.twig') %}
+
+{% include('order/orderBar.html.twig') %}
+    <table class="table table-hover table-bordered">
         <thead>
             <tr>
                 <th>ShippingoptionId</th>
