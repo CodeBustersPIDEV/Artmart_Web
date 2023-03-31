@@ -5,11 +5,12 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Entity\Artist;
 use App\Entity\Client;
+use App\Entity\Admin;
 use App\Form\UserType;
 use App\Repository\ArtistRepository;
 use App\Repository\ClientRepository;
 use App\Repository\UserRepository;
-use Webpatser\Uuid\Uuid;
+use App\Repository\AdminRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -32,7 +33,7 @@ class UserController extends AbstractController
     }
 
     #[Route('/new', name: 'app_user_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager, UserRepository $userRepository, ArtistRepository $artistRepository, ClientRepository $clientRepository): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, UserRepository $userRepository, ArtistRepository $artistRepository, ClientRepository $clientRepository, AdminRepository $adminRepository): Response
     {
         $user = new User();
         $addedUser = new User();
@@ -63,6 +64,12 @@ class UserController extends AbstractController
                 $artist->setUser($user);
                 $entityManager->persist($artist);
                 $entityManager->flush();
+            } elseif ($role == 'admin') {
+                $admin = new Admin();
+                $admin->setUserId($userId);
+                $admin->setUser($user);
+                $entityManager->persist($admin);
+                $entityManager->flush();
             }
 
             // $user->setRole($role);
@@ -76,6 +83,10 @@ class UserController extends AbstractController
                 $addedUser = $userRepository->findOneUserByEmail($email);
                 $artist->setUser($addedUser);
                 $artistRepository->save($artist, true);
+            } elseif ($role === 'admin') {
+                $addedUser = $userRepository->findOneUserByEmail($email);
+                $admin->setUser($addedUser);
+                $adminRepository->save($admin, true);
             }
 
             return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
@@ -87,11 +98,45 @@ class UserController extends AbstractController
         ]);
     }
     #[Route('/{userId}', name: 'app_user_show', methods: ['GET'])]
-    public function show(User $user): Response
+    public function show(User $user, ClientRepository $clientRepository, ArtistRepository $artistRepository, AdminRepository $adminRepository): Response
     {
-        return $this->render('user/show.html.twig', [
-            'user' => $user,
-        ]);
+        $client = $clientRepository->findOneBy(['user' => $user]);
+        $artist = $artistRepository->findOneBy(['user' => $user]);
+        $admin = $adminRepository->findOneBy(['user' => $user]);
+
+        $role = $user->getRole();
+        if ($role === 'client') {
+            $clientAttributes = [
+                'nbrOrders' => $client->getNbrOrders(),
+                'nbrDemands' => $client->getNbrDemands(),
+            ];
+        } elseif ($role === 'artist') {
+            $artistAttributes = [
+                'bio' => $artist->getBio(),
+                'nbrArtwork' => $artist->getNbrArtwork(),
+            ];
+        }
+        if ($role === 'admin') {
+            $adminAttributes = [
+                'department' => $admin->getDepartment(),
+            ];
+        }
+        if ($role === 'client') {
+            return $this->render('user/show.html.twig', [
+                'user' => $user,
+                'clientAttributes' => $clientAttributes ?? null,
+            ]);
+        } elseif ($role === 'artist') {
+            return $this->render('user/show.html.twig', [
+                'user' => $user,
+                'artistAttributes' => $artistAttributes ?? null,
+            ]);
+        } elseif ($role === 'admin') {
+            return $this->render('user/show.html.twig', [
+                'user' => $user,
+                'adminAttributes' => $adminAttributes ?? null,
+            ]);
+        }
     }
 
     #[Route('/{userId}/edit', name: 'app_user_edit', methods: ['GET', 'POST'])]

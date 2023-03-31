@@ -4,14 +4,13 @@ namespace App\Entity;
 
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-
 /**
  * User
  *
  * @ORM\Table(name="user")
  * @ORM\Entity
  */
-class User
+class User 
 {
     /**
      * @var int
@@ -262,4 +261,6 @@ class User
     {
         return $this->getName();
     }
+
+
 }

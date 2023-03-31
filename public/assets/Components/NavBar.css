@@ -1,6 +1,9 @@
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap");
 
 
+.logo_img {
+  width: 125px;
+}
 .navMenu {
   font-family: "Montserrat", sans-serif;
   background: #272727;

@@ -7,10 +7,7 @@
 
     <table class="table">
         <tbody>
-            <tr>
-                <th>UserId</th>
-                <td>{{ user.userId }}</td>
-            </tr>
+
             <tr>
                 <th>Name</th>
                 <td>{{ user.name }}</td>
@@ -39,26 +36,19 @@
                 <th>Password</th>
                 <td>{{ user.password }}</td>
             </tr>
-            <tr>
-                <th>Picture</th>
-                <td>{{ user.picture }}</td>
-            </tr>
-            <tr>
-                <th>Blocked</th>
-                <td>{{ user.blocked ? 'Yes' : 'No' }}</td>
-            </tr>
-            <tr>
-                <th>Enabled</th>
-                <td>{{ user.enabled ? 'Yes' : 'No' }}</td>
-            </tr>
-            <tr>
-                <th>Dateofcreation</th>
-                <td>{{ user.dateofcreation ? user.dateofcreation|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-            <tr>
-                <th>Token</th>
-                <td>{{ user.token }}</td>
-            </tr>
+           {% if clientAttributes is defined %}
+    <p><strong>Number of Orders:</strong> {{ clientAttributes.nbrOrders }}</p>
+    <p><strong>Number of Demands:</strong> {{ clientAttributes.nbrDemands }}</p>
+{% endif %}
+            
+{% if artistAttributes is defined %}
+<p><strong>Bio:</strong> {{ artistAttributes.bio }}</p>
+<p><strong>Number of Artwork:</strong> {{ artistAttributes.nbrArtwork }}</p>
+{% endif %}
+{% if adminAttributes is defined %}
+<p><strong>Department:</strong> {{ adminAttributes.department }}</p>
+{% endif %}
+
         </tbody>
     </table>
 
