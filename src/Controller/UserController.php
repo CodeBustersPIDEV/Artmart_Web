@@ -105,18 +105,18 @@ class UserController extends AbstractController
         $admin = $adminRepository->findOneBy(['user' => $user]);
 
         $role = $user->getRole();
-        if ($role === 'client') {
+        if ($role === 'client'&& $client) {
             $clientAttributes = [
                 'nbrOrders' => $client->getNbrOrders(),
                 'nbrDemands' => $client->getNbrDemands(),
             ];
-        } elseif ($role === 'artist') {
+        } elseif ($role === 'artist' && $artist) {
             $artistAttributes = [
                 'bio' => $artist->getBio(),
                 'nbrArtwork' => $artist->getNbrArtwork(),
             ];
         }
-        if ($role === 'admin') {
+        if ($role === 'admin' && $admin) {
             $adminAttributes = [
                 'department' => $admin->getDepartment(),
             ];
@@ -140,30 +140,85 @@ class UserController extends AbstractController
     }
 
     #[Route('/{userId}/edit', name: 'app_user_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, User $user, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, User $user, EntityManagerInterface $entityManager, ClientRepository $clientRepository, ArtistRepository $artistRepository, AdminRepository $adminRepository): Response
     {
-        $form = $this->createForm(UserType::class, $user);
+        $client = $clientRepository->findOneBy(['user' => $user]);
+        $artist = $artistRepository->findOneBy(['user' => $user]);
+        $admin = $adminRepository->findOneBy(['user' => $user]);
+        $role = $user->getRole();
+        
+        $clientAttributes = [
+            'nbrOrders' => null,
+            'nbrDemands' => null,
+        ];
+        $artistAttributes = [
+            'bio' => null,
+            'nbrArtwork' => null,
+        ];
+        $adminAttributes = [
+            'department' => null,
+        ];
+        
+        if ($role === 'client' && $client) {
+            $clientAttributes = [
+                'nbrOrders' => $client->getNbrOrders(),
+                'nbrDemands' => $client->getNbrDemands(),
+            ];
+        } elseif ($role === 'artist' && $artist) {
+            $artistAttributes = [
+                'bio' => $artist->getBio(),
+                'nbrArtwork' => $artist->getNbrArtwork(),
+            ];
+        } elseif ($role === 'admin' && $admin) {
+            $adminAttributes = [
+                'department' => $admin->getDepartment(),
+            ];
+        }
+        
+        $form = $this->createForm(UserType::class, $user, [
+            'is_edit' => true,
+            'client_attributes' => $clientAttributes,
+            'artist_attributes' => $artistAttributes,
+            'admin_attributes' => $adminAttributes,
+        ]);
+        
         $form->handleRequest($request);
-
+    
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
-
+    
             return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
         }
-
+    
         return $this->renderForm('user/edit.html.twig', [
             'user' => $user,
             'form' => $form,
         ]);
+    
     }
 
     #[Route('/{userId}', name: 'app_user_delete', methods: ['POST'])]
-    public function delete(Request $request, User $user, EntityManagerInterface $entityManager): Response
+    public function delete( User $user, ClientRepository $clientRepository, ArtistRepository $artistRepository, AdminRepository $adminRepository, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete' . $user->getUserId(), $request->request->get('_token'))) {
+        $client = $clientRepository->findOneBy(['user' => $user]);
+        $artist = $artistRepository->findOneBy(['user' => $user]);
+        $admin = $adminRepository->findOneBy(['user' => $user]);
+
+        $role = $user->getRole();
+        if ($role === 'client'&& $client) {
             $entityManager->remove($user);
+            $entityManager->remove($client);
+            $entityManager->flush();
+        }elseif ($role === 'artist'&& $artist) {
+            $entityManager->remove($user);
+            $entityManager->remove($artist);
+            $entityManager->flush();
+        } elseif ($role === 'admin'&& $admin) {
+            $entityManager->remove($user);
+            $entityManager->remove($admin);
             $entityManager->flush();
         }
+    
 
         return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
     }
