@@ -19,7 +19,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
  */
 class MediaRepository extends ServiceEntityRepository
 {
-  private $container;
+  private ContainerInterface $container;
 
   public function __construct(ManagerRegistry $registry, ContainerInterface $container)
   {
@@ -36,11 +36,44 @@ class MediaRepository extends ServiceEntityRepository
     $entity->setBlog($blog);
   }
 
+  public function editMediaInfo(UploadedFile $file, $entity, $fileBaseUrl)
+  {
+    $extension = strtoupper(pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION));
+    $entity->setFileName(pathinfo($file->getClientOriginalName(), PATHINFO_BASENAME));
+    $entity->setFileType($extension);
+    $entity->setFilePath(implode('/', $fileBaseUrl) . '/' . pathinfo($file->getClientOriginalName(), PATHINFO_BASENAME));
+  }
+
+  public function deleteFile($filename)
+  {
+    $path = $this->container->getParameter('file_base_url');
+    $filePath = sprintf('%s%s', $path['host'], $path['path']) . '/' . $filename;
+
+    if (file_exists($filePath)) {
+      unlink($filePath);
+      return true;
+    }
+    return false;
+  }
+
   public function save(Media $entity, UploadedFile $file, Blogs $blog, bool $flush = false): void
   {
     $fileBaseUrl = $this->container->getParameter('file_base_url');
-    $filePath = sprintf('%s%s', $fileBaseUrl['host'], $fileBaseUrl['path']);
+    // $filePath = sprintf('%s%s', $fileBaseUrl['host'], $fileBaseUrl['path']);
     $this->setMediaInfo($blog, $file,  $entity, $fileBaseUrl);
+    $this->getEntityManager()->persist($entity);
+
+    if ($flush) {
+      $this->getEntityManager()->flush();
+    }
+  }
+
+  public function edit(Media $entity, UploadedFile $file, bool $flush = false): void
+  {
+    $fileBaseUrl = $this->container->getParameter('file_base_url');
+
+    $this->editMediaInfo($file,  $entity, $fileBaseUrl);
+
     $this->getEntityManager()->persist($entity);
 
     if ($flush) {

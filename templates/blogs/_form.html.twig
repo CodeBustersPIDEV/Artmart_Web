@@ -6,25 +6,39 @@
 				{{ form_label(form.title, null, {'label_attr': {'class': 'form-label'}})
 				}}
 				{{ form_widget(form.title, {'attr': {'class': 'form-control', 'placeholder': 'Title', 'id': 'title'
+
 				}}) }}
 			</div>
 
 			<div class="form-group">
 				{{ form_label(form.content, null, {'label_attr': {'class': 'form-label'
+
 				}}) }}
 				{{ form_widget(form.content, {'attr': {'class': 'form-control', 'placeholder': 'Content', 'id': 'content'
+
 				}}) }}
 			</div>
 
 			<div class="form-group">
-				{{ form_label(form.categories, null, {'label_attr': {'class': 'form-label'
+				{{ form_label(form.category, null, {'label_attr': {'class': 'form-label'
+
 				}}) }}
-				{{ form_widget(form.categories, {'attr': {'class': 'form-control select2', 'id': 'categories'
+				{{ form_widget(form.category, {'attr': {'class': 'form-control select2', 'id': 'category'
+
+				}}) }}
+			</div>
+
+			<div class="form-group">
+				{{ form_label(form.tags, null, {'label_attr': {'class': 'form-label'}})
+				}}
+				{{ form_widget(form.tags, {'attr': {'class': 'form-control select2', 'id': 'tags','multiple data-mdb-filter':'true'
+
 				}}) }}
 			</div>
 
 			<div class="form-group">
 				{{ form_label(form.author, null, {'label_attr': {'class': 'form-label'
+
 				}}) }}
 				{{ form_widget(form.author, {'attr': {'class': 'form-control select2', 'id': 'author'
 				}}) }}
@@ -34,6 +48,7 @@
 				{{ form_label(form.file, null, {'label_attr': {'class': 'form-label'}})
 				}}
 				{{ form_widget(form.file, {'attr': {'class': 'form-control-file', 'id': 'file'
+
 				}}) }}
 			</div>
 
