@@ -8,14 +8,14 @@
     <table class="table">
         <thead>
             <tr>
-                <th>ApplyId</th>
+                <th>Product Name</th>
                 <th>Status</th>
             </tr>
         </thead>
         <tbody>
         {% for apply in applies %}
             <tr>
-           <td>{{ apply.applyId }}</td>
+           <td>{{ apply.customproduct.product.name}}</td>
                 <td>{{ apply.status }}</td>
             </tr>
         {% else %}

@@ -5,44 +5,88 @@
 {% block body %}
     <h1>Customproduct list</h1>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Product Name</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
+    <div class="card-container">
         {% for customproduct in customproducts %}
-            <tr>
-                <td>{{ customproduct.product.name }}</td>
-                <td>
-            
-                 <form action="{{ path('app_customproduct_apply', {'customProductId': customproduct.customProductId}) }}" method="post">
-    <button id="applyBtn-{{ customproduct.customProductId }}" type="submit" class="btn btn-primary">Apply</button>
-</form>
-
-                </td>
-            </tr>
+            <div class="card">
+                <div class="card-image">
+                    <img src="{{ asset('imagescustom/' ~ customproduct.product.image) }}" alt="{{ customproduct.product.name }} image"/>
+                </div>
+                <div class="card-content">
+                    <h2>{{ customproduct.product.name }}</h2>
+                    <p>{{ customproduct.product.description }}</p>
+                </div>
+                <div class="card-actions">
+                    <form action="{{ path('app_customproduct_apply', {'customProductId': customproduct.customProductId}) }}" method="post">
+                        <button id="applyBtn-{{ customproduct.customProductId }}" type="submit" class="btn btn-primary">Apply</button>
+                    </form>
+                     <form action="{{ path('app_customproduct_show', {'customProductId': customproduct.customProductId}) }}" method="get">
+                        <button class="btn btn-secondary">Show</button>
+                    </form>
+                </div>
+            </div>
         {% else %}
-            <tr>
-                <td colspan="2">no records found</td>
-            </tr>
+            <p>No records found.</p>
         {% endfor %}
-        </tbody>
-    </table>
-<a href="{{ path('app_apply_accepted') }}">Go to accepted works</a>
+    </div>
 
-    {% block javascripts %}
-    {{ parent() }}
-    <script>
-        {% for customproduct in customproducts %}
-            document.getElementById("applyBtn-{{ customproduct.customProductId }}").addEventListener("click", function() {
-                this.disabled = true;
-            });
-        {% endfor %}
-    </script>
+    <a href="{{ path('app_apply_accepted') }}">Go to accepted works</a>
 
-    
 {% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .card-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        .card {
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-shadow: 0 2px 2px rgba(0, 0, 0, 0.3);
+            margin-bottom: 20px;
+            width: calc(33.33% - 10px);
+        }
+
+        .card-image img {
+            border-radius: 4px 4px 0 0;
+            height: 200px;
+            object-fit: cover;
+            width: 100%;
+        }
+
+        .card-content {
+            padding: 10px;
+            text-align: center;
+        }
+
+        .card-content h2 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .card-content p {
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .card-actions {
+            background-color: #f7f7f7;
+            border-top: 1px solid #ccc;
+            border-radius: 0 0 4px 4px;
+            display: flex;
+            justify-content: center;
+            padding: 10px;
+        }
+
+        .card-actions form {
+            margin-right: 10px;
+        }
+
+        .card-actions button {
+            margin-right: 10px;
+        }
+    </style>
 {% endblock %}

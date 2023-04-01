@@ -38,6 +38,16 @@ class CustomproductRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
+    public function search($query)
+    {
+        $qb = $this->createQueryBuilder('c')
+            ->join('c.product', 'p')
+            ->where('p.name LIKE :query')
+            ->setParameter('query', '%'.$query.'%')
+            ->getQuery();
+
+        return $qb->getResult();
+    }
 
 //    /**
 //     * @return Customproduct[] Returns an array of Customproduct objects
