@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\User;
+use App\Entity\Client;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -30,6 +31,7 @@ class UserRepository extends ServiceEntityRepository
     }
   }
 
+ 
   public function remove(User $entity, bool $flush = false): void
   {
     $this->getEntityManager()->remove($entity);
@@ -64,4 +66,6 @@ class UserRepository extends ServiceEntityRepository
       ->getQuery()
       ->getOneOrNullResult();
   }
+
+  
 }

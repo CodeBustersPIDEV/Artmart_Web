@@ -3,7 +3,6 @@
 namespace App\Entity;
 
 use App\Repository\ClientRepository;
-
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -15,13 +14,13 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass=ClientRepository::class)
  */
-class Client
+class Client 
 {
     /**
      * @var int
      *
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\GeneratedValue(strategy="IDENTITY")
      * @ORM\Column(name="client_ID", type="integer")
      */
     private $clientId;
@@ -33,13 +32,7 @@ class Client
      */
     private $nbrOrders;
 
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="user_ID", type="integer", nullable=false)
-     */
-    private $userID;
-
+  
     /**
      * @var int
      *
@@ -71,11 +64,11 @@ class Client
     }
     public function getUserId(): ?int
     {
-        return $this->userID;
+        return $this->user->getUserId;
     }
     public function setUserId(int $UserId): self
     {
-        $this->userID = $UserId;
+        $this->user->getUserId = $UserId;
 
         return $this;
     }
@@ -115,4 +108,6 @@ class Client
 
         return $this;
     }
+
+
 }

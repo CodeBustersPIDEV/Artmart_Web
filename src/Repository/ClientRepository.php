@@ -29,7 +29,7 @@ class ClientRepository extends ServiceEntityRepository
       $this->getEntityManager()->flush();
     }
   }
-
+ 
   public function remove(Client $entity, bool $flush = false): void
   {
     $this->getEntityManager()->remove($entity);
