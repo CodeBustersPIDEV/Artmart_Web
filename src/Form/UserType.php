@@ -51,7 +51,7 @@ class UserType extends AbstractType
             ->add('username', TextType::class, [
                 'required' => true,
             ]);
-        if ('is_edit' == true) {
+        if ('is_edit' != true) {
             $builder->add('password', RepeatedType::class, [
                 'type' => PasswordType::class,
                 'invalid_message' => 'The password fields must match.',

@@ -17,6 +17,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Form\FormError;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 #[Route('/user')]
 class UserController extends AbstractController
@@ -34,7 +35,7 @@ class UserController extends AbstractController
     }
 
     #[Route('/new', name: 'app_user_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager, UserRepository $userRepository, ArtistRepository $artistRepository, ClientRepository $clientRepository, AdminRepository $adminRepository): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, UserRepository $userRepository, ArtistRepository $artistRepository, ClientRepository $clientRepository, AdminRepository $adminRepository, UserPasswordEncoderInterface $passwordEncoder): Response
     {
         $user = new User();
         $addedUser = new User();
@@ -48,6 +49,8 @@ class UserController extends AbstractController
             if ($existingUser) {
                 $form->get('email')->addError(new FormError('This email is already taken.'));
             } else {
+                $encodedPassword = $passwordEncoder->encodePassword($user, $user->getPassword());
+                $user->setPassword($encodedPassword);
                 $entityManager->persist($user);
                 $entityManager->flush();
                 $userId = $user->getUserId();

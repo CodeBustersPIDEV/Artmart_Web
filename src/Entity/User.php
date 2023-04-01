@@ -4,10 +4,11 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use App\Validator\PasswordRequirements;
+use App\Validator\PasswordRequirementsValidator;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 /**
  * User
@@ -77,7 +78,7 @@ class User
      * @NotBlank()
      * @Length(min=8)
      * @Regex(pattern="/^(?=.*[A-Z])(?=.*\d).{8,}$/")
-     * @PasswordRequirements()
+     * @PasswordRequirementsValidator()
      */
     private $password;
 
@@ -101,15 +102,17 @@ class User
      * @ORM\Column(name="enabled", type="boolean", nullable=true, options={"default"="NULL"})
      */
     private $enabled = 'NULL';
+    private $passwordEncoder;
 
     /**
      * @ORM\Column(name="dateOfCreation", type="datetime", options={"default": "CURRENT_TIMESTAMP"})
      */
     private $dateofcreation;
-    public function __construct()
+    public function __construct(UserPasswordEncoderInterface $passwordEncoder)
     {
         $this->dateofcreation = new \DateTime();
         $this->userId = null;
+        $this->passwordEncoder = $passwordEncoder;
     }
 
     /**
