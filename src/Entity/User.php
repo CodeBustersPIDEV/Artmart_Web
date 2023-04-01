@@ -2,15 +2,22 @@
 
 namespace App\Entity;
 
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use App\Validator\PasswordRequirements;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\Regex;
+use Symfony\Component\Validator\Constraints\NotBlank;
+
 /**
  * User
  *
  * @ORM\Table(name="user")
  * @ORM\Entity
+ * @UniqueEntity(fields={"email"}, message="This email is already taken.")
+
  */
-class User 
+class User
 {
     /**
      * @var int
@@ -67,6 +74,10 @@ class User
      * @var string
      *
      * @ORM\Column(name="password", type="string", length=255, nullable=false)
+     * @NotBlank()
+     * @Length(min=8)
+     * @Regex(pattern="/^(?=.*[A-Z])(?=.*\d).{8,}$/")
+     * @PasswordRequirements()
      */
     private $password;
 
@@ -98,6 +109,7 @@ class User
     public function __construct()
     {
         $this->dateofcreation = new \DateTime();
+        $this->userId = null;
     }
 
     /**
@@ -261,6 +273,4 @@ class User
     {
         return $this->getName();
     }
-
-
 }
