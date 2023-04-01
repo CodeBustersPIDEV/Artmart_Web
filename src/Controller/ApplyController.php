@@ -55,7 +55,7 @@ class ApplyController extends AbstractController
     {
         $applies = $entityManager
             ->getRepository(Apply::class)
-            ->findBy(['status' => ['Pending','refused']]);
+            ->findBy(['status'=> ['Pending','refused']]);
     
         return $this->render('apply/clients.html.twig', [
             'applies' => $applies,

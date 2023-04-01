@@ -21,21 +21,35 @@ use App\Entity\User;
 class CustomproductController extends AbstractController
 {
     #[Route('/', name: 'app_customproduct_index', methods: ['GET'])]
-    public function index(EntityManagerInterface $entityManager): Response
+    public function index(Request $request, EntityManagerInterface $entityManager): Response
     {
-        $customproducts = $entityManager
+        $searchTerm = $request->query->get('q');
+        $order = $request->query->get('order');
+        
+        $queryBuilder = $entityManager
             ->getRepository(Customproduct::class)
-            ->findAll();
-
+            ->createQueryBuilder('c')
+            ->innerJoin('c.product', 'p');
+        
+        if ($order === 'name') {
+            $queryBuilder->orderBy('p.name', 'ASC');
+        } elseif ($order === 'weight') {
+            $queryBuilder->orderBy('p.weight', 'ASC');
+        }
+        
+        if ($searchTerm) {
+            $queryBuilder->where('p.name LIKE :searchTerm')
+                ->setParameter('searchTerm', '%' . $searchTerm . '%');
+        }
+        
+        $customproducts = $queryBuilder->getQuery()->getResult();
+    
         return $this->render('customproduct/index.html.twig', [
             'customproducts' => $customproducts,
+            'searchTerm' => $searchTerm,
+            'order' => $order,
         ]);
     }
-
-    
-  
-
-
     #[Route('/customproduct', name: 'app_customproduct_artist', methods: ['GET'])]
     public function artist(EntityManagerInterface $entityManager): Response
     {

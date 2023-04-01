@@ -8,7 +8,7 @@
     <table class="table">
         <thead>
             <tr>
-                <th>ApplyId</th>
+                <th>Product Name</th>
                 <th>Status</th>
                 <th>Actions</th>
             </tr>
@@ -16,7 +16,7 @@
         <tbody>
         {% for apply in applies %}
             <tr>
-                <td>{{ apply.applyId }}</td>
+                <td>{{ apply.customproduct.product.name }}</td>
                 <td>{{ apply.status }}</td>
                 <td>
                     {% if apply.status == 'in progress' %}

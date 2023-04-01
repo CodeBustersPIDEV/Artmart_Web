@@ -77,7 +77,7 @@
 
     <div class="button-group">
         <a href="{{ path('app_customproduct_index') }}" class="btn btn-secondary">Back to list</a>
-        <a href="{{ path('app_customproduct_edit', {'customProductId': customproduct.customProductId}) }}" class="btn btn-primary">Edit</a>
+      
         {{ include('customproduct/_delete_form.html.twig') }}
     </div>
 {% endblock %}
