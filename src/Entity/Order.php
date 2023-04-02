@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints\DateTime;
 
 /**
  * Order
@@ -144,7 +145,11 @@ private $orderdate;
         $this->orderdate = $orderdate;
     
         return $this;
-    }    
+    } 
+    public function setupOrderDate(string $orderDate): void
+    {
+        $this->orderdate = new DateTime($orderDate);
+    }
 
     public function getTotalcost(): ?string
     {
