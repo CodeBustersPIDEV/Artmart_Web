@@ -2,15 +2,23 @@
 
 namespace App\Entity;
 
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use App\Validator\PasswordRequirementsValidator;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\Regex;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+
 /**
  * User
  *
  * @ORM\Table(name="user")
  * @ORM\Entity
+ * @UniqueEntity(fields={"email"}, message="This email is already taken.")
+
  */
-class User 
+class User
 {
     /**
      * @var int
@@ -67,6 +75,10 @@ class User
      * @var string
      *
      * @ORM\Column(name="password", type="string", length=255, nullable=false)
+     * @NotBlank()
+     * @Length(min=8)
+     * @Regex(pattern="/^(?=.*[A-Z])(?=.*\d).{8,}$/")
+     * @PasswordRequirementsValidator()
      */
     private $password;
 
@@ -90,14 +102,17 @@ class User
      * @ORM\Column(name="enabled", type="boolean", nullable=true, options={"default"="NULL"})
      */
     private $enabled = 'NULL';
+    private $passwordEncoder;
 
     /**
      * @ORM\Column(name="dateOfCreation", type="datetime", options={"default": "CURRENT_TIMESTAMP"})
      */
     private $dateofcreation;
-    public function __construct()
+    public function __construct(UserPasswordEncoderInterface $passwordEncoder)
     {
         $this->dateofcreation = new \DateTime();
+        $this->userId = null;
+        $this->passwordEncoder = $passwordEncoder;
     }
 
     /**
@@ -261,6 +276,4 @@ class User
     {
         return $this->getName();
     }
-
-
 }

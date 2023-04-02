@@ -11,9 +11,11 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
+use App\Validator\NotFutureDate;
 
 class UserType extends AbstractType
 {
@@ -31,7 +33,11 @@ class UserType extends AbstractType
             ->add('email', EmailType::class, [
                 'required' => true,
             ])
-            ->add('birthday')
+            ->add('birthday', DateType::class, [
+                'constraints' => [
+                    new NotFutureDate(),
+                ],
+            ])
             ->add('phonenumber')
             ->add('role', ChoiceType::class, [
                 'choices' => [
@@ -45,7 +51,7 @@ class UserType extends AbstractType
             ->add('username', TextType::class, [
                 'required' => true,
             ]);
-        if ('is_edit' == true) {
+        if ('is_edit' != true) {
             $builder->add('password', RepeatedType::class, [
                 'type' => PasswordType::class,
                 'invalid_message' => 'The password fields must match.',

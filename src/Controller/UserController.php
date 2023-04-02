@@ -15,7 +15,9 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Form\FormError;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 #[Route('/user')]
 class UserController extends AbstractController
@@ -33,7 +35,7 @@ class UserController extends AbstractController
     }
 
     #[Route('/new', name: 'app_user_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager, UserRepository $userRepository, ArtistRepository $artistRepository, ClientRepository $clientRepository, AdminRepository $adminRepository): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, UserRepository $userRepository, ArtistRepository $artistRepository, ClientRepository $clientRepository, AdminRepository $adminRepository, UserPasswordEncoderInterface $passwordEncoder): Response
     {
         $user = new User();
         $addedUser = new User();
@@ -43,11 +45,17 @@ class UserController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $role = $form->get('role')->getData();
             $user = $form->getData();
-            $entityManager->persist($user);
-            $entityManager->flush();
-            $userId = $user->getUserId();
-            $email = $form->get('email')->getData();
-
+            $existingUser = $userRepository->findOneBy(['email' => $user->getEmail()]);
+            if ($existingUser) {
+                $form->get('email')->addError(new FormError('This email is already taken.'));
+            } else {
+                $encodedPassword = $passwordEncoder->encodePassword($user, $user->getPassword());
+                $user->setPassword($encodedPassword);
+                $entityManager->persist($user);
+                $entityManager->flush();
+                $userId = $user->getUserId();
+                $email = $form->get('email')->getData();
+           }
             if ($role === 'client') {
                 // $user = new Client();
                 $client = new Client();
@@ -105,7 +113,7 @@ class UserController extends AbstractController
         $admin = $adminRepository->findOneBy(['user' => $user]);
 
         $role = $user->getRole();
-        if ($role === 'client'&& $client) {
+        if ($role === 'client' && $client) {
             $clientAttributes = [
                 'nbrOrders' => $client->getNbrOrders(),
                 'nbrDemands' => $client->getNbrDemands(),
@@ -146,7 +154,7 @@ class UserController extends AbstractController
         $artist = $artistRepository->findOneBy(['user' => $user]);
         $admin = $adminRepository->findOneBy(['user' => $user]);
         $role = $user->getRole();
-        
+
         $clientAttributes = [
             'nbrOrders' => null,
             'nbrDemands' => null,
@@ -158,7 +166,7 @@ class UserController extends AbstractController
         $adminAttributes = [
             'department' => null,
         ];
-        
+
         if ($role === 'client' && $client) {
             $clientAttributes = [
                 'nbrOrders' => $client->getNbrOrders(),
@@ -174,51 +182,50 @@ class UserController extends AbstractController
                 'department' => $admin->getDepartment(),
             ];
         }
-        
+
         $form = $this->createForm(UserType::class, $user, [
             'is_edit' => true,
             'client_attributes' => $clientAttributes,
             'artist_attributes' => $artistAttributes,
             'admin_attributes' => $adminAttributes,
         ]);
-        
+
         $form->handleRequest($request);
-    
+
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
-    
+
             return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
         }
-    
+
         return $this->renderForm('user/edit.html.twig', [
             'user' => $user,
             'form' => $form,
         ]);
-    
     }
 
     #[Route('/{userId}', name: 'app_user_delete', methods: ['POST'])]
-    public function delete( User $user, ClientRepository $clientRepository, ArtistRepository $artistRepository, AdminRepository $adminRepository, EntityManagerInterface $entityManager): Response
+    public function delete(User $user, ClientRepository $clientRepository, ArtistRepository $artistRepository, AdminRepository $adminRepository, EntityManagerInterface $entityManager): Response
     {
         $client = $clientRepository->findOneBy(['user' => $user]);
         $artist = $artistRepository->findOneBy(['user' => $user]);
         $admin = $adminRepository->findOneBy(['user' => $user]);
 
         $role = $user->getRole();
-        if ($role === 'client'&& $client) {
+        if ($role === 'client' && $client) {
             $entityManager->remove($user);
             $entityManager->remove($client);
             $entityManager->flush();
-        }elseif ($role === 'artist'&& $artist) {
+        } elseif ($role === 'artist' && $artist) {
             $entityManager->remove($user);
             $entityManager->remove($artist);
             $entityManager->flush();
-        } elseif ($role === 'admin'&& $admin) {
+        } elseif ($role === 'admin' && $admin) {
             $entityManager->remove($user);
             $entityManager->remove($admin);
             $entityManager->flush();
         }
-    
+
 
         return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
     }
