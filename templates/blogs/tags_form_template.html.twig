@@ -1,0 +1,88 @@
+{% block form_tags_widget %}
+<style>
+	.chip-select {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		border: 1px solid #ccc;
+		padding: 5px;
+		border-radius: 5px;
+	}
+
+	.selected-chips {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 5px;
+	}
+
+	.selected-chips .chip {
+		display: flex;
+		align-items: center;
+		background-color: #ccc;
+		color: #333;
+		border-radius: 20px;
+		padding: 5px 10px;
+		margin-right: 5px;
+	}
+
+	.selected-chips .chip .close {
+		margin-left: 5px;
+		cursor: pointer;
+	}
+
+	input[type="text"] {
+		flex: 1;
+		border: none;
+		outline: none;
+		padding: 5px;
+	}
+
+	input[type="text"]::placeholder {
+		color: #999;
+	}
+</style>
+<div class="form-check">
+	{% for child in form %}
+	{{ form_widget(child, {'attr': {'class': 'form-check-input'}}) }}
+	{{ form_label(child, null, {'label_attr': {'class': 'form-check-label'}}) }}
+	{% endfor %}
+</div>
+<script>
+	const chipSelect = document.querySelector("#chip-select");
+	const selectedChips = document.querySelector(".selected-chips");
+
+	let selectedValues = [];
+
+	chipSelect.addEventListener("input", (event) => {
+		const inputValue = event.target.value.trim();
+		if (inputValue) {
+			if (selectedValues.indexOf(inputValue) === -1) {
+				selectedValues.push(inputValue);
+				addChip(inputValue);
+			}
+			event.target.value = "";
+		}
+	});
+
+	selectedChips.addEventListener("click", (event) => {
+		if (event.target.classList.contains("close")) {
+			const chip = event.target.parentNode;
+			const chipValue = chip.getAttribute("data-value");
+			const index = selectedValues.indexOf(chipValue);
+			selectedValues.splice(index, 1);
+			selectedChips.removeChild(chip);
+		}
+	});
+
+	function addChip(value) {
+		const chip = document.createElement("div");
+		chip.classList.add("chip");
+		chip.setAttribute("data-value", value);
+		chip.innerHTML = `
+    <span>${value}</span>
+    <span class="close">&times;</span>
+  `;
+		selectedChips.appendChild(chip);
+	}
+</script>
+{% endblock %}
