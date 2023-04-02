@@ -1,43 +1,70 @@
-{% extends 'base.html.twig' %} 
+{% extends 'base.html.twig' %}
 {% import "base.html.twig" as base %}
+{% block
+title %}Order index
+{% endblock %}
 {% block body %}
-
-{% include('Components/NavBar.html.twig') %}
-
-{% include('order/orderBar.html.twig') %}
-    <table class="table table-hover table-bordered">
-        <thead>
-            <tr>
-                <th>ShippingoptionId</th>
-                <th>Name</th>
-                <th>Carrier</th>
-                <th>Shippingspeed</th>
-                <th>Shippingfee</th>
-                <th>Availableregions</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for shippingoption in shippingoptions %}
-            <tr>
-                <td>{{ shippingoption.shippingoptionId }}</td>
-                <td>{{ shippingoption.name }}</td>
-                <td>{{ shippingoption.carrier }}</td>
-                <td>{{ shippingoption.shippingspeed }}</td>
-                <td>{{ shippingoption.shippingfee }}</td>
-                <td>{{ shippingoption.availableregions }}</td>
-                <td>
-                    <a href="{{ path('app_shippingoption_show', {'shippingoptionId': shippingoption.shippingoptionId}) }}">show</a>
-                    <a href="{{ path('app_shippingoption_edit', {'shippingoptionId': shippingoption.shippingoptionId}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="7">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-
-    <a href="{{ path('app_shippingoption_new') }}">Create new</a>
+	{{ base.NavBar() }}
+	{% include('order/orderBar.html.twig') %}
+	<link rel="stylesheet" href="{{ asset('assets/Components/specialOrder.css') }}"/>
+	<a href="{{ path('app_shippingoption_new') }}">
+		<div data-tooltip="New Shipping Option" class="button mid">
+			<div class="button-wrapper">
+				<div class="text">Create New</div>
+				<span class="icon">
+					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-earmark-plus-fill" viewbox="0 0 16 16">
+						<path d="M9.293 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.707A1 1 0 0 0 13.707 4L10 .293A1 1 0 0 0 9.293 0zM9.5 3.5v-2l3 3h-2a1 1 0 0 1-1-1zM8.5 7v1.5H10a.5.5 0 0 1 0 1H8.5V11a.5.5 0 0 1-1 0V9.5H6a.5.5 0 0 1 0-1h1.5V7a.5.5 0 0 1 1 0z"/>
+					</svg>
+				</span>
+			</div>
+		</div>
+	</a>
+	<table class="table table-hover table-bordered">
+		<thead>
+			<tr>
+				<th>ShippingoptionId</th>
+				<th>Name</th>
+				<th>Carrier</th>
+				<th>Shippingspeed</th>
+				<th>Shippingfee</th>
+				<th>Availableregions</th>
+				<th>actions</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for shippingoption in shippingoptions %}
+				<tr>
+					<td>{{ shippingoption.shippingoptionId }}</td>
+					<td>{{ shippingoption.name }}</td>
+					<td>{{ shippingoption.carrier }}</td>
+					<td>{{ shippingoption.shippingspeed }}</td>
+					<td>{{ shippingoption.shippingfee }}</td>
+					<td>{{ shippingoption.availableregions }}</td>
+					<td>
+						<a href="{{ path('app_shippingoption_show', {'shippingoptionId': shippingoption.shippingoptionId}) }}">
+							<button class="btn3">
+								<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewbox="0 0 16 16">
+									<path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+									<path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+								</svg>
+								More
+							</button>
+						</a>
+						<a href="{{ path('app_shippingoption_edit', {'shippingoptionId': shippingoption.shippingoptionId}) }}">
+							<button class="btn2">
+								<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pen-fill" viewbox="0 0 16 16">
+									<path d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001z"/>
+								</svg>
+								Edit
+							</button>
+						</a>
+					</td>
+				</tr>
+			{% else %}
+				<tr>
+					<td colspan="7">no records found</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
 {% endblock %}
