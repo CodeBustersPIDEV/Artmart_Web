@@ -4,9 +4,9 @@ namespace App\Repository;
 
 use App\Entity\Blogs;
 use App\Entity\Media;
-//use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
-//use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
@@ -18,23 +18,23 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
  * @method Media[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 
-class MediaRepository 
+class MediaRepository extends ServiceEntityRepository
 {
-  //private $container;
-/*
+  private $container;
+
   public function __construct(ManagerRegistry $registry, ContainerInterface $container)
   {
     parent::__construct($registry, Media::class);
     $this->container = $container;
   }
-*/
+
   public function setMediaInfo(Blogs $blog, UploadedFile $file, $entity, $fileBaseUrl)
-  {/*
+  {
     $extension = strtoupper(pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION));
     $entity->setFileName(pathinfo($file->getClientOriginalName(), PATHINFO_BASENAME));
     $entity->setFileType($extension);
     $entity->setFilePath(implode('/', $fileBaseUrl) . '/' . pathinfo($file->getClientOriginalName(), PATHINFO_BASENAME));
-    $entity->setBlog($blog);*/
+    $entity->setBlog($blog);
   }
 
   public function editMediaInfo(UploadedFile $file, $entity, $fileBaseUrl)
@@ -58,7 +58,7 @@ class MediaRepository
   }
 
   public function save(Media $entity, UploadedFile $file, Blogs $blog, bool $flush = false): void
-  {/*
+  {
     $fileBaseUrl = $this->container->getParameter('file_base_url');
     // $filePath = sprintf('%s%s', $fileBaseUrl['host'], $fileBaseUrl['path']);
     $this->setMediaInfo($blog, $file,  $entity, $fileBaseUrl);
@@ -66,7 +66,7 @@ class MediaRepository
 
     if ($flush) {
       $this->getEntityManager()->flush();
-    }*/
+    }
   }
 
   public function edit(Media $entity, UploadedFile $file, bool $flush = false): void
@@ -83,12 +83,12 @@ class MediaRepository
   }
 
   public function remove(Media $entity, bool $flush = false): void
-  {/*
+  {
     $this->getEntityManager()->remove($entity);
 
     if ($flush) {
       $this->getEntityManager()->flush();
-    }*/
+    }
   }
 
 
@@ -108,5 +108,12 @@ class MediaRepository
   //        ;
   //    }
 
+  public function findOneMediaByBlogID($blog_id): ?Media
+  {
+    return $this->createQueryBuilder('m')
+      ->andWhere('m.blog_id = :val')
+      ->setParameter('val', $blog_id)
+      ->getQuery()
+      ->getOneOrNullResult();
+  }
 }
-
