@@ -1,5 +1,5 @@
 {% extends 'base.html.twig' %}
-
+{% import "base.html.twig" as base %}
 {% block title %}Customproduct{% endblock %}
 
 {% block stylesheets %}
@@ -40,6 +40,7 @@
 {% endblock %}
 
 {% block body %}
+{{ base.NavBar() }}
     <h1>Customproduct</h1>
 
     <table>
