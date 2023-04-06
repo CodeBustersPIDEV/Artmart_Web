@@ -200,5 +200,21 @@ public function show(Customproduct $customproduct): Response
         // Redirect to the filtered list of applies with status 'pending', 'done', or 'refused'
         return $this->redirectToRoute('app_apply_pending');
     }
+    #[Route('/sum', name: 'app_customproduct_sum', methods: ['GET'])]
+public function sum(EntityManagerInterface $entityManager): Response
+{
+    $customproducts = $entityManager
+        ->getRepository(Customproduct::class)
+        ->findAll();
     
+    $total = 0;
+    foreach ($customproducts as $customproduct) {
+        $total += $customproduct->getPrice();
+    }
+    
+    return $this->render('customproduct/sum.html.twig', [
+        'total' => $total,
+    ]);
+}
+
 }
