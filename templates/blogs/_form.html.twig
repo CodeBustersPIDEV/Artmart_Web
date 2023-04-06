@@ -1,3 +1,4 @@
+{# /*
 <style>
 	.chip-select {
 		display: flex;
@@ -40,123 +41,35 @@
 		color: #999;
 	}
 </style>
+*/ #}
 <div class="container">
 	<div class="row">
 		<div class="col-sm-12">
 			{{ form_start(form, {'attr': {'class': 'form-floating'}}) }}
 			<div class="form-group">
 				{{ form_label(form.title, null, {'label_attr': {'class': 'form-label'
-
-
-
-
-
-
-
-
-
-
-
-
-
 				}})}}
 				{{ form_widget(form.title, {'attr': {'class': 'form-control', 'placeholder': 'Title', 'id': 'title'
-
-
-
-
-
-
-
-
-
-
-
-
-
 				}}) }}
 			</div>
 
 			<div class="form-group">
 				{{ form_label(form.content, null, {'label_attr': {'class': 'form-label'
-
-
-
-
-
-
-
-
-
-
-
-
-
 				}}) }}
 				{{ form_widget(form.content, {'attr': {'class': 'form-control', 'placeholder': 'Content', 'id': 'content'
-
-
-
-
-
-
-
-
-
-
-
-
-
 				}}) }}
 			</div>
 
 			<div class="form-group">
 				{{ form_label(form.category, null, {'label_attr': {'class': 'form-label'
-
-
-
-
-
-
-
-
-
-
-
-
-
 				}}) }}
 				{{ form_widget(form.category, {'attr': {'class': 'form-control select2', 'id': 'category'
-
-
-
-
-
-
-
-
-
-
-
-
-
 				}}) }}
 			</div>
 
 			<div class="form-group">
 				{{ form_label(form.tags, null, {'label_attr': {'class': 'form-label'
-
-
-
-
-
-
-
-
-
-
-
-				}})}}
+				}})}} {#
 				<div>
 					<label for="chip-select">Select Chips:</label>
 					<div class="chip-select">
@@ -169,92 +82,37 @@
 						</datalist>
 					</div>
 				</div>
-				{#
-				{{ form_widget(form.tags, {'attr': {'class': 'form-select', 'multiple' ,'id': 'tags','size'='3'
-
-
-
-
-
-
-
-
-
-
-
-
-
-				}}) }} #}
+				#}
+				<div class="row g-3">
+					<div class="col-auto">
+						{{ form_widget(form.tags, {'attr': {'class': 'form-select' ,'id': 'tags','size':'3'
+						}}) }}
+					</div>
+					<div class="col-auto">
+						<div id="input-container" style="display: none">
+							{{ form_widget(form.addTags) }}
+						</div>
+					</div>
+				</div>
+				<label for="tagsChoice">Add other tags:</label>
+				<input type="checkbox" name="addOther" id="tagsChoice" />
 			</div>
 
-			{# {{ form_row(form.tags) }} #}
 			<div class="form-group">
 				{{ form_label(form.author, null, {'label_attr': {'class': 'form-label'
-
-
-
-
-
-
-
-
-
-
-
-
-
 				}}) }}
 				{{ form_widget(form.author, {'attr': {'class': 'form-control select2', 'id': 'author'
-
-
-
-
-
-
-
-
-
-
-
-
-
 				}}) }}
 			</div>
 
 			<div class="form-group">
 				{{ form_label(form.file, null, {'label_attr': {'class': 'form-label'
-
-
-
-
-
-
-
-
-
-
-
-
-
 				}})}}
 				{{ form_widget(form.file, {'attr': {'class': 'form-control', 'id': 'formFile'
-
-
-
-
-
-
-
-
-
-
-
-
-
 				}}) }}
 			</div>
 
-			<button type="submit" class="btn btn-primary">
+			<button type="submit" class="btn btn-primary submitBtn">
 				{{ button_label|default('Post') }}
 			</button>
 
@@ -262,56 +120,102 @@
 		</div>
 	</div>
 </div>
-
 <script>
-	const chipSelect = document.querySelector("#chip-select");
-	const selectedChips = document.querySelector(".selected-chips");
+	// Get references to the checkbox and the input field
+	const checkbox = document.querySelector("#tagsChoice");
+	const inputContainer = document.querySelector("#input-container");
 
-	let selectedValues = [];
-	function handleInput(event) {
-		const inputValue = event.target.value.trim();
-		if (event.type === "keydown" && event.key !== "Enter") {
-			return;
-		}
-		if (inputValue) {
-			if (selectedValues.indexOf(inputValue) === -1) {
-				selectedValues.push(inputValue);
-				addChip(inputValue);
-			}
-			event.target.value = "";
-		}
-	}
-
-	chipSelect.addEventListener("keydown", handleInput);
-	chipSelect.addEventListener("input", handleInput);
-	// chipSelect.addEventListener("keydown", (event) => {
-	//   const inputValue = event.target.value.trim();
-	//   if () {
-	//     if (selectedValues.indexOf(inputValue) === -1) {
-	//       selectedValues.push(inputValue);
-	//       addChip(inputValue);
-	//     }
-	//     event.target.value = "";
-	//   }
-	// });
-	selectedChips.addEventListener("click", (event) => {
-		if (event.target.classList.contains("close")) {
-			const chip = event.target.parentNode;
-			const chipValue = chip.getAttribute("data-value");
-			const index = selectedValues.indexOf(chipValue);
-			selectedValues.splice(index, 1);
-			selectedChips.removeChild(chip);
+	// Add an event listener to the checkbox to toggle the visibility of the input field
+	checkbox.addEventListener("change", (event) => {
+		if (event.target.checked) {
+			inputContainer.style.display = "block";
+		} else {
+			inputContainer.style.display = "none";
 		}
 	});
-
-	function addChip(value) {
-		const chip = document.createElement("div");
-		chip.classList.add("chip");
-		chip.setAttribute("data-value", value);
-		chip.innerHTML = `
-    <span>${value}</span>
-    <span class="close">&times;</span>
-  `;
-		selectedChips.appendChild(chip);
-	}
 </script>
+{# //
+<script>
+	// 	const chipSelect = document.querySelector("#chip-select");
+	// 	const selectedChips = document.querySelector(".selected-chips");
+	// 	const btn = document.querySelector(".submitBtn");
+
+	// 	let selectedValues = [];
+	// 	function handleInput(event) {
+	// 		const inputValue = event.target.value.trim();
+	// 		if (event.type === "keydown" && event.key === "Enter") {
+	// 			return;
+	// 		}
+	// 		if (inputValue) {
+	// 			if (selectedValues.indexOf(inputValue) === -1) {
+	// 				selectedValues.push(inputValue);
+	// 				addChip(inputValue);
+	// 			}
+	// 			event.target.value = "";
+	// 		}
+	// 	}
+
+	// 	chipSelect.addEventListener("keydown", handleInput);
+	// 	chipSelect.addEventListener("input", handleInput);
+	// 	// chipSelect.addEventListener("keydown", (event) => {
+	// 	//   const inputValue = event.target.value.trim();
+	// 	//   if () {
+	// 	//     if (selectedValues.indexOf(inputValue) === -1) {
+	// 	//       selectedValues.push(inputValue);
+	// 	//       addChip(inputValue);
+	// 	//     }
+	// 	//     event.target.value = "";
+	// 	//   }
+	// 	// });
+	// 	selectedChips.addEventListener("click", (event) => {
+	// 		if (event.target.classList.contains("close")) {
+	// 			const chip = event.target.parentNode;
+	// 			const chipValue = chip.getAttribute("data-value");
+	// 			const index = selectedValues.indexOf(chipValue);
+	// 			selectedValues.splice(index, 1);
+	// 			selectedChips.removeChild(chip);
+	// 		}
+	// 	});
+
+	// 	function addChip(value) {
+	// 		const chip = document.createElement("div");
+	// 		chip.classList.add("chip");
+	// 		chip.setAttribute("data-value", value);
+	// 		chip.innerHTML = `
+	//     <span>${value}</span>
+	//     <span class="close">&times;</span>
+	//   `;
+	// 		selectedChips.appendChild(chip);
+	// 	}
+
+	// 	btn.addEventListener("submit", function (e) {
+	// 		e.preventDefault();
+
+	// 		const tags = Array.from(selectedChips.children).map(function (tag) {
+	// 			return tags.textContent.trim();
+	// 		});
+
+	// 		// Send an AJAX request to your Symfony controller to add the tags to the database
+	// 		const xhr = new XMLHttpRequest();
+	// 		xhr.open("POST", "/blogs/new");
+	// 		xhr.setRequestHeader("Content-Type", "application/json");
+	// 		xhr.onload = function () {
+	// 			if (xhr.status === 200) {
+	// 				console.log("tags added to database successfully");
+	// 			} else {
+	// 				console.log("Error adding tags to database");
+	// 			}
+	// 		};
+	// 		xhr.send(JSON.stringify({ tags }));
+	// 	});
+
+	// 	chipInput.addEventListener("input", function (e) {
+	// 		const chip = document.createElement("div");
+	// 		chip.classList.add("chip");
+	// 		chip.textContent = e.target.value;
+	// 		selectedChips.appendChild(chip);
+	// 		e.target.value = "";
+	// 	});
+	//
+</script>
+#}
