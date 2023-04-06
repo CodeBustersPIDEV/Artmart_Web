@@ -2,10 +2,10 @@
 
 namespace App\Form;
 
-use Symfony\Component\Validator\Constraints\Regex;
 use App\Entity\Order;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class OrderType extends AbstractType
@@ -13,13 +13,23 @@ class OrderType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('quantity')
-            ->add('shippingaddress')
-            ->add('orderdate')
-            ->add('userid')
-            ->add('productid')
-            ->add('shippingmethod')
-            ->add('paymentmethod')
+        ->add('quantity', NumberType::class, [
+            'html5' => true,
+            'attr' => ['step' => 'any'],
+        ])
+        ->add('shippingaddress')
+        ->add('orderdate', null, [
+            'widget' => 'single_text',
+            'format' => 'yyyy-MM-dd',
+        ])
+        ->add('totalcost', NumberType::class, [
+            'html5' => true,
+            'attr' => ['step' => 'any'],
+        ])
+        ->add('userid')
+        ->add('productid')
+        ->add('shippingmethod')
+        ->add('paymentmethod');
         ;
     }
 

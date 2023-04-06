@@ -48,7 +48,7 @@ class BlogTags
 
     public function getBlog(): ?Blogs
     {
-        return $this->blog;
+        return $this->blog ?? null;
     }
 
     public function setBlog(?Blogs $blog): self
@@ -60,7 +60,7 @@ class BlogTags
 
     public function getTag(): ?Tags
     {
-        return $this->tag;
+        return $this->tag ?? null;
     }
 
     public function setTag(?Tags $tag): self
@@ -69,6 +69,4 @@ class BlogTags
 
         return $this;
     }
-
-
 }

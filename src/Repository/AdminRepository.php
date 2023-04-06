@@ -2,26 +2,26 @@
 
 namespace App\Repository;
 
-use App\Entity\Client;
+use App\Entity\Admin;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Client>
+ * @extends ServiceEntityRepository<Admin>
  *
- * @method Client|null find($id, $lockMode = null, $lockVersion = null)
- * @method Client|null findOneBy(array $criteria, array $orderBy = null)
- * @method Client[]    findAll()
- * @method Client[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Admin|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Admin|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Admin[]    findAll()
+ * @method Admin[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class ClientRepository extends ServiceEntityRepository
+class AdminRepository extends ServiceEntityRepository
 {
   public function __construct(ManagerRegistry $registry)
   {
-    parent::__construct($registry, Client::class);
+    parent::__construct($registry, Admin::class);
   }
 
-  public function save(Client $entity, bool $flush = false): void
+  public function save(Admin $entity, bool $flush = false): void
   {
     $this->getEntityManager()->persist($entity);
 
@@ -29,8 +29,8 @@ class ClientRepository extends ServiceEntityRepository
       $this->getEntityManager()->flush();
     }
   }
- 
-  public function remove(Client $entity, bool $flush = false): void
+
+  public function remove(Admin $entity, bool $flush = false): void
   {
     $this->getEntityManager()->remove($entity);
 
@@ -42,7 +42,7 @@ class ClientRepository extends ServiceEntityRepository
 
 
   //    /**
-  //     * @return Client[] Returns an array of Client objects
+  //     * @return Admin[] Returns an array of Admin objects
   //     */
   //    public function findByExampleField($value): array
   //    {
@@ -56,7 +56,7 @@ class ClientRepository extends ServiceEntityRepository
   //        ;
   //    }
 
-  // public function findOneClientByEmail($email): ?Client
+  // public function findOneAdminByEmail($email): ?Admin
   // {
   //   return $this->createQueryBuilder('u')
   //     ->andWhere('u.email = :val')

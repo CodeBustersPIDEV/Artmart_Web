@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\Readyproduct;
-use App\Entity\Product;
 use App\Form\ReadyproductType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -21,18 +20,8 @@ class ReadyproductController extends AbstractController
             ->getRepository(Readyproduct::class)
             ->findAll();
 
-        $productIds = [];
-        foreach ($readyproducts as $readyproduct) {
-            $productIds[] = $readyproduct->getProductId();
-        }
-
-        $products = $entityManager
-            ->getRepository(Product::class)
-            ->findBy(['productId' => $productIds]);
-
         return $this->render('readyproduct/index.html.twig', [
             'readyproducts' => $readyproducts,
-            'products' => $products,
         ]);
     }
 
@@ -85,7 +74,7 @@ class ReadyproductController extends AbstractController
     #[Route('/{readyProductId}', name: 'app_readyproduct_delete', methods: ['POST'])]
     public function delete(Request $request, Readyproduct $readyproduct, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete' . $readyproduct->getReadyProductId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete'.$readyproduct->getReadyProductId(), $request->request->get('_token'))) {
             $entityManager->remove($readyproduct);
             $entityManager->flush();
         }
