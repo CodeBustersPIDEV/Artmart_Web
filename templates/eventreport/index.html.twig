@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Eventreport index{% endblock %}
+
+{% block body %}
+    <h1>Eventreport index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Reportid</th>
+                <th>Attendance</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for eventreport in eventreports %}
+            <tr>
+                <td>{{ eventreport.reportid }}</td>
+                <td>{{ eventreport.attendance }}</td>
+                <td>
+                    <a href="{{ path('app_eventreport_show', {'reportid': eventreport.reportid}) }}">show</a>
+                    <a href="{{ path('app_eventreport_edit', {'reportid': eventreport.reportid}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_eventreport_new') }}">Create new</a>
+{% endblock %}
