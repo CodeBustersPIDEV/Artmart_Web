@@ -1,8 +1,9 @@
 {% extends 'base.html.twig' %}
-
+{% import "base.html.twig" as base %}
 {% block title %}Your Applications list{% endblock %}
 
 {% block body %}
+{{ base.NavBar() }}
     <h1>Your Applications Demands</h1>
 
     <table class="table">

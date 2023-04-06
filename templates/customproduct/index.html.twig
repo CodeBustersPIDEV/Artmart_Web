@@ -80,6 +80,8 @@ Custom Product Index
 <a href="{{ path('app_customproduct_index', {'order': 'name'}) }}">Order by Name</a>
 <a href="{{ path('app_customproduct_index', {'order': 'weight'}) }}">Order by Weight</a>
 
+  <a href="{{ path('app_customproduct_new') }}">Create new</a>
+
 {% if customproducts %}
     <ul>
         {% for customproduct in customproducts %}
@@ -94,7 +96,7 @@ Custom Product Index
             <p>no records found</p>
         {% endfor %}
 	  </ul>
-	  <a href="{{ path('app_customproduct_new') }}">Create new</a>
+	
 <a href="{{ path('app_customproduct_artist') }}">Go to artist page</a>
 <a href="{{ path('app_apply_clients') }}">Demands</a>
 <a href="{{ path('app_apply_clientdone') }}"

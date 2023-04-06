@@ -1,7 +1,9 @@
 {% extends 'base.html.twig' %}
+{% import "base.html.twig" as base %}
 {% block title %}Edit Customproduct{% endblock %}
 
 {% block body %}
+{{ base.NavBar() }}
     <h1>Edit Customproduct</h1>
 
     {{ form_start(form) }}

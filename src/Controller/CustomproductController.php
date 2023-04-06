@@ -74,6 +74,7 @@ class CustomproductController extends AbstractController
             $customproduct->setProduct($product);
             $customproduct->setClient($form->get('client')->getData());
             
+            
             $imageFile = $form->get('product')->get('image')->getData();
             if ($imageFile) {
                 $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
