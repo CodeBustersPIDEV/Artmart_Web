@@ -121,7 +121,7 @@ class BlogsController extends AbstractController
             $hasCategory->setCategory($cat);
 
             $this->hasBlogCategoryRepository->save($hasCategory, true);
-            $this->addTagsToBlog($addedBlog, $tags);
+            // $this->addTagsToBlog($addedBlog, $tags);
             $this->uploadImage($file, $media, $addedBlog, $edit);
 
             return $this->redirectToRoute('app_blogs_index', [], Response::HTTP_SEE_OTHER);
@@ -129,7 +129,7 @@ class BlogsController extends AbstractController
         return $this->renderForm('blogs/new.html.twig', [
             'blog' => $blog,
             'form' => $form,
-            'tagsList' => $this->tagsRepository->findAll()
+            // 'tagsList' => $this->tagsRepository->findAll()
         ]);
     }
 
@@ -179,11 +179,11 @@ class BlogsController extends AbstractController
         $media = new Media();
         $hasCat = new HasBlogCategory();
         $media = $mediaRepository->findOneMediaByBlogID($blogs_ID);
-        $hasCat = $this->hasBlogCategoryRepository->findOneByBlogID($blogs_ID);
+        // $hasCat = $this->hasBlogCategoryRepository->findOneByBlogID($blogs_ID);
         if ($this->isCsrfTokenValid('delete' . $blog->getBlogsID(), $request->request->get('_token'))) {
             $blogsRepository->remove($blog, true);
             $mediaRepository->remove($media, true);
-            $this->hasBlogCategoryRepository->remove($hasCat, true);
+            // $this->hasBlogCategoryRepository->remove($hasCat, true);
         }
 
         return $this->redirectToRoute('app_blogs_index', [], Response::HTTP_SEE_OTHER);
