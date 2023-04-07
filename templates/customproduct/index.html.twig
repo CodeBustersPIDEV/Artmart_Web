@@ -9,6 +9,9 @@ Custom Product Index
 {% block stylesheets %}
 {{ parent() }}
 <style>
+body {
+  background-color: #F8F9FA;
+}
 .custom-card {
     border-radius: 10px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
@@ -16,7 +19,7 @@ Custom Product Index
     padding: 20px;
     display: inline-block;
     width: 25%;
-    background-color: #e9ecef;
+    background-color: #232931;
     transition: box-shadow 0.2s ease-in-out;
 }
 
@@ -29,27 +32,27 @@ Custom Product Index
     margin-top: 0px;
     margin-bottom: 10px;
     font-size: 24px;
-    color: #343a40;
+    color: #FFFFFF;
 }
 
 .custom-card p {
     margin-top: 0px;
-    color: #6c757d;
+    color: #FFFFFF;
 }
 
 .custom-card a {
     display: inline-block;
     margin-top: 10px;
-    padding: 8px 16px;
-    background-color: #007bff;
-    color: #fff;
+    padding: 12px 20px;
+    background-color: #1CB4A7;
+    color: #FFFFFF;
     border-radius: 5px;
     text-decoration: none;
     transition: background-color 0.2s ease-in-out;
 }
 
 .custom-card a:hover {
-    background-color: #0062cc;
+    background-color: #0D6E72;
 }
 
 .custom-card img {
@@ -64,6 +67,8 @@ Custom Product Index
     clear: left;
 }
 </style>
+
+
 
 {% endblock %}
 
@@ -95,6 +100,7 @@ Custom Product Index
                 <img src="{{ asset('imagescustom/' ~ customproduct.product.image) }}" alt="{{ customproduct.product.name }} image" />
                 <h2>{{ customproduct.product.name }}</h2>
                 <p>{{ customproduct.product.description }}</p>
+    
                 <a href="{{ path('app_customproduct_show', {'customProductId': customproduct.customProductId}) }}">show</a>
                 <a href="{{ path('app_customproduct_edit', {'customProductId': customproduct.customProductId}) }}">edit</a>
             </div>
@@ -111,5 +117,25 @@ Custom Product Index
 {% else %}
     <p>No custom products found.</p>
 {% endif %}
-  
+
+
+
+<script>
+// Add onclick event to all hyperlinks
+var links = document.getElementsByTagName("a");
+for (var i = 0; i < links.length; i++) {
+  links[i].setAttribute("onclick", "playSound()");
+}
+var linkss = document.getElementsByTagName("button");
+for (var i = 0; i < linkss.length; i++) {
+  linkss[i].setAttribute("onclick", "playSound()");
+}
+
+// Play sound function
+function playSound() {
+  var audio = new Audio('{{ asset('js/ab.mp3') }}');
+  audio.play();
+}
+</script>
+
 {% endblock %}

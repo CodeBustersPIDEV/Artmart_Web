@@ -30,6 +30,7 @@ class CustomproductController extends AbstractController
             ->getRepository(Customproduct::class)
             ->createQueryBuilder('c')
             ->innerJoin('c.product', 'p');
+            
         
         if ($order === 'name') {
             $queryBuilder->orderBy('p.name', 'ASC');
