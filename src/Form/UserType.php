@@ -16,6 +16,7 @@ use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use App\Validator\NotFutureDate;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 
 class UserType extends AbstractType
 {
@@ -49,6 +50,11 @@ class UserType extends AbstractType
                 'disabled' => $options['is_edit'],
             ])
             ->add('username', TextType::class, [
+                'required' => true,
+            ])
+            ->add('file', FileType::class, [
+                'label' => 'Choose a file',
+                'mapped' => false,
                 'required' => true,
             ]);
         if ('is_edit' != false) {
@@ -94,6 +100,7 @@ class UserType extends AbstractType
                 ]);
             }
         }
+        
     }
 
     public function configureOptions(OptionsResolver $resolver): void

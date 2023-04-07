@@ -16,12 +16,34 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Form\FormError;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 #[Route('/user')]
 class UserController extends AbstractController
 {
+
+    public function uploadImage(UploadedFile $file, User $user): void
+    {
+        $destinationFilePath = $this->getParameter('destinationPath');
+        // Get the original filename of the uploaded file
+        $filename = $file->getClientOriginalName();
+        if (!is_uploaded_file($file->getPathname())) {
+            throw new FileException('File was not uploaded via HTTP POST.');
+        }
+
+        if (!is_dir($destinationFilePath)) {
+            // Create the directory
+            mkdir($destinationFilePath, 0777, true);
+        }
+        // Move the uploaded file to the destination
+        $file->move($destinationFilePath, $filename);
+        $user->setPicture($$destinationFilePath . "/" . $filename);
+    }
+
+
     #[Route('/', name: 'app_user_index', methods: ['GET'])]
     public function index(EntityManagerInterface $entityManager): Response
     {
@@ -40,7 +62,7 @@ class UserController extends AbstractController
         $user = new User();
         $addedUser = new User();
         $artist = new Artist();
-                $admin = new Admin();
+        $admin = new Admin();
 
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
@@ -48,11 +70,13 @@ class UserController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $role = $form->get('role')->getData();
             $user = $form->getData();
+            $file = $form->get('file')->getData();
             $entityManager->persist($user);
             $entityManager->flush();
             $email = $form->get('email')->getData();
             $client = new Client();
-
+            $this->uploadImage($file, $user);
+            
             // $user->setRole($role);
             $userRepository->save($user, true);
 
@@ -74,14 +98,14 @@ class UserController extends AbstractController
                 // $user = new Client();
                 $client->setNbrDemands(0);
                 $client->setNbrOrders(0);
-               // $client->setUserId($userId);
+                // $client->setUserId($userId);
                 $client->setUser($user);
                 $entityManager->persist($client);
                 $entityManager->flush();
             } elseif ($role == 'artist') {
-                
+
                 $artist->setNbrArtwork(0);
-              //  $artist->setUserId($userId);
+                //  $artist->setUserId($userId);
                 $artist->setUser($user);
                 $entityManager->persist($artist);
                 $entityManager->flush();
@@ -109,7 +133,7 @@ class UserController extends AbstractController
         $admin = $adminRepository->findOneBy(['user' => $user]);
 
         $role = $user->getRole();
-    
+
         if ($role === 'client' && $client) {
             $clientAttributes = [
                 'nbrOrders' => $client->getNbrOrders(),

@@ -5,9 +5,9 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use App\Validator\PasswordRequirementsValidator;
-use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\Regex;
-use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints as Assert;
+
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 /**
@@ -31,42 +31,44 @@ class User
 
     /**
      * @var string
-     *
+     * @Assert\NotBlank()
      * @ORM\Column(name="name", type="string", length=255, nullable=false)
      */
     private $name;
 
     /**
      * @var string
-     *
+     * @Assert\NotBlank()
+     * @Assert\Email(message="The email is not a vlid email")
      * @ORM\Column(name="email", type="string", length=255, nullable=false)
      */
     private $email;
 
     /**
      * @var \DateTime
-     *
-     * @ORM\Column(name="birthday", type="date", nullable=false)
+     * @Assert\NotBlank()
+     * @ORM\Column(name="birthday", type="date", nullable=false  )
+     * 
      */
     private $birthday;
 
     /**
      * @var string
-     *
+     * @Assert\NotBlank()
      * @ORM\Column(name="phoneNumber", type="string", length=255, nullable=false)
      */
     private $phonenumber;
 
     /**
      * @var string
-     *
+     * @Assert\NotBlank()
      * @ORM\Column(name="role", type="string", length=30, nullable=false)
      */
     private $role;
 
     /**
      * @var string
-     *
+     * @Assert\NotBlank()
      * @ORM\Column(name="username", type="string", length=255, nullable=false)
      */
     private $username;
@@ -75,8 +77,8 @@ class User
      * @var string
      *
      * @ORM\Column(name="password", type="string", length=255, nullable=false)
-     * @NotBlank()
-     * @Length(min=8)
+     * @Assert\NotBlank()
+     * @Assert\Length(min=8)
      * @Regex(pattern="/^(?=.*[A-Z])(?=.*\d).{8,}$/")
      * @PasswordRequirementsValidator()
      */
@@ -108,12 +110,13 @@ class User
      * @ORM\Column(name="dateOfCreation", type="datetime", options={"default": "CURRENT_TIMESTAMP"})
      */
     private $dateofcreation;
-   
+
+
     public function __construct()
     {
         $this->dateofcreation = new \DateTime();
-        $this->userId = null;
     }
+
 
     /**
      * @var string|null
