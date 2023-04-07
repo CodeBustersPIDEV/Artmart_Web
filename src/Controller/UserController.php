@@ -35,50 +35,23 @@ class UserController extends AbstractController
     }
 
     #[Route('/new', name: 'app_user_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager, UserRepository $userRepository, ArtistRepository $artistRepository, ClientRepository $clientRepository, AdminRepository $adminRepository, UserPasswordEncoderInterface $passwordEncoder): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, UserRepository $userRepository, ArtistRepository $artistRepository, ClientRepository $clientRepository, AdminRepository $adminRepository): Response
     {
         $user = new User();
         $addedUser = new User();
+        $artist = new Artist();
+                $admin = new Admin();
+
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $role = $form->get('role')->getData();
             $user = $form->getData();
-            $existingUser = $userRepository->findOneBy(['email' => $user->getEmail()]);
-            if ($existingUser) {
-                $form->get('email')->addError(new FormError('This email is already taken.'));
-            } else {
-                $encodedPassword = $passwordEncoder->encodePassword($user, $user->getPassword());
-                $user->setPassword($encodedPassword);
-                $entityManager->persist($user);
-                $entityManager->flush();
-                $userId = $user->getUserId();
-                $email = $form->get('email')->getData();
-           }
-            if ($role === 'client') {
-                // $user = new Client();
-                $client = new Client();
-                $client->setNbrDemands(0);
-                $client->setNbrOrders(0);
-                $client->setUserId($userId);
-                $client->setUser($user);
-                $entityManager->persist($client);
-                $entityManager->flush();
-            } elseif ($role == 'artist') {
-                $artist = new Artist();
-                $artist->setNbrArtwork(0);
-                $artist->setUserId($userId);
-                $artist->setUser($user);
-                $entityManager->persist($artist);
-                $entityManager->flush();
-            } elseif ($role == 'admin') {
-                $admin = new Admin();
-                $admin->setUserId($userId);
-                $admin->setUser($user);
-                $entityManager->persist($admin);
-                $entityManager->flush();
-            }
+            $entityManager->persist($user);
+            $entityManager->flush();
+            $email = $form->get('email')->getData();
+            $client = new Client();
 
             // $user->setRole($role);
             $userRepository->save($user, true);
@@ -97,6 +70,29 @@ class UserController extends AbstractController
                 $adminRepository->save($admin, true);
             }
 
+            if ($role === 'client') {
+                // $user = new Client();
+                $client->setNbrDemands(0);
+                $client->setNbrOrders(0);
+               // $client->setUserId($userId);
+                $client->setUser($user);
+                $entityManager->persist($client);
+                $entityManager->flush();
+            } elseif ($role == 'artist') {
+                
+                $artist->setNbrArtwork(0);
+              //  $artist->setUserId($userId);
+                $artist->setUser($user);
+                $entityManager->persist($artist);
+                $entityManager->flush();
+            } elseif ($role == 'admin') {
+
+                //  $admin->setUserId($userId);
+                $admin->setUser($user);
+                $entityManager->persist($admin);
+                $entityManager->flush();
+            }
+
             return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -113,6 +109,7 @@ class UserController extends AbstractController
         $admin = $adminRepository->findOneBy(['user' => $user]);
 
         $role = $user->getRole();
+    
         if ($role === 'client' && $client) {
             $clientAttributes = [
                 'nbrOrders' => $client->getNbrOrders(),

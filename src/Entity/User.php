@@ -108,11 +108,11 @@ class User
      * @ORM\Column(name="dateOfCreation", type="datetime", options={"default": "CURRENT_TIMESTAMP"})
      */
     private $dateofcreation;
-    public function __construct(UserPasswordEncoderInterface $passwordEncoder)
+   
+    public function __construct()
     {
         $this->dateofcreation = new \DateTime();
         $this->userId = null;
-        $this->passwordEncoder = $passwordEncoder;
     }
 
     /**
