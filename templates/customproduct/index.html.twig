@@ -15,7 +15,7 @@ Custom Product Index
     margin: 10px;
     padding: 20px;
     display: inline-block;
-    width: 25%; /* changed from 33.33% */
+    width: 25%;
     background-color: #e9ecef;
     transition: box-shadow 0.2s ease-in-out;
 }
@@ -80,9 +80,17 @@ Custom Product Index
 <a href="{{ path('app_customproduct_index', {'order': 'name'}) }}">Order by Name</a>
 <a href="{{ path('app_customproduct_index', {'order': 'weight'}) }}">Order by Weight</a>
 
+  <a href="{{ path('app_customproduct_new') }}">Create new</a>
+{% set totalWeight = customproducts|reduce((total, customproduct) => total + customproduct.product.weight, 0) %}
+
 {% if customproducts %}
+<p>Your total custom product weight is: {{ totalWeight }}</p>
+{% set customproductCount = 0 %}
+     
+  
     <ul>
         {% for customproduct in customproducts %}
+
             <div class="custom-card">
                 <img src="{{ asset('imagescustom/' ~ customproduct.product.image) }}" alt="{{ customproduct.product.name }} image" />
                 <h2>{{ customproduct.product.name }}</h2>
@@ -90,11 +98,12 @@ Custom Product Index
                 <a href="{{ path('app_customproduct_show', {'customProductId': customproduct.customProductId}) }}">show</a>
                 <a href="{{ path('app_customproduct_edit', {'customProductId': customproduct.customProductId}) }}">edit</a>
             </div>
+                {% set customproductCount = customproductCount + 1 %}
         {% else %}
             <p>no records found</p>
         {% endfor %}
 	  </ul>
-	  <a href="{{ path('app_customproduct_new') }}">Create new</a>
+	  <p>Your total custom product count is: {{ customproductCount }}</p>
 <a href="{{ path('app_customproduct_artist') }}">Go to artist page</a>
 <a href="{{ path('app_apply_clients') }}">Demands</a>
 <a href="{{ path('app_apply_clientdone') }}"
@@ -102,5 +111,5 @@ Custom Product Index
 {% else %}
     <p>No custom products found.</p>
 {% endif %}
-
+  
 {% endblock %}

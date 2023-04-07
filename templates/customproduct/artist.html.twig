@@ -1,8 +1,9 @@
 {% extends 'base.html.twig' %}
-
+{% import "base.html.twig" as base %}
 {% block title %}Customproduct index{% endblock %}
 
 {% block body %}
+{{ base.NavBar() }}
     <h1>Customproduct list</h1>
 
     <div class="card-container">

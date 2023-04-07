@@ -1,8 +1,9 @@
 {% extends 'base.html.twig' %}
-
+{% import "base.html.twig" as base %}
 {% block title %}artmart{% endblock %}
 
 {% block body %}
+{{ base.NavBar() }}
     <h1>accepted works</h1>
 
     <table class="table">
