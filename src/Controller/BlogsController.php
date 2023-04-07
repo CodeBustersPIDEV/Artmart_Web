@@ -111,8 +111,14 @@ class BlogsController extends AbstractController
             $file = $form->get('file')->getData();
             $cat = $form->get('category')->getData();
             $tags = $form->get('tags')->getData();
+            $addedTags = $form->get('addTags')->getData();
             $title = $form->get('title')->getData();
-
+            foreach ($tags as $tag) {
+                echo $tag->getName();
+            }
+            foreach ($addedTags as $tag) {
+                echo $tag;
+            }
             $blogsRepository->save($blog, true);
 
             $addedBlog = $blogsRepository->findOneByTitle($title);
@@ -124,7 +130,7 @@ class BlogsController extends AbstractController
             // $this->addTagsToBlog($addedBlog, $tags);
             $this->uploadImage($file, $media, $addedBlog, $edit);
 
-            return $this->redirectToRoute('app_blogs_index', [], Response::HTTP_SEE_OTHER);
+            // return $this->redirectToRoute('app_blogs_index', [], Response::HTTP_SEE_OTHER);
         }
         return $this->renderForm('blogs/new.html.twig', [
             'blog' => $blog,

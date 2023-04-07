@@ -47,48 +47,27 @@
 			{{ form_start(form, {'attr': {'class': 'form-floating'}}) }}
 			<div class="form-group">
 				{{ form_label(form.title, null, {'label_attr': {'class': 'form-label'
-
-
-
 				}})}}
 				{{ form_widget(form.title, {'attr': {'class': 'form-control', 'placeholder': 'Title', 'id': 'title'
-
-
-
 				}}) }}
 			</div>
 
 			<div class="form-group">
 				{{ form_label(form.content, null, {'label_attr': {'class': 'form-label'
-
-
-
 				}}) }}
 				{{ form_widget(form.content, {'attr': {'class': 'form-control', 'placeholder': 'Content', 'id': 'content'
-
-
-
 				}}) }}
 			</div>
 
 			<div class="form-group">
 				{{ form_label(form.category, null, {'label_attr': {'class': 'form-label'
-
-
-
 				}}) }}
 				{{ form_widget(form.category, {'attr': {'class': 'form-control select2', 'id': 'category'
-
-
-
 				}}) }}
 			</div>
 
 			<div class="form-group">
 				{{ form_label(form.tags, null, {'label_attr': {'class': 'form-label'
-
-
-
 				}})}} {#
 				<div>
 					<label for="chip-select">Select Chips:</label>
@@ -106,22 +85,18 @@
 				<div class="row g-3">
 					<div class="col-auto">
 						{{ form_widget(form.tags, {'attr': {'class': 'form-select' ,'id': 'tags','size':'3'
-
-
-
 						}}) }}
 					</div>
 					<div class="col-auto">
 						<div id="input-container" style="display: none">
 							<div class="chip-select">
-								<div class="selected-chips"></div>
-								{{ form_widget(form.addTags,{'attr': {'id': 'input-container','class': 'form-control chip-select','list':'chip-options'
-
-
-
+								{{ form_widget(form.addTags,{'attr': {'id': 'input-container','class': 'form-control addTagsInput','list':'chip-options'
 								}}) }}
 							</div>
 						</div>
+					</div>
+					<div class="col-auto">
+						<div class="selected-chips"></div>
 					</div>
 				</div>
 				<label for="tagsChoice">Add other tags:</label>
@@ -130,27 +105,15 @@
 
 			<div class="form-group">
 				{{ form_label(form.author, null, {'label_attr': {'class': 'form-label'
-
-
-
 				}}) }}
 				{{ form_widget(form.author, {'attr': {'class': 'form-control select2', 'id': 'author'
-
-
-
 				}}) }}
 			</div>
 
 			<div class="form-group">
 				{{ form_label(form.file, null, {'label_attr': {'class': 'form-label'
-
-
-
 				}})}}
 				{{ form_widget(form.file, {'attr': {'class': 'form-control', 'id': 'formFile'
-
-
-
 				}}) }}
 			</div>
 
@@ -163,11 +126,11 @@
 	</div>
 </div>
 <script>
-	// Get references to the checkbox and the input field
 	const checkbox = document.querySelector("#tagsChoice");
 	const inputContainer = document.querySelector("#input-container");
+	const addTagsInput = document.querySelector(".addTagsInput");
+	const selectedChips = document.querySelector(".selected-chips");
 
-	// Add an event listener to the checkbox to toggle the visibility of the input field
 	checkbox.addEventListener("change", (event) => {
 		if (event.target.checked) {
 			inputContainer.style.display = "block";
@@ -176,18 +139,17 @@
 		}
 	});
 
-	const chipSelect = document.querySelector(".chip-select");
-	const selectedChips = document.querySelector(".selected-chips");
-
 	let selectedValues = [];
-	chipSelect.addEventListener("keydown", (event) => {
-		const inputValue = event.target.value.trim();
-		if (event.keyCode === 13 && inputValue) {
-			if (selectedValues.indexOf(inputValue) === -1) {
-				selectedValues.push(inputValue);
-				addChip(inputValue);
+	addTagsInput.addEventListener("keydown", function (event) {
+		if (event.keyCode === 13) {
+			event.preventDefault();
+			const tag = addTagsInput.value.trim();
+			if (tag !== "") {
+				selectedValues.push(tag);
+				console.log(selectedValues);
+				addChip(tag);
+				addTagsInput.value = "";
 			}
-			event.target.value = "";
 		}
 	});
 
@@ -198,6 +160,7 @@
 			const index = selectedValues.indexOf(chipValue);
 			selectedValues.splice(index, 1);
 			selectedChips.removeChild(chip);
+			console.log(selectedValues);
 		}
 	});
 
