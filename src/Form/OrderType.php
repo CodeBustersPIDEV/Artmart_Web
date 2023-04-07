@@ -13,17 +13,23 @@ class OrderType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('quantity', NumberType::class)
-            ->add('shippingaddress')
-            ->add('orderdate', null, [
-                'widget' => 'single_text',
-                'format' => 'yyyy-MM-dd',
-            ])
-            ->add('totalcost', NumberType::class)
-            ->add('userid')
-            ->add('productid')
-            ->add('shippingmethod')
-            ->add('paymentmethod')
+        ->add('quantity', NumberType::class, [
+            'html5' => true,
+            'attr' => ['step' => 'any'],
+        ])
+        ->add('shippingaddress')
+        ->add('orderdate', null, [
+            'widget' => 'single_text',
+            'format' => 'yyyy-MM-dd',
+        ])
+        ->add('totalcost', NumberType::class, [
+            'html5' => true,
+            'attr' => ['step' => 'any'],
+        ])
+        ->add('userid')
+        ->add('productid')
+        ->add('shippingmethod')
+        ->add('paymentmethod');
         ;
     }
 

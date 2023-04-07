@@ -4,13 +4,17 @@ namespace App\Controller;
 
 use App\Entity\Blogcategories;
 use App\Entity\Blogs;
+use App\Entity\BlogTags;
 use App\Entity\HasBlogCategory;
 use App\Entity\Media;
+use App\Entity\Tags;
 use App\Form\BlogsType;
 use App\Repository\BlogcategoriesRepository;
 use App\Repository\BlogsRepository;
 use App\Repository\HasBlogCategoryRepository;
+use App\Repository\HasTagRepository;
 use App\Repository\MediaRepository;
+use App\Repository\TagsRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
@@ -26,15 +30,18 @@ class BlogsController extends AbstractController
     private $filesystem;
     private MediaRepository $mediaRepository;
     private HasBlogCategoryRepository $hasBlogCategoryRepository;
+    private TagsRepository $tagsRepository;
+    private HasTagRepository $hasTagRepository;
 
-    public function __construct(Filesystem $filesystem, MediaRepository $mediaRepository, HasBlogCategoryRepository $hasBlogCategoryRepository)
+    public function __construct(Filesystem $filesystem, MediaRepository $mediaRepository, HasBlogCategoryRepository $hasBlogCategoryRepository, TagsRepository $tagsRepository, HasTagRepository $hasTagRepository)
     {
         $this->filesystem = $filesystem;
         $this->mediaRepository = $mediaRepository;
         $this->hasBlogCategoryRepository = $hasBlogCategoryRepository;
+        $this->tagsRepository = $tagsRepository;
+        $this->hasTagRepository = $hasTagRepository;
     }
 
-    // #[Route('/upload-image', name: 'upload_image', methods: ['POST'])]
     public function uploadImage(UploadedFile $file, Media $media, Blogs $addedBlog, $edit): void
     {
         $destinationFilePath = $this->getParameter('destinationPath');
@@ -56,6 +63,29 @@ class BlogsController extends AbstractController
             $this->mediaRepository->edit($media, $file, true);
         }
     }
+
+
+    public function addTagsToBlog(Blogs $blog, string $tags): void
+    {
+        $tagNames = explode('#', $tags);
+        foreach ($tagNames as $tagName) {
+            $tag = $this->tagsRepository->findOneBy(['name' => $tagName]);
+            if (!$tag) {
+                $tag = new Tags();
+                $tag->setName($tagName);
+                $this->tagsRepository->save($tag, true);
+            }
+            $hasTag = new BlogTags();
+            $hasTag->setBlog($blog);
+            $hasTag->setTag($tag);
+            $this->hasTagRepository->save($hasTag, true);
+        }
+    }
+
+
+
+    // ************************************************************************************************************************************************
+    // ************************************************************************************************************************************************
 
     #[Route('/', name: 'app_blogs_index', methods: ['GET'])]
     public function index(BlogsRepository $blogsRepository): Response
@@ -80,18 +110,26 @@ class BlogsController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $file = $form->get('file')->getData();
             $cat = $form->get('category')->getData();
-            $blogsRepository->save($blog, true);
+            $tags = $form->get('tags')->getData();
             $title = $form->get('title')->getData();
+
+            $blogsRepository->save($blog, true);
+
             $addedBlog = $blogsRepository->findOneByTitle($title);
+
             $hasCategory->setBlog($addedBlog);
             $hasCategory->setCategory($cat);
+
             $this->hasBlogCategoryRepository->save($hasCategory, true);
+            $this->addTagsToBlog($addedBlog, $tags);
             $this->uploadImage($file, $media, $addedBlog, $edit);
+
             return $this->redirectToRoute('app_blogs_index', [], Response::HTTP_SEE_OTHER);
         }
         return $this->renderForm('blogs/new.html.twig', [
             'blog' => $blog,
             'form' => $form,
+            'tagsList' => $this->tagsRepository->findAll()
         ]);
     }
 

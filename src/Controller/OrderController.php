@@ -9,6 +9,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Validator\Constraints\DateTime;
+
 
 #[Route('/order')]
 class OrderController extends AbstractController
@@ -66,21 +68,24 @@ class OrderController extends AbstractController
     public function edit(Request $request, $orderId, EntityManagerInterface $entityManager): Response
     {
         $order = $entityManager->getRepository(Order::class)->find($orderId);
-        $form = $this->createForm(OrderType::class, null);
+        $order->setupOrderDate('2023-04-06 00:00:00');
+        
+        $form = $this->createForm(OrderType::class, $order);
         $form->handleRequest($request);
-
-
+    
         if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($order);
             $entityManager->flush();
-
+    
             return $this->redirectToRoute('app_order_index', [], Response::HTTP_SEE_OTHER);
         }
-
+    
         return $this->renderForm('order/edit.html.twig', [
             'order' => $order,
             'form' => $form,
         ]);
     }
+    
 
     #[Route('/{orderId}', name: 'app_order_delete', methods: ['POST'])]
     public function delete(Request $request, Order $order, EntityManagerInterface $entityManager): Response
