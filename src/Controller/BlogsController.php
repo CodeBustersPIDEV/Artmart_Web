@@ -103,6 +103,7 @@ class BlogsController extends AbstractController
         $cat = new Blogcategories();
         $hasCategory = new HasBlogCategory();
         $media = new Media();
+        $strTags = "";
 
         $edit = false;
         $form = $this->createForm(BlogsType::class, $blog);
@@ -111,14 +112,14 @@ class BlogsController extends AbstractController
             $file = $form->get('file')->getData();
             $cat = $form->get('category')->getData();
             $tags = $form->get('tags')->getData();
-            $addedTags = $form->get('addTags')->getData();
+            $addedTags = $form->get('addedTags')->getData();
             $title = $form->get('title')->getData();
             foreach ($tags as $tag) {
-                echo $tag->getName();
+
+                $strTags = $addedTags . "#" . $tag->getName();
             }
-            foreach ($addedTags as $tag) {
-                echo $tag;
-            }
+            echo $addedTags;
+            // echo $strTags;
             $blogsRepository->save($blog, true);
 
             $addedBlog = $blogsRepository->findOneByTitle($title);
@@ -127,7 +128,7 @@ class BlogsController extends AbstractController
             $hasCategory->setCategory($cat);
 
             $this->hasBlogCategoryRepository->save($hasCategory, true);
-            // $this->addTagsToBlog($addedBlog, $tags);
+            // $this->addTagsToBlog($addedBlog, $strTags);
             $this->uploadImage($file, $media, $addedBlog, $edit);
 
             // return $this->redirectToRoute('app_blogs_index', [], Response::HTTP_SEE_OTHER);

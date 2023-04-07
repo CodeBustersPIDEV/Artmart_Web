@@ -54,6 +54,7 @@ class BlogsType extends AbstractType
                 }
             ])
             ->add('addTags', null, ['mapped' => false])
+            ->add('addedTags', null, ['mapped' => false, 'attr'  =>  array('style' => 'display:none;', 'id' => 'addedTags', 'value' => "")])
             ->add('author', EntityType::class, [
                 'class' => User::class,
                 'choices' => $this->UserRepository->findAll(),
