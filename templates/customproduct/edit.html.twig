@@ -69,7 +69,12 @@ margin-bottom: 20px;
         {{ form_row(form.product.weight) }}
         {{ form_row(form.product.material) }}
             {{ form_row(form.client) }}
-        {{ form_row(form.product.image) }}
+{% if form.product.image.vars.value is not empty %}
+    <img src="{{ asset(form.product.image.vars.value) }}" width="200">
+{% endif %}
+
+{{ form_widget(form.product.image) }}
+
 
         
     {{ include('customproduct/_form.html.twig', {'button_label': 'Update'}) }}
