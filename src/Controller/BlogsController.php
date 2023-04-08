@@ -64,21 +64,38 @@ class BlogsController extends AbstractController
         }
     }
 
-
+    // public function addNewTags(string $tags): void
+    // {
+    //     $tagNames = explode('#', $tags);
+    //     foreach ($tagNames as $tagName) {
+    //         $tag = $this->tagsRepository->findOneBy(['name' => $tagName]);
+    //         if ($tag === null) {
+    //             $newTag = new Tags();
+    //             $newTag->setName($tagName);
+    //             $this->tagsRepository->save($newTag, true);
+    //         }
+    //     }
+    // }
     public function addTagsToBlog(Blogs $blog, string $tags): void
     {
         $tagNames = explode('#', $tags);
         foreach ($tagNames as $tagName) {
             $tag = $this->tagsRepository->findOneBy(['name' => $tagName]);
-            if (!$tag) {
-                $tag = new Tags();
-                $tag->setName($tagName);
-                $this->tagsRepository->save($tag, true);
+            if ($tag === null) {
+                $newTag = new Tags();
+                $newTag->setName($tagName);
+                $this->tagsRepository->save($newTag, true);
+                $addedtag = $this->tagsRepository->findOneBy(['name' => $tagName]);
+                $hasTag = new BlogTags();
+                $hasTag->setBlog($blog);
+                $hasTag->setTag($addedtag);
+                $this->hasTagRepository->save($hasTag, true);
+            } else {
+                $hasTag = new BlogTags();
+                $hasTag->setBlog($blog);
+                $hasTag->setTag($tag);
+                $this->hasTagRepository->save($hasTag, true);
             }
-            $hasTag = new BlogTags();
-            $hasTag->setBlog($blog);
-            $hasTag->setTag($tag);
-            $this->hasTagRepository->save($hasTag, true);
         }
     }
 
@@ -104,6 +121,7 @@ class BlogsController extends AbstractController
         $hasCategory = new HasBlogCategory();
         $media = new Media();
         $strTags = "";
+        $tt = "";
 
         $edit = false;
         $form = $this->createForm(BlogsType::class, $blog);
@@ -112,14 +130,15 @@ class BlogsController extends AbstractController
             $file = $form->get('file')->getData();
             $cat = $form->get('category')->getData();
             $tags = $form->get('tags')->getData();
-            $addedTags = $form->get('addedTags')->getData();
             $title = $form->get('title')->getData();
+            // $addedTags = $form->get('addedTags')->getData();
+            $addedTags = $_POST['addedTags'];
             foreach ($tags as $tag) {
 
-                $strTags = $addedTags . "#" . $tag->getName();
+                $strTags = $strTags . "#" . $tag->getName();
             }
-            echo $addedTags;
-            // echo $strTags;
+            $tt = $strTags . $addedTags;
+            // $this->addNewTags($addedTags);
             $blogsRepository->save($blog, true);
 
             $addedBlog = $blogsRepository->findOneByTitle($title);
@@ -128,10 +147,10 @@ class BlogsController extends AbstractController
             $hasCategory->setCategory($cat);
 
             $this->hasBlogCategoryRepository->save($hasCategory, true);
-            // $this->addTagsToBlog($addedBlog, $strTags);
+            $this->addTagsToBlog($addedBlog, $tt);
             $this->uploadImage($file, $media, $addedBlog, $edit);
 
-            // return $this->redirectToRoute('app_blogs_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_blogs_index', [], Response::HTTP_SEE_OTHER);
         }
         return $this->renderForm('blogs/new.html.twig', [
             'blog' => $blog,

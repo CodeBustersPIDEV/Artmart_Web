@@ -12,6 +12,7 @@ use App\Repository\UserRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -54,7 +55,7 @@ class BlogsType extends AbstractType
                 }
             ])
             ->add('addTags', null, ['mapped' => false])
-            ->add('addedTags', null, ['mapped' => false, 'attr'  =>  array('style' => 'display:none;', 'id' => 'addedTags', 'value' => "")])
+            // ->add('addedTags', null, ['mapped' => false, 'attr'  =>  ['style' => 'display:none;', 'value']])
             ->add('author', EntityType::class, [
                 'class' => User::class,
                 'choices' => $this->UserRepository->findAll(),

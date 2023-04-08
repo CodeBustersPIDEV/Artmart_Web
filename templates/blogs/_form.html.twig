@@ -47,202 +47,27 @@
 			{{ form_start(form, {'attr': {'class': 'form-floating'}}) }}
 			<div class="form-group">
 				{{ form_label(form.title, null, {'label_attr': {'class': 'form-label'
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 				}})}}
 				{{ form_widget(form.title, {'attr': {'class': 'form-control', 'placeholder': 'Title', 'id': 'title'
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 				}}) }}
 			</div>
 
 			<div class="form-group">
 				{{ form_label(form.content, null, {'label_attr': {'class': 'form-label'
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 				}}) }}
 				{{ form_widget(form.content, {'attr': {'class': 'form-control', 'placeholder': 'Content', 'id': 'content'
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 				}}) }}
 			</div>
 
 			<div class="form-group">
 				{{ form_label(form.category, null, {'label_attr': {'class': 'form-label'
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 				}}) }}
 				{{ form_widget(form.category, {'attr': {'class': 'form-control select2', 'id': 'category'
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 				}}) }}
 			</div>
 
 			<div class="form-group">
 				{{ form_label(form.tags, null, {'label_attr': {'class': 'form-label'
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 				}})}} {#
 				<div>
 					<label for="chip-select">Select Chips:</label>
@@ -260,62 +85,12 @@
 				<div class="row g-3">
 					<div class="col-auto">
 						{{ form_widget(form.tags, {'attr': {'class': 'form-select' ,'id': 'tags','size':'3'
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 						}}) }}
 					</div>
 					<div class="col-auto">
 						<div id="input-container" style="display: none">
 							<div class="chip-select">
 								{{ form_widget(form.addTags,{'attr': {'id': 'input-container','class': 'form-control addTagsInput','list':'chip-options'
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 								}}) }}
 							</div>
 						</div>
@@ -326,121 +101,20 @@
 				</div>
 				<label for="tagsChoice">Add other tags:</label>
 				<input type="checkbox" name="addOther" id="tagsChoice" />
-				{# <input type="hidden" name="addedTags" id="addedTags" /> #}
-				{{ form_widget(form.addedTags,{'attr': {'id': 'addedTags'}})}}
+				<input type="hidden" name="addedTags" id="addedTags" />
 			</div>
 
 			<div class="form-group">
 				{{ form_label(form.author, null, {'label_attr': {'class': 'form-label'
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 				}}) }}
 				{{ form_widget(form.author, {'attr': {'class': 'form-control select2', 'id': 'author'
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 				}}) }}
 			</div>
 
 			<div class="form-group">
 				{{ form_label(form.file, null, {'label_attr': {'class': 'form-label'
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 				}})}}
 				{{ form_widget(form.file, {'attr': {'class': 'form-control', 'id': 'formFile'
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 				}}) }}
 			</div>
 
@@ -457,7 +131,7 @@
 	const inputContainer = document.querySelector("#input-container");
 	const addTagsInput = document.querySelector(".addTagsInput");
 	const selectedChips = document.querySelector(".selected-chips");
-	let addedTags = document.getElementById("addedTags");
+	let addedTags = document.querySelector("#addedTags");
 	let selectedValues = [];
 
 	checkbox.addEventListener("change", (event) => {
@@ -473,11 +147,11 @@
 		selectedValues.forEach((value) => {
 			if (!str.includes(value)) {
 				str = str + `#${value}`;
-				addedTags = str;
 			}
+			addedTags.value = str;
 		});
-		console.log("str: " + str);
-		console.log("addedTags: " + addedTags);
+		// console.log("str: " + str);
+		// console.log("addedTags: " + addedTags.value);
 	}
 
 	addTagsInput.addEventListener("keydown", function (event) {
