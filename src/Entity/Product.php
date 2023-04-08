@@ -5,7 +5,6 @@ namespace App\Entity;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
-
 /**
  * Product
  *
@@ -32,43 +31,49 @@ class Product
 
     /**
      * @var string
-     * @Assert\NotBlank(message="Name is required")
+     *
      * @ORM\Column(name="name", type="string", length=255, nullable=false)
+     * @Assert\NotBlank(message="Name is required")
      */
     private $name;
 
     /**
      * @var string
-     * @Assert\NotBlank(message="Name is required")
+     *
      * @ORM\Column(name="description", type="text", length=65535, nullable=false)
+     * @Assert\NotBlank(message="Name is required")
      */
     private $description;
 
     /**
      * @var string
-     * @Assert\NotBlank(message="Name is required")
+     *
      * @ORM\Column(name="dimensions", type="string", length=255, nullable=false)
+     * @Assert\NotBlank(message="Name is required")
      */
     private $dimensions;
 
     /**
      * @var string
-     * @Assert\NotBlank(message="Name is required")
+     *
      * @ORM\Column(name="weight", type="decimal", precision=10, scale=2, nullable=false)
+     * @Assert\NotBlank(message="Name is required")
      */
     private $weight;
 
     /**
      * @var string
-     * @Assert\NotBlank(message="Name is required")
+     *
      * @ORM\Column(name="material", type="string", length=255, nullable=false)
+     * @Assert\NotBlank(message="Name is required")
      */
     private $material;
 
     /**
      * @var string
-     * @Assert\NotBlank(message="Name is required")
+     *
      * @ORM\Column(name="image", type="string", length=255, nullable=false)
+     * @Assert\NotBlank(message="Name is required")
      */
     private $image ;
 

@@ -55,6 +55,7 @@ $builder
         ])
     ]
 ])
+
 ->add('image', FileType::class, [
     'label' => 'Product Image',
     'mapped' => false,
@@ -67,6 +68,7 @@ $builder
         'accept' => 'image/*',
     ],
 ]);
+
     }
 
     public function configureOptions(OptionsResolver $resolver): void
