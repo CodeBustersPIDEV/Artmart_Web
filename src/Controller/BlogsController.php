@@ -81,7 +81,7 @@ class BlogsController extends AbstractController
         $tagNames = explode('#', $tags);
         foreach ($tagNames as $tagName) {
             $tag = $this->tagsRepository->findOneBy(['name' => $tagName]);
-            if ($tag === null) {
+            if ($tag === null && $tagName != "") {
                 $newTag = new Tags();
                 $newTag->setName($tagName);
                 $this->tagsRepository->save($newTag, true);
@@ -131,7 +131,6 @@ class BlogsController extends AbstractController
             $cat = $form->get('category')->getData();
             $tags = $form->get('tags')->getData();
             $title = $form->get('title')->getData();
-            // $addedTags = $form->get('addedTags')->getData();
             $addedTags = $_POST['addedTags'];
             foreach ($tags as $tag) {
 
@@ -160,11 +159,13 @@ class BlogsController extends AbstractController
     }
 
     #[Route('/{blogs_ID}', name: 'app_blogs_show', methods: ['GET'])]
-    public function show(Blogs $blog, MediaRepository $MediaRepository): Response
+    public function show(Blogs $blog, MediaRepository $mediaRepository, HasBlogCategoryRepository $hasBlogCategoryRepository, HasTagRepository $hasTagRepository): Response
     {
         return $this->render('blogs/show.html.twig', [
             'blog' => $blog,
-            'blog_media' => $MediaRepository->findOneMediaByBlogID($blog->getBlogsId()),
+            'blog_media' => $mediaRepository->findOneMediaByBlogID($blog->getBlogsId()),
+            'blog_cat' => $hasBlogCategoryRepository->findOneByBlogID($blog->getBlogsId()),
+            'blog_tags' => $hasTagRepository->findAllBlogsByBlogID($blog->getBlogsId())
         ]);
     }
 
@@ -175,19 +176,35 @@ class BlogsController extends AbstractController
         $media = new Media();
         $cat = new Blogcategories();
         $hasCat = new HasBlogCategory();
+        $strTags = "";
+        $tt = "";
+
         $form = $this->createForm(BlogsType::class, $blog);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $media = $mediaRepository->findOneMediaByBlogID($blogs_ID);
             $cat = $form->get('category')->getData();
+            $tags = $form->get('tags')->getData();
+            $addedTags = $_POST['addedTags'];
             $hasCat = $this->hasBlogCategoryRepository->findOneByBlogID($blogs_ID);
-            $hasCat->setCategory($cat);
+            if ($hasCat === null) {
+                $hasCat = new HasBlogCategory();
+                $hasCat->setCategory($cat);
+            }
             // $mediaRepository->deleteFile($media->getFileName());
             $file = $form->get('file')->getData();
             if ($file != null) {
                 $this->uploadImage($file, $media, $blog, $edit);
             }
+            $addedTags = $_POST['addedTags'];
+            foreach ($tags as $tag) {
+
+                $strTags = $strTags . "#" . $tag->getName();
+            }
+            $tt = $strTags . $addedTags;
+            $alreadyTags = $this->hasTagRepository->findAllBlogsByBlogID($blog->getBlogsId());
+            $this->addTagsToBlog($blog, $tt);
             $blogsRepository->save($blog, true);
             $this->hasBlogCategoryRepository->save($hasCat, true);
             return $this->redirectToRoute('app_blogs_index', [], Response::HTTP_SEE_OTHER);

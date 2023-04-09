@@ -279,7 +279,10 @@ body %} {% import "base.html.twig" as base %}
 				<article class="blog__post__content">
 					<div class="row">
 						<div class="part1 col">
-							<div class="post__cata">Sport</div>
+							<div class="post__cata">
+								{% if blog_cat != null %}
+								{{ blog_cat.category.name }}{% else %} No Category {% endif %}
+							</div>
 							<h2 class="post__title">{{ blog.title }}</h2>
 							<div class="post__date">
 								Posted By
@@ -312,9 +315,11 @@ body %} {% import "base.html.twig" as base %}
 								<div class="row">
 									<div class="col-md-6">
 										<div class="post__tags">
-											<a href="#">Creative</a>
-											<a href="#">Unique</a>
-											<a href="#">Photography</a>
+											{% for blog_tag in blog_tags %} {% if blog_tag.tag %}
+											<a href="#">{{ blog_tag.tag.name }}</a>
+											{% endif %} {% else %}
+											<h2>No Tags</h2>
+											{% endfor %}
 										</div>
 									</div>
 									<div class="col-md-6">

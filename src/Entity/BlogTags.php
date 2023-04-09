@@ -29,7 +29,7 @@ class BlogTags
      *   @ORM\JoinColumn(name="blog_id", referencedColumnName="blogs_ID")
      * })
      */
-    private $blog;
+    private $blog_id;
 
     /**
      * @var \Tags
@@ -48,12 +48,12 @@ class BlogTags
 
     public function getBlog(): ?Blogs
     {
-        return $this->blog ?? null;
+        return $this->blog_id ?? null;
     }
 
     public function setBlog(?Blogs $blog): self
     {
-        $this->blog = $blog;
+        $this->blog_id = $blog;
 
         return $this;
     }

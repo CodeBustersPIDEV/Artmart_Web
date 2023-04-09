@@ -45,17 +45,14 @@ class HasBlogCategoryRepository extends ServiceEntityRepository
   //    /**
   //     * @return HasBlogCategory[] Returns an array of HasBlogCategory objects
   //     */
-  //    public function findByExampleField($value): array
-  //    {
-  //        return $this->createQueryBuilder('c')
-  //            ->andWhere('c.exampleField = :val')
-  //            ->setParameter('val', $value)
-  //            ->orderBy('c.id', 'ASC')
-  //            ->setMaxResults(10)
-  //            ->getQuery()
-  //            ->getResult()
-  //        ;
-  //    }
+  // public function findAllBlogsByBlogID($blog_id): array
+  // {
+  //   return $this->createQueryBuilder('h')
+  //     ->andWhere('h.blog_id = :val')
+  //     ->setParameter('val', $blog_id)
+  //     ->getQuery()
+  //     ->getResult();
+  // }
 
   public function findOneByBlogID($blog_id): ?HasBlogCategory
   {
