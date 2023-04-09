@@ -5,6 +5,10 @@
 {% endblock %}
 
 {% block stylesheets %}
+  <style>
+input[type="file"] {
+  display: none;
+}</style>
     <link rel="stylesheet" href="{{ asset('https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css') }}" integrity="{{ asset('sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm') }}" crossorigin="{{ asset('anonymous') }}">
 {% endblock %}
 
@@ -44,8 +48,23 @@
                         {{ form_widget(form.client, {'attr': {'class': 'form-control'}}) }}
                     </div>
                     <div class="form-group">
-                        {{ form_label(form.product.image, 'Image', {'label_attr': {'class': 'font-weight-bold'}}) }}
-                        {{ form_widget(form.product.image, {'attr': {'class': 'form-control'}}) }}
+                 <style>
+input[type="file"] { display: none;}</style>
+                  {{ form_row(form.product.image) }}
+<img id="preview-image" style="max-width: 128px" src="{{ asset('imagescustom/' ~ customproduct.product.image) }}" alt="Product image" onclick="document.getElementById('product_image').click()">
+<span id="image-name"></span>
+
+<script>
+    document.getElementById('product_image').addEventListener('change', function(e) {
+        var fileName = e.target.files[0].name;
+        document.getElementById('image-name').innerHTML = fileName;
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            document.getElementById('preview-image').setAttribute('src', e.target.result);
+        }
+        reader.readAsDataURL(e.target.files[0]);
+    });
+</script>
                     </div>
                     {{ include('customproduct/_form.html.twig', {'button_label': 'Update'}) }}
                     {{ form_end(form) }}

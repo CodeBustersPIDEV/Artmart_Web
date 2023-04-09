@@ -53,6 +53,10 @@ border-radius: 10px;
 text-align: center;
 margin-bottom: 20px;
 }
+input[type="file"] {
+  display: none;
+}
+
 </style>
 {% endblock %}
 {% block body %}
@@ -68,8 +72,21 @@ margin-bottom: 20px;
         {{ form_row(form.product.dimensions) }}
         {{ form_row(form.product.weight) }}
         {{ form_row(form.product.material) }}
-            {{ form_row(form.client) }}
-        {{ form_row(form.product.image) }}
+           {{ form_row(form.product.image) }}
+<img id="preview-image" style="max-width: 128px" src="{{ asset('imagescustom/' ~ customproduct.product.image) }}" alt="Product image" onclick="document.getElementById('product_image').click()">
+<span id="image-name"></span>
+
+<script>
+    document.getElementById('product_image').addEventListener('change', function(e) {
+        var fileName = e.target.files[0].name;
+        document.getElementById('image-name').innerHTML = fileName;
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            document.getElementById('preview-image').setAttribute('src', e.target.result);
+        }
+        reader.readAsDataURL(e.target.files[0]);
+    });
+</script>
 
         
     {{ include('customproduct/_form.html.twig', {'button_label': 'Update'}) }}
