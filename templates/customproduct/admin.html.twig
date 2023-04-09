@@ -128,6 +128,19 @@
 {% if customproducts %}
 <p>Your total custom product weight is: {{ totalWeight }}</p>
   <a href="{{ path('app_customproduct_newadmin') }}">Create new</a>
+
+<form action="{{ path('app_customproduct_admin') }}" method="GET">
+    <div class="form-group">
+        <label for="search-term">Search for custom products:</label>
+        <input type="text" id="search-term" name="q" class="form-control" value="{{ searchTerm }}">
+    </div>
+    <button type="submit" class="btn btn-primary">Search</button>
+</form>
+
+<a href="{{ path('app_customproduct_admin', {'order': 'name'}) }}">Order by Name</a>
+<a href="{{ path('app_customproduct_admin', {'order': 'weight'}) }}">Order by Weight</a>
+
+
  <div class="custom-products-container">
 <table class="table">
 <thead>
