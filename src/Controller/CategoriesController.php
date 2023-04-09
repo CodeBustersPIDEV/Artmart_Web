@@ -36,7 +36,7 @@ class CategoriesController extends AbstractController
             $entityManager->persist($category);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_categories_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_customproduct_admin', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('categories/new.html.twig', [
@@ -62,7 +62,7 @@ class CategoriesController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_categories_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_customproduct_admin', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('categories/edit.html.twig', [
@@ -79,6 +79,6 @@ class CategoriesController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('app_categories_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_customproduct_admin', [], Response::HTTP_SEE_OTHER);
     }
 }

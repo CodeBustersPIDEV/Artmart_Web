@@ -127,7 +127,7 @@
 
 {% if customproducts %}
 <p>Your total custom product weight is: {{ totalWeight }}</p>
-
+  <a href="{{ path('app_customproduct_newadmin') }}">Create new</a>
  <div class="custom-products-container">
 <table class="table">
 <thead>
@@ -157,9 +157,9 @@
        <td><img src="{{ asset('imagescustom/' ~ customproduct.product.image) }}" alt="Product Image"></td>
       
 <td class="actions">
-    <a href="{{ path('app_customproduct_new') }}">Create new</a>
-<a href="{{ path('app_customproduct_show', {'customProductId': customproduct.customProductId}) }}">show</a>
-<a href="{{ path('app_customproduct_edit', {'customProductId': customproduct.customProductId}) }}">edit</a>
+
+<a href="{{ path('app_customproduct_editadmin', {'customProductId': customproduct.customProductId}) }}">edit</a>
+{{ include('customproduct/delete.html.twig') }}
 </td>
 </tr>
         {% else %}
@@ -182,6 +182,7 @@
 <div class="row">
   <div class="col-md-6">
     <h2>Categories:</h2>
+           <a href="{{ path('app_categories_new') }}">Create new</a>
     <table class="table">
       <thead>
         <tr>
@@ -194,9 +195,9 @@
         <tr>
           <td>{{ category.name }}</td>
           <td class="actions">
-            <a href="{{ path('app_categories_new') }}">Create new</a>
+     
             <a href="{{ path('app_categories_edit', {'categoriesId': category.categoriesId}) }}">Edit</a>
-            <a href="{{ path('app_categories_delete', {'categoriesId': category.categoriesId}) }}">Delete</a>
+         {{ include('categories/_delete_form.html.twig') }}
           </td>
         </tr>
         {% else %}
@@ -223,8 +224,9 @@
           <td>{{ apply.customproduct.product.name }}</td>
           <td>{{ apply.status }}</td>
           <td class="actions">
-            <a href="{{ path('app_apply_show', { applyId: apply.applyId }) }}">Show</a>
-            <a href="{{ path('app_apply_edit', { applyId: apply.applyId }) }}">Edit</a>
+           <a href="{{ path('app_apply_edit', { applyId: apply.applyId }) }}">Edit</a>
+           {{ include('apply/_delete_form.html.twig') }}
+           
           </td>
         </tr>
         {% else %}

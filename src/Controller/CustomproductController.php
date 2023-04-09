@@ -151,7 +151,7 @@ class CustomproductController extends AbstractController
             $entityManager->persist($customproduct);
             $entityManager->flush();
     
-            return $this->redirectToRoute('app_customproduct_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_customproduct_admin', [], Response::HTTP_SEE_OTHER);
         }
     
         return $this->renderForm('customproduct\new.html.twig', [
@@ -160,6 +160,53 @@ class CustomproductController extends AbstractController
         ]);
     }
     
+
+
+    #[Route('/newad', name: 'app_customproduct_newadmin', methods: ['GET', 'POST'])]
+    public function newadmin(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $customproduct = new Customproduct();
+        $form = $this->createForm(CustomproductType::class, $customproduct);
+        $form->handleRequest($request);
+    
+        if ($form->isSubmitted() && $form->isValid()) {
+            $product = $form->get('product')->getData();
+            $customproduct->setProduct($product);
+            $customproduct->setClient($form->get('client')->getData());
+            
+            
+            $imageFile = $form->get('product')->get('image')->getData();
+            if ($imageFile) {
+                $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+                $newFilename = $originalFilename.'-'.uniqid().'.'.$imageFile->guessExtension();
+    
+                try {
+                    $imageFile->move(
+                        $this->getParameter('product_images_directory'),
+                        $newFilename
+                    );
+                } catch (FileException $e) {
+                    // handle exception if something happens during file upload
+                }
+    
+                $product->setImage($newFilename);
+            }
+    
+            $entityManager->persist($product);
+            $entityManager->persist($customproduct);
+            $entityManager->flush();
+    
+            return $this->redirectToRoute('app_customproduct_admin', [], Response::HTTP_SEE_OTHER);
+        }
+    
+        return $this->renderForm('customproduct\newadmin.html.twig', [
+            'customproduct' => $customproduct,
+            'form' => $form,
+        ]);
+    }
+
+
+
 
     #[Route('/{customProductId}', name: 'app_customproduct_show', methods: ['GET'])]
 public function show(Customproduct $customproduct): Response
@@ -209,6 +256,46 @@ public function show(Customproduct $customproduct): Response
         ]);
     }
 
+
+    #[Route('/{customProductId}/editadmin', name: 'app_customproduct_editadmin', methods: ['GET', 'POST'])]
+    public function editadmin(Request $request, Customproduct $customproduct, EntityManagerInterface $entityManager): Response
+    {
+   
+        $form = $this->createForm(CustomproductType::class, $customproduct);
+        $form->handleRequest($request);
+        $product = $form->get('product')->getData();
+        $imageFile = $form->get('product')->get('image')->getData();
+        if ($imageFile) {
+            $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+            $newFilename = $originalFilename.'-'.uniqid().'.'.$imageFile->guessExtension();
+
+            try {
+                $imageFile->move(
+                    $this->getParameter('product_images_directory'),
+                    $newFilename
+                );
+            } catch (FileException $e) {
+                // handle exception if something happens during file upload
+            }
+
+            $product->setImage($newFilename);
+        }
+   
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_customproduct_admin', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->renderForm('customproduct/editadmin.html.twig', [
+            'customproduct' => $customproduct,
+            'form' => $form,
+        ]);
+    }
+
+
+
+
     #[Route('/{customProductId}', name: 'app_customproduct_delete', methods: ['POST'])]
     public function delete(Request $request, Customproduct $customproduct, EntityManagerInterface $entityManager): Response
     {
@@ -221,6 +308,21 @@ public function show(Customproduct $customproduct): Response
 
         return $this->redirectToRoute('app_customproduct_index', [], Response::HTTP_SEE_OTHER);
     }
+
+
+    #[Route('/{customProductId}/delete', name: 'app_customproduct_deleteadmin', methods: ['POST'])]
+    public function deleteadmin(Request $request, Customproduct $customproduct, EntityManagerInterface $entityManager): Response
+    {
+      
+        if ($this->isCsrfTokenValid('delete'.$customproduct->getCustomProductId(), $request->request->get('_token'))) {
+            $entityManager->remove($customproduct);
+            $entityManager->flush();
+   
+        }
+
+        return $this->redirectToRoute('app_customproduct_admin', [], Response::HTTP_SEE_OTHER);
+    }
+
 
     #[Route('/customproduct/{customProductId}/apply', name: 'app_customproduct_apply', methods: ['GET', 'POST'])]
     public function apply(int $customProductId, RouterInterface $router): Response

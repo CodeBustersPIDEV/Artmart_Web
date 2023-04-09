@@ -1,0 +1,58 @@
+{% extends 'baseC.html.twig' %}
+
+{% block title %}
+    Create Custom Product
+{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css') }}" integrity="{{ asset('sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm') }}" crossorigin="{{ asset('anonymous') }}">
+{% endblock %}
+
+{% block body %}
+    {% block content %}
+        <div class="container mt-5">
+            <h1 class="text-center mb-4">Create Custom Product</h1>
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="form-container">
+                        {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+                        <div class="form-group">
+                            {{ form_label(form.product.name, 'Name', {'label_attr': {'class': 'font-weight-bold'}}) }}
+                            {{ form_widget(form.product.name, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.product.category, 'Category', {'label_attr': {'class': 'font-weight-bold'}}) }}
+                            {{ form_widget(form.product.category, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.product.description, 'Description', {'label_attr': {'class': 'font-weight-bold'}}) }}
+                            {{ form_widget(form.product.description, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.product.dimensions, 'Dimensions', {'label_attr': {'class': 'font-weight-bold'}}) }}
+                            {{ form_widget(form.product.dimensions, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.product.weight, 'Weight', {'label_attr': {'class': 'font-weight-bold'}}) }}
+                            {{ form_widget(form.product.weight, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.product.material, 'Material', {'label_attr': {'class': 'font-weight-bold'}}) }}
+                            {{ form_widget(form.product.material, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.product.image, 'Image', {'label_attr': {'class': 'font-weight-bold'}}) }}
+                            {{ form_widget(form.product.image, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.client, 'Client', {'label_attr': {'class': 'font-weight-bold'}}) }}
+                            {{ form_widget(form.client, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+                        {{ include('customproduct/_form.html.twig', {'button_label': 'Add'}) }}
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endblock %}
+{% endblock %}
