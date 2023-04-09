@@ -170,6 +170,7 @@ class Product
         {
             return $this->getName();
         }
+        
 
 
 

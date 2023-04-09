@@ -121,14 +121,16 @@ class CustomproductController extends AbstractController
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $customproduct = new Customproduct();
+
         $form = $this->createForm(CustomproductType::class, $customproduct);
+       
         $form->handleRequest($request);
     
         if ($form->isSubmitted() && $form->isValid()) {
             $product = $form->get('product')->getData();
             $customproduct->setProduct($product);
             $customproduct->setClient($form->get('client')->getData());
-            
+          
             
             $imageFile = $form->get('product')->get('image')->getData();
             if ($imageFile) {
@@ -151,12 +153,13 @@ class CustomproductController extends AbstractController
             $entityManager->persist($customproduct);
             $entityManager->flush();
     
-            return $this->redirectToRoute('app_customproduct_admin', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_customproduct_index', [], Response::HTTP_SEE_OTHER);
         }
     
         return $this->renderForm('customproduct\new.html.twig', [
             'customproduct' => $customproduct,
             'form' => $form,
+          
         ]);
     }
     

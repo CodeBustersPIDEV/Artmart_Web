@@ -60,13 +60,10 @@ $builder
     'label' => 'Product Image',
     'mapped' => false,
     'required' => false,
-    'constraints' => [
-        new NotBlank([
-            'message' => 'Please enter an image'
-            ]) ],
     'attr' => [
         'accept' => 'image/*',
     ],
+    
 ]);
 
     }
