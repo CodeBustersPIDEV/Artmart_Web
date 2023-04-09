@@ -39,6 +39,21 @@
 .table td.actions a:hover {
     background-color: #3e8e41;
 }
+.orderby-link {
+  display: inline-block;
+  padding: 10px 20px;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  background-color: #f2f2f2;
+  color: #333;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+
+.orderby-link:hover {
+  background-color: #ddd;
+}
+
 .create-button {
     margin-bottom: 20px;
     text-align: right;
@@ -126,7 +141,7 @@
 
 
 {% if customproducts %}
-<p>Your total custom product weight is: {{ totalWeight }}</p>
+
   <a href="{{ path('app_customproduct_newadmin') }}">Create new</a>
 
 <form action="{{ path('app_customproduct_admin') }}" method="GET">
@@ -135,10 +150,13 @@
         <input type="text" id="search-term" name="q" class="form-control" value="{{ searchTerm }}">
     </div>
     <button type="submit" class="btn btn-primary">Search</button>
+    
+<a href="{{ path('app_customproduct_admin', {'order': 'name'}) }}" class="orderby-link">Order by Name</a>
+<a href="{{ path('app_customproduct_admin', {'order': 'weight'}) }}" class="orderby-link">Order by Weight</a>
 </form>
+<p>Your total custom product weight is: {{ totalWeight }}</p>
 
-<a href="{{ path('app_customproduct_admin', {'order': 'name'}) }}">Order by Name</a>
-<a href="{{ path('app_customproduct_admin', {'order': 'weight'}) }}">Order by Weight</a>
+
 
 
  <div class="custom-products-container">
