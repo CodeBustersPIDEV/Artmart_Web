@@ -9,6 +9,55 @@ Custom Product Index
 {% block stylesheets %}
 {{ parent() }}
 <style>
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.pagination ul {
+  display: flex;
+  flex-wrap: wrap;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.pagination li {
+  margin: 0 5px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  background-color: #f2f2f2;
+}
+
+.pagination li.active {
+  background-color: #333;
+}
+
+.pagination li span,
+.pagination li a {
+  display: block;
+  padding: 5px 10px;
+  text-align: center;
+  color: #333;
+  text-decoration: none;
+  transition: all 0.2s ease-in-out;
+}
+
+.pagination li a:hover {
+  background-color: #333;
+  color: #fff;
+}
+
+.pagination li.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.pagination li.disabled span {
+  color: #999;
+}
+
 body {
   background-color: #F8F9FA;
 }
@@ -73,6 +122,7 @@ body {
 {% endblock %}
 
 {% block body %}
+
 {{ base.NavBar() }}
 <form action="{{ path('app_customproduct_index') }}" method="GET">
     <div class="form-group">
@@ -88,7 +138,7 @@ body {
   <a href="{{ path('app_customproduct_new') }}">Create new</a>
 {% set totalWeight = customproducts|reduce((total, customproduct) => total + customproduct.product.weight, 0) %}
 
-{% if customproducts %}
+{% if customproducts.getTotalItemCount() > 0 %}
 <p>Your total custom product weight is: {{ totalWeight }}</p>
 {% set customproductCount = 0 %}
      
@@ -109,7 +159,8 @@ body {
             <p>no records found</p>
         {% endfor %}
 	  </ul>
-	  <p>Your total custom product count is: {{ customproductCount }}</p>
+      
+	 {{ knp_pagination_render(customproducts) }}
 <a href="{{ path('app_customproduct_artist') }}">Go to artist page</a>
 <a href="{{ path('app_apply_clients') }}">Demands</a>
 <a href="{{ path('app_apply_clientdone') }}"
@@ -136,6 +187,7 @@ function playSound() {
   var audio = new Audio('{{ asset('js/ab.mp3') }}');
   audio.play();
 }
+
 </script>
 
 {% endblock %}

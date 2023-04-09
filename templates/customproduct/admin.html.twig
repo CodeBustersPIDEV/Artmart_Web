@@ -1,0 +1,242 @@
+{% extends 'baseC.html.twig' %}
+
+{% block content %}
+
+{% block stylesheets %}
+
+<style>
+.table-container {
+    display: inline-block;
+    vertical-align: top;
+    margin-right: 20px;
+}
+.table {
+    border-collapse: collapse;
+    width: 100%;
+}
+.table th,
+.table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+.table th {
+    background-color: #f2f2f2;
+}
+.table td.actions {
+    text-align: center;
+}
+.table td.actions a {
+    display: inline-block;
+    margin: 0 5px;
+    padding: 5px 10px;
+    background-color: #4CAF50;
+    color: white;
+    text-decoration: none;
+    border-radius: 3px;
+    transition: background-color 0.3s ease;
+}
+.table td.actions a:hover {
+    background-color: #3e8e41;
+}
+.create-button {
+    margin-bottom: 20px;
+    text-align: right;
+}
+.create-button a {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    text-decoration: none;
+    border-radius: 3px;
+    transition: background-color 0.3s ease;
+}
+.create-button a:hover {
+    background-color: #3e8e41;
+}
+.table td img {
+    max-width: 100%;
+    height: auto;
+    width: 100px;
+    display: block;
+    margin: 0 auto;
+    padding: 5px;
+}
+    /* Styles for the custom products table */
+    .custom-products-container {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+    }
+
+    .custom-products-container table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    .custom-products-container th,
+    .custom-products-container td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+    }
+
+    .custom-products-container th {
+        background-color: #f2f2f2;
+    }
+
+    .custom-products-container td.actions {
+        text-align: center;
+    }
+
+    .custom-products-container td.actions a {
+        display: inline-block;
+        margin: 0 5px;
+        padding: 5px 10px;
+        background-color: #4CAF50;
+        color: white;
+        text-decoration: none;
+        border-radius: 3px;
+        transition: background-color 0.3s ease;
+    }
+
+    .custom-products-container td.actions a:hover {
+        background-color: #3e8e41;
+    }
+
+    .custom-products-container td img {
+        max-width: 100%;
+        height: auto;
+        width: 100px;
+        display: block;
+        margin: 0 auto;
+        padding: 5px;
+    }
+
+</style>
+{% endblock %}
+
+{% block body %}
+
+
+{% set customproductCount = 0 %}
+
+{% set totalWeight = customproducts|reduce((total, customproduct) => total + customproduct.product.weight, 0) %}
+
+
+{% if customproducts %}
+<p>Your total custom product weight is: {{ totalWeight }}</p>
+
+ <div class="custom-products-container">
+<table class="table">
+<thead>
+<tr>
+<th>Name</th>
+<th>Category</th>
+<th>Description</th>
+<th>Weight</th>
+<th>Demension</th>
+<th>Material</th>
+<th>Image</th>
+<th class="actions">Actions</th>
+</tr>
+</thead>
+<tbody>
+{% set customproductCount = 0 %}
+{% for customproduct in customproducts %}
+      {% set customproductCount = customproductCount + 1 %}
+
+<tr>
+<td>{{ customproduct.product.name }}</td>
+<td>{{ customproduct.product.category }}</td>
+<td>{{ customproduct.product.description }}</td>
+<td>{{ customproduct.product.weight }}</td>
+  <td>{{ customproduct.product.dimensions }}</td>
+    <td>{{ customproduct.product.material }}</td>
+       <td><img src="{{ asset('imagescustom/' ~ customproduct.product.image) }}" alt="Product Image"></td>
+      
+<td class="actions">
+    <a href="{{ path('app_customproduct_new') }}">Create new</a>
+<a href="{{ path('app_customproduct_show', {'customProductId': customproduct.customProductId}) }}">show</a>
+<a href="{{ path('app_customproduct_edit', {'customProductId': customproduct.customProductId}) }}">edit</a>
+</td>
+</tr>
+        {% else %}
+            <tr>
+                <td colspan="4">No records found.</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    
+</div>
+  <p>Your total custom product count is: {{ customproductCount }}</p>
+{% else %}
+<p>No custom products found.</p>
+{% endif %}
+
+
+
+
+<div class="row">
+  <div class="col-md-6">
+    <h2>Categories:</h2>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for category in categories %}
+        <tr>
+          <td>{{ category.name }}</td>
+          <td class="actions">
+            <a href="{{ path('app_categories_new') }}">Create new</a>
+            <a href="{{ path('app_categories_edit', {'categoriesId': category.categoriesId}) }}">Edit</a>
+            <a href="{{ path('app_categories_delete', {'categoriesId': category.categoriesId}) }}">Delete</a>
+          </td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="2">No records found.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div class="col-md-6">
+    <h2>Applications:</h2>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for apply in applies %}
+        <tr>
+          <td>{{ apply.customproduct.product.name }}</td>
+          <td>{{ apply.status }}</td>
+          <td class="actions">
+            <a href="{{ path('app_apply_show', { applyId: apply.applyId }) }}">Show</a>
+            <a href="{{ path('app_apply_edit', { applyId: apply.applyId }) }}">Edit</a>
+          </td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="3">No records found.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% endblock %}
+
+{% endblock %}
