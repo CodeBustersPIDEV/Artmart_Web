@@ -1,16 +1,83 @@
 {% extends 'base.html.twig' %}
 
+{% import "base.html.twig" as base %}
+
 {% block title %}Readyproduct index{% endblock %}
 
+{% block stylesheets %}
+{{ parent() }}
+<style>
+.custom-card {
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    margin: 10px;
+    padding: 20px;
+    display: inline-block;
+    width: 25%; /* changed from 33.33% */
+    background-color: #e9ecef;
+    transition: box-shadow 0.2s ease-in-out;
+}
+
+.custom-card:hover {
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.3);
+    transform: translateY(-2px);
+}
+
+.custom-card h2 {
+    margin-top: 0px;
+    margin-bottom: 10px;
+    font-size: 24px;
+    color: #343a40;
+}
+
+.custom-card p {
+    margin-top: 0px;
+    color: #6c757d;
+}
+
+.custom-card a {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 8px 16px;
+    background-color: #007bff;
+    color: #fff;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.custom-card a:hover {
+    background-color: #0062cc;
+}
+
+.custom-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.custom-card:nth-child(4n+1) {
+    clear: left;
+}
+</style>
+
+{% endblock %}
+
 {% block body %}
+{{ base.NavBar() }}
     <h1>Ready products list</h1>
 
     <table class="table">
         <thead>
             <tr>
-                <th>ReadyProductId</th>
+                <th>Name</th>
                 <th>Price</th>
-                <th>ProductId</th>
+                <th>category</th>
+                <th>dimensions</th>
+                <th>material</th>
+                <th>description</th>
                 <th>UserId</th>
                 <th>actions</th>
             </tr>
@@ -18,9 +85,12 @@
         <tbody>
        {% for readyproduct in readyproducts %}
             <tr>
-                <td>{{ readyproduct.readyProductId }}</td>
+                <td>{{ readyproduct.productId.name }}</td>
                 <td>{{ readyproduct.price }}</td>
-                <td>{{ readyproduct.productId }}</td>
+                <td>{{ readyproduct.productId.categoryId }}</td>
+                <td>{{ readyproduct.productId.dimensions }}</td>
+                <td>{{ readyproduct.productId.material }}</td>
+                <td>{{ readyproduct.productId.description }}</td>
                 <td>{{ readyproduct.userId }}</td>
                 <td>
                     <a href="{{ path('app_readyproduct_show', {'readyProductId': readyproduct.readyProductId}) }}">show</a>
