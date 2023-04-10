@@ -225,7 +225,7 @@
 {% set totalWeight = customproducts|reduce((total, customproduct) => total + customproduct.product.weight, 0) %}
 
 {% if customproducts.getTotalItemCount() > 0 %}
-<p  style=" color: #fff;">Your total custom product weight is: {{ totalWeight }}</p>
+<p  style=" color: #fff;">Total weight of displayed Products: {{ totalWeight }}</p>
 <a href="{{ path('app_customproduct_index', {'order': 'name'}) }}" class="orderby-link">Order by Name</a>
 <a href="{{ path('app_customproduct_index', {'order': 'weight'}) }}" class="orderby-link">Order by Weight</a>
      
