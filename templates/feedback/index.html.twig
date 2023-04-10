@@ -1,39 +1,32 @@
-{% extends 'base.html.twig' %}
-
-{% block title %}Feedback index{% endblock %}
+{% extends 'base.html.twig' %} 
+{% import "base.html.twig" as base %}
+{% block title %}Feedback List{% endblock %}
 
 {% block body %}
-    <h1>Feedback index</h1>
+{{ base.NavBar() }}
+{% include('event/eventBar.html.twig') %}
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Feedbackid</th>
-                <th>Rating</th>
-                <th>Comment</th>
-                <th>Date</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
+    <center>
+        {# <h1>Feedback List</h1> #}
+        <br>
+        <a href="{{ path('app_feedback_new') }}" class="btn btn-success">Create New</a>
+    </center>
+
+    <div class="row" style="margin:20px">
         {% for feedback in feedback %}
-            <tr>
-                <td>{{ feedback.feedbackid }}</td>
-                <td>{{ feedback.rating }}</td>
-                <td>{{ feedback.comment }}</td>
-                <td>{{ feedback.date ? feedback.date|date('Y-m-d H:i:s') : '' }}</td>
-                <td>
-                    <a href="{{ path('app_feedback_show', {'feedbackid': feedback.feedbackid}) }}">show</a>
-                    <a href="{{ path('app_feedback_edit', {'feedbackid': feedback.feedbackid}) }}">edit</a>
-                </td>
-            </tr>
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ feedback.rating }}</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">{{ feedback.date ? feedback.date|date('Y-m-d H:i:s') : '' }}</h6>
+                        <p class="card-text">{{ feedback.comment }}</p>
+                        <a href="{{ path('app_feedback_show', {'feedbackid': feedback.feedbackid}) }}" class="btn btn-primary">show</a>
+                        <a href="{{ path('app_feedback_edit', {'feedbackid': feedback.feedbackid}) }}" class="btn btn-secondary">edit</a>
+                    </div>
+                </div>
+            </div>
         {% else %}
-            <tr>
-                <td colspan="5">no records found</td>
-            </tr>
+            <p>No feedback found</p>
         {% endfor %}
-        </tbody>
-    </table>
-
-    <a href="{{ path('app_feedback_new') }}">Create new</a>
+    </div>
 {% endblock %}

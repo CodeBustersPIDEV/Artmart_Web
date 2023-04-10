@@ -4,18 +4,10 @@
 {% block body %}
 {{ base.NavBar() }}
 
-    <h1>Event</h1>
+    <h1>{{ event.name }}</h1>
 
     <table class="table">
         <tbody>
-            <tr>
-                <th>Eventid</th>
-                <td>{{ event.eventid }}</td>
-            </tr>
-            <tr>
-                <th>Name</th>
-                <td>{{ event.name }}</td>
-            </tr>
             <tr>
                 <th>Location</th>
                 <td>{{ event.location }}</td>

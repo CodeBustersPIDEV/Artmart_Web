@@ -1,8 +1,11 @@
-{% extends 'base.html.twig' %}
-
+{% extends 'base.html.twig' %} 
+{% import "base.html.twig" as base %}
 {% block title %}Edit Eventreport{% endblock %}
 
 {% block body %}
+{{ base.NavBar() }}
+{% include('event/eventBar.html.twig') %}
+
     <h1>Edit Eventreport</h1>
 
     {{ include('eventreport/_form.html.twig', {'button_label': 'Update'}) }}

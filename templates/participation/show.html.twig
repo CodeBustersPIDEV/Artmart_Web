@@ -1,8 +1,11 @@
-{% extends 'base.html.twig' %}
-
+{% extends 'base.html.twig' %} 
+{% import "base.html.twig" as base %}
 {% block title %}Participation{% endblock %}
 
 {% block body %}
+{{ base.NavBar() }}
+{% include('event/eventBar.html.twig') %}
+
     <h1>Participation</h1>
 
     <table class="table">

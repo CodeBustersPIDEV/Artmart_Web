@@ -3,13 +3,26 @@
 {% block title %}Event List{% endblock %}
 
 {% block body %}
-{{ base.NavBar() }}
+  {{ base.NavBar() }}
+	{% include('event/eventBar.html.twig') %}
 
-<h1>Event List</h1>
-
-<div class="row">
+  {# <h1>Event List</h1> #}
+    <link rel="stylesheet" href="{{ asset('assets/Components/specialOrder.css') }}"/>
+    <a href="{{ path('app_event_new') }}">
+      <div data-tooltip="New Event" class="button mid">
+        <div class="button-wrapper">
+          <div class="text">Create New</div>
+          <span class="icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-earmark-plus-fill" viewbox="0 0 16 16">
+              <path d="M9.293 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.707A1 1 0 0 0 13.707 4L10 .293A1 1 0 0 0 9.293 0zM9.5 3.5v-2l3 3h-2a1 1 0 0 1-1-1zM8.5 7v1.5H10a.5.5 0 0 1 0 1H8.5V11a.5.5 0 0 1-1 0V9.5H6a.5.5 0 0 1 0-1h1.5V7a.5.5 0 0 1 1 0z"/>
+            </svg>
+          </span>
+        </div>
+      </div>
+    </a>
+  <div class="row" style="margin:20px">
   {% for event in events %}
-  <div class="col-md-4" style="margin-top:20px">
+  <div class="col-md-4">
     <div class="card">
       <img class="card-img-top" src="{{ event.image }}" alt="Card image cap">
       <div class="card-body">
@@ -25,7 +38,4 @@
   {% endfor %}
 </div>
 <br>
-    <div class="text-center">
-        <a href="{{ path('app_event_new') }}" class="btn btn-primary">Create a  new event</a>
-    </div>
 {% endblock %}

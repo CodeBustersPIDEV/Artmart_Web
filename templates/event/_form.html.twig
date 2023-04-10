@@ -54,11 +54,14 @@ margin-bottom: 20px;
 {% endblock %}
 {% block body %}
 {# {{ base.NavBar() }} #}
-<div class="form-container">
-{{ form_start(form,{'attr': {'novalidate': 'novalidate'}} ) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
-</div>
+<center>
+    <div class="form-container">
+
+    {{ form_start(form,{'attr': {'novalidate': 'novalidate'}} ) }}
+        {{ form_widget(form) }}
+        <button class="btn btn-primary">{{ button_label|default('Save') }}</button>
+    </div>
+</center>
 {{ form_end(form) }}
 {% endblock %}
 
