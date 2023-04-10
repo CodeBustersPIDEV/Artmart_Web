@@ -1,9 +1,8 @@
-{% extends 'base.html.twig' %}
-{% import "base.html.twig" as base %}
-{% block title %}artmart{% endblock %}
+{% extends 'baseF.html.twig' %}
+{% block content %}
 
 {% block body %}
-{{ base.NavBar() }}
+
     <h1>Demands</h1>
 
     <table class="table">
@@ -25,9 +24,10 @@
                             <input type="hidden" name="applyId" value="{{ apply.applyId }}">
                             <button type="submit" onclick="return confirmMarkaccept()" class="btn btn-success">accept</button>
                         </form>
+                        
                          <form method="POST" action="{{ path('app_apply_mark_refused') }}">
                             <input type="hidden" name="applyId" value="{{ apply.applyId }}">
-                            <button type="submit" onclick="return confirmMarkrefuse()" class="btn btn-success">refuse</button>
+                            <button type="submit" onclick="return confirmMarkrefuse()" class="btn btn-danger">refuse</button>
                         </form>
                     {% endif %}
                 </td>
@@ -39,11 +39,12 @@
         {% endfor %}
         </tbody>
     </table>
+     <a href="{{ path('app_customproduct_artist') }}">back to list</a>
 {% endblock %}
 {% block javascripts %}
     <script>
         function confirmMarkaccept() {
-            return confirm('Are you sure you want to accepti this demand?');
+            return confirm('Are you sure you want to accept this demand?');
         }
          function confirmMarkrefuse() {
             return confirm('Are you sure you want to refuse this demand?');
@@ -68,4 +69,17 @@ function playSound() {
   audio.play();
 }
 </script>
+    <style>
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            border-spacing: 0;
+            margin-top: 20px;
+             background-color: #fff;
+        }
+        
+     
+        
+    </style>
+{% endblock %}
 {% endblock %}

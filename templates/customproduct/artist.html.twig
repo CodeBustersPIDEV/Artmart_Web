@@ -1,20 +1,20 @@
-{% extends 'base.html.twig' %}
-{% import "base.html.twig" as base %}
-{% block title %}Customproduct index{% endblock %}
+{% extends 'baseF.html.twig' %}
+
+{% block content %}
+
+
 
 {% block stylesheets %}
-{{ parent() }}
+
 <style>
-body {
-  background-color: #F8F9FA;
-}
+
 .custom-card {
     border-radius: 10px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
     margin: 10px;
     padding: 20px;
     display: inline-block;
-    width: 25%;
+    width: 100%;
     background-color: #232931;
     transition: box-shadow 0.2s ease-in-out;
 }
@@ -66,11 +66,18 @@ body {
 
 {% endblock %}
 {% block body %}
-{{ base.NavBar() }}
-    <h1>Customproduct list</h1>
+
+{% block title %}
+        <h4><em>Custom</em> Products</h4>
+{% endblock %}
 
     <div class="card-container">
-        {% for customproduct in customproducts %}
+              {% set customproductCount = 0 %}
+{% for customproduct in customproducts %}
+    {% if customproductCount % 4 == 0 %}
+        <div class="row">
+    {% endif %}
+    <div class="col-sm-3">
            <div class="custom-card">
                     <img src="{{ asset('imagescustom/' ~ customproduct.product.image) }}" alt="{{ customproduct.product.name }} image"/>
            
@@ -84,8 +91,12 @@ body {
                      <form action="{{ path('app_customproduct_show', {'customProductId': customproduct.customProductId}) }}" method="get">
                         <button class="btn btn-secondary">Show</button>
                     </form>
-                </div>
-     
+              </div>   </div>
+      {% set customproductCount = customproductCount + 1 %}
+
+    {% if customproductCount % 4 == 0 %}
+        </div>
+    {% endif %}
         {% else %}
             <p>No records found.</p>
         {% endfor %}
@@ -113,4 +124,4 @@ function playSound() {
 </script>
 {% endblock %}
 
-
+{% endblock %}

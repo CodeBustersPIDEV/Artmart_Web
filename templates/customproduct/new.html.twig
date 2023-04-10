@@ -1,6 +1,8 @@
-{% extends 'base.html.twig' %}
-{% import "base.html.twig" as base %}
-{% block title %}Create Custom Product{% endblock %}
+{% extends 'baseF.html.twig' %}
+{% block content %}
+{% block title %}
+        <h4><em>Create</em> Custom Products</h4>
+{% endblock %}
 {% block stylesheets %}
 <style>
 /* Add your styles here */
@@ -56,9 +58,9 @@ margin-bottom: 20px;
 </style>
 {% endblock %}
 {% block body %}
-{{ base.NavBar() }}
+
 <div class="form-container">
-<h1>Create Custom Product</h1>
+
   {{ form_start(form,{ 'attr' :{ 'novalidate':'novalidate'}}) }}
      
         {{ form_row(form.product.name) }}
@@ -71,6 +73,7 @@ margin-bottom: 20px;
         {{ form_row(form.client) }}
     {{ include('customproduct/_form.html.twig', {'button_label': 'add'}) }}
     {{ form_end(form) }}
+         <a href="{{ path('app_customproduct_index') }}">back to list</a>
 </div>
 
 <script>
@@ -91,4 +94,4 @@ function playSound() {
   audio.play();
 }
 </script>
-{% endblock %}
+{% endblock %}{% endblock %}
