@@ -16,70 +16,92 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Form\FormError;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 #[Route('/user')]
 class UserController extends AbstractController
 {
-    #[Route('/', name: 'app_user_index', methods: ['GET'])]
-    public function index(EntityManagerInterface $entityManager): Response
+
+    public function uploadImage(UploadedFile $file, User $user): void
     {
+        $destinationFilePath = $this->getParameter('destinationPath');
+        // Get the original filename of the uploaded file
+        $filename = $file->getClientOriginalName();
+        if (!is_uploaded_file($file->getPathname())) {
+            throw new FileException('File was not uploaded via HTTP POST.');
+        }
+
+        if (!is_dir($destinationFilePath)) {
+            // Create the directory
+            mkdir($destinationFilePath, 0777, true);
+        }
+        // Move the uploaded file to the destination
+        $file->move($destinationFilePath, $filename);
+        $user->setPicture($$destinationFilePath . "/" . $filename);
+    }
+   
+
+    #[Route('/', name: 'app_user_index', methods: ['GET'])]
+    public function index(Request $request, EntityManagerInterface $entityManager): Response
+    { 
+        $searchTerm = $request->query->get('search');
+        $userse = $request->query->get('userse');
+        
+        $queryBuilder = $entityManager
+            ->getRepository(User::class)
+            ->createQueryBuilder('c')
+            ;
+        
+        if ($userse === 'name') {
+            $queryBuilder->orderBy('c.name', 'ASC');
+        } elseif ($userse === 'username') {
+            $queryBuilder->orderBy('c.username', 'ASC');
+        }
+        
+        if ($searchTerm) {
+            $queryBuilder->where('c.username LIKE :searchTerm')
+                ->setParameter('searchTerm', '%' . $searchTerm . '%');
+        }
+        
+        $users = $queryBuilder->getQuery()->getResult();
+    
+     /*   
         $users = $entityManager
             ->getRepository(User::class)
             ->findAll();
-
+*/
         return $this->render('user/index.html.twig', [
             'users' => $users,
+            'searchTerm' => $searchTerm,
         ]);
     }
 
     #[Route('/new', name: 'app_user_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager, UserRepository $userRepository, ArtistRepository $artistRepository, ClientRepository $clientRepository, AdminRepository $adminRepository, UserPasswordEncoderInterface $passwordEncoder): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, UserRepository $userRepository, ArtistRepository $artistRepository, ClientRepository $clientRepository, AdminRepository $adminRepository): Response
     {
         $user = new User();
         $addedUser = new User();
-        $form = $this->createForm(UserType::class, $user);
+        $artist = new Artist();
+        $admin = new Admin();
+
+        $form = $this->createForm(UserType::class, $user, [
+            'is_edit' => false,
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $role = $form->get('role')->getData();
             $user = $form->getData();
-            $existingUser = $userRepository->findOneBy(['email' => $user->getEmail()]);
-            if ($existingUser) {
-                $form->get('email')->addError(new FormError('This email is already taken.'));
-            } else {
-                $encodedPassword = $passwordEncoder->encodePassword($user, $user->getPassword());
-                $user->setPassword($encodedPassword);
-                $entityManager->persist($user);
-                $entityManager->flush();
-                $userId = $user->getUserId();
-                $email = $form->get('email')->getData();
-           }
-            if ($role === 'client') {
-                // $user = new Client();
-                $client = new Client();
-                $client->setNbrDemands(0);
-                $client->setNbrOrders(0);
-                $client->setUserId($userId);
-                $client->setUser($user);
-                $entityManager->persist($client);
-                $entityManager->flush();
-            } elseif ($role == 'artist') {
-                $artist = new Artist();
-                $artist->setNbrArtwork(0);
-                $artist->setUserId($userId);
-                $artist->setUser($user);
-                $entityManager->persist($artist);
-                $entityManager->flush();
-            } elseif ($role == 'admin') {
-                $admin = new Admin();
-                $admin->setUserId($userId);
-                $admin->setUser($user);
-                $entityManager->persist($admin);
-                $entityManager->flush();
-            }
-
+            $file = $form->get('file')->getData();
+            $entityManager->persist($user);
+            $entityManager->flush();
+            $email = $form->get('email')->getData();
+            $client = new Client();
+            $this->uploadImage($file, $user);
+            
             // $user->setRole($role);
             $userRepository->save($user, true);
 
@@ -95,6 +117,29 @@ class UserController extends AbstractController
                 $addedUser = $userRepository->findOneUserByEmail($email);
                 $admin->setUser($addedUser);
                 $adminRepository->save($admin, true);
+            }
+
+            if ($role === 'client') {
+                // $user = new Client();
+                $client->setNbrDemands(0);
+                $client->setNbrOrders(0);
+                // $client->setUserId($userId);
+                $client->setUser($user);
+                $entityManager->persist($client);
+                $entityManager->flush();
+            } elseif ($role == 'artist') {
+
+                $artist->setNbrArtwork(0);
+                //  $artist->setUserId($userId);
+                $artist->setUser($user);
+                $entityManager->persist($artist);
+                $entityManager->flush();
+            } elseif ($role == 'admin') {
+
+                //  $admin->setUserId($userId);
+                $admin->setUser($user);
+                $entityManager->persist($admin);
+                $entityManager->flush();
             }
 
             return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
@@ -113,6 +158,7 @@ class UserController extends AbstractController
         $admin = $adminRepository->findOneBy(['user' => $user]);
 
         $role = $user->getRole();
+
         if ($role === 'client' && $client) {
             $clientAttributes = [
                 'nbrOrders' => $client->getNbrOrders(),

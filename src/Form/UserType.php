@@ -8,14 +8,15 @@ use App\Entity\Artist;
 use App\Entity\Admin;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
-use Symfony\Component\Form\Extension\Core\Type\PasswordType;
-use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use App\Validator\NotFutureDate;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 
 class UserType extends AbstractType
 {
@@ -50,8 +51,13 @@ class UserType extends AbstractType
             ])
             ->add('username', TextType::class, [
                 'required' => true,
+            ])
+            ->add('file', FileType::class, [
+                'label' => 'Choose a file',
+                'mapped' => false,
+                'required' => true,
             ]);
-        if ('is_edit' != true) {
+        if (!$options['is_edit'])  {
             $builder->add('password', RepeatedType::class, [
                 'type' => PasswordType::class,
                 'invalid_message' => 'The password fields must match.',
@@ -60,10 +66,8 @@ class UserType extends AbstractType
                 'first_options'  => ['label' => 'Password'],
                 'second_options' => ['label' => 'Confirm Password'],
             ]);
-        } else {
-            $builder->add('password');
         }
-        if ('is_edit' == true) {
+        if ($options['is_edit']) {
             if (isset($clientAttributes['nbrOrders']) && $clientAttributes['nbrOrders'] !== null) {
                 $builder->add('client', ClientType::class, [
                     'data' => new Client(),
@@ -94,6 +98,7 @@ class UserType extends AbstractType
                 ]);
             }
         }
+        
     }
 
     public function configureOptions(OptionsResolver $resolver): void
