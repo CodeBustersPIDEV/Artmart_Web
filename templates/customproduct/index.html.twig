@@ -181,6 +181,22 @@
 
 
 
+.link-style {
+  display: inline-block;
+  padding: 10px 20px;
+  margin-right: 20px;
+  border-radius: 4px;
+  color: white;
+  background-color: #43464B;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.link-style:hover {
+  background-color: #3e8e41;
+  color: white;
+}
+
 
 
 </style>
@@ -228,6 +244,9 @@
 			</div>
 		</div>
 	</a>
+<a href="{{ path('app_apply_clients') }}" class="link-style">Demands</a>
+<a href="{{ path('app_apply_clientdone') }}" class="link-style">Check Progress</a>
+
 
 
         {% set customproductCount = 0 %}
@@ -259,9 +278,7 @@
       
 	 {{ knp_pagination_render(customproducts) }}
 <a href="{{ path('app_customproduct_artist') }}">Go to artist page</a>
-<a href="{{ path('app_apply_clients') }}">Demands</a>
-<a href="{{ path('app_apply_clientdone') }}"
-	>check your custom product progress</a>
+
 {% else %}
     <p>No custom products found.</p>
 {% endif %}
