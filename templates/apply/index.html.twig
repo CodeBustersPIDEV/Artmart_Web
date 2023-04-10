@@ -33,4 +33,23 @@ title %}Apply index{% endblock %} {% block body %}
 </table>
 
 <a href="{{ path('app_apply_new') }}">Create new</a>
+
+
+<script>
+// Add onclick event to all hyperlinks
+var links = document.getElementsByTagName("a");
+for (var i = 0; i < links.length; i++) {
+  links[i].setAttribute("onclick", "playSound()");
+}
+var linkss = document.getElementsByTagName("button");
+for (var i = 0; i < linkss.length; i++) {
+  linkss[i].setAttribute("onclick", "playSound()");
+}
+
+// Play sound function
+function playSound() {
+  var audio = new Audio('{{ asset('js/ab.mp3') }}');
+  audio.play();
+}
+</script>
 {% endblock %}

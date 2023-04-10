@@ -1,7 +1,7 @@
-{% extends 'base.html.twig' %}
+{% extends 'baseC.html.twig' %}
 
 {% block title %}Categories{% endblock %}
-
+{% block content %}
 {% block body %}
     <h1>Categories</h1>
 
@@ -23,4 +23,5 @@
     <a href="{{ path('app_categories_edit', {'categoriesId': category.categoriesId}) }}">edit</a>
 
     {{ include('categories/_delete_form.html.twig') }}
+{% endblock %}
 {% endblock %}

@@ -9,6 +9,58 @@ Custom Product Index
 {% block stylesheets %}
 {{ parent() }}
 <style>
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.pagination ul {
+  display: flex;
+  flex-wrap: wrap;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.pagination li {
+  margin: 0 5px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  background-color: #f2f2f2;
+}
+
+.pagination li.active {
+  background-color: #333;
+}
+
+.pagination li span,
+.pagination li a {
+  display: block;
+  padding: 5px 10px;
+  text-align: center;
+  color: #333;
+  text-decoration: none;
+  transition: all 0.2s ease-in-out;
+}
+
+.pagination li a:hover {
+  background-color: #333;
+  color: #fff;
+}
+
+.pagination li.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.pagination li.disabled span {
+  color: #999;
+}
+
+body {
+  background-color: #F8F9FA;
+}
 .custom-card {
     border-radius: 10px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
@@ -16,7 +68,7 @@ Custom Product Index
     padding: 20px;
     display: inline-block;
     width: 25%;
-    background-color: #e9ecef;
+    background-color: #232931;
     transition: box-shadow 0.2s ease-in-out;
 }
 
@@ -29,27 +81,27 @@ Custom Product Index
     margin-top: 0px;
     margin-bottom: 10px;
     font-size: 24px;
-    color: #343a40;
+    color: #FFFFFF;
 }
 
 .custom-card p {
     margin-top: 0px;
-    color: #6c757d;
+    color: #FFFFFF;
 }
 
 .custom-card a {
     display: inline-block;
     margin-top: 10px;
-    padding: 8px 16px;
-    background-color: #007bff;
-    color: #fff;
+    padding: 12px 20px;
+    background-color: #1CB4A7;
+    color: #FFFFFF;
     border-radius: 5px;
     text-decoration: none;
     transition: background-color 0.2s ease-in-out;
 }
 
 .custom-card a:hover {
-    background-color: #0062cc;
+    background-color: #0D6E72;
 }
 
 .custom-card img {
@@ -63,11 +115,28 @@ Custom Product Index
 .custom-card:nth-child(4n+1) {
     clear: left;
 }
+.orderby-link {
+  display: inline-block;
+  padding: 10px 20px;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  background-color: #f2f2f2;
+  color: #333;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+
+.orderby-link:hover {
+  background-color: #ddd;
+}
 </style>
+
+
 
 {% endblock %}
 
 {% block body %}
+
 {{ base.NavBar() }}
 <form action="{{ path('app_customproduct_index') }}" method="GET">
     <div class="form-group">
@@ -75,15 +144,17 @@ Custom Product Index
         <input type="text" id="search-term" name="q" class="form-control" value="{{ searchTerm }}">
     </div>
     <button type="submit" class="btn btn-primary">Search</button>
+    
+<a href="{{ path('app_customproduct_admin', {'order': 'name'}) }}" class="orderby-link">Order by Name</a>
+<a href="{{ path('app_customproduct_admin', {'order': 'weight'}) }}" class="orderby-link">Order by Weight</a>
 </form>
 
-<a href="{{ path('app_customproduct_index', {'order': 'name'}) }}">Order by Name</a>
-<a href="{{ path('app_customproduct_index', {'order': 'weight'}) }}">Order by Weight</a>
+
 
   <a href="{{ path('app_customproduct_new') }}">Create new</a>
 {% set totalWeight = customproducts|reduce((total, customproduct) => total + customproduct.product.weight, 0) %}
 
-{% if customproducts %}
+{% if customproducts.getTotalItemCount() > 0 %}
 <p>Your total custom product weight is: {{ totalWeight }}</p>
 {% set customproductCount = 0 %}
      
@@ -95,6 +166,7 @@ Custom Product Index
                 <img src="{{ asset('imagescustom/' ~ customproduct.product.image) }}" alt="{{ customproduct.product.name }} image" />
                 <h2>{{ customproduct.product.name }}</h2>
                 <p>{{ customproduct.product.description }}</p>
+    
                 <a href="{{ path('app_customproduct_show', {'customProductId': customproduct.customProductId}) }}">show</a>
                 <a href="{{ path('app_customproduct_edit', {'customProductId': customproduct.customProductId}) }}">edit</a>
             </div>
@@ -103,7 +175,8 @@ Custom Product Index
             <p>no records found</p>
         {% endfor %}
 	  </ul>
-	  <p>Your total custom product count is: {{ customproductCount }}</p>
+      
+	 {{ knp_pagination_render(customproducts) }}
 <a href="{{ path('app_customproduct_artist') }}">Go to artist page</a>
 <a href="{{ path('app_apply_clients') }}">Demands</a>
 <a href="{{ path('app_apply_clientdone') }}"
@@ -111,5 +184,26 @@ Custom Product Index
 {% else %}
     <p>No custom products found.</p>
 {% endif %}
-  
+
+
+
+<script>
+// Add onclick event to all hyperlinks
+var links = document.getElementsByTagName("a");
+for (var i = 0; i < links.length; i++) {
+  links[i].setAttribute("onclick", "playSound()");
+}
+var linkss = document.getElementsByTagName("button");
+for (var i = 0; i < linkss.length; i++) {
+  linkss[i].setAttribute("onclick", "playSound()");
+}
+
+// Play sound function
+function playSound() {
+  var audio = new Audio('{{ asset('js/ab.mp3') }}');
+  audio.play();
+}
+
+</script>
+
 {% endblock %}
