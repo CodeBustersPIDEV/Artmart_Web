@@ -1,13 +1,13 @@
-{% extends 'base.html.twig' %}
+{% extends 'baseF.html.twig' %}
 
-{% import "base.html.twig" as base %}
+{% block content %}
 
 {% block title %}
-Custom Product Index
+        <h4><em>Custom</em> Products</h4>
 {% endblock %}
 
 {% block stylesheets %}
-{{ parent() }}
+
 <style>
 .pagination {
   display: flex;
@@ -58,16 +58,14 @@ Custom Product Index
   color: #999;
 }
 
-body {
-  background-color: #F8F9FA;
-}
+
 .custom-card {
     border-radius: 10px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
     margin: 10px;
     padding: 20px;
     display: inline-block;
-    width: 25%;
+    width: 100%;
     background-color: #232931;
     transition: box-shadow 0.2s ease-in-out;
 }
@@ -117,18 +115,74 @@ body {
 }
 .orderby-link {
   display: inline-block;
-  padding: 10px 20px;
-  border: 1px solid #ddd;
-  border-radius: 3px;
-  background-color: #f2f2f2;
-  color: #333;
+  padding: 8px 16px;
+  background-color: #AA336A;
+  color: white;
+  text-align: center;
   text-decoration: none;
+  font-size: 16px;
+  border-radius: 4px;
   transition: background-color 0.3s ease;
 }
 
 .orderby-link:hover {
-  background-color: #ddd;
+  background-color: #AA336A;
 }
+
+/* Search Bar */
+.form-control {
+  display: inline-block;
+  width: 70%;
+  padding: 6px 12px;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #55595c;
+  background-color: #fff;
+  background-image: none;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+          box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+  -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+  transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+  transition: box-shadow ease-in-out .15s,border-color ease-in-out .15s;
+  transition: box-shadow ease-in-out .15s,border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+}
+
+.form-control:focus {
+  border-color: #66afe9;
+  outline: 0;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6);
+          box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6);
+}
+
+.btn-search {
+  display: inline-block;
+  width: 20%;
+  padding: 6px 12px;
+  margin-left: 10px;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #fff;
+  background-color: #17a2b8;
+  border: 1px solid #17a2b8;
+  border-radius: 4px;
+  -webkit-transition: background-color ease-in-out .15s,border-color ease-in-out .15s;
+  transition: background-color ease-in-out .15s,border-color ease-in-out .15s;
+  cursor: pointer;
+}
+
+.btn-search:hover {
+  background-color: #117a8b;
+  border-color: #10707f;
+}
+
+
+
+
+
 </style>
 
 
@@ -137,31 +191,52 @@ body {
 
 {% block body %}
 
-{{ base.NavBar() }}
+
 <form action="{{ path('app_customproduct_index') }}" method="GET">
     <div class="form-group">
-        <label for="search-term">Search for custom products:</label>
-        <input type="text" id="search-term" name="q" class="form-control" value="{{ searchTerm }}">
-    </div>
-    <button type="submit" class="btn btn-primary">Search</button>
     
-<a href="{{ path('app_customproduct_admin', {'order': 'name'}) }}" class="orderby-link">Order by Name</a>
-<a href="{{ path('app_customproduct_admin', {'order': 'weight'}) }}" class="orderby-link">Order by Weight</a>
+      <input type="text" id="search-term" name="q" class="form-control" value="{{ searchTerm }}" placeholder="Search...">
+    </div>
+
+
+    
+
 </form>
 
 
 
-  <a href="{{ path('app_customproduct_new') }}">Create new</a>
+
 {% set totalWeight = customproducts|reduce((total, customproduct) => total + customproduct.product.weight, 0) %}
 
 {% if customproducts.getTotalItemCount() > 0 %}
-<p>Your total custom product weight is: {{ totalWeight }}</p>
-{% set customproductCount = 0 %}
+<p  style=" color: #fff;">Your total custom product weight is: {{ totalWeight }}</p>
+<a href="{{ path('app_customproduct_index', {'order': 'name'}) }}" class="orderby-link">Order by Name</a>
+<a href="{{ path('app_customproduct_index', {'order': 'weight'}) }}" class="orderby-link">Order by Weight</a>
      
   
-    <ul>
-        {% for customproduct in customproducts %}
+    
+<link rel="stylesheet" href="{{ asset('assets/Components/specialOrder.css') }}"/>
+	<a href="{{ path('app_customproduct_new') }}">
+		<div data-tooltip="New Product" class="button mid">
+			<div class="button-wrapper">
+				<div class="text">Create New</div>
+				<span class="icon">
+					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-earmark-plus-fill" viewbox="0 0 16 16">
+						<path d="M9.293 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.707A1 1 0 0 0 13.707 4L10 .293A1 1 0 0 0 9.293 0zM9.5 3.5v-2l3 3h-2a1 1 0 0 1-1-1zM8.5 7v1.5H10a.5.5 0 0 1 0 1H8.5V11a.5.5 0 0 1-1 0V9.5H6a.5.5 0 0 1 0-1h1.5V7a.5.5 0 0 1 1 0z"/>
+					</svg>
+				</span>
+			</div>
+		</div>
+	</a>
 
+
+        {% set customproductCount = 0 %}
+{% for customproduct in customproducts %}
+    {% if customproductCount % 4 == 0 %}
+        <div class="row">
+    {% endif %}
+
+<div class="col-sm-3">
             <div class="custom-card">
                 <img src="{{ asset('imagescustom/' ~ customproduct.product.image) }}" alt="{{ customproduct.product.name }} image" />
                 <h2>{{ customproduct.product.name }}</h2>
@@ -170,7 +245,13 @@ body {
                 <a href="{{ path('app_customproduct_show', {'customProductId': customproduct.customProductId}) }}">show</a>
                 <a href="{{ path('app_customproduct_edit', {'customProductId': customproduct.customProductId}) }}">edit</a>
             </div>
-                {% set customproductCount = customproductCount + 1 %}
+             </div>
+             {% set customproductCount = customproductCount + 1 %}
+
+    {% if customproductCount % 4 == 0 %}
+        </div>
+    {% endif %}
+    
         {% else %}
             <p>no records found</p>
         {% endfor %}
@@ -205,5 +286,5 @@ function playSound() {
 }
 
 </script>
-
+{% endblock %}
 {% endblock %}

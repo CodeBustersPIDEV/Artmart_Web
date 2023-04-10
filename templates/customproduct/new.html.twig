@@ -1,6 +1,8 @@
-{% extends 'base.html.twig' %}
-{% import "base.html.twig" as base %}
-{% block title %}Create Custom Product{% endblock %}
+{% extends 'baseF.html.twig' %}
+{% block content %}
+{% block title %}
+        <h4><em>Create</em> Custom Products</h4>
+{% endblock %}
 {% block stylesheets %}
 <style>
 /* Add your styles here */
@@ -56,9 +58,9 @@ margin-bottom: 20px;
 </style>
 {% endblock %}
 {% block body %}
-{{ base.NavBar() }}
+
 <div class="form-container">
-<h1>Create Custom Product</h1>
+
   {{ form_start(form,{ 'attr' :{ 'novalidate':'novalidate'}}) }}
      
         {{ form_row(form.product.name) }}
@@ -67,10 +69,34 @@ margin-bottom: 20px;
         {{ form_row(form.product.dimensions) }}
         {{ form_row(form.product.weight) }}
         {{ form_row(form.product.material) }}
-        {{ form_row(form.product.image) }}
+{{ form_label(form.product.image, 'Product Image') }}
+{{ form_widget(form.product.image, {'attr': {'style': 'display:none;'}}) }}
+{% if customproduct.product.image is defined %}
+ <img id="preview-image" style="max-width: 128px" src="{{ asset('imagescustom/' ~ customproduct.product.image) }}" alt="Product image" onclick="document.getElementById('product_image').click()">
+<span id="image-name"></span>
+{% else %}
+  <img id="preview-image" style="max-width: 128px" src="{{ asset('imagescustom/imagec.png') }}" alt="Default product image" onclick="document.getElementById('product_image').click()">
+{% endif %}
+
+
+<script>
+    document.getElementById('product_image').addEventListener('change', function(e) {
+        var fileName = e.target.files[0].name;
+        document.getElementById('image-name').innerHTML = fileName;
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            document.getElementById('preview-image').setAttribute('src', e.target.result);
+        }
+        reader.readAsDataURL(e.target.files[0]);
+    });
+</script>
+
+
+
         {{ form_row(form.client) }}
     {{ include('customproduct/_form.html.twig', {'button_label': 'add'}) }}
     {{ form_end(form) }}
+         <a href="{{ path('app_customproduct_index') }}">back to list</a>
 </div>
 
 <script>
@@ -91,4 +117,4 @@ function playSound() {
   audio.play();
 }
 </script>
-{% endblock %}
+{% endblock %}{% endblock %}
