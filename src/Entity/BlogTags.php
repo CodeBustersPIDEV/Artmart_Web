@@ -39,7 +39,7 @@ class BlogTags
      *   @ORM\JoinColumn(name="tag_id", referencedColumnName="tags_ID")
      * })
      */
-    private $tag;
+    private $tag_id;
 
     public function getId(): ?int
     {
@@ -60,12 +60,12 @@ class BlogTags
 
     public function getTag(): ?Tags
     {
-        return $this->tag ?? null;
+        return $this->tag_id ?? null;
     }
 
     public function setTag(?Tags $tag): self
     {
-        $this->tag = $tag;
+        $this->tag_id = $tag;
 
         return $this;
     }

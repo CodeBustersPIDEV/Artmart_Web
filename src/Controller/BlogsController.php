@@ -64,18 +64,37 @@ class BlogsController extends AbstractController
         }
     }
 
-    // public function addNewTags(string $tags): void
-    // {
-    //     $tagNames = explode('#', $tags);
-    //     foreach ($tagNames as $tagName) {
-    //         $tag = $this->tagsRepository->findOneBy(['name' => $tagName]);
-    //         if ($tag === null) {
-    //             $newTag = new Tags();
-    //             $newTag->setName($tagName);
-    //             $this->tagsRepository->save($newTag, true);
-    //         }
-    //     }
-    // }
+    public function editTagsToBlog(Blogs $blog, string $tags, $alreadyTags): void
+    {
+        $tagNames = explode('#', $tags);
+        foreach ($tagNames as $tagName) {
+            if ($tagName === '') {
+                continue;
+            }
+            $tag = $this->tagsRepository->findOneBy(['name' => $tagName]);
+            if ($tag === null) {
+                $tag = new Tags();
+                $tag->setName($tagName);
+                $this->tagsRepository->save($tag, true);
+            }
+            $tagAlreadyExists = false;
+            foreach ($alreadyTags as $alreadyTag) {
+                if ($alreadyTag->getTag() === $tag) {
+                    $tagAlreadyExists = true;
+                    break;
+                }
+            }
+            if (!$tagAlreadyExists) {
+                $hasTag = new BlogTags();
+                $hasTag->setBlog($blog);
+                $hasTag->setTag($tag);
+                $this->hasTagRepository->save($hasTag, true);
+            }
+        }
+    }
+
+
+
     public function addTagsToBlog(Blogs $blog, string $tags): void
     {
         $tagNames = explode('#', $tags);
@@ -83,18 +102,23 @@ class BlogsController extends AbstractController
             $tag = $this->tagsRepository->findOneBy(['name' => $tagName]);
             if ($tag === null && $tagName != "") {
                 $newTag = new Tags();
+                $addedtag = new Tags();
                 $newTag->setName($tagName);
                 $this->tagsRepository->save($newTag, true);
                 $addedtag = $this->tagsRepository->findOneBy(['name' => $tagName]);
-                $hasTag = new BlogTags();
-                $hasTag->setBlog($blog);
-                $hasTag->setTag($addedtag);
-                $this->hasTagRepository->save($hasTag, true);
+                if ($addedtag != null) {
+                    $hasTag = new BlogTags();
+                    $hasTag->setBlog($blog);
+                    $hasTag->setTag($addedtag);
+                    $this->hasTagRepository->save($hasTag, true);
+                }
             } else {
-                $hasTag = new BlogTags();
-                $hasTag->setBlog($blog);
-                $hasTag->setTag($tag);
-                $this->hasTagRepository->save($hasTag, true);
+                if ($tag !== null) {
+                    $hasTag = new BlogTags();
+                    $hasTag->setBlog($blog);
+                    $hasTag->setTag($tag);
+                    $this->hasTagRepository->save($hasTag, true);
+                }
             }
         }
     }
@@ -137,7 +161,6 @@ class BlogsController extends AbstractController
                 $strTags = $strTags . "#" . $tag->getName();
             }
             $tt = $strTags . $addedTags;
-            // $this->addNewTags($addedTags);
             $blogsRepository->save($blog, true);
 
             $addedBlog = $blogsRepository->findOneByTitle($title);
@@ -154,7 +177,7 @@ class BlogsController extends AbstractController
         return $this->renderForm('blogs/new.html.twig', [
             'blog' => $blog,
             'form' => $form,
-            // 'tagsList' => $this->tagsRepository->findAll()
+            'blog_media' => null
         ]);
     }
 
@@ -183,36 +206,44 @@ class BlogsController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $media = $mediaRepository->findOneMediaByBlogID($blogs_ID);
+            $media = $mediaRepository->findOneMediaByBlogID($blog->getBlogsId());
+            $alreadyTags = $this->hasTagRepository->findAllBlogsByBlogID($blog->getBlogsId());
+            $hasCat = $this->hasBlogCategoryRepository->findOneByBlogID($blogs_ID);
             $cat = $form->get('category')->getData();
             $tags = $form->get('tags')->getData();
             $addedTags = $_POST['addedTags'];
-            $hasCat = $this->hasBlogCategoryRepository->findOneByBlogID($blogs_ID);
-            if ($hasCat === null) {
-                $hasCat = new HasBlogCategory();
-                $hasCat->setCategory($cat);
-            }
-            // $mediaRepository->deleteFile($media->getFileName());
             $file = $form->get('file')->getData();
+
+            // $mediaRepository->deleteFile($media->getFileName());
             if ($file != null) {
                 $this->uploadImage($file, $media, $blog, $edit);
             }
+
             $addedTags = $_POST['addedTags'];
             foreach ($tags as $tag) {
 
                 $strTags = $strTags . "#" . $tag->getName();
             }
             $tt = $strTags . $addedTags;
-            $alreadyTags = $this->hasTagRepository->findAllBlogsByBlogID($blog->getBlogsId());
-            $this->addTagsToBlog($blog, $tt);
+
+            if ($hasCat === null) {
+                $hasCat = new HasBlogCategory();
+                $hasCat->setCategory($cat);
+                $hasCat->setBlog($blog);
+            } else {
+                $hasCat->setCategory($cat);
+            }
+            $this->editTagsToBlog($blog, $tt, $alreadyTags);
             $blogsRepository->save($blog, true);
             $this->hasBlogCategoryRepository->save($hasCat, true);
+
             return $this->redirectToRoute('app_blogs_index', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('blogs/edit.html.twig', [
             'blog' => $blog,
             'form' => $form,
+            'blog_media' => $mediaRepository->findOneMediaByBlogID($blog->getBlogsId()),
         ]);
     }
 
@@ -222,7 +253,7 @@ class BlogsController extends AbstractController
         $media = new Media();
         $hasCat = new HasBlogCategory();
         $media = $mediaRepository->findOneMediaByBlogID($blogs_ID);
-        // $hasCat = $this->hasBlogCategoryRepository->findOneByBlogID($blogs_ID);
+        $hasCat = $this->hasBlogCategoryRepository->findOneByBlogID($blogs_ID);
         if ($this->isCsrfTokenValid('delete' . $blog->getBlogsID(), $request->request->get('_token'))) {
             $blogsRepository->remove($blog, true);
             $mediaRepository->remove($media, true);
