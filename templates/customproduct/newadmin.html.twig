@@ -40,10 +40,29 @@
                             {{ form_label(form.product.material, 'Material', {'label_attr': {'class': 'font-weight-bold'}}) }}
                             {{ form_widget(form.product.material, {'attr': {'class': 'form-control'}}) }}
                         </div>
-                        <div class="form-group">
-                            {{ form_label(form.product.image, 'Image', {'label_attr': {'class': 'font-weight-bold'}}) }}
-                            {{ form_widget(form.product.image, {'attr': {'class': 'form-control'}}) }}
-                        </div>
+                <div class="form-group">
+    {{ form_label(form.product.image, 'Image', {'label_attr': {'class': 'font-weight-bold'}}) }}
+    {{ form_widget(form.product.image, {'attr': {'class': 'form-control', 'id': 'product_image', 'style': 'display:none;'}}) }}
+    {% if customproduct.product.image is defined %}
+        <img id="preview-image" style="max-width: 128px" src="{{ asset('imagescustom/' ~ customproduct.product.image) }}" alt="Product image" onclick="document.getElementById('product_image').click()">
+    {% else %}
+        <img id="preview-image" style="max-width: 128px" src="{{ asset('imagescustom/imagec.png') }}" alt="Default product image" onclick="document.getElementById('product_image').click()">
+    {% endif %}
+    <span id="image-name"></span>
+</div>
+
+<script>
+    document.getElementById('product_image').addEventListener('change', function(e) {
+        var fileName = e.target.files[0].name;
+        document.getElementById('image-name').innerHTML = fileName;
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            document.getElementById('preview-image').setAttribute('src', e.target.result);
+        }
+        reader.readAsDataURL(e.target.files[0]);
+    });
+</script>
+
                         <div class="form-group">
                             {{ form_label(form.client, 'Client', {'label_attr': {'class': 'font-weight-bold'}}) }}
                             {{ form_widget(form.client, {'attr': {'class': 'form-control'}}) }}

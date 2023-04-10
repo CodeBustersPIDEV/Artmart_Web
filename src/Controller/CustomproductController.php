@@ -2,7 +2,8 @@
 
 namespace App\Controller;
 
-use App\Entity\Customproduct;
+use App\Entity\Customproduct;use App\Entity\Product;
+
 use App\Entity\Categories;
 
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
@@ -121,7 +122,10 @@ class CustomproductController extends AbstractController
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $customproduct = new Customproduct();
-
+        $product = new Product();
+        $product->setImage('imagec.png');
+        $customproduct->setProduct($product);
+    
         $form = $this->createForm(CustomproductType::class, $customproduct);
        
         $form->handleRequest($request);
@@ -131,7 +135,6 @@ class CustomproductController extends AbstractController
             $customproduct->setProduct($product);
             $customproduct->setClient($form->get('client')->getData());
           
-            
             $imageFile = $form->get('product')->get('image')->getData();
             if ($imageFile) {
                 $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
@@ -159,7 +162,6 @@ class CustomproductController extends AbstractController
         return $this->renderForm('customproduct\new.html.twig', [
             'customproduct' => $customproduct,
             'form' => $form,
-          
         ]);
     }
     
@@ -169,6 +171,9 @@ class CustomproductController extends AbstractController
     public function newadmin(Request $request, EntityManagerInterface $entityManager): Response
     {
         $customproduct = new Customproduct();
+        $product = new Product();
+        $product->setImage('imagec.png');
+        $customproduct->setProduct($product);
         $form = $this->createForm(CustomproductType::class, $customproduct);
         $form->handleRequest($request);
     

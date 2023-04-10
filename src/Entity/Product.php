@@ -75,7 +75,7 @@ class Product
      * @ORM\Column(name="image", type="string", length=255, nullable=false)
      * @Assert\NotBlank(message="Name is required")
      */
-    private $image ;
+    private $image = 'imagecustom/imagec.png';
 
     public function getProductId(): ?int
     {
