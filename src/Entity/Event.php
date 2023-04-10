@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Event
@@ -26,6 +27,7 @@ class Event
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255, nullable=false)
+     * @Assert\NotBlank(message="Name is required")
      */
     private $name;
 
@@ -33,6 +35,7 @@ class Event
      * @var string
      *
      * @ORM\Column(name="location", type="string", length=255, nullable=false)
+     * @Assert\NotBlank(message="Location is required")
      */
     private $location;
 
@@ -47,6 +50,7 @@ class Event
      * @var string
      *
      * @ORM\Column(name="description", type="text", length=65535, nullable=false)
+     * @Assert\NotBlank(message="Description is required")
      */
     private $description;
 
@@ -54,6 +58,8 @@ class Event
      * @var float
      *
      * @ORM\Column(name="entryFee", type="float", precision=10, scale=0, nullable=false)
+     * @Assert\NotNull(message="Entry fee is required")
+     * @Assert\Positive(message="Entry fee should be positive")
      */
     private $entryfee;
 
@@ -61,6 +67,8 @@ class Event
      * @var int
      *
      * @ORM\Column(name="capacity", type="integer", nullable=false)
+     * @Assert\NotNull(message="Capacity is required")
+     * @Assert\Positive(message="Capacity should be positive")
      */
     private $capacity;
 

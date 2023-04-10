@@ -1902,9 +1902,9 @@
             "description": "PHPDoc parser with support for nullable, intersection and generic types",
             "support": {
                 "issues": "https://github.com/phpstan/phpdoc-parser/issues",
-                "source": "https://github.com/phpstan/phpdoc-parser/tree/1.18.1"
+                "source": "https://github.com/phpstan/phpdoc-parser/tree/1.18.0"
             },
-            "time": "2023-04-07T11:51:11+00:00"
+            "time": "2023-04-06T07:26:43+00:00"
         },
         {
             "name": "psr/cache",
