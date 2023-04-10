@@ -48,7 +48,7 @@ class CustomproductController extends AbstractController
         $pagination = $paginator->paginate(
             $queryBuilder->getQuery(),
             $request->query->getInt('page', 1),
-            6  );
+            8  );
         
         $customproducts = $queryBuilder->getQuery()->getResult();
     
