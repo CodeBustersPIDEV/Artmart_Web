@@ -42,17 +42,40 @@ class UserController extends AbstractController
         $file->move($destinationFilePath, $filename);
         $user->setPicture($$destinationFilePath . "/" . $filename);
     }
-
+   
 
     #[Route('/', name: 'app_user_index', methods: ['GET'])]
-    public function index(EntityManagerInterface $entityManager): Response
-    {
+    public function index(Request $request, EntityManagerInterface $entityManager): Response
+    { 
+        $searchTerm = $request->query->get('search');
+        $userse = $request->query->get('userse');
+        
+        $queryBuilder = $entityManager
+            ->getRepository(User::class)
+            ->createQueryBuilder('c')
+            ;
+        
+        if ($userse === 'name') {
+            $queryBuilder->orderBy('c.name', 'ASC');
+        } elseif ($userse === 'username') {
+            $queryBuilder->orderBy('c.username', 'ASC');
+        }
+        
+        if ($searchTerm) {
+            $queryBuilder->where('c.username LIKE :searchTerm')
+                ->setParameter('searchTerm', '%' . $searchTerm . '%');
+        }
+        
+        $users = $queryBuilder->getQuery()->getResult();
+    
+     /*   
         $users = $entityManager
             ->getRepository(User::class)
             ->findAll();
-
+*/
         return $this->render('user/index.html.twig', [
             'users' => $users,
+            'searchTerm' => $searchTerm,
         ]);
     }
 
@@ -64,7 +87,9 @@ class UserController extends AbstractController
         $artist = new Artist();
         $admin = new Admin();
 
-        $form = $this->createForm(UserType::class, $user);
+        $form = $this->createForm(UserType::class, $user, [
+            'is_edit' => false,
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
