@@ -48,12 +48,7 @@ class Product
     #[ORM\Column(name: "material", type: "string", length:255, nullable: false)]
     private $material;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="image", type="string", length=255, nullable=false)
-     * @Assert\NotBlank(message="Name is required")
-     */
+    #[ORM\Column(name: "image", type: "string", length:255, nullable: false)]
     private $image = 'imagecustom/imagec.png';
 
     public function getProductId(): ?int
