@@ -18,10 +18,10 @@ class EventType extends AbstractType
             ->add('location')
             ->add('type', ChoiceType::class, [
                 'choices' => [
-                    'Fair' => 'fair',
-                    'Gallery' => 'gallery',
+                    'Auction' => 'auction',
+                    'Art Fair' => 'art fair',
                     'Exhibition' => 'exhibition',
-                    'Festival' => 'festival',
+                    'Open Gallery' => 'open gallery',
                 ],
             ])
             ->add('description')
@@ -39,7 +39,9 @@ class EventType extends AbstractType
             ->add('status', ChoiceType::class, [
                 'choices' => [
                     'Scheduled' => 'scheduled',
-                    'Completed' => 'completed',
+                    'Started' => 'started',
+                    'Finished' => 'finshed',
+                    'Postponed' => 'postponed',
                     'Cancelled' => 'cancelled',
                 ],
             ])
