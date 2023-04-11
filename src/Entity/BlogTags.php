@@ -4,41 +4,26 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * BlogTags
- *
- * @ORM\Table(name="blog_tags", indexes={@ORM\Index(name="blog_id", columns={"blog_id"}), @ORM\Index(name="tag_id", columns={"tag_id"})})
- * @ORM\Entity
- */
+#[ORM\Table(name: "blog_tags", options: [
+    'indexes' => [
+        'blog_id' => ['columns' => ['blog_id']],
+        'tag_id' => ['columns' => ['tag_id']]
+    ]
+])]
+#[ORM\Entity]
 class BlogTags
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer", nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-     */
+    #[ORM\Column(name: "id", type: "integer", nullable: false)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: "IDENTITY")]
     private $id;
 
-    /**
-     * @var \Blogs
-     *
-     * @ORM\ManyToOne(targetEntity="Blogs")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="blog_id", referencedColumnName="blogs_ID")
-     * })
-     */
+    #[ORM\ManyToOne(targetEntity: "Blogs")]
+    #[ORM\JoinColumn(name: "blog_id", referencedColumnName: "blogs_ID")]
     private $blog_id;
 
-    /**
-     * @var \Tags
-     *
-     * @ORM\ManyToOne(targetEntity="Tags")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="tag_id", referencedColumnName="tags_ID")
-     * })
-     */
+    #[ORM\ManyToOne(targetEntity: "Tags")]
+    #[ORM\JoinColumn(name: "tag_id", referencedColumnName: "tags_ID")]
     private $tag_id;
 
     public function getId(): ?int

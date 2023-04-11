@@ -4,49 +4,31 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * Apply
- *
- * @ORM\Table(name="apply", indexes={@ORM\Index(name="customproduct_ID", columns={"customproduct_ID"}), @ORM\Index(name="artist_ID", columns={"artist_ID"})})
- * @ORM\Entity
- */
+#[ORM\Entity]
+#[ORM\Table(name: "apply", options: [
+    'indexes' => [
+        'customproduct_ID' => ['columns' => ['customproduct_ID']],
+        'artist_ID' => ['columns' => ['artist_ID']]
+    ]
+])]
 class Apply
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="apply_ID", type="integer", nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: "IDENTITY")]
+    #[ORM\Column(name: "apply_ID", type: "integer")]
     private $applyId;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="status", type="string", length=255, nullable=false)
-     */
+    #[ORM\Column(name: "status", type: "string", length: 255)]
     private $status;
 
-    /**
-     * @var \User
-     *
-     * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="artist_ID", referencedColumnName="user_ID")
-     * })
-     */
+    #[ORM\ManyToOne(targetEntity: "User")]
+    #[ORM\JoinColumn(name: "artist_ID", referencedColumnName: "user_ID")]
     private $artist;
 
-    /**
-     * @var \Customproduct
-     *
-     * @ORM\ManyToOne(targetEntity="Customproduct")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="customproduct_ID", referencedColumnName="custom_product_ID")
-     * })
-     */
+    #[ORM\ManyToOne(targetEntity: "Customproduct")]
+    #[ORM\JoinColumn(name: "customproduct_ID", referencedColumnName: "custom_product_ID")]
     private $customproduct;
+
 
     public function getApplyId(): ?int
     {

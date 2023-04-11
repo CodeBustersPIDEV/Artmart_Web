@@ -6,89 +6,49 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints\DateTime;
 
-/**
- * Order
- *
- * @ORM\Table(name="`order`", indexes={@ORM\Index(name="ShippingMethod", columns={"ShippingMethod"}), @ORM\Index(name="PaymentMethod", columns={"PaymentMethod"}), @ORM\Index(name="ProductID", columns={"ProductID"}), @ORM\Index(name="UserID", columns={"UserID"})})
- * @ORM\Entity
- */
+#[ORM\Table(name: "`order`",options: [
+    'indexes' => [
+        'ShippingMethod' => ['columns' => ['ShippingMethod']],
+        'PaymentMethod' => ['columns' => ['PaymentMethod']],
+        'ProductID' => ['columns' => ['ProductID']],
+        'UserID' => ['columns' => ['UserID']]
+    ]
+])]
+#[ORM\Entity]
 class Order
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="order_ID", type="integer", nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-     */
+    #[ORM\Column(name: "order_ID", type: "integer", nullable: false)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: "IDENTITY")]
     private $orderId;
 
-    /**
-     * @var int|null
-     *
-     * @ORM\Column(name="Quantity", type="integer", nullable=true, options={"default"="NULL"})
-     */
+    #[ORM\Column(name: "Quantity", type: "integer", nullable: false,options:["default"=>"NULL"])]
     private $quantity = NULL;
 
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(name="ShippingAddress", type="text", length=65535, nullable=true, options={"default"="NULL"})
-     */
+    #[ORM\Column(name: "ShippingAddress", type: "text",length:65535, nullable: false,options:["default"=>"NULL"])]
     private $shippingaddress = 'NULL';
 
-/**
- * @var \DateTime|null
- *
- * @ORM\Column(name="OrderDate", type="date", nullable=true, options={"default": "CURRENT_TIMESTAMP"})
- */
-private $orderdate;
 
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(name="TotalCost", type="decimal", precision=10, scale=2, nullable=true)
-     */
+    #[ORM\Column(name: "OrderDate", type: "date", nullable: true,options:["default"=>"CURRENT_TIMESTAMP"])]
+    private $orderdate;
+
+    #[ORM\Column(name: "TotalCost", type: "decimal", nullable: true, precision:10, scale:2)]
     private $totalcost;
 
-    /**
-     * @var \User
-     *
-     * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="UserID", referencedColumnName="user_ID")
-     * })
-     */
+    #[ORM\ManyToOne(targetEntity: "User")]
+    #[ORM\JoinColumn(name: "userID", referencedColumnName: "user_ID")]
     private $userid;
 
-    /**
-     * @var \Product
-     *
-     * @ORM\ManyToOne(targetEntity="Product")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="ProductID", referencedColumnName="product_ID")
-     * })
-     */
+    #[ORM\ManyToOne(targetEntity: "Product")]
+    #[ORM\JoinColumn(name: "ProductID", referencedColumnName: "product_ID")]
     private $productid;
 
-    /**
-     * @var \Shippingoption
-     *
-     * @ORM\ManyToOne(targetEntity="Shippingoption")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="ShippingMethod", referencedColumnName="shippingOption_ID")
-     * })
-     */
+    #[ORM\ManyToOne(targetEntity: "Shippingoption")]
+    #[ORM\JoinColumn(name: "ShippingMethod", referencedColumnName: "shippingOption_ID")]
     private $shippingmethod;
 
-    /**
-     * @var \Paymentoption
-     *
-     * @ORM\ManyToOne(targetEntity="Paymentoption")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="PaymentMethod", referencedColumnName="paymentOption_ID")
-     * })
-     */
+    #[ORM\ManyToOne(targetEntity: "Paymentoption")]
+    #[ORM\JoinColumn(name: "PaymentMethod", referencedColumnName: "paymentOption_ID")]
     private $paymentmethod;
 
     public function getOrderId(): ?int

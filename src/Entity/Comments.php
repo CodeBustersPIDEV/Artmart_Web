@@ -5,62 +5,35 @@ namespace App\Entity;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * Comments
- *
- * @ORM\Table(name="comments", indexes={@ORM\Index(name="author", columns={"author"}), @ORM\Index(name="blog_ID", columns={"blog_ID"})})
- * @ORM\Entity
- */
+#[ORM\Table(name: "comments", options: [
+    'indexes' => [
+        'author' => ['columns' => ['author']],
+        'tag_id' => ['columns' => ['blog_ID']]
+    ]
+])]
+#[ORM\Entity]
 class Comments
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="comments_ID", type="integer", nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-     */
+    #[ORM\Column(name: "comments_ID", type: "integer", nullable: false)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: "IDENTITY")]
     private $commentsId;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="content", type="text", length=65535, nullable=false)
-     */
+    #[ORM\Column(name: "content", type: "text", length: 65535, nullable: false)]
     private $content;
 
-    /**
-     * @var \DateTime|null
-     *
-     * @ORM\Column(name="date", type="datetime", nullable=true, options={"default"="current_timestamp()"})
-     */
+    #[ORM\Column(name: "date", type: "datetime", nullable: true, options: ["default" => "current_timestamp()"])]
     private $date = 'current_timestamp()';
 
-    /**
-     * @var int|null
-     *
-     * @ORM\Column(name="rating", type="integer", nullable=true, options={"default"="NULL"})
-     */
+    #[ORM\Column(name: "rating", type: "integer", nullable: true, options: ["default" => "NULL"])]
     private $rating = NULL;
 
-    /**
-     * @var \User
-     *
-     * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="author", referencedColumnName="user_ID")
-     * })
-     */
+    #[ORM\ManyToOne(targetEntity: "User")]
+    #[ORM\JoinColumn(name: "author", referencedColumnName: "user_ID")]
     private $author;
 
-    /**
-     * @var \Blogs
-     *
-     * @ORM\ManyToOne(targetEntity="Blogs")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="blog_ID", referencedColumnName="blogs_ID")
-     * })
-     */
+    #[ORM\ManyToOne(targetEntity: "Blogs")]
+    #[ORM\JoinColumn(name: "blog_ID", referencedColumnName: "blogs_ID")]
     private $blog_ID;
 
     public function getCommentsId(): ?int

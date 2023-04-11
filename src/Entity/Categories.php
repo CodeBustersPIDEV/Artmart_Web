@@ -4,28 +4,17 @@ namespace App\Entity;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * Categories
- *
- * @ORM\Table(name="categories")
- * @ORM\Entity
- */
+#[ORM\Table(name: "categories")]
+#[ORM\Entity]
 class Categories
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="categories_ID", type="integer", nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-     */
+    #[ORM\Column(name: "categories_ID", type: "integer", nullable: false)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: "IDENTITY")]
     private $categoriesId;
 
-    /**
-     * @var string
-     * @Assert\NotBlank(message="Name is required")
-     * @ORM\Column(name="name", type="string", length=255, nullable=false)
-     */
+    #[ORM\Column(name: "name", type: "string", length: 255, nullable: false)]
+    #[Assert\NotBlank(message: "Name is required")]
     private $name;
 
     public function getCategoriesId(): ?int

@@ -5,53 +5,28 @@ namespace App\Entity;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * Activity
- *
- * @ORM\Table(name="activity", indexes={@ORM\Index(name="eventID", columns={"eventID"})})
- * @ORM\Entity
- */
+#[ORM\Entity]
+#[ORM\Table(name: 'activity', options: ['indexes' => ['eventID' => ['columns' => ['user_ID']]]])]
 class Activity
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="activityID", type="integer", nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: "IDENTITY")]
+    #[ORM\Column(name: "activityID", type: "integer")]
     private $activityid;
 
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="date", type="datetime", nullable=false)
-     */
+    #[ORM\Column(name: "date", type: "datetime")]
     private $date;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="title", type="string", length=255, nullable=false)
-     */
+    #[ORM\Column(name: "title", type: "string", length: 255)]
     private $title;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="host", type="string", length=255, nullable=false)
-     */
+    #[ORM\Column(name: "host", type: "string", length: 255)]
     private $host;
 
-    /**
-     * @var \Event
-     *
-     * @ORM\ManyToOne(targetEntity="Event")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="eventID", referencedColumnName="eventID")
-     * })
-     */
+    #[ORM\ManyToOne(targetEntity: "Event")]
+    #[ORM\JoinColumn(name: "eventID", referencedColumnName: "eventID")]
     private $eventid;
+
 
     public function getActivityid(): ?int
     {

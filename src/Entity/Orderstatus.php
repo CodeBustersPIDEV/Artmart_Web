@@ -5,45 +5,27 @@ namespace App\Entity;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * Orderstatus
- *
- * @ORM\Table(name="orderstatus", indexes={@ORM\Index(name="OrderID", columns={"OrderID"})})
- * @ORM\Entity
- */
+#[ORM\Table(name: "orderstatus",options: [
+    'indexes' => [
+        'OrderID' => ['columns' => ['OrderID']]
+    ]
+])]
+#[ORM\Entity]
 class Orderstatus
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="orderStatus_ID", type="integer", nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-     */
+    #[ORM\Column(name: "orderStatus_ID", type: "integer", nullable: false)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: "IDENTITY")]
     private $orderstatusId;
 
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(name="Status", type="string", length=255, nullable=true, options={"default"="NULL"})
-     */
+    #[ORM\Column(name: "Status", type: "decimal",length:255, nullable: true,options:["default"=>"NULL"])]
     private $status = 'NULL';
 
-    /**
-     * @var \DateTime|null
-     *
-     * @ORM\Column(name="Date", type="date", nullable=true, options={"default"="NULL"})
-     */
+    #[ORM\Column(name: "Date", type: "date", nullable: true,options:["default"=>"NULL"])]
     private $date = 'NULL';
 
-    /**
-     * @var \Order
-     *
-     * @ORM\ManyToOne(targetEntity="Order")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="OrderID", referencedColumnName="order_ID")
-     * })
-     */
+    #[ORM\ManyToOne(targetEntity: "Order")]
+    #[ORM\JoinColumn(name: "OrderID", referencedColumnName: "order_ID",options:["default"=>"NULL"])]
     private $orderid;
 
     public function getOrderstatusId(): ?int

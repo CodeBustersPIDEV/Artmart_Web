@@ -4,28 +4,16 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * Blogcategories
- *
- * @ORM\Table(name="blogcategories")
- * @ORM\Entity
- */
+#[ORM\Entity]
+#[ORM\Table(name: "blogcategories")]
 class Blogcategories
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="categories_ID", type="integer", nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: "IDENTITY")]
+    #[ORM\Column(name: "categories_ID", type: "integer")]
     private $categoriesId;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="name", type="string", length=255, nullable=false)
-     */
+    #[ORM\Column(name: "name", type: "string", length: 255)]
     private $name;
 
     public function getCategoriesId(): ?int

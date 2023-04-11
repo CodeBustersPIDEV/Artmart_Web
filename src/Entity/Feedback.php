@@ -5,62 +5,35 @@ namespace App\Entity;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * Feedback
- *
- * @ORM\Table(name="feedback", indexes={@ORM\Index(name="eventID", columns={"eventID"}), @ORM\Index(name="userID", columns={"userID"})})
- * @ORM\Entity
- */
+#[ORM\Table(name: "feedback",options: [
+    'indexes' => [
+        'eventID' => ['columns' => ['eventID']],
+        'userID' => ['columns' => ['userID']]
+    ]
+])]
+#[ORM\Entity]
 class Feedback
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="feedbackID", type="integer", nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-     */
+    #[ORM\Column(name: "feedbackID", type: "integer", nullable: false)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: "IDENTITY")]
     private $feedbackid;
 
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="rating", type="integer", nullable=false)
-     */
+    #[ORM\Column(name: "rating", type: "integer", nullable: false)]
     private $rating;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="comment", type="text", length=65535, nullable=false)
-     */
+    #[ORM\Column(name: "comment", type: "text",  length:65535,nullable: false)]
     private $comment;
 
-    /**
-     * @var \DateTime|null
-     *
-     * @ORM\Column(name="date", type="datetime", nullable=true, options={"default"="current_timestamp()"})
-     */
+    #[ORM\Column(name: "date", type: "datetime", nullable: true,options:["default"=>"current_timestamp()"])]
     private $date = 'current_timestamp()';
 
-    /**
-     * @var \Event
-     *
-     * @ORM\ManyToOne(targetEntity="Event")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="eventID", referencedColumnName="eventID")
-     * })
-     */
+    #[ORM\ManyToOne(targetEntity: "Event")]
+    #[ORM\JoinColumn(name: "eventID", referencedColumnName: "eventID")]
     private $eventid;
 
-    /**
-     * @var \User
-     *
-     * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="userID", referencedColumnName="user_ID")
-     * })
-     */
+    #[ORM\ManyToOne(targetEntity: "User")]
+    #[ORM\JoinColumn(name: "userID", referencedColumnName: "user_ID")]
     private $userid;
 
     public function getFeedbackid(): ?int
