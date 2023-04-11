@@ -11,6 +11,7 @@ use App\Entity\Tags;
 use App\Form\BlogsType;
 use App\Repository\BlogcategoriesRepository;
 use App\Repository\BlogsRepository;
+use App\Repository\CommentsRepository;
 use App\Repository\HasBlogCategoryRepository;
 use App\Repository\HasTagRepository;
 use App\Repository\MediaRepository;
@@ -33,8 +34,9 @@ class BlogsController extends AbstractController
     private TagsRepository $tagsRepository;
     private BlogcategoriesRepository $blogCategoryRepository;
     private HasTagRepository $hasTagRepository;
+    private CommentsRepository $commentsRepository;
 
-    public function __construct(Filesystem $filesystem, MediaRepository $mediaRepository, BlogcategoriesRepository $blogCategoryRepository, HasBlogCategoryRepository $hasBlogCategoryRepository, TagsRepository $tagsRepository, HasTagRepository $hasTagRepository)
+    public function __construct(Filesystem $filesystem, MediaRepository $mediaRepository, BlogcategoriesRepository $blogCategoryRepository, HasBlogCategoryRepository $hasBlogCategoryRepository, TagsRepository $tagsRepository, HasTagRepository $hasTagRepository, CommentsRepository $commentsRepository)
     {
         $this->filesystem = $filesystem;
         $this->mediaRepository = $mediaRepository;
@@ -42,6 +44,7 @@ class BlogsController extends AbstractController
         $this->blogCategoryRepository = $blogCategoryRepository;
         $this->tagsRepository = $tagsRepository;
         $this->hasTagRepository = $hasTagRepository;
+        $this->commentsRepository = $commentsRepository;
     }
 
     public function uploadImage(UploadedFile $file, Media $media, Blogs $addedBlog, $edit): void
@@ -204,7 +207,8 @@ class BlogsController extends AbstractController
             'blog' => $blog,
             'blog_media' => $mediaRepository->findOneMediaByBlogID($blog->getBlogsId()),
             'blog_cat' => $hasBlogCategoryRepository->findOneByBlogID($blog->getBlogsId()),
-            'blog_tags' => $hasTagRepository->findAllBlogsByBlogID($blog->getBlogsId())
+            'blog_tags' => $hasTagRepository->findAllBlogsByBlogID($blog->getBlogsId()),
+            'blog_Comments' => $this->commentsRepository->findCommentsByBlogID($blog->getBlogsId())
         ]);
     }
 
