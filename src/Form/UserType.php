@@ -40,15 +40,7 @@ class UserType extends AbstractType
                 ],
             ])
             ->add('phonenumber')
-            ->add('role', ChoiceType::class, [
-                'choices' => [
-                    'Admin' => 'admin',
-                    'Artist' => 'artist',
-                    'Client' => 'client',
-                ],
-                'required' => true,
-                'disabled' => $options['is_edit'],
-            ])
+            
             ->add('username', TextType::class, [
                 'required' => true,
             ])
@@ -65,6 +57,14 @@ class UserType extends AbstractType
                 'required' => true,
                 'first_options'  => ['label' => 'Password'],
                 'second_options' => ['label' => 'Confirm Password'],
+            ])
+            ->add('role', ChoiceType::class, [
+                'choices' => [
+                    'Admin' => 'admin',
+                    'Artist' => 'artist',
+                    'Client' => 'client',
+                ],
+                'required' => true,
             ]);
         }
         if ($options['is_edit']) {
@@ -79,8 +79,7 @@ class UserType extends AbstractType
             }
 
             if (isset($artistAttributes['bio'] )&& $artistAttributes['bio']!== null) {
-                $builder->add('artist', ArtistType::class, [
-                    'data' => new Artist(),
+                $builder->add('bio', TextType::class, [
                     'mapped' => false,
                     'attr' => [
                         'class' => 'artist-form',
@@ -89,8 +88,7 @@ class UserType extends AbstractType
             }
 
             if (isset($adminAttributes['department']) && $adminAttributes['department']!== null) {
-                $builder->add('admin', AdminType::class, [
-                    'data' => new Admin(),
+                $builder->add('department', TextType::class, [
                     'mapped' => false,
                     'attr' => [
                         'class' => 'admin-form',

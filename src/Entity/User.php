@@ -3,113 +3,85 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use App\Validator\PasswordRequirementsValidator;
 use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints as Assert;
+use App\Repository\UserRepository;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
-
-/**
- * User
- *
- * @ORM\Table(name="user")
- * @ORM\Entity
- * @UniqueEntity(fields={"email"}, message="This email is already taken.")
-
- */
+#[ORM\Entity(repositoryClass: UserRepository::class)]
 class User
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="user_ID", type="integer", nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-     */
-    private $userId;
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
+    #[ORM\Column(name: 'user_ID', type: 'integer')]
+    private int $userId;
 
-    /**
-     * @var string
-     * @Assert\NotBlank()
-     * @ORM\Column(name="name", type="string", length=255, nullable=false)
-     */
-    private $name;
+    #[ORM\Column(type: 'string', length: 255, nullable: false)]
+    #[Assert\NotBlank]
+    private string $name;
 
-    /**
-     * @var string
-     * @Assert\NotBlank()
-     * @Assert\Email(message="The email is not a vlid email")
-     * @ORM\Column(name="email", type="string", length=255, nullable=false)
-     */
-    private $email;
+    #[ORM\Column(type: 'string', length: 255, nullable: false, unique: true)]
+    #[Assert\NotBlank]
+    #[Assert\Email(message: "The email is not a valid email")]
+    private string $email;
 
-    /**
-     * @var \DateTime
-     * @Assert\NotBlank()
-     * @ORM\Column(name="birthday", type="date", nullable=false  )
-     * 
-     */
-    private $birthday;
+    #[ORM\Column(type: 'date', nullable: false)]
+    #[Assert\NotBlank]
+    private \DateTime $birthday;
 
-    /**
-     * @var string
-     * @Assert\NotBlank()
-     * @ORM\Column(name="phoneNumber", type="string", length=255, nullable=false)
-     */
-    private $phonenumber;
+    #[Assert\Callback(callback: 'validateBirthday')]
+    public function validateBirthday(ExecutionContextInterface $context): void
+    {
+        if ($this->birthday > new \DateTime()) {
+            $context->buildViolation('The birthday date should not be superior to today\'s date')
+                ->atPath('birthday')
+                ->addViolation();
+        }
+    }
 
-    /**
-     * @var string
-     * @Assert\NotBlank()
-     * @ORM\Column(name="role", type="string", length=30, nullable=false)
-     */
-    private $role;
+    #[ORM\Column(name: 'phoneNumber', type: 'string', length: 255, nullable: false)]
+    #[Assert\NotBlank]
+    private string $phonenumber;
 
-    /**
-     * @var string
-     * @Assert\NotBlank()
-     * @ORM\Column(name="username", type="string", length=255, nullable=false)
-     */
-    private $username;
+    #[ORM\Column(type: 'string', length: 30, nullable: false)]
+    #[Assert\NotBlank]
+    private string $role;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="password", type="string", length=255, nullable=false)
-     * @Assert\NotBlank()
-     * @Assert\Length(min=8)
-     * @Regex(pattern="/^(?=.*[A-Z])(?=.*\d).{8,}$/")
-     * @PasswordRequirementsValidator()
-     */
-    private $password;
+    #[ORM\Column(type: 'string', length: 255, nullable: false)]
+    #[Assert\NotBlank]
+    private string $username;
 
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(name="picture", type="string", length=255, nullable=true, options={"default"="NULL"})
-     */
-    private $picture = 'NULL';
+    #[ORM\Column(type: 'string', length: 255, nullable: false)]
+    #[Assert\NotBlank]
+    #[Assert\Length(min: 8)]
+    #[Regex(pattern: "/^(?=.*[A-Z])(?=.*\d).{8,}$/")]
+    private string $password;
 
-    /**
-     * @var bool|null
-     *
-     * @ORM\Column(name="blocked", type="boolean", nullable=true, options={"default"="NULL"})
-     */
-    private $blocked = 'NULL';
+    
+    #[ORM\PrePersist]
+    #[ORM\PreUpdate]
+    public function validatePassword()
+    {
+        $regex = "/^(?=.*[A-Z])(?=.*\d).{8,}$/";
+        if (!preg_match($regex, $this->password)) {
+            throw new \RuntimeException("Invalid password format.");
+        }
+    }
 
-    /**
-     * @var bool|null
-     *
-     * @ORM\Column(name="enabled", type="boolean", nullable=true, options={"default"="NULL"})
-     */
-    private $enabled = 'NULL';
-    private $passwordEncoder;
+    #[ORM\Column(type: 'string', length: 255, nullable: true, options: ['default' => 'NULL'])]
+    private ?string $picture = null;
 
-    /**
-     * @ORM\Column(name="dateOfCreation", type="datetime", options={"default": "CURRENT_TIMESTAMP"})
-     */
-    private $dateofcreation;
+    #[ORM\Column(type: 'string', length: 255, nullable: true, options: ['default' => 'NULL'])]
+    private ?string $token = null;
+
+    #[ORM\Column(type: 'boolean', nullable: true, options: ['default' => 'NULL'])]
+    private ?bool $blocked = null;
+
+    #[ORM\Column(type: 'boolean', nullable: true, options: ['default' => 'NULL'])]
+    private ?bool $enabled = null;
+
+    #[ORM\Column(name: 'dateOfCreation', type: 'datetime', options: ['default' => 'CURRENT_TIMESTAMP'])]
+    private \DateTime $dateofcreation;
 
 
     public function __construct()
@@ -118,12 +90,7 @@ class User
     }
 
 
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(name="token", type="string", length=255, nullable=true, options={"default"="NULL"})
-     */
-    private $token = 'NULL';
+    
 
     public function getUserId(): ?int
     {

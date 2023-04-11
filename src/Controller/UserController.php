@@ -40,7 +40,7 @@ class UserController extends AbstractController
         }
         // Move the uploaded file to the destination
         $file->move($destinationFilePath, $filename);
-        $user->setPicture($$destinationFilePath . "/" . $filename);
+        $user->setPicture($destinationFilePath . $filename);
     }
    
 
@@ -148,6 +148,7 @@ class UserController extends AbstractController
         return $this->renderForm('user/new.html.twig', [
             'user' => $user,
             'form' => $form,
+            'is_edit'=> false,
         ]);
     }
     #[Route('/{userId}', name: 'app_user_show', methods: ['GET'])]
@@ -213,15 +214,9 @@ class UserController extends AbstractController
             'department' => null,
         ];
 
-        if ($role === 'client' && $client) {
-            $clientAttributes = [
-                'nbrOrders' => $client->getNbrOrders(),
-                'nbrDemands' => $client->getNbrDemands(),
-            ];
-        } elseif ($role === 'artist' && $artist) {
+        if ($role === 'artist' && $artist) {
             $artistAttributes = [
                 'bio' => $artist->getBio(),
-                'nbrArtwork' => $artist->getNbrArtwork(),
             ];
         } elseif ($role === 'admin' && $admin) {
             $adminAttributes = [
@@ -235,18 +230,49 @@ class UserController extends AbstractController
             'artist_attributes' => $artistAttributes,
             'admin_attributes' => $adminAttributes,
         ]);
-
+        
+        
+        if ($role === 'artist' && $artist) {
+            $bioField = $form->get('bio');
+            $bioField->setData($artist->getBio());
+        }
+    
+        // Set the initial value of the department field if the user is an admin
+        if ($role === 'admin' && $admin) {
+            $departmentField = $form->get('department');
+            $departmentField->setData($admin->getDepartment());
+        }
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $pictureField = $form->get('file')->getData();
+            if ($pictureField== null) {
+                $user->setPicture($user->getPicture());
+            } else {
+                $this->uploadImage($pictureField, $user);
+            
+            }
+            if ($user->getRole() === 'artist' && $artist) {
+                $bio = $form->get('bio')->getData();
+                $artist->setBio($bio);
+                $entityManager->persist($artist);
+            } elseif ($user->getRole() === 'admin' && $admin) {
+                $department = $form->get('department')->getData();
+                $admin->setDepartment($department);
+                $entityManager->persist($admin);
+            }
+        
             $entityManager->flush();
-
             return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('user/edit.html.twig', [
             'user' => $user,
             'form' => $form,
+            'is_edit' => true,
+            'client_attributes' => $clientAttributes,
+            'artist_attributes' => $artistAttributes,
+            'admin_attributes' => $adminAttributes,
         ]);
     }
 

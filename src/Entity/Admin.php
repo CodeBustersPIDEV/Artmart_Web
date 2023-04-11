@@ -1,47 +1,28 @@
 <?php
 
 namespace App\Entity;
+use App\Repository\AdminRepository;
 
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * Admin
- *
- * @ORM\Table(name="admin", indexes={@ORM\Index(name="user_ID", columns={"user_ID"})})
- * @ORM\Entity
- */
+#[ORM\Entity(repositoryClass: AdminRepository::class)]
+#[ORM\Table('admin', options: ['indexes' => ['user_ID' => ['columns' => ['user_ID']]]])]
+
 class Admin
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="admin_ID", type="integer", nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-     */
-    private $adminId;
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="user_ID", type="integer", nullable=false)
-     */
-    private $userId;
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(name="department", type="string", length=255, nullable=true, options={"default"="NULL"})
-     */
-    private $department = 'NULL';
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
+    #[ORM\Column(name: 'admin_ID', type: 'integer', nullable: false)]
+    private int $adminId;
 
-    /**
-     * @var \User
-     *
-     * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="user_ID", referencedColumnName="user_ID")
-     * })
-     */
-    private $user;
+    #[ORM\Column(type: 'string', length: 255, nullable: true, options: ['default' => 'NULL'])]
+    private ?string $department = 'NULL';
+
+    #[ORM\OneToOne(targetEntity: 'User',mappedBy:'artist')]
+    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'user_ID')]
+
+    private ?User $user = null;
+
 
     public function getAdminId(): ?int
     {
@@ -50,14 +31,7 @@ class Admin
 
     public function getUserId(): ?int
     {
-        return $this->userId;
-    }
-
-    public function setUserId(int $userId): self
-    {
-        $this->userId = $userId;
-
-        return $this;
+        return $this->user->getUserId();
     }
 
     public function getDepartment(): ?string

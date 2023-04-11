@@ -1,8 +1,6 @@
-{% extends 'base.html.twig' %} 
-{% import "base.html.twig" as base %}
+{% extends 'baseU.html.twig' %} 
 {% block title %}User index{% endblock %} 
-{% block body %}
-{{ base.NavBar() }}
+{% block content %}
 
 <form action="{{ path('app_user_index') }}" method="GET">
     <div class="form-group">
