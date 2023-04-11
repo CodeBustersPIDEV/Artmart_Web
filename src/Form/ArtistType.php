@@ -15,10 +15,7 @@ class ArtistType extends AbstractType
     {
         $builder
             ->add('bio')
-            ->add('user', EntityType::class, [
-                'class' => User::class,
-                'choice_label' => 'username',
-            ]);
+            ;
         
     }
 

@@ -5,52 +5,26 @@ namespace App\Entity;
 use App\Repository\ClientRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * Client
- *
- * @ORM\Table(name="client", indexes={@ORM\Index(name="user_ID", columns={"user_ID"})})
- * @ORM\Entity
- */
-/**
- * @ORM\Entity(repositoryClass=ClientRepository::class)
- */
+#[ORM\Entity(repositoryClass: ClientRepository::class)]
+#[ORM\Table('client', options: ['indexes' => ['user_ID' => ['columns' => ['user_ID']]]])]
+
 class Client 
 {
-    /**
-     * @var int
-     *
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-     * @ORM\Column(name="client_ID", type="integer")
-     */
-    private $clientId;
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
+    #[ORM\Column(name: 'client_ID', type: 'integer')]
+    private int $clientId;
 
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="nbr_orders", type="integer", nullable=false)
-     */
-    private $nbrOrders;
+    #[ORM\Column(name: 'nbr_orders', type: 'integer', nullable: false)]
+    private int $nbrOrders;
 
-  
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="nbr_demands", type="integer", nullable=false)
-     *
-     */
-    private $nbrDemands;
+    #[ORM\Column(name: 'nbr_demands', type: 'integer', nullable: false)]
+    private int $nbrDemands;
 
-    /**
-     * @var \User
-     *
-     * 
-     *  @ORM\ManyToOne(targetEntity=User::class, cascade={"persist"})
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="user_ID", referencedColumnName="user_ID")
-     * })
-     */
-    private $user;
+    #[ORM\OneToOne(targetEntity: 'User',mappedBy:'client')]
+    #[ORM\JoinColumn(name:'user_ID', referencedColumnName: 'user_ID')]
+
+    private ?User $user = null;
 
     public function getClientId(): ?int
     {
@@ -64,14 +38,9 @@ class Client
     }
     public function getUserId(): ?int
     {
-        return $this->user->getUserId;
+        return $this->user->getUserId();
     }
-    public function setUserId(int $UserId): self
-    {
-        $this->user->getUserId = $UserId;
-
-        return $this;
-    }
+   
 
     public function getNbrOrders(): ?int
     {
