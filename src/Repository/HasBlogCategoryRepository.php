@@ -54,6 +54,15 @@ class HasBlogCategoryRepository extends ServiceEntityRepository
   //     ->getResult();
   // }
 
+  public function findAllBlogsByCatID($category_id): array
+  {
+    return $this->createQueryBuilder('h')
+      ->andWhere('h.category_id = :val')
+      ->setParameter('val', $category_id)
+      ->getQuery()
+      ->getResult();
+  }
+
   public function findOneByBlogID($blog_id): ?HasBlogCategory
   {
     return $this->createQueryBuilder('h')

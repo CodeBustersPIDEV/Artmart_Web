@@ -1,0 +1,305 @@
+{% extends 'baseB.html.twig' %} {% block content %} {% block stylesheets %}
+<link rel="stylesheet" href="{{ asset('assets/Blog/CSS/AdminPage.css') }}" />
+<style>
+	.nav_links {
+		cursor: pointer;
+	}
+</style>
+{% endblock %} {% block body %}
+<ul class="nav nav-pills">
+	<li class="nav-item">
+		<a class="nav-link nav_links active" id="homeLink">Main</a>
+	</li>
+	<li class="nav-item">
+		<a class="nav-link nav_links" id="blogLink">Blogs</a>
+	</li>
+	<li class="nav-item">
+		<a class="nav-link nav_links" id="blogCategoryLink">Blog Categories</a>
+	</li>
+	<li class="nav-item">
+		<a class="nav-link nav_links" id="tagsLink">Tags</a>
+	</li>
+</ul>
+<section id="home">
+	<h2>Home Section</h2>
+</section>
+
+<section id="blogs">
+	<h3>Blogs</h3>
+
+	<a href="{{ path('app_blogs_new') }}">
+		<div data-tooltip="Blog" class="button mid">
+			<div class="button-wrapper">
+				<div class="text">Create New</div>
+				<span class="icon">
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						width="16"
+						height="16"
+						fill="currentColor"
+						class="bi bi-file-earmark-plus-fill"
+						viewbox="0 0 16 16"
+					>
+						<path
+							d="M9.293 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.707A1 1 0 0 0 13.707 4L10 .293A1 1 0 0 0 9.293 0zM9.5 3.5v-2l3 3h-2a1 1 0 0 1-1-1zM8.5 7v1.5H10a.5.5 0 0 1 0 1H8.5V11a.5.5 0 0 1-1 0V9.5H6a.5.5 0 0 1 0-1h1.5V7a.5.5 0 0 1 1 0z"
+						/>
+					</svg>
+				</span>
+			</div>
+		</div>
+	</a>
+
+	<table class="table" border="2">
+		<thead>
+			<tr>
+				<th>Title</th>
+				<th>Date</th>
+				<th>Rating</th>
+				<th>NbViews</th>
+				<th>Author</th>
+				<th>Actions</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for blog in blogs %}
+			<tr>
+				<td>{{ blog.title }}</td>
+				<td>{{ blog.date ? blog.date|date('Y-m-d') : '' }}</td>
+				<td>{{ blog.rating }}</td>
+				<td>{{ blog.nbViews }}</td>
+				<td>
+					<a
+						href="{{
+							path('app_user_show', { userId: blog.author.getUserId() })
+						}}"
+						>{{ blog.author.name }}</a
+					>
+				</td>
+				<td>
+					<a
+						href="{{ path('app_blogs_show', { blogs_ID: blog.getBlogsId() }) }}"
+						class="btn btn-outline-primary"
+						>Show</a
+					>
+					<a
+						href="{{
+							path('app_blogs_delete', { blogs_ID: blog.getBlogsId() })
+						}}"
+						class="btn btn-outline-danger"
+						>Delete</a
+					>
+				</td>
+			</tr>
+			{% else %}
+			<tr>
+				<td colspan="7">no records found</td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</section>
+
+<section id="blogCategory">
+	<div class="col">
+		<h3>Blog Categories</h3>
+
+		<a href="{{ path('app_blogcategories_new') }}">
+			<div data-tooltip="Category" class="button mid">
+				<div class="button-wrapper">
+					<div class="text">Create New</div>
+					<span class="icon">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							width="16"
+							height="16"
+							fill="currentColor"
+							class="bi bi-file-earmark-plus-fill"
+							viewbox="0 0 16 16"
+						>
+							<path
+								d="M9.293 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.707A1 1 0 0 0 13.707 4L10 .293A1 1 0 0 0 9.293 0zM9.5 3.5v-2l3 3h-2a1 1 0 0 1-1-1zM8.5 7v1.5H10a.5.5 0 0 1 0 1H8.5V11a.5.5 0 0 1-1 0V9.5H6a.5.5 0 0 1 0-1h1.5V7a.5.5 0 0 1 1 0z"
+							/>
+						</svg>
+					</span>
+				</div>
+			</div>
+		</a>
+
+		<table class="table">
+			<thead>
+				<tr>
+					<th>Name</th>
+					<th># of Blogs</th>
+					<th>Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for blogcategory in blogCategories %}
+				<tr>
+					<td>{{ blogcategory.name }}</td>
+					<td>
+						{{ getNbBlogsPerCat(blogcategory.categoriesId) }}
+					</td>
+					<td>
+						<a
+							href="{{
+								path('app_blogcategories_delete', {
+									categoriesId: blogcategory.categoriesId
+								})
+							}}"
+							class="btn btn-outline-danger"
+							>Delete</a
+						>
+						<a
+							href="{{
+								path('app_blogcategories_edit', {
+									categoriesId: blogcategory.categoriesId
+								})
+							}}"
+							class="btn btn-outline-success"
+							>Edit</a
+						>
+					</td>
+				</tr>
+				{% else %}
+				<tr>
+					<td colspan="3">no records found</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+</section>
+
+<section id="tags">
+	<div class="col">
+		<h3>Tags</h3>
+
+		<a href="{{ path('app_tags_new') }}">
+			<div data-tooltip="Tag" class="button mid">
+				<div class="button-wrapper">
+					<div class="text">Create New</div>
+					<span class="icon">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							width="16"
+							height="16"
+							fill="currentColor"
+							class="bi bi-file-earmark-plus-fill"
+							viewbox="0 0 16 16"
+						>
+							<path
+								d="M9.293 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.707A1 1 0 0 0 13.707 4L10 .293A1 1 0 0 0 9.293 0zM9.5 3.5v-2l3 3h-2a1 1 0 0 1-1-1zM8.5 7v1.5H10a.5.5 0 0 1 0 1H8.5V11a.5.5 0 0 1-1 0V9.5H6a.5.5 0 0 1 0-1h1.5V7a.5.5 0 0 1 1 0z"
+							/>
+						</svg>
+					</span>
+				</div>
+			</div>
+		</a>
+
+		<table class="table">
+			<thead>
+				<tr>
+					<th>Name</th>
+					<th># of Blogs</th>
+					<th>Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for tag in tags %}
+				<tr>
+					<td>{{ tag.name }}</td>
+					<td>{{ getNbBlogsPerTag(tag.tagsId) }}</td>
+					<td>
+						<a
+							href="{{ path('app_tags_delete', { tagsId: tag.tagsId }) }}"
+							class="btn btn-outline-danger"
+							>Delete</a
+						>
+						<a
+							href="{{ path('app_tags_edit', { tagsId: tag.tagsId }) }}"
+							class="btn btn-outline-success"
+							>Edit</a
+						>
+					</td>
+				</tr>
+				{% else %}
+				<tr>
+					<td colspan="3">no records found</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+</section>
+{% endblock %} {% block javascripts %}
+<script>
+	const blogLink = document.querySelector("#blogLink");
+	const blogCategoryLink = document.querySelector("#blogCategoryLink");
+	const tagsLink = document.querySelector("#tagsLink");
+	const HomeLink = document.querySelector("#homeLink");
+
+	const blogsSection = document.querySelector("#blogs");
+	const blogCategorySection = document.querySelector("#blogCategory");
+	const tagsSection = document.querySelector("#tags");
+	const homeSection = document.querySelector("#home");
+
+	// Default
+	blogLink.classList.remove("active");
+	blogCategoryLink.classList.remove("active");
+	tagsLink.classList.remove("active");
+
+	blogsSection.classList.add("d-none");
+	blogCategorySection.classList.add("d-none");
+	tagsSection.classList.add("d-none");
+
+	//when clicked
+	HomeLink.addEventListener("click", () => {
+		HomeLink.classList.add("active");
+		blogLink.classList.remove("active");
+		blogCategoryLink.classList.remove("active");
+		tagsLink.classList.remove("active");
+
+		homeSection.classList.remove("d-none");
+		blogsSection.classList.add("d-none");
+		blogCategorySection.classList.add("d-none");
+		tagsSection.classList.add("d-none");
+	});
+
+	blogLink.addEventListener("click", () => {
+		HomeLink.classList.remove("active");
+		blogLink.classList.add("active");
+		blogCategoryLink.classList.remove("active");
+		tagsLink.classList.remove("active");
+
+		homeSection.classList.add("d-none");
+		blogsSection.classList.remove("d-none");
+		blogCategorySection.classList.add("d-none");
+		tagsSection.classList.add("d-none");
+	});
+
+	blogCategoryLink.addEventListener("click", () => {
+		HomeLink.classList.remove("active");
+		blogLink.classList.remove("active");
+		blogCategoryLink.classList.add("active");
+		tagsLink.classList.remove("active");
+
+		homeSection.classList.add("d-none");
+		blogsSection.classList.add("d-none");
+		blogCategorySection.classList.remove("d-none");
+		tagsSection.classList.add("d-none");
+	});
+
+	tagsLink.addEventListener("click", () => {
+		HomeLink.classList.remove("active");
+		blogLink.classList.remove("active");
+		blogCategoryLink.classList.remove("active");
+		tagsLink.classList.add("active");
+
+		homeSection.classList.add("d-none");
+		blogsSection.classList.add("d-none");
+		blogCategorySection.classList.add("d-none");
+		tagsSection.classList.remove("d-none");
+	});
+</script>
+{% endblock %} {% endblock %}

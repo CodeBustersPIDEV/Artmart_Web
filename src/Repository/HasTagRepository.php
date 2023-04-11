@@ -54,6 +54,15 @@ class HasTagRepository extends ServiceEntityRepository
       ->getResult();
   }
 
+  public function findAllBlogsByTagID($tag_id): array
+  {
+    return $this->createQueryBuilder('h')
+      ->andWhere('h.tag_id = :val')
+      ->setParameter('val', $tag_id)
+      ->getQuery()
+      ->getResult();
+  }
+
   public function findOneByBlogID($blog_id): ?BlogTags
   {
     return $this->createQueryBuilder('h')

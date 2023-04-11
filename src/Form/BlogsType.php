@@ -13,14 +13,10 @@ use App\Repository\MediaRepository;
 use App\Repository\TagsRepository;
 use App\Repository\UserRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\HttpFoundation\File\File;
-use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 
 class BlogsType extends AbstractType
@@ -31,12 +27,10 @@ class BlogsType extends AbstractType
     private TagsRepository $tagsRepository;
     private HasTagRepository $hasTagRepository;
     private MediaRepository $mediaRepository;
-    // private $parameterBag;
-    // private $kernel;
 
 
 
-    public function __construct(UserRepository $UserRepository, BlogcategoriesRepository $blogcategoriesRepository, HasBlogCategoryRepository $hasBlogCategoryRepository, TagsRepository $tagsRepository, HasTagRepository $hasTagRepository, MediaRepository $mediaRepository, KernelInterface $kernel, ParameterBagInterface $parameterBag)
+    public function __construct(UserRepository $UserRepository, BlogcategoriesRepository $blogcategoriesRepository, HasBlogCategoryRepository $hasBlogCategoryRepository, TagsRepository $tagsRepository, HasTagRepository $hasTagRepository, MediaRepository $mediaRepository)
     {
         $this->UserRepository = $UserRepository;
         $this->blogcategoriesRepository = $blogcategoriesRepository;
@@ -44,8 +38,6 @@ class BlogsType extends AbstractType
         $this->mediaRepository = $mediaRepository;
         $this->hasBlogCategoryRepository = $hasBlogCategoryRepository;
         $this->hasTagRepository = $hasTagRepository;
-        // $this->kernel = $kernel;
-        // $this->parameterBag = $parameterBag;
     }
 
     public function getBlogData($blog)
@@ -53,22 +45,17 @@ class BlogsType extends AbstractType
         $hBlogTags = $this->hasTagRepository->findAllBlogsByBlogID($blog->getBlogsId()) ?? null;
         $tags = [];
         foreach ($hBlogTags as $hBlogtag) {
-            // array_push($tags, $this->blogcategoriesRepository->find($hBlogtag->getTag()->getTagsId()));
             array_push($tags, $hBlogtag->getTag());
         }
         return $tags;
     }
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        // $filesystem = new Filesystem();
-        // $destinationFilePath = $this->parameterBag->get('destinationPath');
         $blog = $options['data'] ?? null;
         $media = $this->mediaRepository->findOneMediaByBlogID($blog->getBlogsId()) ?? null;
         $hBlogCat = $this->hasBlogCategoryRepository->findOneByBlogID($blog->getBlogsId()) ?? null;
         $tags = $this->getBlogData($blog);
-        // $path = $this->kernel->getProjectDir() . '/src/Form/BlogsType.php';
-        // $file = new File($filesystem->makePathRelative($destinationFilePath . $media->getFileName(), $path));
-        // $file = $filesystem->dumpFile('file.txt', 'Hello World');
+
 
         $builder
             ->add('title')
@@ -105,8 +92,6 @@ class BlogsType extends AbstractType
             ->add('file', FileType::class, [
                 'label' => 'Choose a file',
                 'mapped' => false,
-                'required' => true
-                // 'data' => $response->get
             ])
             ->getForm();
     }

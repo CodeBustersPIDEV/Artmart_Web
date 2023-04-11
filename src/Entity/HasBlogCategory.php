@@ -39,7 +39,7 @@ class HasBlogCategory
      *   @ORM\JoinColumn(name="category_id", referencedColumnName="categories_ID")
      * })
      */
-    private $category;
+    private $category_id;
 
     public function getId(): ?int
     {
@@ -60,12 +60,12 @@ class HasBlogCategory
 
     public function getCategory(): ?Blogcategories
     {
-        return $this->category ?? null;
+        return $this->category_id ?? null;
     }
 
     public function setCategory(?Blogcategories $category): self
     {
-        $this->category = $category;
+        $this->category_id = $category;
 
         return $this;
     }

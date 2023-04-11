@@ -31,13 +31,15 @@ class BlogsController extends AbstractController
     private MediaRepository $mediaRepository;
     private HasBlogCategoryRepository $hasBlogCategoryRepository;
     private TagsRepository $tagsRepository;
+    private BlogcategoriesRepository $blogCategoryRepository;
     private HasTagRepository $hasTagRepository;
 
-    public function __construct(Filesystem $filesystem, MediaRepository $mediaRepository, HasBlogCategoryRepository $hasBlogCategoryRepository, TagsRepository $tagsRepository, HasTagRepository $hasTagRepository)
+    public function __construct(Filesystem $filesystem, MediaRepository $mediaRepository, BlogcategoriesRepository $blogCategoryRepository, HasBlogCategoryRepository $hasBlogCategoryRepository, TagsRepository $tagsRepository, HasTagRepository $hasTagRepository)
     {
         $this->filesystem = $filesystem;
         $this->mediaRepository = $mediaRepository;
         $this->hasBlogCategoryRepository = $hasBlogCategoryRepository;
+        $this->blogCategoryRepository = $blogCategoryRepository;
         $this->tagsRepository = $tagsRepository;
         $this->hasTagRepository = $hasTagRepository;
     }
@@ -128,11 +130,25 @@ class BlogsController extends AbstractController
     // ************************************************************************************************************************************************
     // ************************************************************************************************************************************************
 
+
+
     #[Route('/', name: 'app_blogs_index', methods: ['GET'])]
     public function index(BlogsRepository $blogsRepository): Response
     {
         return $this->render('blogs/index.html.twig', [
             'blogs' => $blogsRepository->findAll(),
+        ]);
+    }
+
+    #[Route('/admin', name: 'app_blogs_admin', methods: ['GET'])]
+    public function adminIndex(BlogsRepository $blogsRepository): Response
+    {
+
+
+        return $this->render('blogs/admin.html.twig', [
+            'blogs' => $blogsRepository->findAll(),
+            'blogCategories' => $this->blogCategoryRepository->findAll(),
+            'tags' => $this->tagsRepository->findAll()
         ]);
     }
 
