@@ -40,7 +40,17 @@
     display: inline-block;
     margin-top: 10px;
     padding: 12px 20px;
-    background-color: #1CB4A7;
+    background-color: #AA336A;
+    color: #FFFFFF;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.2s ease-in-out;
+}
+.custom-card btn {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 12px 20px;
+    background-color: #AA336A;
     color: #FFFFFF;
     border-radius: 5px;
     text-decoration: none;
@@ -122,6 +132,7 @@
                     <form action="{{ path('app_customproduct_apply', {'customProductId': customproduct.customProductId}) }}" method="post">
                         <button id="applyBtn-{{ customproduct.customProductId }}" type="submit" class="btn btn-primary">Apply</button>
                     </form>
+                    <br>
                      <form action="{{ path('app_customproduct_show', {'customProductId': customproduct.customProductId}) }}" method="get">
                         <button class="btn btn-secondary">Show</button>
                     </form>
