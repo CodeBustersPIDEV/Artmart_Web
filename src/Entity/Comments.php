@@ -61,7 +61,7 @@ class Comments
      *   @ORM\JoinColumn(name="blog_ID", referencedColumnName="blogs_ID")
      * })
      */
-    private $blog;
+    private $blog_ID;
 
     public function getCommentsId(): ?int
     {
@@ -106,7 +106,7 @@ class Comments
 
     public function getAuthor(): ?User
     {
-        return $this->author;
+        return $this->author ?? null;
     }
 
     public function setAuthor(?User $author): self
@@ -118,15 +118,13 @@ class Comments
 
     public function getBlog(): ?Blogs
     {
-        return $this->blog;
+        return $this->blog_ID ?? null;
     }
 
     public function setBlog(?Blogs $blog): self
     {
-        $this->blog = $blog;
+        $this->blog_ID = $blog;
 
         return $this;
     }
-
-
 }
