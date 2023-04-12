@@ -3,7 +3,7 @@
 namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\EntityManagerInterface;
-
+use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Table(name: "customproduct", options: [
     'indexes' => [
         'client_ID' => ['columns' => ['client_ID']],
