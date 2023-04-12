@@ -6,56 +6,65 @@
 
 {% block stylesheets %}
     <style>
-    table {
-        border-collapse: collapse;
-        width: 100%;
-        font-family: Arial, sans-serif;
-    }
+table {
+border-collapse: collapse;
+width: 100%;
+font-family: 'Open Sans', sans-serif;
+background-color: #fff;
+border: 1px solid #ddd;
+}
 
-    th, td {
-        text-align: left;
-        padding: 12px 8px;
-        border-bottom: 1px solid #ddd;
-    }
 
-    th {
-        background-color: #f5f5f5;
-        font-size: 16px;
-    }
-    td {
-       background-color: #f5f5f5; 
-    }
+th, td {
+    text-align: left;
+    padding: 12px 8px;
+    border-bottom: 1px solid #ddd;
+}
 
-    tr:hover {
-        background-color: #f5f5f5;
-    }
+th {
+    background-color: #f5f5f5;
+    font-size: 16px;
+}
+td {
+   background-color: #fff;
+   padding-left: 20px;
+}
 
-    img {
-        max-width: 200px;
-        max-height: 200px;
-    }
+tr:hover {
+    background-color: #f5f5f5;
+}
 
-    .button-group {
-        margin-top: 16px;
-    }
+img {
+    max-width: 200px;
+    max-height: 200px;
+}
 
-    .button-group a {
-        margin-right: 8px;
-        color: #fff;
-        background-color: #4CAF50;
-        padding: 8px;
-        border-radius: 4px;
-        text-decoration: none;
-    }
+.button-group {
+    margin-top: 16px;
+}
 
-    .button-group a:hover {
-        background-color: #3e8e41;
-    }
+.button-group a {
+    margin-right: 8px;
+    color: #fff;
+    background-color: #4CAF50;
+    padding: 8px;
+    border-radius: 4px;
+    text-decoration: none;
+}
 
-    .delete-form {
-        display: inline-block;
-        margin-left: 8px;
-    }
+.button-group a:hover {
+    background-color: #3e8e41;
+}
+
+.delete-form {
+    display: inline-block;
+    margin-left: 8px;
+}
+
+.category-icon {
+    font-size: 20px;
+    margin-right: 5px;
+}
 </style>
 
 {% endblock %}
@@ -66,36 +75,36 @@
 
     <table>
         <tbody>
-            <tr>
-                <th>Product:</th>
-                <td>{{ product.name }}</td>
-            </tr>
-            <tr>
-                <th>Category:</th>
-                <td>{{ product.category }}</td>
-            </tr>
-            <tr>
-                <th>Description:</th>
-                <td>{{ product.description }}</td>
-            </tr>
-            <tr>
-                <th>Dimensions:</th>
-                <td>{{ product.dimensions }}</td>
-            </tr>
-            <tr>
-                <th>Weight:</th>
-                <td>{{ product.weight }}</td>
-            </tr>
-            <tr>
-                <th>Material:</th>
-                <td>{{ product.material }}</td>
-            </tr>
-            <tr>
-                <th>Image:</th>
-                <td><img src="{{ asset('imagescustom/' ~ product.image) }}" alt="Product Image"></td>
-            </tr>
-        </tbody>
-    </table>
+        <tr>
+            <th><i class="fa fa-tags category-icon" aria-hidden="true"></i> Product:</th>
+            <td>{{ product.name }}</td>
+        </tr>
+        <tr>
+            <th><i class="fa fa-bookmark category-icon" aria-hidden="true"></i> Category:</th>
+            <td>{{ product.category }}</td>
+        </tr>
+        <tr>
+            <th><i class="fa fa-info-circle category-icon" aria-hidden="true"></i> Description:</th>
+            <td>{{ product.description }}</td>
+        </tr>
+        <tr>
+<th><i class="fa fa-arrows-alt category-icon" aria-hidden="true"></i> Dimensions:</th>
+            <td>{{ product.dimensions }}</td>
+        </tr>
+        <tr>
+            <th><i class="fa fa-balance-scale category-icon" aria-hidden="true"></i> Weight:</th>
+            <td>{{ product.weight }}</td>
+        </tr>
+        <tr>
+            <th><i class="fa fa-cubes category-icon" aria-hidden="true"></i> Material:</th>
+            <td>{{ product.material }}</td>
+        </tr>
+        <tr>
+            <th><i class="fa fa-file-image-o category-icon" aria-hidden="true"></i> Image:</th>
+            <td><img src="{{ asset('imagescustom/' ~ product.image) }}" alt="Product Image"></td>
+        </tr>
+    </tbody>
+</table>
 
     <div class="button-group">
         <a href="{{ path('app_customproduct_index') }}" class="btn btn-secondary">Back to list</a>
