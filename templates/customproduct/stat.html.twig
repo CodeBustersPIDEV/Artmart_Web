@@ -56,11 +56,14 @@ button {
 </div>
 <button onclick="generatePDF()">
   <i class="fa fa-download"></i> Download PDF</button>
-
+<a href="https://twitter.com/intent/tweet?url={{ app.request.uri }}&text=Check%20out%20this%20chart%20from%20my%20site!&hashtags=MySite,Chart">
+  <i class="fa fa-twitter"></i> Share on Twitter
+</a>
 
  <canvas id="myChart"></canvas>
 
 <a href="{{ path('app_customproduct_admin') }}">back to list</a>
+
 
 {% block javascripts %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -127,6 +130,7 @@ button {
   }
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
 
 {% endblock %}
