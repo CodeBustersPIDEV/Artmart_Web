@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Customproduct;
 use App\Entity\Product;
+
 use Twilio\Rest\Client;
 use App\Entity\Categories;
 
@@ -199,54 +200,6 @@ class CustomproductController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'app_customproduct_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
-    {
-        $customproduct = new Customproduct();
-        $product = new Product();
-        $product->setImage('imagec.png');
-        $customproduct->setProduct($product);
-
-        $form = $this->createForm(CustomproductType::class, $customproduct);
-
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $product = $form->get('product')->getData();
-            $customproduct->setProduct($product);
-            $customproduct->setClient($form->get('client')->getData());
-
-            $imageFile = $form->get('product')->get('image')->getData();
-            if ($imageFile) {
-                $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
-                $newFilename = $originalFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
-
-                try {
-                    $imageFile->move(
-                        $this->getParameter('product_images_directory'),
-                        $newFilename
-                    );
-                } catch (FileException $e) {
-                    // handle exception if something happens during file upload
-                }
-
-                $product->setImage($newFilename);
-            }
-
-            $entityManager->persist($product);
-            $entityManager->persist($customproduct);
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_customproduct_index', [], Response::HTTP_SEE_OTHER);
-        }
-
-        return $this->renderForm('customproduct\new.html.twig', [
-            'customproduct' => $customproduct,
-            'form' => $form,
-        ]);
-    }
-
-
 
     #[Route('/newad', name: 'app_customproduct_newadmin', methods: ['GET', 'POST'])]
     public function newadmin(Request $request, EntityManagerInterface $entityManager): Response
@@ -296,6 +249,52 @@ class CustomproductController extends AbstractController
 
 
 
+    #[Route('/newnew', name: 'app_customproduct_newnew', methods: ['GET', 'POST'])]
+    public function newnew(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $customproduct = new Customproduct();
+        $product = new Product();
+        $product->setImage('imagec.png');
+        $customproduct->setProduct($product);
+        $form = $this->createForm(CustomproductType::class, $customproduct);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $product = $form->get('product')->getData();
+            $customproduct->setProduct($product);
+            $customproduct->setClient($form->get('client')->getData());
+
+
+            $imageFile = $form->get('product')->get('image')->getData();
+            if ($imageFile) {
+                $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+                $newFilename = $originalFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
+
+                try {
+                    $imageFile->move(
+                        $this->getParameter('product_images_directory'),
+                        $newFilename
+                    );
+                } catch (FileException $e) {
+                    // handle exception if something happens during file upload
+                }
+
+                $product->setImage($newFilename);
+            }
+
+            $entityManager->persist($product);
+            $entityManager->persist($customproduct);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_customproduct_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->renderForm('customproduct\new.html.twig', [
+            'customproduct' => $customproduct,
+            'form' => $form,
+        ]);
+    }
+
 
     #[Route('/{customProductId}', name: 'app_customproduct_show', methods: ['GET'])]
     public function show(Customproduct $customproduct): Response
@@ -308,6 +307,17 @@ class CustomproductController extends AbstractController
         ]);
     }
 
+
+    #[Route('s/{customProductId}', name: 'app_customproduct_showartist', methods: ['GET'])]
+    public function showartist(Customproduct $customproduct): Response
+    {
+        $product = $customproduct->getProduct();
+
+        return $this->render('customproduct/showartist.html.twig', [
+            'customproduct' => $customproduct,
+            'product' => $product,
+        ]);
+    }
 
 
 
@@ -443,7 +453,7 @@ class CustomproductController extends AbstractController
         $entityManager->flush();
 
         $sid    = "AC85fdc289caf6aa747109220798d39394";
-        $token  = "df3d004d8411369066d20af591ac52a0";
+        $token  = "e100314f392f157e4341263440f1a7bc";
         $twilio = new Client($sid, $token);
     
         $message = $twilio->messages

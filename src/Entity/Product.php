@@ -23,24 +23,27 @@ class Product
     #[ORM\Column(name: "category_ID", type: "integer",nullable: false)]
     private $categoryId;
 
-    #[Assert\NotBlank]
+
     #[ORM\Column(name: "name", type: "string",length:255, nullable: false)]
+    #[Assert\NotBlank(message: "Please enter a product name")]
     private $name;
 
-    #[Assert\NotBlank]
+  
     #[ORM\Column(name: "description", type: "text", length:65535,nullable: false)]
+    #[Assert\NotBlank(message: "Please enter a product description")]
     private $description;
 
-    #[Assert\NotBlank]
+   
     #[ORM\Column(name: "dimensions", type: "string", length:255,nullable: false)]
+    #[Assert\NotBlank(message: "Please enter product dimensions")]
     private $dimensions;
 
-    #[Assert\NotBlank]
     #[ORM\Column(name: "weight", type: "decimal", precision:10, scale:2,nullable: false)]
+    #[Assert\NotBlank(message: "Please enter product weight")]
     private $weight;
 
-    #[Assert\NotBlank]
     #[ORM\Column(name: "material", type: "string", length:255, nullable: false)]
+    #[Assert\NotBlank(message: "Please enter product material")]
     private $material;
 
     #[ORM\Column(name: "image", type: "string", length:255, nullable: false)]
