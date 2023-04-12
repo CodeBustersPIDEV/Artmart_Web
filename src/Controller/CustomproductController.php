@@ -7,7 +7,7 @@ use App\Entity\Product;
 
 use Twilio\Rest\Client;
 use App\Entity\Categories;
-use Symfony\Component\Validator\Constraints as Assert;
+
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Knp\Component\Pager\PaginatorInterface;
 
@@ -326,13 +326,7 @@ class CustomproductController extends AbstractController
     public function edit(Request $request, Customproduct $customproduct, EntityManagerInterface $entityManager): Response
     {
 
-        $form = $this->createForm(CustomproductType::class, $customproduct, [
-            'constraints' => [
-                new Assert\NotBlank([
-                    'message' => 'Please enter a value',
-                ]),
-            ],
-        ]);
+        $form = $this->createForm(CustomproductType::class, $customproduct);
         $form->handleRequest($request);
         $product = $form->get('product')->getData();
         $imageFile = $form->get('product')->get('image')->getData();
