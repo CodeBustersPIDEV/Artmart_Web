@@ -112,7 +112,7 @@ class ApplyController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_apply_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_customproduct_admin', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('apply/edit.html.twig', [
@@ -129,7 +129,7 @@ class ApplyController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('app_apply_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_customproduct_admin', [], Response::HTTP_SEE_OTHER);
     }
 
 

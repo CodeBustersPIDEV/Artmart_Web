@@ -1,9 +1,9 @@
-{% extends 'base.html.twig' %}
-
-{% block title %}Your Applications list{% endblock %}
+{% extends 'baseF.html.twig' %}
+{% block content %}
 
 {% block body %}
-    <h1>custom products demands</h1>
+
+    <h1>custom products progress</h1>
 
     <table class="table">
         <thead>
@@ -25,4 +25,34 @@
         {% endfor %}
         </tbody>
     </table>
+
+
+
+   <script>
+// Add onclick event to all hyperlinks
+var links = document.getElementsByTagName("a");
+for (var i = 0; i < links.length; i++) {
+  links[i].setAttribute("onclick", "playSound()");
+}
+var linkss = document.getElementsByTagName("button");
+for (var i = 0; i < linkss.length; i++) {
+  linkss[i].setAttribute("onclick", "playSound()");
+}
+
+// Play sound function
+function playSound() {
+  var audio = new Audio('{{ asset('js/ab.mp3') }}');
+  audio.play();
+}
+</script>
+   <style>
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            border-spacing: 0;
+            margin-top: 20px;
+             background-color: #fff;
+        }
+    </style>
+{% endblock %}
 {% endblock %}

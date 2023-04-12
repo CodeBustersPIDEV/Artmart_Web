@@ -1,34 +1,30 @@
 {% extends 'base.html.twig' %}
-
-{% block title %}Orderrefund{% endblock %}
+{% import "base.html.twig" as base %}
+{% block title %}Edit Order
+{% endblock %}
 
 {% block body %}
-    <h1>Orderrefund</h1>
+	{{ base.NavBar() }}
+	{% include('order/orderBar.html.twig') %}
+	<link rel="stylesheet" href="{{ asset('assets/Components/specialOrder.css') }}"/>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>OrderrefundId</th>
-                <td>{{ orderrefund.orderrefundId }}</td>
-            </tr>
-            <tr>
-                <th>Refundamount</th>
-                <td>{{ orderrefund.refundamount }}</td>
-            </tr>
-            <tr>
-                <th>Reason</th>
-                <td>{{ orderrefund.reason }}</td>
-            </tr>
-            <tr>
-                <th>Date</th>
-                <td>{{ orderrefund.date ? orderrefund.date|date('Y-m-d') : '' }}</td>
-            </tr>
-        </tbody>
-    </table>
-
-    <a href="{{ path('app_orderrefund_index') }}">back to list</a>
-
-    <a href="{{ path('app_orderrefund_edit', {'orderrefundId': orderrefund.orderrefundId}) }}">edit</a>
-
+	<a href="{{ path('app_orderrefund_index') }}">
+		<button>
+			<span>Back</span>
+		</button>
+	</a>
+	<div class="card mid">
+		<div class="card-details">
+			<p class="text-title">Order Refund ID: {{ orderrefund.orderrefundId }}</p>
+			<p class="text-body">Refund Amount : {{ orderrefund.refundamount }}</p>
+			<p class="text-body">Reason : {{ orderrefund.reason }}</p>
+			<p class="text-body">Date : {{ orderrefund.date ? orderrefund.date|date('Y-m-d') : '' }}</p>
+		</div>
+    </div>
+	<a href="{{ path('app_orderrefund_edit', {'orderrefundId': orderrefund.orderrefundId}) }}">
+		<button>
+			<span>Edit</span>
+		</button>
+	</a>
     {{ include('orderrefund/_delete_form.html.twig') }}
 {% endblock %}

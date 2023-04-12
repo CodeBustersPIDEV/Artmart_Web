@@ -7,7 +7,10 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Readyproduct
  *
- * @ORM\Table(name="readyproduct", indexes={@ORM\Index(name="user_ID", columns={"user_ID"}), @ORM\Index(name="product_ID", columns={"product_ID"})})
+ * @ORM\Table(name="readyproduct", indexes={
+ *     @ORM\Index(name="user_ID", columns={"user_ID"}),
+ *     @ORM\Index(name="product_ID", columns={"product_ID"})
+ * })
  * @ORM\Entity
  */
 class Readyproduct
@@ -29,16 +32,18 @@ class Readyproduct
     private $price;
 
     /**
-     * @var int
+     * @var Product
      *
-     * @ORM\Column(name="product_ID", type="integer", nullable=false)
+     * @ORM\ManyToOne(targetEntity="Product")
+     * @ORM\JoinColumn(name="product_ID", referencedColumnName="product_ID")
      */
     private $productId;
 
     /**
-     * @var int
+     * @var User
      *
-     * @ORM\Column(name="user_ID", type="integer", nullable=false)
+     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\JoinColumn(name="user_ID", referencedColumnName="user_ID")
      */
     private $userId;
 
@@ -59,7 +64,7 @@ class Readyproduct
         return $this;
     }
 
-    public function getProductId(): ?int
+    public function getProductId(): ?Product
     {
         return $this->productId;
     }
@@ -71,7 +76,7 @@ class Readyproduct
         return $this;
     }
 
-    public function getUserId(): ?int
+    public function getUserId(): ?User
     {
         return $this->userId;
     }
@@ -82,6 +87,4 @@ class Readyproduct
 
         return $this;
     }
-
-
 }

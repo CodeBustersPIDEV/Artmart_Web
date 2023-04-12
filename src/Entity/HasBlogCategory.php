@@ -29,7 +29,7 @@ class HasBlogCategory
      *   @ORM\JoinColumn(name="blog_id", referencedColumnName="blogs_ID")
      * })
      */
-    private $blog;
+    private $blog_id;
 
     /**
      * @var \Blogcategories
@@ -48,12 +48,12 @@ class HasBlogCategory
 
     public function getBlog(): ?Blogs
     {
-        return $this->blog ?? null;
+        return $this->blog_id ?? null;
     }
 
     public function setBlog(?Blogs $blog): self
     {
-        $this->blog = $blog;
+        $this->blog_id = $blog;
 
         return $this;
     }

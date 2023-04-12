@@ -1,7 +1,6 @@
-{% extends 'base.html.twig' %}
+{% extends 'baseF.html.twig' %}
 
-{% block title %}Your Applications list{% endblock %}
-
+{% block content %}
 {% block body %}
     <h1>Your Applications Demands</h1>
 
@@ -15,14 +14,43 @@
         <tbody>
         {% for apply in applies %}
             <tr>
-           <td>{{ apply.customproduct.product.name}}</td>
+                <td>{{ apply.customproduct.product.name}}</td>
                 <td>{{ apply.status }}</td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="2">no records found</td>
+                <td colspan="2">No records found</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
+     <a href="{{ path('app_customproduct_artist') }}">back to list</a>
+    <script>
+        // Add onclick event to all hyperlinks and buttons
+        var links = document.getElementsByTagName("a");
+        for (var i = 0; i < links.length; i++) {
+            links[i].setAttribute("onclick", "playSound()");
+        }
+        var buttons = document.getElementsByTagName("button");
+        for (var i = 0; i < buttons.length; i++) {
+            buttons[i].setAttribute("onclick", "playSound()");
+        }
+
+        // Play sound function
+        function playSound() {
+            var audio = new Audio('{{ asset('js/ab.mp3') }}');
+            audio.play();
+        }
+    </script>
+
+    <style>
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            border-spacing: 0;
+            margin-top: 20px;
+             background-color: #fff;
+        }
+    </style>
+{% endblock %}
 {% endblock %}

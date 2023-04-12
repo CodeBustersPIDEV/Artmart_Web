@@ -1,0 +1,76 @@
+{% extends 'baseC.html.twig' %}
+
+{% block title %}
+    Edit Customproduct
+{% endblock %}
+
+{% block stylesheets %}
+  <style>
+input[type="file"] {
+  display: none;
+}</style>
+    <link rel="stylesheet" href="{{ asset('https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css') }}" integrity="{{ asset('sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm') }}" crossorigin="{{ asset('anonymous') }}">
+{% endblock %}
+
+{% block body %}
+    {% block content %}
+        <div class="container mt-5">
+            <h1 class="text-center mb-4">Edit Customproduct</h1>
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    {{ form_start(form) }}
+                    <div class="form-group">
+                        {{ form_label(form.product.category, 'Category', {'label_attr': {'class': 'font-weight-bold'}}) }}
+                        {{ form_widget(form.product.category, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.product.name, 'Name', {'label_attr': {'class': 'font-weight-bold'}}) }}
+                        {{ form_widget(form.product.name, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.product.description, 'Description', {'label_attr': {'class': 'font-weight-bold'}}) }}
+                        {{ form_widget(form.product.description, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.product.dimensions, 'Dimensions', {'label_attr': {'class': 'font-weight-bold'}}) }}
+                        {{ form_widget(form.product.dimensions, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.product.weight, 'Weight', {'label_attr': {'class': 'font-weight-bold'}}) }}
+                        {{ form_widget(form.product.weight, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.product.material, 'Material', {'label_attr': {'class': 'font-weight-bold'}}) }}
+                        {{ form_widget(form.product.material, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.client, 'Client', {'label_attr': {'class': 'font-weight-bold'}}) }}
+                        {{ form_widget(form.client, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                    <div class="form-group">
+                 <style>
+input[type="file"] { display: none;}</style>
+                  {{ form_row(form.product.image) }}
+<img id="preview-image" style="max-width: 128px" src="{{ asset('imagescustom/' ~ customproduct.product.image) }}" alt="Product image" onclick="document.getElementById('product_image').click()">
+<span id="image-name"></span>
+
+<script>
+    document.getElementById('product_image').addEventListener('change', function(e) {
+        var fileName = e.target.files[0].name;
+        document.getElementById('image-name').innerHTML = fileName;
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            document.getElementById('preview-image').setAttribute('src', e.target.result);
+        }
+        reader.readAsDataURL(e.target.files[0]);
+    });
+</script>
+                    </div>
+                    {{ include('customproduct/_form.html.twig', {'button_label': 'Update'}) }}
+                    {{ form_end(form) }}
+                    <a href="{{ path('app_customproduct_admin') }}" class="btn btn-secondary mt-4">Back to list</a>
+                </div>
+            </div>
+        </div>
+    {% endblock %}
+{% endblock %}

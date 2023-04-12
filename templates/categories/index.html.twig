@@ -1,5 +1,6 @@
-{% extends 'base.html.twig' %} {% import "base.html.twig" as base %}{% block
+{% extends 'baseC.html.twig' %} {% import "base.html.twig" as base %}{% block
 title %}Categories index{% endblock %} {% block body %}
+{% block content %}
 {{ base.NavBar() }}
 <table class="table">
 	<thead>
@@ -38,4 +39,5 @@ title %}Categories index{% endblock %} {% block body %}
 </table>
 
 <a href="{{ path('app_categories_new') }}">Create new</a>
+{% endblock %}
 {% endblock %}

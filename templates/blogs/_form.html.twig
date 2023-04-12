@@ -1,3 +1,4 @@
+{# /*
 <style>
 	.chip-select {
 		display: flex;
@@ -40,278 +41,220 @@
 		color: #999;
 	}
 </style>
+*/ #}
+<link rel="stylesheet" href="{{ asset('assets/Blog/CSS/FormCss.css') }}" />
+
 <div class="container">
 	<div class="row">
-		<div class="col-sm-12">
-			{{ form_start(form, {'attr': {'class': 'form-floating'}}) }}
-			<div class="form-group">
-				{{ form_label(form.title, null, {'label_attr': {'class': 'form-label'
-
-
-
-
-
-
-
-
-
-
-
-
-
-				}})}}
-				{{ form_widget(form.title, {'attr': {'class': 'form-control', 'placeholder': 'Title', 'id': 'title'
-
-
-
-
-
-
-
-
-
-
-
-
-
-				}}) }}
-			</div>
-
-			<div class="form-group">
-				{{ form_label(form.content, null, {'label_attr': {'class': 'form-label'
-
-
-
-
-
-
-
-
-
-
-
-
-
-				}}) }}
-				{{ form_widget(form.content, {'attr': {'class': 'form-control', 'placeholder': 'Content', 'id': 'content'
-
-
-
-
-
-
-
-
-
-
-
-
-
-				}}) }}
-			</div>
-
-			<div class="form-group">
-				{{ form_label(form.category, null, {'label_attr': {'class': 'form-label'
-
-
-
-
-
-
-
-
-
-
-
-
-
-				}}) }}
-				{{ form_widget(form.category, {'attr': {'class': 'form-control select2', 'id': 'category'
-
-
-
-
-
-
-
-
-
-
-
-
-
-				}}) }}
-			</div>
-
-			<div class="form-group">
-				{{ form_label(form.tags, null, {'label_attr': {'class': 'form-label'
-
-
-
-
-
-
-
-
-
-
-
-				}})}}
-				<div>
-					<label for="chip-select">Select Chips:</label>
-					<div class="chip-select">
-						<div class="selected-chips"></div>
-						<input type="text" id="chip-select" list="chip-options" />
-						<datalist id="chip-options">
-							{% for tag in tagsList %}
-							<option value="{{ tag.name }}"></option>
-							{% endfor %}
-						</datalist>
-					</div>
+		<div class="col">
+			{% if blog_media != null %}
+			<img
+				src="{{ blog_media.getFilePath() }}"
+				class="img-fluid blogImg"
+				alt="Blog Post Image"
+			/>
+			{% else %}
+			<img
+				src="{{ asset('assets/Blog/img/default-product.png') }}"
+				class="img-fluid blogImg"
+				alt="Blog Post Image"
+			/>
+			{% endif %}
+		</div>
+		<div class="col">
+			<div class="col-sm-12">
+				{{ form_start(form, {'attr': {'class': 'form-floating'}}) }}
+				<div class="form-group">
+					{{ form_label(form.title, null, {'label_attr': {'class': 'form-label'
+
+					}})}}
+					{{ form_widget(form.title, {'attr': {'class': 'form-control', 'placeholder': 'Title', 'id': 'title'
+
+					}}) }}
 				</div>
-				{#
-				{{ form_widget(form.tags, {'attr': {'class': 'form-select', 'multiple' ,'id': 'tags','size'='3'
 
+				<div class="form-group">
+					{{ form_label(form.content, null, {'label_attr': {'class': 'form-label'
 
+					}}) }}
+					{{ form_widget(form.content, {'attr': {'class': 'form-control', 'placeholder': 'Content', 'id': 'content'
 
+					}}) }}
+				</div>
 
+				<div class="form-group">
+					{{ form_label(form.category, null, {'label_attr': {'class': 'form-label'
 
+					}}) }}
+					{{ form_widget(form.category, {'attr': {'class': 'form-control select2', 'id': 'category'
 
+					}}) }}
+				</div>
 
+				<div class="form-group">
+					{{ form_label(form.tags, null, {'label_attr': {'class': 'form-label'
 
+					}})}} {#
+					<div>
+						<label for="chip-select">Select Chips:</label>
+						<div class="chip-select">
+							<div class="selected-chips"></div>
+							<input type="text" id="chip-select" list="chip-options" />
+							<datalist id="chip-options">
+								{% for tag in tagsList %}
+								<option value="{{ tag.name }}"></option>
+								{% endfor %}
+							</datalist>
+						</div>
+					</div>
+					#}
+					<div class="row g-3">
+						<div class="col-auto">
+							{{ form_widget(form.tags, {'attr': {'class': 'form-select' ,'id': 'tags','size':'3'
 
+							}}) }}
+						</div>
+						<div class="col-auto">
+							<div id="input-container" style="display: none">
+								<div class="chip-select">
+									{{ form_widget(form.addTags,{'attr': {'id': 'input-container','class': 'form-control addTagsInput','list':'chip-options'
 
+									}}) }}
+								</div>
+							</div>
+						</div>
+						<div class="col-auto">
+							<div class="selected-chips"></div>
+						</div>
+					</div>
+					<label for="tagsChoice">Add other tags:</label>
+					<input type="checkbox" name="addOther" id="tagsChoice" />
+					<input type="hidden" name="addedTags" id="addedTags" />
+				</div>
 
+				<div class="form-group">
+					{{ form_label(form.author, null, {'label_attr': {'class': 'form-label'
 
+					}}) }}
+					{{ form_widget(form.author, {'attr': {'class': 'form-control select2', 'id': 'author'
 
-				}}) }} #}
+					}}) }}
+				</div>
+
+				<div class="form-group">
+					{{ form_label(form.file, null, {'label_attr': {'class': 'form-label'
+
+					}})}}
+					{{ form_widget(form.file, {'attr': {'class': 'form-control blogImageFile', 'id': 'formFile'
+
+					}}) }}
+				</div>
+
+				<button type="submit" class="btn btn-primary" id="submitBtn">
+					{{ button_label|default('Post') }}
+				</button>
+
+				{{ form_end(form) }}
 			</div>
-
-			{# {{ form_row(form.tags) }} #}
-			<div class="form-group">
-				{{ form_label(form.author, null, {'label_attr': {'class': 'form-label'
-
-
-
-
-
-
-
-
-
-
-
-
-
-				}}) }}
-				{{ form_widget(form.author, {'attr': {'class': 'form-control select2', 'id': 'author'
-
-
-
-
-
-
-
-
-
-
-
-
-
-				}}) }}
-			</div>
-
-			<div class="form-group">
-				{{ form_label(form.file, null, {'label_attr': {'class': 'form-label'
-
-
-
-
-
-
-
-
-
-
-
-
-
-				}})}}
-				{{ form_widget(form.file, {'attr': {'class': 'form-control', 'id': 'formFile'
-
-
-
-
-
-
-
-
-
-
-
-
-
-				}}) }}
-			</div>
-
-			<button type="submit" class="btn btn-primary">
-				{{ button_label|default('Post') }}
-			</button>
-
-			{{ form_end(form) }}
 		</div>
 	</div>
 </div>
 
+{# //
 <script>
-	const chipSelect = document.querySelector("#chip-select");
-	const selectedChips = document.querySelector(".selected-chips");
+	// 	const checkbox = document.querySelector("#tagsChoice");
+	// 	const inputContainer = document.querySelector("#input-container");
+	// 	const addTagsInput = document.querySelector(".addTagsInput");
+	// 	const selectedChips = document.querySelector(".selected-chips");
+	// 	const blogImage = document.querySelector(".blogImageFile");
+	// 	const blogImg = document.querySelector(".blogImg");
+	// 	let addedTags = document.querySelector("#addedTags");
+	// 	let selectedValues = [];
 
-	let selectedValues = [];
-	function handleInput(event) {
-		const inputValue = event.target.value.trim();
-		if (event.type === "keydown" && event.key !== "Enter") {
-			return;
-		}
-		if (inputValue) {
-			if (selectedValues.indexOf(inputValue) === -1) {
-				selectedValues.push(inputValue);
-				addChip(inputValue);
-			}
-			event.target.value = "";
-		}
-	}
+	// 	blogImage.addEventListener("change", () => {
+	// 		const file = blogImage.files[0];
+	// 		const reader = new FileReader();
 
-	chipSelect.addEventListener("keydown", handleInput);
-	chipSelect.addEventListener("input", handleInput);
-	// chipSelect.addEventListener("keydown", (event) => {
-	//   const inputValue = event.target.value.trim();
-	//   if () {
-	//     if (selectedValues.indexOf(inputValue) === -1) {
-	//       selectedValues.push(inputValue);
-	//       addChip(inputValue);
-	//     }
-	//     event.target.value = "";
-	//   }
-	// });
-	selectedChips.addEventListener("click", (event) => {
-		if (event.target.classList.contains("close")) {
-			const chip = event.target.parentNode;
-			const chipValue = chip.getAttribute("data-value");
-			const index = selectedValues.indexOf(chipValue);
-			selectedValues.splice(index, 1);
-			selectedChips.removeChild(chip);
-		}
-	});
+	// 		reader.addEventListener("load", function () {
+	// 			blogImg.src = reader.result;
+	// 		});
 
-	function addChip(value) {
-		const chip = document.createElement("div");
-		chip.classList.add("chip");
-		chip.setAttribute("data-value", value);
-		chip.innerHTML = `
-    <span>${value}</span>
-    <span class="close">&times;</span>
-  `;
-		selectedChips.appendChild(chip);
-	}
+	// 		if (file) {
+	// 			reader.readAsDataURL(file);
+	// 		}
+	// 	});
+
+	// 	checkbox.addEventListener("change", (event) => {
+	// 		if (event.target.checked) {
+	// 			inputContainer.style.display = "block";
+	// 		} else {
+	// 			inputContainer.style.display = "none";
+	// 		}
+	// 	});
+
+	// 	function addTags(selectedValues) {
+	// 		let str = "";
+	// 		selectedValues.forEach((value) => {
+	// 			if (!str.includes(value)) {
+	// 				str = str + `#${value}`;
+	// 			}
+	// 			addedTags.value = str;
+	// 		});
+	// 		// console.log("str: " + str);
+	// 		// console.log("addedTags: " + addedTags.value);
+	// 	}
+
+	// 	addTagsInput.addEventListener("keydown", function (event) {
+	// 		if (event.keyCode === 13) {
+	// 			event.preventDefault();
+	// 			const tag = addTagsInput.value.trim();
+	// 			if (tag !== "") {
+	// 				selectedValues.push(tag);
+	// 				console.log(selectedValues);
+	// 				addChip(tag);
+	// 				addTags(selectedValues);
+	// 				addTagsInput.value = "";
+	// 			}
+	// 		}
+	// 	});
+
+	// 	selectedChips.addEventListener("click", (event) => {
+	// 		if (event.target.classList.contains("close")) {
+	// 			const chip = event.target.parentNode;
+	// 			const chipValue = chip.getAttribute("data-value");
+	// 			const index = selectedValues.indexOf(chipValue);
+	// 			selectedValues.splice(index, 1);
+	// 			addTags(selectedValues);
+	// 			selectedChips.removeChild(chip);
+	// 			console.log(selectedValues);
+	// 		}
+	// 	});
+
+	// 	function addChip(value) {
+	// 		const chip = document.createElement("div");
+	// 		chip.classList.add("chip");
+	// 		chip.setAttribute("data-value", value);
+	// 		chip.innerHTML = `
+	// 		    <span>${value}</span>
+	// 		    <span class="close">&times;</span>
+	// 		  `;
+	// 		selectedChips.appendChild(chip);
+	// 	}
+
+	// 	document.getElementById("submitBtn").addEventListener("click", () => {
+	// 		const xhr = new XMLHttpRequest();
+	// 		xhr.open("POST", "../../src/Controller/BlogsController.php");
+	// 		xhr.setRequestHeader("Content-Type", "application/json");
+	// 		xhr.send(JSON.stringify({ addedTags: selectedValues }));
+
+	// 		xhr.onreadystatechange = function () {
+	// 			if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+	// 				console.log(xhr.responseText);
+	// 			}
+	// 		};
+	// 	});
+	//
 </script>
+#}
+
+<script src="{{ asset('assets/Blog/JS/FormJS.js') }}"></script>

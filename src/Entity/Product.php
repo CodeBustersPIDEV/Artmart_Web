@@ -4,7 +4,7 @@ namespace App\Entity;
 
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-
+use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Product
  *
@@ -33,6 +33,7 @@ class Product
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255, nullable=false)
+     * @Assert\NotBlank(message="Name is required")
      */
     private $name;
 
@@ -40,6 +41,7 @@ class Product
      * @var string
      *
      * @ORM\Column(name="description", type="text", length=65535, nullable=false)
+     * @Assert\NotBlank(message="Name is required")
      */
     private $description;
 
@@ -47,6 +49,7 @@ class Product
      * @var string
      *
      * @ORM\Column(name="dimensions", type="string", length=255, nullable=false)
+     * @Assert\NotBlank(message="Name is required")
      */
     private $dimensions;
 
@@ -54,6 +57,7 @@ class Product
      * @var string
      *
      * @ORM\Column(name="weight", type="decimal", precision=10, scale=2, nullable=false)
+     * @Assert\NotBlank(message="Name is required")
      */
     private $weight;
 
@@ -61,6 +65,7 @@ class Product
      * @var string
      *
      * @ORM\Column(name="material", type="string", length=255, nullable=false)
+     * @Assert\NotBlank(message="Name is required")
      */
     private $material;
 
@@ -68,8 +73,9 @@ class Product
      * @var string
      *
      * @ORM\Column(name="image", type="string", length=255, nullable=false)
+     * @Assert\NotBlank(message="Name is required")
      */
-    private $image ;
+    private $image = 'imagecustom/imagec.png';
 
     public function getProductId(): ?int
     {
@@ -164,6 +170,7 @@ class Product
         {
             return $this->getName();
         }
+        
 
 
 

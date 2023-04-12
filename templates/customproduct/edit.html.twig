@@ -1,9 +1,68 @@
-{% extends 'base.html.twig' %}
-{% block title %}Edit Customproduct{% endblock %}
+{% extends 'baseF.html.twig' %}
+{% block content %}
+{% block title %}
+        <h4><em>Edit</em> Custom Products</h4>
+{% endblock %}
+{% block stylesheets %}
+<style>
+/* Add your styles here */
+label {
+display: block;
+margin-bottom: 10px;
+font-weight: bold;
+}
+input[type="text"],
+textarea {
+display: block;
+width: 100%;
+padding: 10px;
+margin-bottom: 20px;
+border-radius: 5px;
+border: 1px solid #ccc;
+}
+select {
+display: block;
+width: 100%;
+padding: 10px;
+margin-bottom: 20px;
+border-radius: 5px;
+border: 1px solid #ccc;
+background-color: #fff;
+}
+input[type="submit"] {
+background-color: #4CAF50;
+color: #fff;
+padding: 10px 20px;
+border: none;
+border-radius: 5px;
+cursor: pointer;
+}
+input[type="submit"]:hover {
+background-color: #3e8e41;
+}
+.error {
+color: #f00;
+font-weight: bold;
+}
+.form-container {
+width: 50%;
+margin: auto;
+background-color: #f2f2f2;
+padding: 20px;
+border-radius: 10px;
+}
+.form-container h1 {
+text-align: center;
+margin-bottom: 20px;
+}
+input[type="file"] {
+  display: none;
+}
 
+</style>
+{% endblock %}
 {% block body %}
-    <h1>Edit Customproduct</h1>
-
+<div class="form-container">
     {{ form_start(form) }}
      
         {{ form_row(form.product.category) }}
@@ -12,14 +71,46 @@
         {{ form_row(form.product.dimensions) }}
         {{ form_row(form.product.weight) }}
         {{ form_row(form.product.material) }}
-            {{ form_row(form.client) }}
-        {{ form_row(form.product.image) }}
+           {{ form_row(form.product.image) }}
+<img id="preview-image" style="max-width: 128px" src="{{ asset('imagescustom/' ~ customproduct.product.image) }}" alt="Product image" onclick="document.getElementById('product_image').click()">
+<span id="image-name"></span>
+
+<script>
+    document.getElementById('product_image').addEventListener('change', function(e) {
+        var fileName = e.target.files[0].name;
+        document.getElementById('image-name').innerHTML = fileName;
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            document.getElementById('preview-image').setAttribute('src', e.target.result);
+        }
+        reader.readAsDataURL(e.target.files[0]);
+    });
+</script>
 
         
     {{ include('customproduct/_form.html.twig', {'button_label': 'Update'}) }}
     {{ form_end(form) }}
+        <a href="{{ path('app_customproduct_index') }}">back to list</a>
+   
+</div>
 
-    <a href="{{ path('app_customproduct_index') }}">back to list</a>
 
-    {{ include('customproduct/_delete_form.html.twig') }}
+<script>
+// Add onclick event to all hyperlinks
+var links = document.getElementsByTagName("a");
+for (var i = 0; i < links.length; i++) {
+  links[i].setAttribute("onclick", "playSound()");
+}
+var linkss = document.getElementsByTagName("button");
+for (var i = 0; i < linkss.length; i++) {
+  linkss[i].setAttribute("onclick", "playSound()");
+}
+
+// Play sound function
+function playSound() {
+  var audio = new Audio('{{ asset('js/ab.mp3') }}');
+  audio.play();
+}
+</script>
+{% endblock %}
 {% endblock %}

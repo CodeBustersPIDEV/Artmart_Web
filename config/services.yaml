@@ -11,6 +11,7 @@ parameters:
     path: "PIDEV/BlogUploads"
 
 services:
+  Knp\Component\Pager\PaginatorInterface: '@knp_paginator'
   App\Form\Type\BlogCategoryType:
     arguments:
       - '@App\Repository\BlogcategoriesRepository'

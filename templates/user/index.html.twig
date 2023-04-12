@@ -3,6 +3,17 @@
 {% block title %}User index{% endblock %} 
 {% block body %}
 {{ base.NavBar() }}
+
+<form action="{{ path('app_user_index') }}" method="GET">
+    <div class="form-group">
+        <label for="search-term">Search for users:</label>
+        <input type="text" id="search-term" name="search" class="form-control" value="{{ searchTerm }}">
+    </div>
+    <button type="submit" class="btn btn-primary">Search</button>
+</form>
+<a href="{{ path('app_user_index', {'userse': 'username'}) }}">User by name</a>
+<a href="{{ path('app_user_index', {'userse': 'name'}) }}">User by username</a>
+
 <table class="table">
 	<thead>
 		<tr>

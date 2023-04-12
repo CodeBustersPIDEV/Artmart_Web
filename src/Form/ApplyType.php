@@ -3,6 +3,7 @@
 namespace App\Form;
 use App\Entity\Customproduct;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use App\Entity\Apply;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -13,7 +14,15 @@ class ApplyType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('status')
+        ->add('status', ChoiceType::class, [
+            'choices' => [
+                'in progress' => 'in progress',
+                'Pending' => 'Pending',
+                'done' => 'done',
+                'refused' => 'refused',
+                'waiting for admin' => 'waiting for admin',
+            ],
+        ])
             ->add('artist')
             ->add('customproduct', EntityType::class, [
                 'class' => customproduct::class,
