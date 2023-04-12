@@ -26,6 +26,13 @@ class OrderController extends AbstractController
             'orders' => $orders,
         ]);
     }
+    
+    #[Route('/admin', name: 'app_order_admin', methods: ['GET'])]
+    public function showAdmin(): Response
+    {
+        return $this->render('order/admin.html.twig', [
+        ]);
+    }
 
     #[Route('/new', name: 'app_order_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
@@ -104,4 +111,5 @@ class OrderController extends AbstractController
         return $this->render('order/orderGui.html.twig', [
         ]);
     }
+
 }

@@ -1,0 +1,117 @@
+{% extends 'baseO.html.twig' %} {% block content %} {% block stylesheets %}
+<link rel="stylesheet" href="{{ asset('assets/Blog/CSS/AdminPage.css') }}" />
+<style>
+	.nav_links {
+		cursor: pointer;
+	}
+	.adminSection {
+		margin-left: 5px;
+	}
+</style>
+{% endblock %} {% block body %}
+<div class="adminSection">
+	<ul class="nav nav-pills">
+		<li class="nav-item">
+			<a class="nav-link nav_links active" id="homeLink">Main</a>
+		</li>
+		<li class="nav-item">
+			<a class="nav-link nav_links" id="blogLink">Blogs</a>
+		</li>
+		<li class="nav-item">
+			<a class="nav-link nav_links" id="blogCategoryLink">Blog Categories</a>
+		</li>
+		<li class="nav-item">
+			<a class="nav-link nav_links" id="tagsLink">Tags</a>
+		</li>
+	</ul>
+	<section id="home">
+		<h2>Home Section</h2>
+	</section>
+
+	<section id="blogs">
+		<h3>Blogs</h3>
+
+		<a href="{{ path('app_blogs_new') }}">
+			<div data-tooltip="Blog" class="button mid">
+				<div class="button-wrapper">
+					<div class="text">Create New</div>
+					<span class="icon">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							width="16"
+							height="16"
+							fill="currentColor"
+							class="bi bi-file-earmark-plus-fill"
+							viewbox="0 0 16 16"
+						>
+							<path
+								d="M9.293 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.707A1 1 0 0 0 13.707 4L10 .293A1 1 0 0 0 9.293 0zM9.5 3.5v-2l3 3h-2a1 1 0 0 1-1-1zM8.5 7v1.5H10a.5.5 0 0 1 0 1H8.5V11a.5.5 0 0 1-1 0V9.5H6a.5.5 0 0 1 0-1h1.5V7a.5.5 0 0 1 1 0z"
+							/>
+						</svg>
+					</span>
+				</div>
+			</div>
+		</a>
+	</section>
+
+	<section id="blogCategory">
+		<div class="col">
+			<h3>Blog Categories</h3>
+
+			<a href="{{ path('app_blogcategories_new') }}">
+				<div data-tooltip="Category" class="button mid">
+					<div class="button-wrapper">
+						<div class="text">Create New</div>
+						<span class="icon">
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								width="16"
+								height="16"
+								fill="currentColor"
+								class="bi bi-file-earmark-plus-fill"
+								viewbox="0 0 16 16"
+							>
+								<path
+									d="M9.293 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.707A1 1 0 0 0 13.707 4L10 .293A1 1 0 0 0 9.293 0zM9.5 3.5v-2l3 3h-2a1 1 0 0 1-1-1zM8.5 7v1.5H10a.5.5 0 0 1 0 1H8.5V11a.5.5 0 0 1-1 0V9.5H6a.5.5 0 0 1 0-1h1.5V7a.5.5 0 0 1 1 0z"
+								/>
+							</svg>
+						</span>
+					</div>
+				</div>
+			</a>
+
+			
+		</div>
+	</section>
+
+	<section id="tags">
+		<div class="col">
+			<h3>Tags</h3>
+
+			<a href="{{ path('app_tags_new') }}">
+				<div data-tooltip="Tag" class="button mid">
+					<div class="button-wrapper">
+						<div class="text">Create New</div>
+						<span class="icon">
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								width="16"
+								height="16"
+								fill="currentColor"
+								class="bi bi-file-earmark-plus-fill"
+								viewbox="0 0 16 16"
+							>
+								<path
+									d="M9.293 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.707A1 1 0 0 0 13.707 4L10 .293A1 1 0 0 0 9.293 0zM9.5 3.5v-2l3 3h-2a1 1 0 0 1-1-1zM8.5 7v1.5H10a.5.5 0 0 1 0 1H8.5V11a.5.5 0 0 1-1 0V9.5H6a.5.5 0 0 1 0-1h1.5V7a.5.5 0 0 1 1 0z"
+								/>
+							</svg>
+						</span>
+					</div>
+				</div>
+			</a>
+
+			
+		</div>
+	</section>
+</div>
+{% endblock %} {% endblock %}
