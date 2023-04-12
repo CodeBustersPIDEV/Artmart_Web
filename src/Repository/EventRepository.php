@@ -73,4 +73,40 @@ class EventRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+    public function findAllSortedByName($name): array
+    {
+        return $this->createQueryBuilder('e')
+            ->orderBy('e.name', $name)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    public function findAllSortedByPrice($sort): array
+    {
+        return $this->createQueryBuilder('e')
+            ->orderBy('e.entryfee', $sort)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    public function findByType($type): array
+    {
+        return $this->createQueryBuilder('e')
+        ->andWhere('e.type = :val')
+        ->setParameter('val', $type)
+        ->getQuery()
+        ->getResult();
+    }
+    
+    public function findByStatus($status): array
+    {
+        return $this->createQueryBuilder('e')
+        ->andWhere('e.status = :val')
+        ->setParameter('val', $status)
+        ->getQuery()
+        ->getResult();
+    }
+
 }

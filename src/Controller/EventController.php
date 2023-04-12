@@ -15,6 +15,62 @@ use Knp\Component\Pager\PaginatorInterface;
 #[Route('/event')]
 class EventController extends AbstractController
 {
+       /**
+     * @Route("/sortedByName", name="findAllSortedByName")
+     */
+    public function findAllSortedByName(Request $request, EventRepository $eventRepository): Response
+    {
+        $name = $request->query->get('name');
+
+        $events = $eventRepository->findAllSortedByName($name);
+
+        return $this->render('event/index.html.twig', [
+            'events' => $events,
+        ]);
+    }
+
+       /**
+     * @Route("/sortedByPrice", name="findAllSortedByPrice")
+     */
+    public function findAllSortedByPrice(Request $request, EventRepository $eventRepository): Response
+    {
+        $feeOrder = $request->query->get('feeOrder');
+
+        $events = $eventRepository->findAllSortedByPrice($feeOrder);
+
+        return $this->render('event/index.html.twig', [
+            'events' => $events,
+        ]);
+    }
+
+       /**
+     * @Route("/sortedByType", name="findByType")
+     */
+    public function findByType(Request $request, EventRepository $eventRepository): Response
+    {
+        $type = $request->query->get('type');
+
+        $events = $eventRepository->findByType($type);
+
+        return $this->render('event/index.html.twig', [
+            'events' => $events,
+        ]);
+    }
+
+       /**
+     * @Route("/sortedByStatus", name="findByStatus")
+     */
+    public function findByStatus(Request $request, EventRepository $eventRepository): Response
+    {
+        $status = $request->query->get('status');
+
+        $events = $eventRepository->findByStatus($status);
+
+        return $this->render('event/index.html.twig', [
+            'events' => $events,
+        ]);
+    }
+
     #[Route('/', name: 'app_event_index', methods: ['GET'])]
     public function index(EntityManagerInterface $entityManager, PaginatorInterface $paginator, Request $request): Response
     {
@@ -31,20 +87,7 @@ class EventController extends AbstractController
             'events' => $pages,
         ]);
     }
-    /**
-     * @Route("/events", name="app_event_list")
-     */
-    public function list(Request $request, EventRepository $eventRepository): Response
-    {
-        $sortBy = $request->query->get('sort_by', 'name');
-        $sortOrder = $request->query->get('sort_order', 'ASC');
 
-        $events = $eventRepository->findBy([], [$sortBy => $sortOrder]);
-
-        return $this->render('event/list.html.twig', [
-            'events' => $events
-        ]);
-    }
     #[Route('/otherEvents/{id}', name: 'app_event_otherEvents', methods: ['GET'])]
     public function findOtherEvents(EntityManagerInterface $entityManager, $id): Response
     {

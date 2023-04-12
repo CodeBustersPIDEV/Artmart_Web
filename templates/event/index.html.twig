@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %} 
+  {% extends 'base.html.twig' %} 
 {% import "base.html.twig" as base %}
 {% block title %}Event List{% endblock %}
 
@@ -6,50 +6,84 @@
   {{ base.NavBar() }}
 	{% include('event/eventBar.html.twig') %}
 
-  <link rel="stylesheet" href="{{ asset('assets/Components/specialOrder.css') }}"/>
+<div class="col-md-6">
+  <form action="{{ path('findAllSortedByName') }}" method="get">
+    <p style="display:inline-block; margin-right: 10px;">Sort by Nameù</p>
+    <select name="name" onchange="this.form.submit()">
+      <option value="">Sort by Name</option>
+      <option value="asc">Ascending Name</option>
+      <option value="desc">Descending Name</option>
+    </select>
+  </form>
+  
+  <form action="{{ path('findAllSortedByPrice') }}" method="get">
+    <p style="display:inline-block; margin-right: 10px;">Sort by Price</p>
+    <select name="feeOrder" onchange="this.form.submit()">
+      <option value="">Sort by Price</option>
+      <option value="asc">Ascending Price</option>
+      <option value="desc">Descending Price</option>
+    </select>
+  </form>
+  
+  <form action="{{ path('findByType') }}" method="get">
+    <p style="display:inline-block; margin-right: 10px;">Sort by Type</p>
+    <select name="type" onchange="this.form.submit()">
+      <option value="">Sort by Type</option>
+      <option value="Auction">Auction</option>
+      <option value="Art Fair">Art Fair</option>
+      <option value="Exhibition">Exhibition</option>
+      <option value="Open Gallery">Open Gallery</option>
+    </select>
+  </form>
 
-  <div class="row">
-    <div class="col-md-6">
-      <a href="{{ path('app_event_new') }}">
-        <div data-tooltip="New Event" class="button mid">
-          <div class="button-wrapper">
-            <div class="text">Create New</div>
-            <span class="icon">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-earmark-plus-fill" viewbox="0 0 16 16">
-                <path d="M9.293 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.707A1 1 0 0 0 13.707 4L10 .293A1 1 0 0 0 9.293 0zM9.5 3.5v-2l3 3h-2a1 1 0 0 1-1-1zM8.5 7v1.5H10a.5.5 0 0 1 0 1H8.5V11a.5.5 0 0 1-1 0V9.5H6a.5.5 0 0 1 0-1h1.5V7a.5.5 0 0 1 1 0z"/>
-              </svg>
-            </span>
-          </div>
-        </div>
-      </a>
-    </div>
+  <form action="{{ path('findByStatus') }}" method="get">
+    <p style="display:inline-block; margin-right: 10px;">Sort by Status</p>
+    <select name="status" onchange="this.form.submit()">
+      <option value="">Sort by Status</option>
+      <option value="Scheduled">Scheduled</option>
+      <option value="Started">Started</option>
+      <option value="Finished">Finished</option>
+      <option value="Postponed">Postponed</option>
+      <option value="Cancelled">Cancelled</option>
+    </select>
+  </form>
 
-    <div class="col-md-6">
-      <form action="{{ path('app_event_list') }}" method="get">
-        <select name="sort" onchange="this.form.submit()">
-          <option value="">Sort by Price</option>
-          <option value="asc">Ascending Price</option>
-          <option value="desc">Descending Price</option>
-        </select>
-      </form>
-    </div>
-  </div>
+</div>
 
-  <div class="row">
-    {% for event in events %}
-      <div class="col-md-4">
-        <div class="card" style="margin:20px">
-          <img class="card-img-top" src="{{ event.image }}" alt="Card image cap">
-          <div class="card-body">
-            <h5 class="card-title">{{ event.name }}</h5>
-            <p class="card-text">{{ event.description }}</p>
-            <<a href="{{ path('app_event_show', {'eventid': event.eventid}) }}" class="btn btn-primary">Show</a>
-            <a href="{{ path('app_event_edit', {'eventid': event.eventid}) }}" class="btn btn-secondary">Edit</a>
-          </div>
+
+  {# <h1>Event List</h1> #}
+    <link rel="stylesheet" href="{{ asset('assets/Components/specialOrder.css') }}"/>
+    <a href="{{ path('app_event_new') }}">
+      <div data-tooltip="New Event" class="button mid">
+        <div class="button-wrapper">
+          <div class="text">Create New</div>
+          <span class="icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-earmark-plus-fill" viewbox="0 0 16 16">
+              <path d="M9.293 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.707A1 1 0 0 0 13.707 4L10 .293A1 1 0 0 0 9.293 0zM9.5 3.5v-2l3 3h-2a1 1 0 0 1-1-1zM8.5 7v1.5H10a.5.5 0 0 1 0 1H8.5V11a.5.5 0 0 1-1 0V9.5H6a.5.5 0 0 1 0-1h1.5V7a.5.5 0 0 1 1 0z"/>
+            </svg>
+          </span>
         </div>
       </div>
-    {% else %}
-      <p>No records found</p>
-    {% endfor %}
+    </a>
+    
+
+
+  <div class="row">
+  {% for event in events %}
+  <div class="col-md-4">
+    <div class="card" style="margin:20px">
+      <img class="card-img-top" src="{{ event.image }}" alt="Card image cap">
+      <div class="card-body">
+        <h5 class="card-title">{{ event.name }}</h5>
+        <p class="card-text">{{ event.description }}</p>
+        <a href="{{ path('app_event_show', {'eventid': event.eventid}) }}" class="btn btn-primary">Show</a>
+        <a href="{{ path('app_event_edit', {'eventid': event.eventid}) }}" class="btn btn-secondary">Edit</a>
+      </div>
+    </div>
   </div>
+  {% else %}
+  <p>No records found</p>
+  {% endfor %}
+</div>
+<br>
 {% endblock %}
