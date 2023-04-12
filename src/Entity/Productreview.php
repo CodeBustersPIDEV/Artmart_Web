@@ -5,63 +5,36 @@ namespace App\Entity;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * Productreview
- *
- * @ORM\Table(name="productreview", indexes={@ORM\Index(name="user_ID", columns={"user_ID"}), @ORM\Index(name="ready_product_ID", columns={"ready_product_ID"})})
- * @ORM\Entity
- */
+#[ORM\Table(name: "productreview",options: [
+    'indexes' => [
+        'user_ID' => ['columns' => ['user_ID']],
+        'ready_product_ID' => ['columns' => ['ready_product_ID']]
+    ]
+])]
+#[ORM\Entity]
 class Productreview
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="review_ID", type="integer", nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-     */
+    #[ORM\Column(name: "review_ID", type: "integer", nullable: false)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: "IDENTITY")]
     private $reviewId;
 
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="ready_product_ID", type="integer", nullable=false)
-     */
+    #[ORM\Column(name: "ready_product_ID", type: "integer",nullable: false)]
     private $readyProductId;
 
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="user_ID", type="integer", nullable=false)
-     */
+    #[ORM\Column(name: "user_ID", type: "integer",nullable: false)]
     private $userId;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="title", type="string", length=255, nullable=false)
-     */
+    #[ORM\Column(name: "title", type: "string",nullable: false,length:255)]
     private $title;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="text", type="text", length=65535, nullable=false)
-     */
+    #[ORM\Column(name: "text", type: "text",nullable: false,length:65535)]
     private $text;
 
-    /**
-     * @var float
-     *
-     * @ORM\Column(name="rating", type="float", precision=10, scale=0, nullable=false)
-     */
+    #[ORM\Column(name: "rating", type: "float",precision:10, scale:0,nullable: false,length:65535)]
     private $rating;
 
-    /**
-     * @var \DateTime|null
-     *
-     * @ORM\Column(name="date", type="datetime", nullable=true, options={"default"="current_timestamp()"})
-     */
+    #[ORM\Column(name: "date", type: "datetime",options:["default"=>"current_timestamp()"],nullable: false,length:65535)]
     private $date = 'current_timestamp()';
 
     public function getReviewId(): ?int

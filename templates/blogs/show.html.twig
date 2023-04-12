@@ -308,6 +308,57 @@ body %} {% import "base.html.twig" as base %}
 								alt="Spinning glass cube"
 							/>
 							{% endif %}
+							<div class="commentSection">
+								<h1>Comments index</h1>
+
+								<table class="table">
+									<thead>
+										<tr>
+											<th>CommentsId</th>
+											<th>Content</th>
+											<th>Date</th>
+											<th>Rating</th>
+											<th>actions</th>
+										</tr>
+									</thead>
+									<tbody>
+										{% for comment in blog_Comments %}
+										<tr>
+											<td>{{ comment.commentsId }}</td>
+											<td>{{ comment.content }}</td>
+											<td>
+												{{ comment.date ? comment.date|date('Y-m-d') : '' }}
+											</td>
+											<td>{{ comment.rating }}</td>
+											<td>
+												<a
+													href="{{
+														path('app_comments_show', {
+															commentsId: comment.commentsId
+														})
+													}}"
+													>show</a
+												>
+												<a
+													href="{{
+														path('app_comments_edit', {
+															commentsId: comment.commentsId
+														})
+													}}"
+													>edit</a
+												>
+											</td>
+										</tr>
+										{% else %}
+										<tr>
+											<td colspan="5">no records found</td>
+										</tr>
+										{% endfor %}
+									</tbody>
+								</table>
+
+								<a href="{{ path('app_comments_new') }}">Create new</a>
+							</div>
 						</div>
 						<div class="part2 col">
 							<p>{{ blog.content }}</p>

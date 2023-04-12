@@ -4,42 +4,27 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * HasBlogCategory
- *
- * @ORM\Table(name="has_blog_category", indexes={@ORM\Index(name="blog_id", columns={"blog_id"}), @ORM\Index(name="category_id", columns={"category_id"})})
- * @ORM\Entity
- */
+#[ORM\Table(name: "has_blog_category",options: [
+    'indexes' => [
+        'blog_id' => ['columns' => ['blog_id']],
+        'category_id' => ['columns' => ['category_id']]
+    ]
+])]
+#[ORM\Entity]
 class HasBlogCategory
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer", nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-     */
+     #[ORM\Column(name: "id", type: "integer", nullable: false)]
+     #[ORM\Id]
+     #[ORM\GeneratedValue(strategy: "IDENTITY")]
     private $id;
 
-    /**
-     * @var \Blogs
-     *
-     * @ORM\ManyToOne(targetEntity="Blogs")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="blog_id", referencedColumnName="blogs_ID")
-     * })
-     */
+    #[ORM\ManyToOne(targetEntity: "Blogs")]
+    #[ORM\JoinColumn(name: "blog_id", referencedColumnName: "blogs_ID")]
     private $blog_id;
 
-    /**
-     * @var \Blogcategories
-     *
-     * @ORM\ManyToOne(targetEntity="Blogcategories")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="category_id", referencedColumnName="categories_ID")
-     * })
-     */
-    private $category;
+    #[ORM\ManyToOne(targetEntity: "Blogcategories")]
+    #[ORM\JoinColumn(name: "category_id", referencedColumnName: "categories_ID")]
+    private $category_id;
 
     public function getId(): ?int
     {
@@ -60,12 +45,12 @@ class HasBlogCategory
 
     public function getCategory(): ?Blogcategories
     {
-        return $this->category ?? null;
+        return $this->category_id ?? null;
     }
 
     public function setCategory(?Blogcategories $category): self
     {
-        $this->category = $category;
+        $this->category_id = $category;
 
         return $this;
     }

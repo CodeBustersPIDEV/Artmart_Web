@@ -5,52 +5,30 @@ namespace App\Entity;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * Orderrefund
- *
- * @ORM\Table(name="orderrefund", indexes={@ORM\Index(name="OrderID", columns={"OrderID"})})
- * @ORM\Entity
- */
+#[ORM\Table(name: "orderrefund",options: [
+    'indexes' => [
+        'OrderID' => ['columns' => ['OrderID']]
+    ]
+])]
+#[ORM\Entity]
 class Orderrefund
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="orderRefund_ID", type="integer", nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-     */
+    #[ORM\Column(name: "orderRefund_ID", type: "integer", nullable: false)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: "IDENTITY")]
     private $orderrefundId;
 
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(name="RefundAmount", type="decimal", precision=10, scale=2, nullable=true, options={"default"="NULL"})
-     */
+    #[ORM\Column(name: "RefundAmount", type: "decimal",precision:10, scale:2, nullable: true,options:["default"=>"NULL"])]
     private $refundamount = 'NULL';
 
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(name="Reason", type="text", length=65535, nullable=true, options={"default"="NULL"})
-     */
+    #[ORM\Column(name: "Reason", type: "text",length:65535, nullable: true,options:["default"=>"NULL"])]
     private $reason = 'NULL';
 
-    /**
-     * @var \DateTime|null
-     *
-     * @ORM\Column(name="Date", type="date", nullable=true, options={"default"="NULL"})
-     */
+    #[ORM\Column(name: "Date", type: "date", nullable: true,options:["default"=>"NULL"])]
     private $date = 'NULL';
 
-    /**
-     * @var \Order
-     *
-     * @ORM\ManyToOne(targetEntity="Order")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="OrderID", referencedColumnName="order_ID")
-     * })
-     */
+    #[ORM\ManyToOne(targetEntity: "Order")]
+    #[ORM\JoinColumn(name: "OrderID", referencedColumnName: "order_ID")]
     private $orderid;
 
     public function getOrderrefundId(): ?int

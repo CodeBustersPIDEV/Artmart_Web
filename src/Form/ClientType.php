@@ -13,11 +13,7 @@ class ClientType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder
-        ->add('user', EntityType::class, [
-            'class' => User::class,
-            'choice_label' => 'username',
-        ])        ;
+    
     }
 
     public function configureOptions(OptionsResolver $resolver): void

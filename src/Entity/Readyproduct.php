@@ -13,38 +13,29 @@ use Doctrine\ORM\Mapping as ORM;
  * })
  * @ORM\Entity
  */
+#[ORM\Table(name: "Readyproduct",options: [
+    'indexes' => [
+        'user_ID' => ['columns' => ['user_ID']],
+        'product_ID' => ['columns' => ['product_ID']]
+    ]
+])]
+#[ORM\Entity]
 class Readyproduct
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="ready_product_ID", type="integer", nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-     */
+    #[ORM\Column(name: "ready_product_ID", type: "integer", nullable: false)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: "IDENTITY")]
     private $readyProductId;
 
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="price", type="integer", nullable=false)
-     */
+    #[ORM\Column(name: "price", type: "integer", nullable: false)]
     private $price;
 
-    /**
-     * @var Product
-     *
-     * @ORM\ManyToOne(targetEntity="Product")
-     * @ORM\JoinColumn(name="product_ID", referencedColumnName="product_ID")
-     */
+    #[ORM\ManyToOne(targetEntity: "Product")]
+    #[ORM\JoinColumn(name: "product_ID", referencedColumnName: "product_ID")]
     private $productId;
 
-    /**
-     * @var User
-     *
-     * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumn(name="user_ID", referencedColumnName="user_ID")
-     */
+    #[ORM\ManyToOne(targetEntity: "User")]
+    #[ORM\JoinColumn(name: "user_ID", referencedColumnName: "user_ID")]
     private $userId;
 
     public function getReadyProductId(): ?int

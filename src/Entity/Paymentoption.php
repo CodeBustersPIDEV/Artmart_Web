@@ -4,35 +4,19 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * Paymentoption
- *
- * @ORM\Table(name="paymentoption")
- * @ORM\Entity
- */
+#[ORM\Table(name: "paymentoption")]
+#[ORM\Entity]
 class Paymentoption
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="paymentOption_ID", type="integer", nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-     */
+    #[ORM\Column(name: "paymentOption_ID", type: "integer", nullable: false)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: "IDENTITY")]
     private $paymentoptionId;
 
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(name="Name", type="string", length=255, nullable=true, options={"default"="NULL"})
-     */
+    #[ORM\Column(name: "Name", type: "string",length:255, nullable: true,options:["default"=>"NULL"])]
     private $name = 'NULL';
 
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(name="AvailableCountries", type="string", length=255, nullable=true, options={"default"="NULL"})
-     */
+    #[ORM\Column(name: "AvailableCountries", type: "string",length:255, nullable: true,options:["default"=>"NULL"])]
     private $availablecountries = 'NULL';
 
     public function getPaymentoptionId(): ?int

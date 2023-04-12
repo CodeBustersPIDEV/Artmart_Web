@@ -40,7 +40,17 @@
     display: inline-block;
     margin-top: 10px;
     padding: 12px 20px;
-    background-color: #1CB4A7;
+    background-color: #AA336A;
+    color: #FFFFFF;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.2s ease-in-out;
+}
+.custom-card btn {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 12px 20px;
+    background-color: #AA336A;
     color: #FFFFFF;
     border-radius: 5px;
     text-decoration: none;
@@ -62,6 +72,40 @@
 .custom-card:nth-child(4n+1) {
     clear: left;
 }
+.link-style {
+  display: inline-block;
+  padding: 10px 20px;
+  margin-right: 20px;
+  border-radius: 4px;
+  color: white;
+  background-color: #43464B;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.link-style:hover {
+  background-color: #3e8e41;
+  color: white;}
+  .orderby-link {
+  display: inline-block;
+  padding: 8px 16px;
+  background-color: #AA336A;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  font-size: 16px;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.orderby-link:hover {
+  background-color: #AA336A;
+}
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
 </style>
 
 {% endblock %}
@@ -70,7 +114,7 @@
 {% block title %}
         <h4><em>Custom</em> Products</h4>
 {% endblock %}
-
+    <a  class="orderby-link" href="{{ path('app_apply_accepted') }}">Accepted Works</a>
     <div class="card-container">
               {% set customproductCount = 0 %}
 {% for customproduct in customproducts %}
@@ -88,6 +132,7 @@
                     <form action="{{ path('app_customproduct_apply', {'customProductId': customproduct.customProductId}) }}" method="post">
                         <button id="applyBtn-{{ customproduct.customProductId }}" type="submit" class="btn btn-primary">Apply</button>
                     </form>
+                    <br>
                      <form action="{{ path('app_customproduct_show', {'customProductId': customproduct.customProductId}) }}" method="get">
                         <button class="btn btn-secondary">Show</button>
                     </form>
@@ -100,9 +145,10 @@
         {% else %}
             <p>No records found.</p>
         {% endfor %}
+         {{ knp_pagination_render(customproducts) }}
     </div>
 
-    <a href="{{ path('app_apply_accepted') }}">Go to accepted works</a>
+
 
 
 <script>

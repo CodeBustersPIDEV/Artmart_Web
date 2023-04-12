@@ -4,38 +4,26 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * Eventreport
- *
- * @ORM\Table(name="eventreport", indexes={@ORM\Index(name="eventID", columns={"eventID"})})
- * @ORM\Entity
- */
+
+#[ORM\Table(name: "eventreport",options: [
+    'indexes' => [
+        'eventID' => ['columns' => ['eventID']]
+    ]
+])]
+#[ORM\Entity]
 class Eventreport
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="reportID", type="integer", nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-     */
+    
+     #[ORM\Column(name: "reportID", type: "integer", nullable: false)]
+     #[ORM\Id]
+     #[ORM\GeneratedValue(strategy: "IDENTITY")]
     private $reportid;
 
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="attendance", type="integer", nullable=false)
-     */
+    #[ORM\Column(name: "attendance", type: "integer",nullable: false)]
     private $attendance;
 
-    /**
-     * @var \Event
-     *
-     * @ORM\ManyToOne(targetEntity="Event")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="eventID", referencedColumnName="eventID")
-     * })
-     */
+    #[ORM\ManyToOne(targetEntity: "Event")]
+    #[ORM\JoinColumn(name: "eventID", referencedColumnName: "eventID")]
     private $eventid;
 
     public function getReportid(): ?int

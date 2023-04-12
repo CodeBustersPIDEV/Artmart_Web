@@ -107,14 +107,23 @@ class CustomproductController extends AbstractController
 
 
     #[Route('/customproduct', name: 'app_customproduct_artist', methods: ['GET'])]
-    public function artist(EntityManagerInterface $entityManager): Response
+    public function artist(Request $request, EntityManagerInterface $entityManager, PaginatorInterface $paginator): Response
     {
+        $queryBuilder = $entityManager
+        ->getRepository(Customproduct::class)
+        ->createQueryBuilder('c')
+        ->innerJoin('c.product', 'p');
+        
         $customproducts = $entityManager
             ->getRepository(Customproduct::class)
             ->findAll();
+            $pagination = $paginator->paginate(
+                $queryBuilder->getQuery(),
+                $request->query->getInt('page', 1),
+                8  );
     
         return $this->render('customproduct/artist.html.twig', [
-            'customproducts' => $customproducts,
+            'customproducts' => $pagination,
         ]);
     }
 

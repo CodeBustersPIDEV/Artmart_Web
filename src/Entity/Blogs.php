@@ -6,63 +6,32 @@ use Doctrine\DBAL\Types\Types;
 use App\Repository\BlogsRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass=BlogsRepository::class)
- */
+#[ORM\Entity(repositoryClass: BlogsRepository::class)]
+#[ORM\Table(name: "blogs")]
 class Blogs
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="blogs_ID", type="integer", nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-     */
+    #[ORM\Id]
+    #[ORM\Column(name: "blogs_ID", type: "integer", nullable: false)]
+    #[ORM\GeneratedValue(strategy: "IDENTITY")]
     private $blogs_ID;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="title", type="string", length=255, nullable=false)
-     */
+    #[ORM\Column(name: "title", type: "string", length: 255, nullable: false)]
     private $title;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="content", type="text", length=65535, nullable=false)
-     */
+    #[ORM\Column(name: "content", type: "text", length: 65535, nullable: false)]
     private $content;
 
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="date", type="datetime", nullable=false, options={"default"="current_timestamp()"})
-     */
-    private $date = 'current_timestamp()';
+    #[ORM\Column(name: "date", type: "datetime", nullable: false, options: ["default" => "current_timestamp()"])]
+    private $date;
 
-    /**
-     * @var float|null
-     *
-     * @ORM\Column(name="rating", type="float", precision=10, scale=0, nullable=true, options={"default"="NULL"})
-     */
-    private $rating = NULL;
+    #[ORM\Column(name: "rating", type: "float", precision: 10, scale: 0, nullable: true, options: ["default" => "NULL"])]
+    private $rating;
 
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="nb_views", type="integer", nullable=false)
-     */
-    private $nbViews = '0';
+    #[ORM\Column(name: "nb_views", type: "integer", nullable: false)]
+    private $nbViews;
 
-    /**
-     * @var \User
-     *
-     * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="author", referencedColumnName="user_ID")
-     * })
-     */
+    #[ORM\ManyToOne(targetEntity: "User")]
+    #[ORM\JoinColumn(name: "author", referencedColumnName: "user_ID")]
     private $author;
 
     public function getBlogsId(): ?int

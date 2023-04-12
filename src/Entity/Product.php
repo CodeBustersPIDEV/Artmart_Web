@@ -5,68 +5,47 @@ namespace App\Entity;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+
 /**
  * Product
  *
  * @ORM\Table(name="product", indexes={@ORM\Index(name="category_ID", columns={"category_ID"})})
  * @ORM\Entity
  */
+#[ORM\Table(name: "product",options: [
+    'indexes' => [
+        'category_ID' => ['columns' => ['category_ID']]
+    ]
+])]
+#[ORM\Entity]
 class Product
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="product_ID", type="integer", nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-     */
+    #[ORM\Column(name: "product_ID", type: "integer", nullable: false)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: "IDENTITY")]
     private $productId;
 
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="category_ID", type="integer", nullable=false)
-     */
+    #[ORM\Column(name: "category_ID", type: "integer",nullable: false)]
     private $categoryId;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="name", type="string", length=255, nullable=false)
-     * @Assert\NotBlank(message="Name is required")
-     */
+    #[Assert\NotBlank]
+    #[ORM\Column(name: "name", type: "string",length:255, nullable: false)]
     private $name;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="description", type="text", length=65535, nullable=false)
-     * @Assert\NotBlank(message="Name is required")
-     */
+    #[Assert\NotBlank]
+    #[ORM\Column(name: "description", type: "text", length:65535,nullable: false)]
     private $description;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="dimensions", type="string", length=255, nullable=false)
-     * @Assert\NotBlank(message="Name is required")
-     */
+    #[Assert\NotBlank]
+    #[ORM\Column(name: "dimensions", type: "string", length:255,nullable: false)]
     private $dimensions;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="weight", type="decimal", precision=10, scale=2, nullable=false)
-     * @Assert\NotBlank(message="Name is required")
-     */
+    #[Assert\NotBlank]
+    #[ORM\Column(name: "weight", type: "decimal", precision:10, scale:2,nullable: false)]
     private $weight;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="material", type="string", length=255, nullable=false)
-     * @Assert\NotBlank(message="Name is required")
-     */
+    #[Assert\NotBlank]
+    #[ORM\Column(name: "material", type: "string", length:255, nullable: false)]
     private $material;
 
     /**

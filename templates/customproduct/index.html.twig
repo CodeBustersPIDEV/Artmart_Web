@@ -91,7 +91,7 @@
     display: inline-block;
     margin-top: 10px;
     padding: 12px 20px;
-    background-color: #1CB4A7;
+    background-color: #AA336A;
     color: #FFFFFF;
     border-radius: 5px;
     text-decoration: none;
@@ -181,6 +181,22 @@
 
 
 
+.link-style {
+  display: inline-block;
+  padding: 10px 20px;
+  margin-right: 20px;
+  border-radius: 4px;
+  color: white;
+  background-color: #43464B;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.link-style:hover {
+  background-color: #3e8e41;
+  color: white;
+}
+
 
 
 </style>
@@ -209,7 +225,7 @@
 {% set totalWeight = customproducts|reduce((total, customproduct) => total + customproduct.product.weight, 0) %}
 
 {% if customproducts.getTotalItemCount() > 0 %}
-<p  style=" color: #fff;">Your total custom product weight is: {{ totalWeight }}</p>
+<p  style=" color: #fff;">Total weight of displayed Products: {{ totalWeight }}</p>
 <a href="{{ path('app_customproduct_index', {'order': 'name'}) }}" class="orderby-link">Order by Name</a>
 <a href="{{ path('app_customproduct_index', {'order': 'weight'}) }}" class="orderby-link">Order by Weight</a>
      
@@ -228,6 +244,9 @@
 			</div>
 		</div>
 	</a>
+<a href="{{ path('app_apply_clients') }}" class="link-style">Demands</a>
+<a href="{{ path('app_apply_clientdone') }}" class="link-style">Check Progress</a>
+
 
 
         {% set customproductCount = 0 %}
@@ -259,9 +278,7 @@
       
 	 {{ knp_pagination_render(customproducts) }}
 <a href="{{ path('app_customproduct_artist') }}">Go to artist page</a>
-<a href="{{ path('app_apply_clients') }}">Demands</a>
-<a href="{{ path('app_apply_clientdone') }}"
-	>check your custom product progress</a>
+
 {% else %}
     <p>No custom products found.</p>
 {% endif %}

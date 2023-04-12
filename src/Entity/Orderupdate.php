@@ -5,45 +5,27 @@ namespace App\Entity;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * Orderupdate
- *
- * @ORM\Table(name="orderupdate", indexes={@ORM\Index(name="OrderID", columns={"OrderID"})})
- * @ORM\Entity
- */
+#[ORM\Table(name: "orderupdate",options: [
+    'indexes' => [
+        'OrderID' => ['columns' => ['OrderID']]
+    ]
+])]
+#[ORM\Entity]
 class Orderupdate
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="orderUpdate_ID", type="integer", nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-     */
+    #[ORM\Column(name: "orderUpdate_ID", type: "integer", nullable: false)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: "IDENTITY")]
     private $orderupdateId;
 
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(name="UpdateMessage", type="text", length=65535, nullable=true, options={"default"="NULL"})
-     */
+    #[ORM\Column(name: "UpdateMessage", type: "text",length:65535, nullable: true,options:["default"=>"NULL"])]
     private $updatemessage = 'NULL';
 
-    /**
-     * @var \DateTime|null
-     *
-     * @ORM\Column(name="Date", type="date", nullable=true, options={"default"="NULL"})
-     */
+    #[ORM\Column(name: "Date", type: "date", nullable: true,options:["default"=>"NULL"])]
     private $date = 'NULL';
 
-    /**
-     * @var \Order
-     *
-     * @ORM\ManyToOne(targetEntity="Order")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="OrderID", referencedColumnName="order_ID")
-     * })
-     */
+    #[ORM\ManyToOne(targetEntity: "Order")]
+    #[ORM\JoinColumn(name: "OrderID", referencedColumnName: "order_ID")]
     private $orderid;
 
     public function getOrderupdateId(): ?int

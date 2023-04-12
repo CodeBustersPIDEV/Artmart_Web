@@ -5,55 +5,30 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\MediaRepository;
 
-// /**
-//  * Media
-//  *
-//  * @ORM\Table(name="media", indexes={@ORM\Index(name="blog_id", columns={"blog_id"})})
-//  * @ORM\Entity
-//  */
-/**
- * @ORM\Entity(repositoryClass=MediaRepository::class)
- */
+#[ORM\Table(name: "media",options: [
+    'indexes' => [
+        'blog_id' => ['columns' => ['blog_id']]
+    ]
+])]
+#[ORM\Entity]
 class Media
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="media_ID", type="integer", nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-     */
+     #[ORM\Column(name: "mediaId", type: "integer", nullable: false)]
+     #[ORM\Id]
+     #[ORM\GeneratedValue(strategy: "IDENTITY")]
     private $mediaId;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="file_name", type="string", length=255, nullable=false)
-     */
+    #[ORM\Column(name: "file_name", type: "integer",  length:255,nullable: false)]
     private $fileName;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="file_type", type="string", length=255, nullable=false)
-     */
+    #[ORM\Column(name: "file_type", type: "string",  length:255,nullable: false)]
     private $fileType;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="file_path", type="string", length=255, nullable=false)
-     */
+    #[ORM\Column(name: "file_path", type: "string",  length:255,nullable: false)]
     private $filePath;
 
-    /**
-     * @var \Blogs
-     *
-     * @ORM\ManyToOne(targetEntity="Blogs")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="blog_id", referencedColumnName="blogs_ID")
-     * })
-     */
+    #[ORM\ManyToOne(targetEntity: "Blogs")]
+    #[ORM\JoinColumn(name: "blog_id", referencedColumnName: "blogs_ID")]
     private $blog_id;
 
     public function getMediaId(): ?int
