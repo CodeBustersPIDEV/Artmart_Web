@@ -6,6 +6,7 @@ use App\Entity\User;
 use App\Entity\Artist;
 use App\Entity\Admin;
 use App\Entity\Client;
+use App\Form\RegistrationFormType;
 use App\Repository\ArtistRepository;
 use App\Repository\ClientRepository;
 use App\Repository\UserRepository;
@@ -50,9 +51,7 @@ class RegistrationController extends AbstractController
         $artist = new Artist();
         $admin = new Admin();
 
-        $form = $this->createForm(UserType::class, $user, [
-            'is_edit' => false,
-        ]);
+        $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
