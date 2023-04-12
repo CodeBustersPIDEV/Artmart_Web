@@ -17,6 +17,8 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\NotNull;
 
 
 class BlogsType extends AbstractType
@@ -66,6 +68,11 @@ class BlogsType extends AbstractType
                 'choice_label' => 'name',
                 'choices' => $this->blogcategoriesRepository->findAll(),
                 'placeholder' => 'Choose an option', // optional
+                'invalid_message' => 'Please select a valid category.',
+                'constraints' => [
+                    new NotNull(message: "Please select a valid category."),
+                    new NotBlank(message: "Please select a valid category."),
+                ],
                 'data' => $hBlogCat ? $hBlogCat->getCategory() : null
             ])
             ->add('tags', EntityType::class, [
@@ -76,6 +83,11 @@ class BlogsType extends AbstractType
                 'expanded' => true,
                 'choices' => $this->tagsRepository->findAll(),
                 'placeholder' => 'Choose an option', // optional
+                'invalid_message' => 'Please select at least one valid tag.',
+                'constraints' => [
+                    new NotNull(message: "Please select at least one valid tag."),
+                    new NotBlank(message: "Please select at least one valid tag."),
+                ],
                 'data' => $tags,
                 'choice_attr' => function ($choice, $key, $value) {
                     return ['class' => 'form-check-input', 'style' => 'margin:5px;'];

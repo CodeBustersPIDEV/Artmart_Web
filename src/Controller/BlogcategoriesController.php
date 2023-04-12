@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Blogcategories;
 use App\Form\BlogcategoriesType;
+use App\Repository\BlogcategoriesRepository;
 use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,27 +15,23 @@ use Symfony\Component\Routing\Annotation\Route;
 class BlogcategoriesController extends AbstractController
 {
     #[Route('/', name: 'app_blogcategories_index', methods: ['GET'])]
-    public function index(EntityManager $entityManager): Response
+    public function index(BlogcategoriesRepository $blogCategoryRepository): Response
     {
-        $blogcategories = $entityManager
-            ->getRepository(Blogcategories::class)
-            ->findAll();
 
         return $this->render('blogcategories/index.html.twig', [
-            'blogcategories' => $blogcategories,
+            'blogcategories' => $blogCategoryRepository->findAll(),
         ]);
     }
 
     #[Route('/new', name: 'app_blogcategories_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManager $entityManager): Response
+    public function new(Request $request, BlogcategoriesRepository $blogCategoryRepository): Response
     {
         $blogcategory = new Blogcategories();
         $form = $this->createForm(BlogcategoriesType::class, $blogcategory);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($blogcategory);
-            $entityManager->flush();
+            $blogCategoryRepository->save($blogcategory, true);
 
             return $this->redirectToRoute('app_blogcategories_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -54,13 +51,13 @@ class BlogcategoriesController extends AbstractController
     }
 
     #[Route('/{categoriesId}/edit', name: 'app_blogcategories_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Blogcategories $blogcategory, EntityManager $entityManager): Response
+    public function edit(Request $request, Blogcategories $blogcategory, BlogcategoriesRepository $blogCategoryRepository): Response
     {
         $form = $this->createForm(BlogcategoriesType::class, $blogcategory);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
+            $blogCategoryRepository->save($blogcategory, true);
 
             return $this->redirectToRoute('app_blogcategories_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -72,11 +69,10 @@ class BlogcategoriesController extends AbstractController
     }
 
     #[Route('/{categoriesId}', name: 'app_blogcategories_delete', methods: ['POST'])]
-    public function delete(Request $request, Blogcategories $blogcategory, EntityManager $entityManager): Response
+    public function delete(Request $request, Blogcategories $blogcategory, BlogcategoriesRepository $blogCategoryRepository): Response
     {
         if ($this->isCsrfTokenValid('delete' . $blogcategory->getCategoriesId(), $request->request->get('_token'))) {
-            $entityManager->remove($blogcategory);
-            $entityManager->flush();
+            $blogCategoryRepository->remove($blogcategory, true);
         }
 
         return $this->redirectToRoute('app_blogcategories_index', [], Response::HTTP_SEE_OTHER);

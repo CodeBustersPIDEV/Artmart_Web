@@ -19,6 +19,7 @@ use App\Repository\TagsRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -170,11 +171,12 @@ class BlogsController extends AbstractController
         $form = $this->createForm(BlogsType::class, $blog);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $file = $form->get('file')->getData();
             $cat = $form->get('category')->getData();
             $tags = $form->get('tags')->getData();
             $title = $form->get('title')->getData();
             $addedTags = $_POST['addedTags'];
+            $file = $form->get('file')->getData();
+
             foreach ($tags as $tag) {
 
                 $strTags = $strTags . "#" . $tag->getName();
@@ -189,7 +191,9 @@ class BlogsController extends AbstractController
 
             $this->hasBlogCategoryRepository->save($hasCategory, true);
             $this->addTagsToBlog($addedBlog, $tt);
-            $this->uploadImage($file, $media, $addedBlog, $edit);
+            if ($file != null) {
+                $this->uploadImage($file, $media, $addedBlog, $edit);
+            }
 
             return $this->redirectToRoute('app_blogs_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -236,7 +240,13 @@ class BlogsController extends AbstractController
 
             // $mediaRepository->deleteFile($media->getFileName());
             if ($file != null) {
-                $this->uploadImage($file, $media, $blog, $edit);
+                if ($media != null) {
+                    $this->uploadImage($file, $media, $blog, $edit);
+                } else {
+                    $media = new Media();
+                    $media->setBlog($blog);
+                    $this->uploadImage($file, $media, $blog, $edit);
+                }
             }
 
             $addedTags = $_POST['addedTags'];
@@ -277,7 +287,7 @@ class BlogsController extends AbstractController
         if ($this->isCsrfTokenValid('delete' . $blog->getBlogsID(), $request->request->get('_token'))) {
             $blogsRepository->remove($blog, true);
             $mediaRepository->remove($media, true);
-            // $this->hasBlogCategoryRepository->remove($hasCat, true);
+            $this->hasBlogCategoryRepository->remove($hasCat, true);
         }
 
         return $this->redirectToRoute('app_blogs_index', [], Response::HTTP_SEE_OTHER);

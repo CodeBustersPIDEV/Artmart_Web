@@ -1,6 +1,5 @@
-{% extends 'base.html.twig' %} {% import "base.html.twig" as base %} {% block
-title %}Edit Blogs{% endblock %} {% block body %}
-{{ base.NavBar() }}
+{% extends 'baseF.html.twig' %} {% block content %} {% block title %}Edit Your
+Blog{% endblock %}
 {{ include("blogs/_form.html.twig", { button_label: "Update" }) }}
 
 <a href="{{ path('app_blogs_index') }}">back to list</a>
