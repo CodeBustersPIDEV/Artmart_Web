@@ -96,7 +96,9 @@ margin-bottom: 20px;
         {{ form_row(form.client) }}
     {{ include('customproduct/_form.html.twig', {'button_label': 'add'}) }}
     {{ form_end(form) }}
-         <a href="{{ path('app_customproduct_index') }}">back to list</a>
+                <a href="{{ path('app_customproduct_index') }}">
+  <i class="fas fa-arrow-left"></i> Back to List
+</a>
 </div>
 
 <script>
