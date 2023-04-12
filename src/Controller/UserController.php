@@ -42,33 +42,32 @@ class UserController extends AbstractController
         $file->move($destinationFilePath, $filename);
         $user->setPicture($destinationFilePath . $filename);
     }
-   
+
 
     #[Route('/', name: 'app_user_index', methods: ['GET'])]
     public function index(Request $request, EntityManagerInterface $entityManager): Response
-    { 
+    {
         $searchTerm = $request->query->get('search');
         $userse = $request->query->get('userse');
-        
+
         $queryBuilder = $entityManager
             ->getRepository(User::class)
-            ->createQueryBuilder('c')
-            ;
-        
+            ->createQueryBuilder('c');
+
         if ($userse === 'name') {
             $queryBuilder->orderBy('c.name', 'ASC');
         } elseif ($userse === 'username') {
             $queryBuilder->orderBy('c.username', 'ASC');
         }
-        
+
         if ($searchTerm) {
             $queryBuilder->where('c.username LIKE :searchTerm')
                 ->setParameter('searchTerm', '%' . $searchTerm . '%');
         }
-        
+
         $users = $queryBuilder->getQuery()->getResult();
-    
-     /*   
+
+        /*   
         $users = $entityManager
             ->getRepository(User::class)
             ->findAll();
@@ -101,7 +100,7 @@ class UserController extends AbstractController
             $email = $form->get('email')->getData();
             $client = new Client();
             $this->uploadImage($file, $user);
-            
+
             // $user->setRole($role);
             $userRepository->save($user, true);
 
@@ -148,7 +147,7 @@ class UserController extends AbstractController
         return $this->renderForm('user/new.html.twig', [
             'user' => $user,
             'form' => $form,
-            'is_edit'=> false,
+            'is_edit' => false,
         ]);
     }
     #[Route('/{userId}', name: 'app_user_show', methods: ['GET'])]
@@ -230,13 +229,13 @@ class UserController extends AbstractController
             'artist_attributes' => $artistAttributes,
             'admin_attributes' => $adminAttributes,
         ]);
-        
-        
+
+
         if ($role === 'artist' && $artist) {
             $bioField = $form->get('bio');
             $bioField->setData($artist->getBio());
         }
-    
+
         // Set the initial value of the department field if the user is an admin
         if ($role === 'admin' && $admin) {
             $departmentField = $form->get('department');
@@ -246,11 +245,10 @@ class UserController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $pictureField = $form->get('file')->getData();
-            if ($pictureField== null) {
+            if ($pictureField == null) {
                 $user->setPicture($user->getPicture());
             } else {
                 $this->uploadImage($pictureField, $user);
-            
             }
             if ($user->getRole() === 'artist' && $artist) {
                 $bio = $form->get('bio')->getData();
@@ -261,7 +259,7 @@ class UserController extends AbstractController
                 $admin->setDepartment($department);
                 $entityManager->persist($admin);
             }
-        
+
             $entityManager->flush();
             return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -300,5 +298,11 @@ class UserController extends AbstractController
 
 
         return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('/', name: 'main')]
+    public function main(): Response
+    {
+        return $this->render('main.html.twig', []);
     }
 }
