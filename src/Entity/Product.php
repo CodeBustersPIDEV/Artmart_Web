@@ -6,12 +6,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * Product
- *
- * @ORM\Table(name="product", indexes={@ORM\Index(name="category_ID", columns={"category_ID"})})
- * @ORM\Entity
- */
+
 #[ORM\Table(name: "product",options: [
     'indexes' => [
         'category_ID' => ['columns' => ['category_ID']]
@@ -158,13 +153,9 @@ class Product
 
 
 
-    /**
-        * @var Categories
-        *
-        * @ORM\ManyToOne(targetEntity="App\Entity\Categories")
-        * @ORM\JoinColumn(name="category_ID", referencedColumnName="categories_ID", nullable=false)
-        */
-       private $category;
+        #[ORM\ManyToOne(targetEntity: "App\Entity\Categories")]
+        #[ORM\JoinColumn(name: "category_ID", referencedColumnName: "categories_ID", nullable: false)]
+        private $category;
    
        public function getCategory(): ?Categories
        {
