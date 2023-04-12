@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Customproduct;
 use App\Entity\Product;
-
+use Twilio\Rest\Client;
 use App\Entity\Categories;
 
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
@@ -442,7 +442,18 @@ class CustomproductController extends AbstractController
         $entityManager->persist($apply);
         $entityManager->flush();
 
-        $this->addFlash('success', 'Applied successfully.');
+        $sid    = "AC85fdc289caf6aa747109220798d39394";
+        $token  = "df3d004d8411369066d20af591ac52a0";
+        $twilio = new Client($sid, $token);
+    
+        $message = $twilio->messages
+          ->create("whatsapp:+21698238240", 
+            array(
+              "from" => "whatsapp:+14155238886",
+              "body" => "you have a Custom Product apply"
+            )
+            );
+          
 
         // Redirect to the filtered list of applies with status 'pending', 'done', or 'refused'
         return $this->redirectToRoute('app_apply_pending');
