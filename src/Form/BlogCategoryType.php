@@ -22,12 +22,7 @@ class BlogCategoryType extends AbstractType
   public function buildForm(FormBuilderInterface $builder, array $options)
   {
     $builder
-      ->add('categories', EntityType::class, [
-        'class' => Blogcategories::class,
-        'choices' => $this->blogcategoriesRepository->findAll(),
-        'choice_label' => 'name',
-        'placeholder' => 'Choose an option', // optional
-      ]);
+      ->add('name');
   }
 
   public function configureOptions(OptionsResolver $resolver)

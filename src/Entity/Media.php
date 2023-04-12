@@ -5,7 +5,7 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\MediaRepository;
 
-#[ORM\Table(name: "media",options: [
+#[ORM\Table(name: "media", options: [
     'indexes' => [
         'blog_id' => ['columns' => ['blog_id']]
     ]
@@ -13,18 +13,18 @@ use App\Repository\MediaRepository;
 #[ORM\Entity]
 class Media
 {
-     #[ORM\Column(name: "mediaId", type: "integer", nullable: false)]
-     #[ORM\Id]
-     #[ORM\GeneratedValue(strategy: "IDENTITY")]
+    #[ORM\Column(name: "media_ID", type: "integer", nullable: false)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: "IDENTITY")]
     private $mediaId;
 
-    #[ORM\Column(name: "file_name", type: "integer",  length:255,nullable: false)]
+    #[ORM\Column(name: "file_name", type: "integer",  length: 255, nullable: false)]
     private $fileName;
 
-    #[ORM\Column(name: "file_type", type: "string",  length:255,nullable: false)]
+    #[ORM\Column(name: "file_type", type: "string",  length: 255, nullable: false)]
     private $fileType;
 
-    #[ORM\Column(name: "file_path", type: "string",  length:255,nullable: false)]
+    #[ORM\Column(name: "file_path", type: "string",  length: 255, nullable: false)]
     private $filePath;
 
     #[ORM\ManyToOne(targetEntity: "Blogs")]

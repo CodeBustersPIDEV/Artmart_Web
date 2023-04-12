@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Tags;
-use App\Form\Tags1Type;
+use App\Form\TagsType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -29,7 +29,7 @@ class TagsController extends AbstractController
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $tag = new Tags();
-        $form = $this->createForm(Tags1Type::class, $tag);
+        $form = $this->createForm(TagsType::class, $tag);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -56,7 +56,7 @@ class TagsController extends AbstractController
     #[Route('/{tagsId}/edit', name: 'app_tags_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Tags $tag, EntityManagerInterface $entityManager): Response
     {
-        $form = $this->createForm(Tags1Type::class, $tag);
+        $form = $this->createForm(TagsType::class, $tag);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -74,7 +74,7 @@ class TagsController extends AbstractController
     #[Route('/{tagsId}', name: 'app_tags_delete', methods: ['POST'])]
     public function delete(Request $request, Tags $tag, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$tag->getTagsId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $tag->getTagsId(), $request->request->get('_token'))) {
             $entityManager->remove($tag);
             $entityManager->flush();
         }
