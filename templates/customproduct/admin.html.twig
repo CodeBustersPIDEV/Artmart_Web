@@ -137,7 +137,7 @@
 
 {% set customproductCount = 0 %}
 
-{% set totalWeight = customproducts|reduce((total, customproduct) => total + customproduct.product.weight, 0) %}
+
 
 
 {% if customproducts %}
@@ -149,12 +149,15 @@
         <label for="search-term">Search for custom products:</label>
         <input type="text" id="search-term" name="q" class="form-control" value="{{ searchTerm }}">
     </div>
-    <button type="submit" class="btn btn-primary">Search</button>
-    
-<a href="{{ path('app_customproduct_admin', {'order': 'name'}) }}" class="orderby-link">Order by Name</a>
-<a href="{{ path('app_customproduct_admin', {'order': 'weight'}) }}" class="orderby-link">Order by Weight</a>
+
+<a href="{{ path('app_customproduct_admin', {'order': 'name'}) }}" class="orderby-link mx-2">Order by Name</a>
+<a href="{{ path('app_customproduct_admin', {'order': 'weight'}) }}" class="orderby-link mx-2">Order by Weight</a>
+<a href="{{ path('app_customproduct_stat') }}" class="btn btn-danger btn-sm mx-2"><i class="fas fa-chart-bar"></i> Statistics</a>
+
+
 </form>
-<p>Your total custom product weight is: {{ totalWeight }}</p>
+
+
 
  <link rel="stylesheet" href="{{ asset('assets/Components/specialOrder.css') }}"/>
 	<a href="{{ path('app_customproduct_newadmin') }}">
@@ -214,6 +217,7 @@
     </table>
     
 </div>
+
   <p>Your total custom product count is: {{ customproductCount }}</p>
 {% else %}
 <p>No custom products found.</p>
@@ -238,6 +242,9 @@
 			</div>
 		</div>
 	</a>
+
+
+  
     <table class="table">
       <thead>
         <tr>
@@ -294,6 +301,10 @@
   </div>
 </div>
 
+
+
+
 {% endblock %}
+
 
 {% endblock %}

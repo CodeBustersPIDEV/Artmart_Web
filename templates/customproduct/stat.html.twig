@@ -1,0 +1,85 @@
+ {% extends 'baseC.html.twig' %}
+ {% block content %}
+{% set maxWeight = 0 %}
+{% set minWeight = 1000000 %}
+{% set totalWeight = 0 %}
+{% set maxWeightProduct = '' %}
+{% set minWeightProduct = '' %}
+
+{% for weightSum in weightSums %}
+    {% if weightSum['weight_sum'] > maxWeight %}
+        {% set maxWeight = weightSum['weight_sum'] %}
+        {% set maxWeightProduct = weightSum['material'] %}
+    {% endif %}
+    
+    {% if weightSum['weight_sum'] < minWeight %}
+        {% set minWeight = weightSum['weight_sum'] %}
+        {% set minWeightProduct = weightSum['material'] %}
+    {% endif %}
+    
+    {% set totalWeight = totalWeight + weightSum['weight_sum'] %}
+{% endfor %}
+
+<div>
+    <p><strong>Custom Products Material Summary</strong></p>
+    <ul>
+        <li>The material <strong>"{{ maxWeightProduct }}"</strong> has the highest weight with a weight of <strong>{{ maxWeight }}</strong>.</li>
+        <li>The material <strong>"{{ minWeightProduct }}"</strong> has the lowest weight with a weight of <strong>{{ minWeight }}</strong>.</li>
+        <li>The total weight of all products is <strong>{{ totalWeight }}</strong>.</li>
+    </ul>
+</div>
+
+
+
+ <canvas id="myChart"></canvas>
+{% block javascripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  var ctx = document.getElementById('myChart').getContext('2d');
+  var weightData = {{ weightData|json_encode|raw }};
+  var myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: weightData.labels,
+      datasets: [{
+        label: 'Product Weights',
+        data: weightData.datasets[0].data,
+        backgroundColor: [
+          'rgba(255, 99, 132, 0.2)',
+          'rgba(54, 162, 235, 0.2)',
+          'rgba(255, 206, 86, 0.2)',
+          'rgba(75, 192, 192, 0.2)',
+          'rgba(153, 102, 255, 0.2)',
+          'rgba(255, 159, 64, 0.2)'
+        ],
+        borderColor: [
+          'rgba(255, 99, 132, 1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+          'rgba(255, 159, 64, 1)'
+        ],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      scales: {
+        yAxes: [{
+          ticks: {
+            beginAtZero: true
+          }
+        }]
+      },
+      title: {
+        display: true,
+        text: 'Product Weights by Material'
+      },
+      legend: {
+        display: false
+      }
+    }
+  });
+</script>
+{% endblock %}
+{% endblock %}
