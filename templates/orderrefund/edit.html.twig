@@ -1,8 +1,14 @@
-{% extends 'base.html.twig' %}
-
-{% block title %}Edit Orderrefund{% endblock %}
-
-{% block body %}
+{% extends 'baseO.html.twig' %} {% block content %} {% block stylesheets %}
+<link rel="stylesheet" href="{{ asset('assets/Blog/CSS/AdminPage.css') }}" />
+<style>
+	.nav_links {
+		cursor: pointer;
+	}
+	.adminSection {
+		margin-left: 5px;
+	}
+</style>
+{% endblock %} {% block body %}
     <h1>Edit Orderrefund</h1>
 
     {{ include('orderrefund/_form.html.twig', {'button_label': 'Update'}) }}
@@ -10,4 +16,5 @@
     <a href="{{ path('app_orderrefund_index') }}">back to list</a>
 
     {{ include('orderrefund/_delete_form.html.twig') }}
+{% endblock %}
 {% endblock %}

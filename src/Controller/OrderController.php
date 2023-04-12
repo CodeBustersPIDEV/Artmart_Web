@@ -28,9 +28,13 @@ class OrderController extends AbstractController
     }
     
     #[Route('/admin', name: 'app_order_admin', methods: ['GET'])]
-    public function showAdmin(): Response
-    {
+    public function showAdmin(EntityManagerInterface $entityManager): Response
+    {        
+        $orders = $entityManager
+        ->getRepository(Order::class)
+        ->findAll();
         return $this->render('order/admin.html.twig', [
+            'orders' => $orders,
         ]);
     }
 
