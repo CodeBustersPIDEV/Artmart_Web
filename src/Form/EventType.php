@@ -51,7 +51,7 @@ class EventType extends AbstractType
                     'Cancelled' => 'Cancelled',
                 ],
             ])
-            ->add('userid', EntityType::class, [
+            ->add('user', EntityType::class, [
                 'class' => User::class,
                 'placeholder' => 'Choose an option',
             ])            
