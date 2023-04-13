@@ -73,7 +73,10 @@ class BlogsType extends AbstractType
                     new NotNull(message: "Please select a valid category."),
                     new NotBlank(message: "Please select a valid category."),
                 ],
-                'data' => $hBlogCat ? $hBlogCat->getCategory() : null
+                'data' => $hBlogCat ? $hBlogCat->getCategory() : null,
+                'choice_attr' => function ($choice, $key, $value) {
+                    return ['style' => 'color:black;'];
+                }
             ])
             ->add('tags', EntityType::class, [
                 'mapped' => false,
@@ -99,7 +102,10 @@ class BlogsType extends AbstractType
                 'class' => User::class,
                 'choices' => $this->UserRepository->findAll(),
                 'choice_label' => 'name',
-                'placeholder' => 'Choose an option', // optional
+                'placeholder' => 'Choose an option',
+                'choice_attr' => function ($choice, $key, $value) {
+                    return ['style' => 'color:black;'];
+                }
             ])
             ->add('file', FileType::class, [
                 'label' => 'Choose a file',

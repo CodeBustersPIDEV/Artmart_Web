@@ -32,7 +32,7 @@
 	}
 
 	.btns:hover {
-		letter-spacing: 2px;
+		letter-spacing: 1.5px;
 		padding: 5.1px 15.1px;
 		background: var(--clr);
 		color: var(--clr);
@@ -122,24 +122,26 @@
 		}
 	}
 	.signIn_btn {
-		margin-right: 5px;
+		margin-right: 4px;
 	}
 	.signUp_btn {
-		margin-left: 5px;
+		margin-left: 4px;
 	}
 </style>
 
 <nav class="navMenu">
 	<div class="logo">
-
-<a href="/">
-    <img src="{{ asset('assets/ArtMart_Logo.png') }}" class="logo_img" alt="ArtMart Logo" />
-</a>
-
+		<a href="/">
+			<img
+				src="{{ asset('assets/ArtMart_Logo.png') }}"
+				class="logo_img"
+				alt="ArtMart Logo"
+			/>
+		</a>
 	</div>
 	<div class="options">
 		<a href="/">Home</a>
-		
+
 		<a href="{{ path('app_blogs_index') }}">Blog</a>
 		<a href="{{ path('app_readyproduct_index') }}">Products</a>
 		<a href="{{ path('app_customproduct_index') }}">Custom Products</a>
@@ -150,11 +152,19 @@
 		<div class="dot"></div>
 	</div>
 	<div class="userButtons">
-		<button class="signIn_btn btns" style="--clr: #FFC0CB">
+		<a
+			class="signIn_btn btns"
+			href="{{ path('app_login') }}"
+			style="--clr: #ffc0cb"
+		>
 			<span>Sign In</span><i></i>
-		</button>
-		<button class="signUp_btn btns" style="--clr: #FFC0CB">
+		</a>
+		<a
+			class="signUp_btn btns"
+			href="{{ path('app_user_new') }}"
+			style="--clr: #ffc0cb"
+		>
 			<span>Sign Up</span><i></i>
-		</button>
+		</a>
 	</div>
 </nav>
