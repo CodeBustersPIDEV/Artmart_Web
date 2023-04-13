@@ -258,7 +258,7 @@
             <div class="custom-card">
                 <img src="{{ asset('imagescustom/' ~ customproduct.product.image) }}" alt="{{ customproduct.product.name }} image" />
                 <h2>{{ customproduct.product.name }}</h2>
-                <p>{{ customproduct.product.description }}</p>
+                <p>{{ customproduct.product.material }}</p>
   
                 <a href="{{ path('app_customproduct_show', {'customProductId': customproduct.customProductId}) }}">show</a>
                 <a href="{{ path('app_customproduct_edit', {'customProductId': customproduct.customProductId}) }}">edit</a>
