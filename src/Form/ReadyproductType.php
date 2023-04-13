@@ -13,9 +13,7 @@ class ReadyproductType extends AbstractType
     {
         $builder
             ->add('price')
-            ->add('productId')
-            ->add('userId')
-        ;
+            ->add('productId', ProductType::class);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
@@ -23,5 +21,10 @@ class ReadyproductType extends AbstractType
         $resolver->setDefaults([
             'data_class' => Readyproduct::class,
         ]);
+    }
+
+    public function getBlockPrefix()
+    {
+        return '';
     }
 }
