@@ -69,8 +69,10 @@
         {{ form_widget(form.file, {'attr': {'class': 'form-control blogImageFile', 'id': 'formFile'}}) }}
       </div>
     
-                    <button type="submit" class="btn btn-primary" id="submitBtn">
-                        {{ button_label|default('Post') }}
+      <br>
+                    <button type="submit" class="btn btn-outline-primary mr-2" id="submitBtn">
+                        {{ button_label|default('Edit') }}
+
                     </button>
                     {{ form_end(form) }}
                 </div>
