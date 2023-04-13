@@ -64,6 +64,16 @@ class EventRepository extends ServiceEntityRepository
        ;
    }
 
+   public function findByUser($userID): array
+   {
+       return $this->createQueryBuilder('e')
+           ->andWhere('e.user = :val')
+           ->setParameter('val', $userID)
+           ->getQuery()
+           ->getResult()
+       ;
+   }
+
 //    public function findOneBySomeField($value): ?Event
 //    {
 //        return $this->createQueryBuilder('e')

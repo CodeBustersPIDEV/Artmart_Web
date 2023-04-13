@@ -3,8 +3,12 @@
 namespace App\Form;
 
 use App\Entity\Event;
+use App\Entity\User;
+use App\Validator\NotFutureDate;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -17,6 +21,7 @@ class EventType extends AbstractType
             ->add('name')
             ->add('location')
             ->add('type', ChoiceType::class, [
+                'placeholder' => 'Choose an option',
                 'choices' => [
                     'Auction' => 'Auction',
                     'Art Fair' => 'Art Fair',
@@ -27,14 +32,8 @@ class EventType extends AbstractType
             ->add('description')
             ->add('entryfee')
             ->add('capacity')
-            ->add('startdate', DateType::class, [
-                'widget' => 'single_text',
-                'format' => 'yyyy-MM-dd',
-            ])
-            ->add('enddate', DateType::class, [
-                'widget' => 'single_text',
-                'format' => 'yyyy-MM-dd',
-            ])
+            ->add('startdate', DateType::class)
+            ->add('enddate', DateType::class)
             ->add('image')
             ->add('status', ChoiceType::class, [
                 'choices' => [
@@ -45,6 +44,10 @@ class EventType extends AbstractType
                     'Cancelled' => 'Cancelled',
                 ],
             ])
+            ->add('user', EntityType::class, [
+                'class' => User::class,
+                'placeholder' => 'Choose an option',
+            ])            
         ;
     }
 
@@ -55,3 +58,22 @@ class EventType extends AbstractType
         ]);
     }
 }
+// , DateType::class, [
+//     'constraints' => [
+//         new NotFutureDate(),
+//     ],
+// ])
+// ->add('startdate', DateType::class, [
+//     'widget' => 'single_text',
+//     'html5' => false,
+//     'constraints' => [
+//         new NotFutureDate(),
+//     ],
+// ])
+// ->add('enddate', DateType::class, [
+//     'widget' => 'single_text',
+//     'html5' => false,
+//     'constraints' => [
+//         new NotFutureDate(),
+//     ],
+// ])

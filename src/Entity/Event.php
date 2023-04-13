@@ -6,10 +6,11 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\EventsRepository;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 #[ORM\Table(name: "event",options: [
     'indexes' => [
-        'userID' => ['columns' => ['userID']]
+        'user' => ['columns' => ['userID']]
     ]
 ])]
 #[ORM\Entity]
@@ -28,6 +29,7 @@ class Event
     #[ORM\Column(name: "location", type: "string",length:255,nullable: false)]
     private $location;
 
+    #[Assert\NotBlank]
     #[ORM\Column(name: "type", type: "string",length:255,nullable: false)]
     private $type;
 
@@ -36,7 +38,7 @@ class Event
     private $description;
 
     #[Assert\NotNull]
-    #[Assert\Positive]
+    #[Assert\GreaterThanOrEqual(0)]
     #[ORM\Column(name: "entryFee", type: "float",precision:10, scale:0, nullable: false)]
     private $entryfee;
 
@@ -46,10 +48,22 @@ class Event
     private $capacity;
 
     #[ORM\Column(name: "startDate", type: "datetime",nullable: false)]
+    #[Assert\NotBlank]
     private $startdate;
 
     #[ORM\Column(name: "endDate", type: "datetime",nullable: false)]
+    #[Assert\NotBlank]
     private $enddate;
+
+    #[Assert\Callback(callback: 'validateDate')]
+    public function validateDate(ExecutionContextInterface $context): void
+    {
+        if ($this->startdate > $this->enddate) {
+            $context->buildViolation('The start date should not be superior to the end date')
+            ->atPath('startdate')
+            ->addViolation();
+        }
+    }
 
     #[ORM\Column(name: "image", type: "string",length:255,nullable: false,options:["default"=>"NULL"])]
     private $image = 'NULL';
@@ -59,7 +73,8 @@ class Event
 
     #[ORM\ManyToOne(targetEntity: "User")]
     #[ORM\JoinColumn(name: "userID", referencedColumnName: "user_ID")]
-    private $userid;
+    #[Assert\NotBlank]
+    private $user;
 
     public function getEventid(): ?int
     {
@@ -186,14 +201,14 @@ class Event
         return $this;
     }
 
-    public function getUserid(): ?User
+    public function getUser(): ?User
     {
-        return $this->userid;
+        return $this->user;
     }
 
-    public function setUserid(?User $userid): self
+    public function setUser(?User $user): self
     {
-        $this->userid = $userid;
+        $this->user = $user;
 
         return $this;
     }

@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Event;
+use App\Entity\User;
 use App\Form\EventType;
 use App\Repository\EventRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -15,23 +16,25 @@ use Knp\Component\Pager\PaginatorInterface;
 #[Route('/event')]
 class EventController extends AbstractController
 {
-       /**
-     * @Route("/sortedByName", name="findAllSortedByName")
-     */
-    public function findAllSortedByName(Request $request, EventRepository $eventRepository): Response
+    
+    #[Route("/sortedByName", name:"findAllSortedByName")]
+    public function findAllSortedByName(EntityManagerInterface $entityManager, Request $request, EventRepository $eventRepository): Response
     {
         $name = $request->query->get('name');
 
         $events = $eventRepository->findAllSortedByName($name);
 
+        $users = $entityManager
+        ->getRepository(User::class)
+        ->findAll();
+        
         return $this->render('event/index.html.twig', [
             'events' => $events,
+            'users' => $users
         ]);
     }
 
-       /**
-     * @Route("/sortedByPrice", name="findAllSortedByPrice")
-     */
+    #[Route("/sortedByPrice", name:"findAllSortedByPrice")]
     public function findAllSortedByPrice(Request $request, EventRepository $eventRepository): Response
     {
         $feeOrder = $request->query->get('feeOrder');
@@ -43,9 +46,7 @@ class EventController extends AbstractController
         ]);
     }
 
-       /**
-     * @Route("/sortedByType", name="findByType")
-     */
+    #[Route("/sortedByType", name:"findByType")]
     public function findByType(Request $request, EventRepository $eventRepository): Response
     {
         $type = $request->query->get('type');
@@ -57,9 +58,7 @@ class EventController extends AbstractController
         ]);
     }
 
-       /**
-     * @Route("/sortedByStatus", name="findByStatus")
-     */
+    #[Route("/sortedByStatus", name:"findByStatus")]
     public function findByStatus(Request $request, EventRepository $eventRepository): Response
     {
         $status = $request->query->get('status');
@@ -74,17 +73,36 @@ class EventController extends AbstractController
     #[Route('/', name: 'app_event_index', methods: ['GET'])]
     public function index(EntityManagerInterface $entityManager, PaginatorInterface $paginator, Request $request): Response
     {
+        $searchTerm = $request->query->get('q');
+
         $events = $entityManager
             ->getRepository(Event::class)
             ->findAll();
+
+        $users = $entityManager
+            ->getRepository(User::class)
+            ->findAll();
+
+        if ($searchTerm) {
+            $events = $entityManager
+            ->getRepository(Event::class)
+            ->createQueryBuilder('e')
+            ->where('e.name LIKE :searchTerm')
+            ->setParameter('searchTerm', '%' . $searchTerm . '%')
+            ->getQuery()
+            ->getResult();
+        }
+
         $pages = $paginator->paginate(
             $events, // Requête contenant les données à paginer (ici nos articles)
             $request->query->getInt('page', 1), // Numéro de la page en cours, passé dans l'URL, 1 si aucune page
-            4 // Nombre de résultats par page
+            9 // Nombre de résultats par page
         );
 
         return $this->render('event/index.html.twig', [
             'events' => $pages,
+            'users' => $users,
+            'searchTerm' => $searchTerm,
         ]);
     }
 
@@ -97,6 +115,24 @@ class EventController extends AbstractController
 
         return $this->render('event/index.html.twig', [
             'events' => $events,
+        ]);
+    }
+
+    #[Route('/findMyEvents', name: 'app_event_my_events', methods: ['GET'])]
+    public function findMyEvents(EntityManagerInterface $entityManager, EventRepository $eventRepository, Request $request): Response
+    {
+        $userID = $request->query->get('userID');
+        
+        $users = $entityManager
+        ->getRepository(User::class)
+        ->findAll();
+
+
+        $events = $eventRepository->findByUser($userID);
+
+        return $this->render('event/index.html.twig', [
+            'events' => $events,
+            'users' => $users
         ]);
     }
 
