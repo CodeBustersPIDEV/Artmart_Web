@@ -6,27 +6,28 @@
   {{ base.NavBar() }}
 	{% include('event/eventBar.html.twig') %}
 
-  <form action="{{ path('app_event_my_events') }}" method="get">
-    <p style="display:inline-block; margin: 20px;">Connect as</p>
-    <select name="userID" onchange="this.form.submit()">
-      <option value="" {% if app.request.query.get('userName') is empty %} selected {% endif %} disabled>Choose an option</option>
-      {% for user in users %}
-        <option value={{user.userId}}>{{user.name}}</option>
-      {% endfor %}
-    </select>
-  </form>
+<form action="{{ path('app_event_index') }}" method="get">
+  <p style="display:inline-block; margin: 20px;">Connect as</p>
+  <select name="userID" onchange="this.form.submit()">
+    <option value="" {% if app.request.query.get('userName') is empty %} selected {% endif %} disabled>Choose an option</option>
+    {% for user in users %}
+      <option value="{{user.userId}}" {% if app.request.query.get('userID') == user.userId %} selected {% endif %}>{{user.name}}</option>
+    {% endfor %}
+  </select>
+</form>
+
 
   <center>
     <form action="{{ path('app_event_index') }}" method="GET">
       <div class="form-group">
-        <input type="text" id="search-term" name="q" class="form-control" {# value="{{ searchTerm }}" #}placeholder="Search..."> 
+        <input type="text" id="search-term" name="q" class="form-control" value="{{ searchTerm }}"placeholder="Search..."> 
       </div>
     </form>
   </center>
   
   <div class="select-container">
 
-    <form action="{{ path('findAllSortedByName') }}" method="get">
+    <form action="{{ path('app_event_index') }}" method="get">
       <p style="display:inline-block; margin-right: 10px;">Sort by Name</p>
       <select name="name" onchange="this.form.submit()">
         <option value="" {% if app.request.query.get('name') is empty %} selected {% endif %} disabled>Choose an option</option>
@@ -36,7 +37,7 @@
     </form>
 
       
-    <form action="{{ path('findAllSortedByPrice') }}" method="get">
+    <form action="{{ path('app_event_index') }}" method="get">
       <p style="display:inline-block; margin-right: 10px;">Sort by Price</p>
       <select name="feeOrder" onchange="this.form.submit()">
         <option value="" disabled {{ app.request.query.get('feeOrder') is empty ? 'selected' : '' }}>Choose an option</option>
@@ -45,7 +46,7 @@
       </select>
     </form>
 
-    <form action="{{ path('findByType') }}" method="get">
+    <form action="{{ path('app_event_index') }}" method="get">
       <p style="display:inline-block; margin-right: 10px;">Sort by Type</p>
       <select name="type" onchange="this.form.submit()">
         <option value="" disabled {{ app.request.query.get('type') is empty ? 'selected' : '' }}>Choose an option</option>
@@ -56,7 +57,7 @@
       </select>
     </form>
 
-    <form action="{{ path('findByStatus') }}" method="get">
+    <form action="{{ path('app_event_index') }}" method="get">
       <p style="display:inline-block; margin-right: 10px;">Sort by Status</p>
       <select name="status" onchange="this.form.submit()">
         <option value="" disabled {{ app.request.query.get('status') is empty ? 'selected' : '' }}>Choose an option</option>
@@ -132,7 +133,7 @@ select {
   display: inline-block;
   max-width: 400px;
   padding: 6px 12px;
-  margin: 20px;
+  margin-bottom: 20px;
   font-size: 14px;
   font-weight: 400;
   line-height: 1.5;

@@ -4,7 +4,6 @@ namespace App\Form;
 
 use App\Entity\Event;
 use App\Entity\User;
-use App\Validator\NotFutureDate;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -58,22 +57,3 @@ class EventType extends AbstractType
         ]);
     }
 }
-// , DateType::class, [
-//     'constraints' => [
-//         new NotFutureDate(),
-//     ],
-// ])
-// ->add('startdate', DateType::class, [
-//     'widget' => 'single_text',
-//     'html5' => false,
-//     'constraints' => [
-//         new NotFutureDate(),
-//     ],
-// ])
-// ->add('enddate', DateType::class, [
-//     'widget' => 'single_text',
-//     'html5' => false,
-//     'constraints' => [
-//         new NotFutureDate(),
-//     ],
-// ])

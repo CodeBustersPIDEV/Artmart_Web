@@ -119,4 +119,24 @@ class EventRepository extends ServiceEntityRepository
         ->getResult();
     }
 
+    // public function findByStatus($status, $userID): array
+    // {
+    //     return $this->createQueryBuilder('e')
+    //         ->andWhere('e.status = :status')
+    //         ->andWhere('e.user = :userID')
+    //         ->setParameter('status', $status)
+    //         ->setParameter('userID', $userID)
+    //         ->getQuery()
+    //         ->getResult();
+    // }
+
+    public function findByTerm($searchTerm): array
+    {
+        return $this->createQueryBuilder('e')
+        ->where('e.name LIKE :searchTerm')
+        ->setParameter('searchTerm', '%' . $searchTerm . '%')
+        ->getQuery()
+        ->getResult();
+    }
+
 }
