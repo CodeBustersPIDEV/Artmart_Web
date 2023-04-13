@@ -5,6 +5,8 @@ namespace App\Entity;
 use Doctrine\DBAL\Types\Types;
 use App\Repository\BlogsRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 #[ORM\Entity(repositoryClass: BlogsRepository::class)]
 #[ORM\Table(name: "blogs")]
@@ -16,9 +18,11 @@ class Blogs
     private $blogs_ID;
 
     #[ORM\Column(name: "title", type: "string", length: 255, nullable: false)]
+    #[Assert\NotBlank(message: "Please Enter A Title For The Blog Post")]
     private $title;
 
     #[ORM\Column(name: "content", type: "text", length: 65535, nullable: false)]
+    #[Assert\NotBlank(message: "Please Enter The Content For The Blog Post")]
     private $content;
 
     #[ORM\Column(name: "date", type: "datetime", nullable: false, options: ["default" => "current_timestamp()"])]

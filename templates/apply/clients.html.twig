@@ -20,6 +20,7 @@
                 <td>{{ apply.status }}</td>
                 <td>
                     {% if apply.status == 'pending' %}
+                    <div class="actions">
                         <form method="POST" action="{{ path('app_apply_mark_accept') }}">
                             <input type="hidden" name="applyId" value="{{ apply.applyId }}">
                             <button type="submit" onclick="return confirmMarkaccept()" class="btn btn-success">accept</button>
@@ -29,6 +30,7 @@
                             <input type="hidden" name="applyId" value="{{ apply.applyId }}">
                             <button type="submit" onclick="return confirmMarkrefuse()" class="btn btn-danger">refuse</button>
                         </form>
+                        </div>
                     {% endif %}
                 </td>
             </tr>
@@ -39,7 +41,9 @@
         {% endfor %}
         </tbody>
     </table>
-     <a href="{{ path('app_customproduct_artist') }}">back to list</a>
+                <a href="{{ path('app_customproduct_index') }}">
+  <i class="fas fa-arrow-left"></i> Back to List
+</a>
 {% endblock %}
 {% block javascripts %}
     <script>
@@ -69,17 +73,34 @@ function playSound() {
   audio.play();
 }
 </script>
-    <style>
-        .table {
-            width: 100%;
-            border-collapse: collapse;
-            border-spacing: 0;
-            margin-top: 20px;
-             background-color: #fff;
-        }
-        
-     
-        
+  <style>
+
+
+.actions button {
+  margin-bottom: 5px;
+}
+
+      .table {
+        width: 100%;
+        margin-top: 20px;
+        background-color: #fff;
+        border-collapse: collapse;
+        border-spacing: 0;
+      }
+      .table th, .table td {
+        text-align: center;
+        padding: 8px;
+        vertical-align: middle;
+        border: 1px solid #ddd;
+      }
+      .table th {
+        font-weight: bold;
+        background-color: #f5f5f5;
+        border-bottom: 2px solid #ddd;
+      }
+      .table td:last-child {
+        text-align: center;
+      }
     </style>
 {% endblock %}
 {% endblock %}

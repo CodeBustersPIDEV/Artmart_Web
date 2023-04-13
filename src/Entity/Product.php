@@ -6,12 +6,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * Product
- *
- * @ORM\Table(name="product", indexes={@ORM\Index(name="category_ID", columns={"category_ID"})})
- * @ORM\Entity
- */
+
 #[ORM\Table(name: "product",options: [
     'indexes' => [
         'category_ID' => ['columns' => ['category_ID']]
@@ -28,32 +23,30 @@ class Product
     #[ORM\Column(name: "category_ID", type: "integer",nullable: false)]
     private $categoryId;
 
-    #[Assert\NotBlank]
+
     #[ORM\Column(name: "name", type: "string",length:255, nullable: false)]
+    #[Assert\NotBlank(message: "Please enter a product name")]
     private $name;
 
-    #[Assert\NotBlank]
+  
     #[ORM\Column(name: "description", type: "text", length:65535,nullable: false)]
+    #[Assert\NotBlank(message: "Please enter a product description")]
     private $description;
 
-    #[Assert\NotBlank]
+   
     #[ORM\Column(name: "dimensions", type: "string", length:255,nullable: false)]
+    #[Assert\NotBlank(message: "Please enter product dimensions")]
     private $dimensions;
 
-    #[Assert\NotBlank]
     #[ORM\Column(name: "weight", type: "decimal", precision:10, scale:2,nullable: false)]
+    #[Assert\NotBlank(message: "Please enter product weight")]
     private $weight;
 
-    #[Assert\NotBlank]
     #[ORM\Column(name: "material", type: "string", length:255, nullable: false)]
+    #[Assert\NotBlank(message: "Please enter product material")]
     private $material;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="image", type="string", length=255, nullable=false)
-     * @Assert\NotBlank(message="Name is required")
-     */
+    #[ORM\Column(name: "image", type: "string", length:255, nullable: false)]
     private $image = 'imagecustom/imagec.png';
 
     public function getProductId(): ?int
@@ -163,13 +156,9 @@ class Product
 
 
 
-    /**
-        * @var Categories
-        *
-        * @ORM\ManyToOne(targetEntity="App\Entity\Categories")
-        * @ORM\JoinColumn(name="category_ID", referencedColumnName="categories_ID", nullable=false)
-        */
-       private $category;
+        #[ORM\ManyToOne(targetEntity: "App\Entity\Categories")]
+        #[ORM\JoinColumn(name: "category_ID", referencedColumnName: "categories_ID", nullable: false)]
+        private $category;
    
        public function getCategory(): ?Categories
        {

@@ -3,48 +3,47 @@
 {% block content %}
 
 {% block body %}
+<h1>Accepted Works</h1>
 
-    <h1>accepted works</h1>
-
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Product Name</th>
-                <th>Status</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for apply in applies %}
-            <tr>
-                <td>{{ apply.customproduct.product.name }}</td>
-                <td>{{ apply.status }}</td>
-                <td>
-                    {% if apply.status == 'in progress' %}
-                        <form method="POST" action="{{ path('app_apply_mark_done') }}">
-                            <input type="hidden" name="applyId" value="{{ apply.applyId }}">
-                            <button type="submit" onclick="return confirmMarkDone()" class="btn btn-success">Mark as Done</button>
-                        </form>
-                    {% endif %}
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="3">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-     <a href="{{ path('app_customproduct_artist') }}">back to list</a>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Product Name</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for apply in applies %}
+        <tr>
+            <td>{{ apply.customproduct.product.name }}</td>
+            <td>{{ apply.status }}</td>
+            <td>
+                {% if apply.status == 'in progress' %}
+                    <form method="POST" action="{{ path('app_apply_mark_done') }}">
+                        <input type="hidden" name="applyId" value="{{ apply.applyId }}">
+                        <button type="submit" onclick="return confirmMarkDone()" class="btn btn-success">Mark as Done</button>
+                    </form>
+                {% endif %}
+            </td>
+        </tr>
+    {% else %}
+        <tr>
+            <td colspan="3">No records found</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+              <a href="{{ path('app_customproduct_artist') }}">
+  <i class="fas fa-arrow-left"></i> Back to List
+</a>
 {% endblock %}
 {% block javascripts %}
-    <script>
-        function confirmMarkDone() {
-            return confirm('Are you sure you want to mark this apply as done?');
-        }
-    </script>
-
-
+<script>
+function confirmMarkDone() {
+return confirm('Are you sure you want to mark this apply as done?');
+}
+</script>
 <script>
 // Add onclick event to all hyperlinks
 var links = document.getElementsByTagName("a");
@@ -68,11 +67,49 @@ function playSound() {
             border-collapse: collapse;
             border-spacing: 0;
             margin-top: 20px;
-             background-color: #fff;
+            background-color: #fff;
+            border: 1px solid #ddd;
         }
         
-     
+        .table th, .table td {
+            padding: 10px;
+            text-align: left;
+            vertical-align: top;
+            border-top: 1px solid #ddd;
+        }
         
+        .table th {
+            font-weight: bold;
+            background-color: #f5f5f5;
+            border-bottom: 2px solid #ddd;
+        }
+        
+        .table td:last-child {
+            text-align: center;
+        }
+        
+        .btn-success {
+            background-color: #28a745;
+            border-color: #28a745;
+        }
+        
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+        
+        .btn {
+            color: #fff;
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        
+        .mt-3 {
+            margin-top: 20px;
+        }
     </style>
+
 {% endblock %}
 {% endblock %}

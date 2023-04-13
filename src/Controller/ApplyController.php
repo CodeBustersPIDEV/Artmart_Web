@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Controller;
-
+use Twilio\Rest\Client;
 use App\Entity\Apply;
 use App\Form\ApplyType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -147,6 +147,17 @@ class ApplyController extends AbstractController
             throw $this->createNotFoundException('Apply not found');
         }
  
+        $sid    = "AC85fdc289caf6aa747109220798d39394";
+        $token  = "e100314f392f157e4341263440f1a7bc";
+        $twilio = new Client($sid, $token);
+    
+        $message = $twilio->messages
+          ->create("whatsapp:+21698238240", 
+            array(
+              "from" => "whatsapp:+14155238886",
+              "body" => "your custom product is done"
+            )
+            );
         $apply->setStatus('done');
         $entityManager->flush();
         
@@ -166,11 +177,22 @@ class ApplyController extends AbstractController
         if (!$apply) {
             throw $this->createNotFoundException('Apply not found');
         }
- 
+        $sid    = "AC85fdc289caf6aa747109220798d39394";
+        $token  = "e100314f392f157e4341263440f1a7bc";
+        $twilio = new Client($sid, $token);
+    
+        $message = $twilio->messages
+          ->create("whatsapp:+21698238240", 
+            array(
+              "from" => "whatsapp:+14155238886",
+              "body" => "your custom product demand is accepted"
+            )
+            );
         $apply->setStatus('in progress');
         $entityManager->flush();
         
         return $this->redirectToRoute('app_apply_clients');
+
     }
 
     #[Route('/apply/refused', name: 'app_apply_mark_refused', methods: ['POST'])]

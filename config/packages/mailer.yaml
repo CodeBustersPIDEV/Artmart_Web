@@ -1,3 +1,4 @@
+# config/packages/mailers.yaml
 framework:
     mailer:
-        dsn: '%env(MAILER_DSN)%'
+        dsn: 'gmail://soltaniamir010@gmail.com:Hesoyam10@smtp.gmail.com'

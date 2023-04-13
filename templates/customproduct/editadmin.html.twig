@@ -18,7 +18,7 @@ input[type="file"] {
             <h1 class="text-center mb-4">Edit Customproduct</h1>
             <div class="row justify-content-center">
                 <div class="col-md-8">
-                    {{ form_start(form) }}
+             {{ form_start(form,{ 'attr' :{ 'novalidate':'novalidate'}}) }}
                     <div class="form-group">
                         {{ form_label(form.product.category, 'Category', {'label_attr': {'class': 'font-weight-bold'}}) }}
                         {{ form_widget(form.product.category, {'attr': {'class': 'form-control'}}) }}
@@ -68,7 +68,9 @@ input[type="file"] { display: none;}</style>
                     </div>
                     {{ include('customproduct/_form.html.twig', {'button_label': 'Update'}) }}
                     {{ form_end(form) }}
-                    <a href="{{ path('app_customproduct_admin') }}" class="btn btn-secondary mt-4">Back to list</a>
+                  <a href="{{ path('app_customproduct_admin') }}">
+  <i class="fas fa-arrow-left"></i> Back to List
+</a>
                 </div>
             </div>
         </div>

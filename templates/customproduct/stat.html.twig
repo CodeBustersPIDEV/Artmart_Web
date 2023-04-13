@@ -1,0 +1,189 @@
+ {% extends 'baseC.html.twig' %}
+ {% block content %}
+ <a href="{{ path('app_customproduct_admin') }}">
+  <i class="fas fa-arrow-left"></i> Back to List
+</a>
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+button {
+  padding: 10px 20px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #3e8e41;
+}
+
+button i {
+  margin-right: 5px;
+}
+
+button {
+      display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.button-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.button-group button,
+.button-group a {
+  background-color: #4CAF50;
+  border: none;
+  color: white;
+  padding: 10px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.button-group button:hover,
+.button-group a:hover {
+  background-color: #43464B;
+}
+  a[href^="https://twitter.com"] {
+    background-color: #1DA1F2; /* Twitter blue */
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+  }
+
+  /* Facebook button */
+  a[href^="https://www.facebook.com"] {
+    background-color: #1877F2; /* Facebook blue */
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+  }
+</style>
+
+{% set maxWeight = 0 %}
+{% set minWeight = 1000000 %}
+{% set totalWeight = 0 %}
+{% set maxWeightProduct = '' %}
+{% set minWeightProduct = '' %}
+
+{% for weightSum in weightSums %}
+    {% if weightSum['weight_sum'] > maxWeight %}
+        {% set maxWeight = weightSum['weight_sum'] %}
+        {% set maxWeightProduct = weightSum['material'] %}
+    {% endif %}
+    
+    {% if weightSum['weight_sum'] < minWeight %}
+        {% set minWeight = weightSum['weight_sum'] %}
+        {% set minWeightProduct = weightSum['material'] %}
+    {% endif %}
+    
+    {% set totalWeight = totalWeight + weightSum['weight_sum'] %}
+{% endfor %}
+
+<div>
+    <p><strong>Custom Products Material Summary</strong></p>
+    <ul>
+        <li>The material <strong>"{{ maxWeightProduct }}"</strong> has the highest weight with a weight of <strong>{{ maxWeight }}</strong>.</li>
+        <li>The material <strong>"{{ minWeightProduct }}"</strong> has the lowest weight with a weight of <strong>{{ minWeight }}</strong>.</li>
+        <li>The total weight of all products is <strong>{{ totalWeight }}</strong>.</li>
+    </ul>
+</div>
+<div class="button-group">
+<button onclick="generatePDF()">
+  <i class="fa fa-download"></i> Download PDF
+</button>
+<a href="https://twitter.com/intent/tweet?url={{ app.request.uri }}&text=Check%20out%20this%20chart%20from%20my%20site!&hashtags=MySite,Chart" target="_blank">
+  <i class="fa fa-twitter"></i> Share on Twitter
+</a>
+<a href="https://www.facebook.com/sharer.php?u={{ app.request.uri }}&quote=Check%20out%20this%20chart%20from%20my%20site%21%20%F0%9F%93%88%20%23MySite%20%23Chart" target="_blank" rel="noopener noreferrer">
+  <i class="fa fa-facebook"></i> Share on Facebook
+</a>
+</div>
+
+
+ <canvas id="myChart"></canvas>
+
+
+
+
+
+{% block javascripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.2/jspdf.min.js"></script>
+<script>
+  var ctx = document.getElementById('myChart').getContext('2d');
+  var weightData = {{ weightData|json_encode|raw }};
+  var myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: weightData.labels,
+      datasets: [{
+        label: 'Product Weights',
+        data: weightData.datasets[0].data,
+        backgroundColor: [
+          'rgba(255, 99, 132, 0.2)',
+          'rgba(54, 162, 235, 0.2)',
+          'rgba(255, 206, 86, 0.2)',
+          'rgba(75, 192, 192, 0.2)',
+          'rgba(153, 102, 255, 0.2)',
+          'rgba(255, 159, 64, 0.2)'
+        ],
+        borderColor: [
+          'rgba(255, 99, 132, 1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+          'rgba(255, 159, 64, 1)'
+        ],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      scales: {
+        yAxes: [{
+          ticks: {
+            beginAtZero: true
+          }
+        }]
+      },
+      title: {
+        display: true,
+        text: 'Product Weights by Material'
+      },
+      legend: {
+        display: false
+      }
+    }
+  });
+
+   function generatePDF() {
+    var canvas = document.getElementById('myChart');
+    var imgData = canvas.toDataURL('image/png');
+
+    // calculate the size of the canvas element
+    var canvasWidth = canvas.offsetWidth;
+    var canvasHeight = canvas.offsetHeight;
+
+    // set the dimensions of the PDF to match the canvas
+    var pdf = new jsPDF('l', 'px', [canvasWidth, canvasHeight]);
+    pdf.addImage(imgData, 'PNG', 0, 0, canvasWidth, canvasHeight);
+    pdf.save('chart.pdf');
+  }
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+
+{% endblock %}
+{% endblock %}
