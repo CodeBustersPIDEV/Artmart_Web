@@ -58,6 +58,9 @@
 		color: white !important;
 		border-color: white !important;
 	}
+	.err {
+		color: #e75e8d;
+	}
 </style>
 
 <link rel="stylesheet" href="{{ asset('assets/Blog/CSS/FormCss.css') }}" />
@@ -82,45 +85,81 @@
 		<div class="col">
 			<div class="col-sm-12">
 				{{ form_start(form, {'attr': {'class': 'form-floating','novalidate': 'novalidate'
+
+
+
+
 				}}) }}
 				<div class="form-group">
 					{{ form_label(form.title, null, {'label_attr': {'class': 'form-label inputLabel'
+
+
+
+
 					}})}}
 					{{ form_widget(form.title, {'attr': {'class': 'form-control inputBg', 'placeholder': 'Title', 'id': 'title'
+
+
+
+
 					}}) }}
-					<div class="form-error">
+					<div class="form-error err">
 						{{ form_errors(form.title) }}
 					</div>
 				</div>
 
 				<div class="form-group">
 					{{ form_label(form.content, null, {'label_attr': {'class': 'form-label inputLabel'
+
+
+
+
 					}}) }}
 					{{ form_widget(form.content, {'attr': {'class': 'form-control inputBg', 'placeholder': 'Content', 'id': 'content'
+
+
+
+
 					}}) }}
-					<div class="form-error">
+					<div class="form-error err">
 						{{ form_errors(form.content) }}
 					</div>
 				</div>
 
 				<div class="form-group">
 					{{ form_label(form.category, null, {'label_attr': {'class': 'form-label inputLabel'
+
+
+
+
 					}}) }}
 					{{ form_widget(form.category, {'attr': {'class': 'form-control select2 inputBg', 'id': 'category'
+
+
+
+
 					}}) }}
-					<div class="form-error">
+					<div class="form-error err">
 						{{ form_errors(form.category) }}
 					</div>
 				</div>
 
 				<div class="form-group">
 					{{ form_label(form.tags, null, {'label_attr': {'class': 'form-label inputLabel'
+
+
+
+
 					}})}}
 					<div class="row g-3">
 						<div class="col-auto">
 							{{ form_widget(form.tags, {'attr': {'class': 'form-select inputBg' ,'id': 'tags','size':'3'
+
+
+
+
 							}}) }}
-							<div class="form-error">
+							<div class="form-error err">
 								{{ form_errors(form.tags) }}
 							</div>
 						</div>
@@ -128,6 +167,10 @@
 							<div id="input-container" style="display: none">
 								<div class="chip-select">
 									{{ form_widget(form.addTags,{'attr': {'id': 'input-container','class': 'form-control addTagsInput inputBg','list':'chip-options'
+
+
+
+
 									}}) }}
 								</div>
 							</div>
@@ -143,15 +186,31 @@
 
 				<div class="form-group">
 					{{ form_label(form.author, null, {'label_attr': {'class': 'form-label inputLabel'
+
+
+
+
 					}}) }}
 					{{ form_widget(form.author, {'attr': {'class': 'form-control select2 inputBg', 'id': 'author'
+
+
+
+
 					}}) }}
 				</div>
 
 				<div class="form-group">
 					{{ form_label(form.file, null, {'label_attr': {'class': 'form-label inputLabel'
+
+
+
+
 					}})}}
 					{{ form_widget(form.file, {'attr': {'class': 'form-control blogImageFile inputBg ', 'id': 'formFile'
+
+
+
+
 					}}) }}
 				</div>
 				<div class="d-flex justify-content-center" style="margin-top: 5px">
