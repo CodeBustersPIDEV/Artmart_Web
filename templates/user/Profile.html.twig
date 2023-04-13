@@ -1,18 +1,17 @@
-
 {% extends 'baseF.html.twig' %}
 
-{% block title %}Login{% endblock %}
+{% block title %}Profile{% endblock %}
 
 {% block content %}
-    <section class="container my-3">
-    <div class="row">
-        <div class="col"></div>
+    <h1>Profile</h1>
   <style>
     main {
       color: #6F8BA4;
       margin-top: 20px;
     }
-
+.button{
+    align: center;
+  }
     .section {
       padding: 100px 0;
       position: relative;
@@ -194,31 +193,98 @@
       justify-content: center;
       gap: 10px;
     }
+  
+.attributes{
+    text-align: center;
+  color: white;
+  font-size: 3em; /* or any font size that you want */
+  margin-top: 50px; /* add some margin to the top */
+  text-align: center;
+  }
   </style>
-    <h1>Login</h1>
-        <div class="col-sm-12">
-        <!-- Start the form and add a class attribute to it -->
-       
 
-        {{ form_start(loginForm, {'attr': {'novalidate': 'novalidate'}}) }}
+<section class="section about-section gray-bg" id="about">
+<div class="container">
+<div class="button justify-content-center">
+<div class="button d-flex align-items-center" >
+    <a class="btn btn-outline-primary mr-2" href="{{ path('app_user_editProfile', {'userId': user.userId}) }}">edit</a>
+    {{ include('user/_delete_form.html.twig') }}
+</div>
+</div>
+  <div class="row align-items-center flex-row-reverse">
+    <div class="col-lg-6">
+      <div class="about-text go-to">
     
-    <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
-    <div class="form-group">
-    {{ form_label(loginForm.username) }}
-    {{ form_widget(loginForm.username, {'attr': {'class': 'form-control'}}) }}
-</div>
-<div class="form-group">
-        {{ form_label(loginForm.password) }}
-        {{ form_widget(loginForm.password, {'attr': {'class': 'form-control'}}) }}
+        <h3 class="dark-color">About  {{ user.username }} </h3>
+    <br></br>
+
+        <div class="row about-list">
+          <div class="col-md-6">
+            <div class="media">
+              <label>Name</label>
+                {{ user.name }}
+            </div>
+            <div class="media">
+              <label>Birthday</label>
+                {{ user.birthday ? user.birthday|date('Y-m-d') : '' }}
+            </div>
+            <div class="media">
+              <label>Email</label>
+                {{ user.email }}
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="media">
+              <label>Role</label>
+                {{ user.role }}
+            </div>
+            <div class="media">
+              <label>Phone</label>
+                {{ user.phonenumber }}
+          </div>
+        </div>
+      </div>
+      </div>
     </div>
-   
-  <br><br>
-<div class="button" style="text-align: center">
-<button type="submit" class="btn btn-outline-primary mr-2" id="submitBtn">
-{{ button_label|default('Post') }}
-</button>
+    <div class="col-lg-6">
+            <div class="about-avatar">
+              
+              {% if user != null %}
+		<img
+                 class="about-avatar"
+        			src="{{user.getPicture()}}"
+			     alt="Spinning glass cube"
+		/>
+		{% else %}
+		<img
+                 class="about-avatar"
+        	  		src="{{ asset('assets/User/user.png') }}"
+			        alt="Spinning glass cube"
+		/>
+		{% endif %}
+            </div>
+          </div>
+        </div>
+        <br>
+            <div class="attributes">
+           {% if clientAttributes is defined %}
+    <p><strong>Number of Orders:</strong> {{ clientAttributes.nbrOrders }}</p>
+    <p><strong>Number of Demands:</strong> {{ clientAttributes.nbrDemands }}</p>
+{% endif %}
+            
+{% if artistAttributes is defined %}
+<p><strong>Bio:</strong> {{ artistAttributes.bio }}</p>
+<p><strong>Number of Artwork:</strong> {{ artistAttributes.nbrArtwork }}</p>
+{% endif %}
+{% if adminAttributes is defined %}
+<p><strong>Department:</strong> {{ adminAttributes.department }}</p>
+{% endif %}
 </div>
-{{ form_end(loginForm) }}
-</div>
-</section>
+        </tbody>
+    </table>
+<br></br>
+
+
+    
+
 {% endblock %}
