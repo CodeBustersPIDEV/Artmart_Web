@@ -36,7 +36,7 @@ class TagsController extends AbstractController
             $entityManager->persist($tag);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_tags_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_blogs_admin', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('tags/new.html.twig', [
@@ -62,7 +62,7 @@ class TagsController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_tags_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_blogs_admin', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('tags/edit.html.twig', [
@@ -79,6 +79,6 @@ class TagsController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('app_tags_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_blogs_admin', [], Response::HTTP_SEE_OTHER);
     }
 }

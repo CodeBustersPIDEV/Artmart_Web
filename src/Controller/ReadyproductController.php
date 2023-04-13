@@ -3,25 +3,54 @@
 namespace App\Controller;
 
 use App\Entity\Readyproduct;
+use App\Entity\Product;
+use App\Entity\Categories;
+use App\Entity\User;
+
 use App\Form\ReadyproductType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\Routing\RouterInterface;
+
 
 #[Route('/readyproduct')]
 class ReadyproductController extends AbstractController
 {
     #[Route('/', name: 'app_readyproduct_index', methods: ['GET'])]
-    public function index(EntityManagerInterface $entityManager): Response
+    public function index(Request $request, EntityManagerInterface $entityManager): Response
     {
-        $readyproducts = $entityManager
+        $searchTerm = $request->query->get('q');
+        $order = $request->query->get('order');
+
+        $queryBuilder = $entityManager
             ->getRepository(Readyproduct::class)
-            ->findAll();
+            ->createQueryBuilder('r')
+            ->innerJoin('r.productId', 'p');
+
+
+        if ($order === 'name') {
+            $queryBuilder->orderBy('p.name', 'ASC');
+        } elseif ($order === 'weight') {
+            $queryBuilder->orderBy('p.weight', 'ASC');
+        }
+
+        if ($searchTerm) {
+            $queryBuilder->where('p.name LIKE :searchTerm')
+                ->setParameter('searchTerm', '%' . $searchTerm . '%');
+        }
+
+        $readyproducts = $queryBuilder->getQuery()->getResult();
 
         return $this->render('readyproduct/index.html.twig', [
             'readyproducts' => $readyproducts,
+            'searchTerm' => $searchTerm,
+            'order' => $order,
         ]);
     }
 
@@ -33,6 +62,29 @@ class ReadyproductController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $product = new Product();
+            $product->setName($form->get('name')->getData());
+            $product->setDescription($form->get('description')->getData());
+
+            $imageFile = $form->get('image')->getData();
+            if ($imageFile) {
+                $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+                $newFilename = $originalFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
+
+                try {
+                    $imageFile->move(
+                        $this->getParameter('product_images_directory'),
+                        $newFilename
+                    );
+                } catch (FileException $e) {
+                    // handle exception if something happens during file upload
+                }
+
+                $product->setImage($newFilename);
+            }
+
+            $entityManager->persist($product);
+            $readyproduct->setProductId($product->getProductId());
             $entityManager->persist($readyproduct);
             $entityManager->flush();
 
@@ -44,6 +96,7 @@ class ReadyproductController extends AbstractController
             'form' => $form,
         ]);
     }
+
 
     #[Route('/{readyProductId}', name: 'app_readyproduct_show', methods: ['GET'])]
     public function show(Readyproduct $readyproduct): Response
@@ -74,7 +127,7 @@ class ReadyproductController extends AbstractController
     #[Route('/{readyProductId}', name: 'app_readyproduct_delete', methods: ['POST'])]
     public function delete(Request $request, Readyproduct $readyproduct, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$readyproduct->getReadyProductId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $readyproduct->getReadyProductId(), $request->request->get('_token'))) {
             $entityManager->remove($readyproduct);
             $entityManager->flush();
         }

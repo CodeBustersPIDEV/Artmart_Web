@@ -11,8 +11,8 @@
 {% endblock %} {% block body %}
 	{% include('order/orderBar.html.twig') %}
 	<link rel="stylesheet" href="{{ asset('assets/Components/specialOrder.css') }}"/>
-	<a href="{{ path('app_orderupdate_new') }}">
-		<div data-tooltip="New Update" class="button mid">
+	<a href="{{ path('app_order_new') }}">
+		<div data-tooltip="New Order" class="button mid">
 			<div class="button-wrapper">
 				<div class="text">Create New</div>
 				<span class="icon">
@@ -23,23 +23,27 @@
 			</div>
 		</div>
 	</a>
-    <table class="table table-hover table-bordered">
-        <thead>
-            <tr>
-                <th>OrderupdateId</th>
-                <th>Updatemessage</th>
-                <th>Date</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for orderupdate in orderupdates %}
-            <tr>
-                <td>{{ orderupdate.orderupdateId }}</td>
-                <td>{{ orderupdate.updatemessage }}</td>
-                <td>{{ orderupdate.date ? orderupdate.date|date('Y-m-d') : '' }}</td>
-                <td>
-						<a href="{{ path('app_orderupdate_show', {'orderupdateId': orderupdate.orderupdateId}) }}">
+	<table class="table table-hover table-bordered">
+		<thead>
+			<tr>
+				<th>Order ID</th>
+				<th>Quantity</th>
+				<th>Shippingaddress</th>
+				<th>Order Date</th>
+				<th>Total cost</th>
+				<th>Options</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for order in orders %}
+				<tr>
+					<td>{{ order.orderId }}</td>
+					<td>{{ order.quantity }}</td>
+					<td>{{ order.shippingaddress }}</td>
+					<td>{{ order.orderdate ? order.orderdate|date('Y-m-d') : '' }}</td>
+					<td>{{ order.totalcost }}</td>
+					<td>
+						<a href="{{ path('app_order_show', { orderId: order.orderId }) }}">
 							<button class="btn3">
 								<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewbox="0 0 16 16">
 									<path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
@@ -48,7 +52,7 @@
 								More
 							</button>
 						</a>
-						<a href="{{ path('app_orderupdate_edit', {'orderupdateId': orderupdate.orderupdateId}) }}">
+						<a href="{{ path('app_order_edit', { orderId: order.orderId }) }}">
 							<button class="btn2">
 								<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pen-fill" viewbox="0 0 16 16">
 									<path d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001z"/>
@@ -56,14 +60,14 @@
 								Edit
 							</button>
 						</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="4">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-{% endblock %}
-{% endblock %} 
+					</td>
+				</tr>
+			{% else %}
+				<tr>
+					<td colspan="6">no records found</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+
+{% endblock %} {% endblock %}

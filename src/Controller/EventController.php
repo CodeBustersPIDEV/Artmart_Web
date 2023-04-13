@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Event;
+use App\Entity\User;
 use App\Form\EventType;
 use App\Repository\EventRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -15,76 +16,51 @@ use Symfony\Component\HttpFoundation\File\Exception\FileException;
 #[Route('/event')]
 class EventController extends AbstractController
 {
-       /**
-     * @Route("/sortedByName", name="findAllSortedByName")
-     */
-    public function findAllSortedByName(Request $request, EventRepository $eventRepository): Response
-    {
-        $name = $request->query->get('name');
-
-        $events = $eventRepository->findAllSortedByName($name);
-
-        return $this->render('event/index.html.twig', [
-            'events' => $events,
-        ]);
-    }
-
-       /**
-     * @Route("/sortedByPrice", name="findAllSortedByPrice")
-     */
-    public function findAllSortedByPrice(Request $request, EventRepository $eventRepository): Response
-    {
-        $feeOrder = $request->query->get('feeOrder');
-
-        $events = $eventRepository->findAllSortedByPrice($feeOrder);
-
-        return $this->render('event/index.html.twig', [
-            'events' => $events,
-        ]);
-    }
-
-       /**
-     * @Route("/sortedByType", name="findByType")
-     */
-    public function findByType(Request $request, EventRepository $eventRepository): Response
-    {
-        $type = $request->query->get('type');
-
-        $events = $eventRepository->findByType($type);
-
-        return $this->render('event/index.html.twig', [
-            'events' => $events,
-        ]);
-    }
-
-       /**
-     * @Route("/sortedByStatus", name="findByStatus")
-     */
-    public function findByStatus(Request $request, EventRepository $eventRepository): Response
-    {
-        $status = $request->query->get('status');
-
-        $events = $eventRepository->findByStatus($status);
-
-        return $this->render('event/index.html.twig', [
-            'events' => $events,
-        ]);
-    }
 
     #[Route('/', name: 'app_event_index', methods: ['GET'])]
-    public function index(EntityManagerInterface $entityManager, PaginatorInterface $paginator, Request $request): Response
+    public function index(EntityManagerInterface $entityManager, EventRepository $eventRepository, PaginatorInterface $paginator, Request $request): Response
     {
-        $events = $entityManager
-            ->getRepository(Event::class)
+        $userID = $request->query->get('userID');
+
+        $searchTerm = $request->query->get('q');
+        $name = $request->query->get('name');
+        $feeOrder = $request->query->get('feeOrder');
+        $status = $request->query->get('status');
+        $type = $request->query->get('type');
+
+        $users = $entityManager
+            ->getRepository(User::class)
             ->findAll();
+        
+        $events = $eventRepository->findByUser($userID);
+       
+        if ($name) {
+            $events = $eventRepository->findAllSortedByName($name);
+        }
+        elseif ($feeOrder) {
+            $events = $eventRepository->findAllSortedByPrice($feeOrder);
+        }
+        elseif ($status) {
+            $events = $eventRepository->findByStatus($status);
+        }
+        elseif ($type) {
+            $events = $eventRepository->findByType($type);
+        }
+        else if ($searchTerm) {
+            $events = $eventRepository->findByTerm($searchTerm);
+        }
+
         $pages = $paginator->paginate(
             $events, // Requête contenant les données à paginer (ici nos articles)
             $request->query->getInt('page', 1), // Numéro de la page en cours, passé dans l'URL, 1 si aucune page
-            4 // Nombre de résultats par page
+            9 // Nombre de résultats par page
         );
 
         return $this->render('event/index.html.twig', [
             'events' => $pages,
+            'users' => $users,
+            // 'userID' => $userID,
+            'searchTerm' => $searchTerm,
         ]);
     }
 
