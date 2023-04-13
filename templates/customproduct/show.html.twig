@@ -76,31 +76,31 @@ img {
     <table>
         <tbody>
         <tr>
-            <th><i class="fa fa-tags category-icon" aria-hidden="true"></i> Product:</th>
+            <th><i class="fa fa-tags fa-beat category-icon" aria-hidden="true"></i> Product:</th>
             <td>{{ product.name }}</td>
         </tr>
         <tr>
-            <th><i class="fa fa-bookmark category-icon" aria-hidden="true"></i> Category:</th>
+            <th><i class="fa fa-bookmark fa-beat category-icon" aria-hidden="true"></i> Category:</th>
             <td>{{ product.category }}</td>
         </tr>
         <tr>
-            <th><i class="fa fa-info-circle category-icon" aria-hidden="true"></i> Description:</th>
+            <th><i class="fa fa-info-circle fa-beat category-icon" aria-hidden="true"></i> Description:</th>
             <td>{{ product.description }}</td>
         </tr>
         <tr>
-<th><i class="fa fa-arrows-alt category-icon" aria-hidden="true"></i> Dimensions:</th>
+<th><i class="fa fa-arrows-alt fa-beat category-icon" aria-hidden="true"></i> Dimensions:</th>
             <td>{{ product.dimensions }}</td>
         </tr>
         <tr>
-            <th><i class="fa fa-balance-scale category-icon" aria-hidden="true"></i> Weight:</th>
+            <th><i class="fa fa-balance-scale fa-beat category-icon" aria-hidden="true"></i> Weight:</th>
             <td>{{ product.weight }}</td>
         </tr>
         <tr>
-            <th><i class="fa fa-cubes category-icon" aria-hidden="true"></i> Material:</th>
+            <th><i class="fa fa-cubes fa-beat category-icon" aria-hidden="true"></i> Material:</th>
             <td>{{ product.material }}</td>
         </tr>
      <tr>
-  <th><i class="fa fa-file-image-o category-icon" aria-hidden="true"></i> Image:</th>
+  <th><i class="fa fa-file-image fa-beat category-icon" aria-hidden="true"></i> Image:</th>
   {{ include('customproduct/_delete_form.html.twig') }}
   <td><img src="{{ asset('imagescustom/' ~ product.image) }}" alt="Product Image" onclick="showImage(this)"></td>
   
