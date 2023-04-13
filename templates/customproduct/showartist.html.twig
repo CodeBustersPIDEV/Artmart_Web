@@ -99,10 +99,38 @@ img {
             <th><i class="fa fa-cubes category-icon" aria-hidden="true"></i> Material:</th>
             <td>{{ product.material }}</td>
         </tr>
-        <tr>
-            <th><i class="fa fa-file-image-o category-icon" aria-hidden="true"></i> Image:</th>
-            <td><img src="{{ asset('imagescustom/' ~ product.image) }}" alt="Product Image"></td>
-        </tr>
+       <tr>
+  <th><i class="fa fa-file-image-o category-icon" aria-hidden="true"></i> Image:</th>
+  <td><img src="{{ asset('imagescustom/' ~ product.image) }}" alt="Product Image" onclick="showImage(this)">
+   <div class="button-group">
+      <a href="{{ asset('imagescustom/' ~ product.image) }}" download class="btn btn-primary">
+        <i class="fa fa-download"></i> Download Image
+      </a>
+    </div>
+  </td>
+</tr>
+
+<script>
+function showImage(img) {
+  img.classList.toggle("enlarge");
+}
+</script>
+
+<style>
+.enlarge {
+  max-width: 100%;
+  max-height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+  z-index: 9999;
+  cursor: zoom-out;
+}
+</style>
+
     </tbody>
 </table>
 
@@ -111,7 +139,7 @@ img {
   <i class="fas fa-arrow-left"></i> Back to List
 </a>
       
-        {{ include('customproduct/_delete_form.html.twig') }}
+     
     </div>
 
  <script>

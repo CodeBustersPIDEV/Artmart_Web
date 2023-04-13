@@ -119,6 +119,7 @@
         <h4><em>Custom</em> Products</h4>
 {% endblock %}
     <a  class="orderby-link" href="{{ path('app_apply_accepted') }}">Accepted Works</a>
+    <a  class="orderby-link" href="{{ path('app_apply_pending') }}">Your Demands</a>
     <div class="card-container">
               {% set customproductCount = 0 %}
 {% for customproduct in customproducts %}
@@ -130,7 +131,7 @@
                     <img src="{{ asset('imagescustom/' ~ customproduct.product.image) }}" alt="{{ customproduct.product.name }} image"/>
            
                     <h2>{{ customproduct.product.name }}</h2>
-                    <p>{{ customproduct.product.description }}</p>
+                    <p>{{ customproduct.product.dimensions }}</p>
            
                <div class="actions">
                     <form action="{{ path('app_customproduct_apply', {'customProductId': customproduct.customProductId}) }}" method="post">
@@ -172,6 +173,7 @@ function playSound() {
   audio.play();
 }
 </script>
+
 {% endblock %}
 
 {% endblock %}
