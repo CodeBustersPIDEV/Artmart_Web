@@ -131,7 +131,7 @@
                     <img src="{{ asset('imagescustom/' ~ customproduct.product.image) }}" alt="{{ customproduct.product.name }} image"/>
            
                     <h2>{{ customproduct.product.name }}</h2>
-                    <p>{{ customproduct.product.material }}</p>
+                    <p>{{ customproduct.product.dimensions }}</p>
            
                <div class="actions">
                     <form action="{{ path('app_customproduct_apply', {'customProductId': customproduct.customProductId}) }}" method="post">
