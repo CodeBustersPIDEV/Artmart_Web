@@ -4,6 +4,18 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Artmart</title>
+  <style>
+  .logo{
+    align-items: center;
+    height: 75px;
+    overflow-y: hidden;
+          top: -25px;
+
+  }
+    .logo_img {
+		width: 125px;
+	}
+  </style>
 
   <!-- Google Font: Source Sans Pro -->
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -44,8 +56,8 @@
   
     <li class="nav-item">
       <a href="{{ path('app_admin') }}" class="nav-link d-flex align-items-center justify-content-end" style="height: 100%;">
-        <img src="{{ asset('img.PNG') }}" alt="My Image" style="max-height: 100px; max-width: 100px; margin-left: 10px;">
-      </a>
+          <div class="logo">
+    <img src="{{ asset('assets/ArtMart_Logo.png') }}" class="logo_img" alt="ArtMart Logo" /></div>      </a>
     </li>
   </ul>
   
@@ -63,8 +75,8 @@
     <!-- Brand Logo -->
     <a href="{{ path('app_admin') }}" class="brand-link">
       <img   class="brand-image img-circle elevation-3" style="opacity: .8">
-     <img src="{{ asset('img.PNG') }}" alt="My Image" style="max-height: 80px; width: 200px;">
-    </a>
+          <div class="logo">
+    <img src="{{ asset('assets/ArtMart_Logo.png') }}" class="logo_img" alt="ArtMart Logo" /></div>   </a>
 
     <!-- Sidebar -->
     <div class="sidebar">
@@ -193,9 +205,9 @@
   <!-- /.control-sidebar -->
 
   <!-- Main Footer -->
-  <footer class="main-footer">
-    <strong>Copyright &copy; 2022-2023 </strong>
-   By CodeBusters All rights reserved.
+  <footer class="main-footer d-flex justify-content-center">
+    <strong class="align-self-center">Copyright &copy; 2022-2023 </strong>
+    <span class="align-self-center"> By CodeBusters All rights reserved.</span>
    <img src="{{ asset('logo.PNG') }}" alt="logo" style="width: 50px; height: 50px;">
   </footer>
 </div>

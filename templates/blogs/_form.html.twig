@@ -42,6 +42,24 @@
 	}
 </style>
 */ #}
+
+<style>
+	.addTagsInput {
+		background: transparent !important;
+		color: white !important;
+		border-color: white !important;
+	}
+
+	.inputLabel {
+		color: white;
+	}
+	.inputBg {
+		background: transparent !important;
+		color: white !important;
+		border-color: white !important;
+	}
+</style>
+
 <link rel="stylesheet" href="{{ asset('assets/Blog/CSS/FormCss.css') }}" />
 
 <div class="container">
@@ -66,9 +84,9 @@
 				{{ form_start(form, {'attr': {'class': 'form-floating','novalidate': 'novalidate'
 				}}) }}
 				<div class="form-group">
-					{{ form_label(form.title, null, {'label_attr': {'class': 'form-label'
+					{{ form_label(form.title, null, {'label_attr': {'class': 'form-label inputLabel'
 					}})}}
-					{{ form_widget(form.title, {'attr': {'class': 'form-control', 'placeholder': 'Title', 'id': 'title'
+					{{ form_widget(form.title, {'attr': {'class': 'form-control inputBg', 'placeholder': 'Title', 'id': 'title'
 					}}) }}
 					<div class="form-error">
 						{{ form_errors(form.title) }}
@@ -76,9 +94,9 @@
 				</div>
 
 				<div class="form-group">
-					{{ form_label(form.content, null, {'label_attr': {'class': 'form-label'
+					{{ form_label(form.content, null, {'label_attr': {'class': 'form-label inputLabel'
 					}}) }}
-					{{ form_widget(form.content, {'attr': {'class': 'form-control', 'placeholder': 'Content', 'id': 'content'
+					{{ form_widget(form.content, {'attr': {'class': 'form-control inputBg', 'placeholder': 'Content', 'id': 'content'
 					}}) }}
 					<div class="form-error">
 						{{ form_errors(form.content) }}
@@ -86,9 +104,9 @@
 				</div>
 
 				<div class="form-group">
-					{{ form_label(form.category, null, {'label_attr': {'class': 'form-label'
+					{{ form_label(form.category, null, {'label_attr': {'class': 'form-label inputLabel'
 					}}) }}
-					{{ form_widget(form.category, {'attr': {'class': 'form-control select2', 'id': 'category'
+					{{ form_widget(form.category, {'attr': {'class': 'form-control select2 inputBg', 'id': 'category'
 					}}) }}
 					<div class="form-error">
 						{{ form_errors(form.category) }}
@@ -96,24 +114,11 @@
 				</div>
 
 				<div class="form-group">
-					{{ form_label(form.tags, null, {'label_attr': {'class': 'form-label'
-					}})}} {#
-					<div>
-						<label for="chip-select">Select Chips:</label>
-						<div class="chip-select">
-							<div class="selected-chips"></div>
-							<input type="text" id="chip-select" list="chip-options" />
-							<datalist id="chip-options">
-								{% for tag in tagsList %}
-								<option value="{{ tag.name }}"></option>
-								{% endfor %}
-							</datalist>
-						</div>
-					</div>
-					#}
+					{{ form_label(form.tags, null, {'label_attr': {'class': 'form-label inputLabel'
+					}})}}
 					<div class="row g-3">
 						<div class="col-auto">
-							{{ form_widget(form.tags, {'attr': {'class': 'form-select' ,'id': 'tags','size':'3'
+							{{ form_widget(form.tags, {'attr': {'class': 'form-select inputBg' ,'id': 'tags','size':'3'
 							}}) }}
 							<div class="form-error">
 								{{ form_errors(form.tags) }}
@@ -122,7 +127,7 @@
 						<div class="col-auto">
 							<div id="input-container" style="display: none">
 								<div class="chip-select">
-									{{ form_widget(form.addTags,{'attr': {'id': 'input-container','class': 'form-control addTagsInput','list':'chip-options'
+									{{ form_widget(form.addTags,{'attr': {'id': 'input-container','class': 'form-control addTagsInput inputBg','list':'chip-options'
 									}}) }}
 								</div>
 							</div>
@@ -131,29 +136,29 @@
 							<div class="selected-chips"></div>
 						</div>
 					</div>
-					<label for="tagsChoice">Add other tags:</label>
+					<label for="tagsChoice" class="inputLabel">Add other tags:</label>
 					<input type="checkbox" name="addOther" id="tagsChoice" />
 					<input type="hidden" name="addedTags" id="addedTags" />
 				</div>
 
 				<div class="form-group">
-					{{ form_label(form.author, null, {'label_attr': {'class': 'form-label'
+					{{ form_label(form.author, null, {'label_attr': {'class': 'form-label inputLabel'
 					}}) }}
-					{{ form_widget(form.author, {'attr': {'class': 'form-control select2', 'id': 'author'
+					{{ form_widget(form.author, {'attr': {'class': 'form-control select2 inputBg', 'id': 'author'
 					}}) }}
 				</div>
 
 				<div class="form-group">
-					{{ form_label(form.file, null, {'label_attr': {'class': 'form-label'
+					{{ form_label(form.file, null, {'label_attr': {'class': 'form-label inputLabel'
 					}})}}
-					{{ form_widget(form.file, {'attr': {'class': 'form-control blogImageFile', 'id': 'formFile'
+					{{ form_widget(form.file, {'attr': {'class': 'form-control blogImageFile inputBg ', 'id': 'formFile'
 					}}) }}
 				</div>
-
-				<button type="submit" class="btn btn-primary" id="submitBtn">
-					{{ button_label|default('Post') }}
-				</button>
-
+				<div class="d-flex justify-content-center" style="margin-top: 5px">
+					<button type="submit" class="btn btn-outline-light" id="submitBtn">
+						{{ button_label|default('Post') }}
+					</button>
+				</div>
 				{{ form_end(form) }}
 			</div>
 		</div>

@@ -28,17 +28,34 @@
 	  cursor: pointer;
 	}
 
-	input[type="text"] {
+	/* input[type="text"] {
 	  flex: 1;
-	  border: none;
 	  outline: none;
 	  padding: 5px;
+		color: white;
+				background: transparent !important;
 	}
 
 	input[type="text"]::placeholder {
-	  color: #999;
-	}
+	  color: white;
+		
+	} */
 
   .blogImg{
     margin-top: 7px;
   }
+		.addTagsInput {
+			background: transparent !important;
+			color: white !important;
+			border-color: white !important;
+		}
+	
+		.inputLabel {
+			color: white;
+		}
+	
+		.inputBg {
+			background: transparent !important;
+			color: white !important;
+			border-color: white !important;
+		}

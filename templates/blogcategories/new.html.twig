@@ -1,11 +1,77 @@
-{% extends 'base.html.twig' %}
+{% extends 'baseF.html.twig' %} {% block content %}
+<style>
+	.backBtn {
+		width: 175px;
+	}
+	.cssbuttons-io-button {
+		background: #ec6090;
+		color: white;
+		font-family: inherit;
+		padding: 0.35em;
+		padding-left: 1.2em;
+		font-size: 17px;
+		font-weight: 500;
+		border-radius: 0.9em;
+		border: none;
+		letter-spacing: 0.05em;
+		display: flex;
+		align-items: center;
+		box-shadow: inset 0 0 1.6em -0.6em #b75690;
+		overflow: hidden;
+		position: relative;
+		height: 2.8em;
+		padding-right: 3.3em;
+	}
 
-{% block title %}New Blogcategories{% endblock %}
+	.cssbuttons-io-button .icon {
+		background: white;
+		margin-left: 1em;
+		position: absolute;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		height: 2.2em;
+		width: 2.2em;
+		border-radius: 0.7em;
+		box-shadow: 0.1em 0.1em 0.6em 0.2em #b75690;
+		right: 0.3em;
+		transition: all 0.3s;
+	}
 
-{% block body %}
-    <h1>Create new Blogcategories</h1>
+	.cssbuttons-io-button:hover .icon {
+		width: calc(100% - 0.6em);
+	}
 
-    {{ include('blogcategories/_form.html.twig') }}
+	.cssbuttons-io-button .icon svg {
+		width: 1.1em;
+		transition: transform 0.3s;
+		color: #b75690;
+	}
 
-    <a href="{{ path('app_blogcategories_index') }}">back to list</a>
+	.cssbuttons-io-button:hover .icon svg {
+		transform: translateX(0.1em);
+	}
+
+	.cssbuttons-io-button:active .icon {
+		transform: scale(0.95);
+	}
+</style>
+<div class="backBtn">
+	<a href="{{ path('app_blogs_admin') }}" class="cssbuttons-io-button"
+		>Go Back
+		<div class="icon">
+			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+				<path
+					d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"
+				/>
+			</svg>
+		</div>
+	</a>
+</div>
+<div class="container">
+	<h1>Add A New Category</h1>
+
+	{{ include("blogcategories/_form.html.twig") }}
+</div>
+
 {% endblock %}

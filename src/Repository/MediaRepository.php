@@ -7,6 +7,7 @@ use App\Entity\Media;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
@@ -47,14 +48,14 @@ class MediaRepository extends ServiceEntityRepository
 
   public function deleteFile($filename)
   {
-    $path = $this->container->getParameter('file_base_url');
-    $filePath = sprintf('%s%s', $path['host'], $path['path']) . '/' . $filename;
-
+    $path = $this->container->getParameter('destinationPath');
+    $filePath = $path . $filename;
     if (file_exists($filePath)) {
       unlink($filePath);
-      return true;
+      echo 'File deleted successfully!';
+    } else {
+      echo 'File not found.';
     }
-    return false;
   }
 
   public function save(Media $entity, UploadedFile $file, Blogs $blog, bool $flush = false): void
@@ -84,6 +85,7 @@ class MediaRepository extends ServiceEntityRepository
 
   public function remove(Media $entity, bool $flush = false): void
   {
+    $this->deleteFile($entity->getFileName());
     $this->getEntityManager()->remove($entity);
 
     if ($flush) {
