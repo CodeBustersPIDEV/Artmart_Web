@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Knp\Component\Pager\PaginatorInterface;
-
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 #[Route('/event')]
 class EventController extends AbstractController
 {
@@ -108,6 +108,23 @@ class EventController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            $imageFile = $form->get('image')->getData();
+            if ($imageFile) {
+                $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+                $newFilename = $originalFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
+
+                try {
+                    $imageFile->move(
+                        $this->getParameter('product_images_directory'),
+                        $newFilename
+                    );
+                } catch (FileException $e) {
+                    // handle exception if something happens during file upload
+                }
+
+                $event->setImage($newFilename);
+            }
             $entityManager->persist($event);
             $entityManager->flush();
 
