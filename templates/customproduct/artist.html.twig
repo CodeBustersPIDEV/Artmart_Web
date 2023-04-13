@@ -119,6 +119,7 @@
         <h4><em>Custom</em> Products</h4>
 {% endblock %}
     <a  class="orderby-link" href="{{ path('app_apply_accepted') }}">Accepted Works</a>
+        <a  class="orderby-link" href="{{ path('app_apply_pending') }}">Your Demands</a>
     <div class="card-container">
               {% set customproductCount = 0 %}
 {% for customproduct in customproducts %}
