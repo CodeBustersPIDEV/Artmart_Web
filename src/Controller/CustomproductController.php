@@ -21,7 +21,7 @@ use App\Entity\Apply;
 use Symfony\Component\Routing\RouterInterface;
 
 use App\Entity\User;
-
+use Spatie\Emoji\Emoji;
 
 #[Route('/customproduct')]
 class CustomproductController extends AbstractController
@@ -31,7 +31,7 @@ class CustomproductController extends AbstractController
     {
         $searchTerm = $request->query->get('q');
         $order = $request->query->get('order');
-
+   
         $queryBuilder = $entityManager
             ->getRepository(Customproduct::class)
             ->createQueryBuilder('c')
@@ -60,6 +60,7 @@ class CustomproductController extends AbstractController
             'customproducts' => $pagination,
             'searchTerm' => $searchTerm,
             'order' => $order,
+         
         ]);
     }
 
@@ -123,9 +124,6 @@ class CustomproductController extends AbstractController
         $weightData['datasets'][0]['data'][] = $weightSum['weight_sum'];
     }
     
-
-
-
 
         return $this->render('customproduct/admin.html.twig', [
             'customproducts' => $customproducts,
