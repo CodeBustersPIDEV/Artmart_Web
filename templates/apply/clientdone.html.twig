@@ -12,13 +12,16 @@
           <thead>
             <tr>
               <th scope="col">Product Name</th>
+               <th scope="col">Artist</th>
               <th scope="col">Status</th>
+              
             </tr>
           </thead>
           <tbody>
             {% for apply in applies %}
               <tr>
                 <td>{{ apply.customproduct.product.name }}</td>
+                   <td>{{ apply.artist }}</td>
                 <td>{{ apply.status }}</td>
               </tr>
             {% else %}

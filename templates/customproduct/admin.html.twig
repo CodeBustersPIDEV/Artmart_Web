@@ -275,7 +275,9 @@
     <table class="table">
       <thead>
         <tr>
-          <th>Name</th>
+          <th>Product Name</th>
+              <th>Client</th>
+             <th>Artist</th>
           <th>Status</th>
           <th>Actions</th>
         </tr>
@@ -284,6 +286,8 @@
         {% for apply in applies %}
         <tr>
           <td>{{ apply.customproduct.product.name }}</td>
+              <td>{{ apply.customproduct.client}}</td>
+             <td>{{ apply.artist }}</td>
           <td>{{ apply.status }}</td>
           <td class="actions">
            <a href="{{ path('app_apply_edit', { applyId: apply.applyId }) }}">Edit</a>
