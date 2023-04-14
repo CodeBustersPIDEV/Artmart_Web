@@ -44,23 +44,31 @@
 	}
 </style>
 <div class="comment-card">
-	{% if comment.author != null %}
-	<img src="{{ comment.author.getPicture() }}" alt="" class="templatemo-item" />
-	{% else %}
-	<img
-		src="{{ asset('assets/User/user.png') }}"
-		alt=""
-		class="templatemo-item"
-	/>
-	{% endif %}
-	<div class="comment-details">
-		<h4>{{ comment.author.name }}</h4>
-		<p>{{ comment.date ? comment.date|date('Y-m-d') }}</p>
-		<p>{{ comment.content }}</p>
-		<ul>
-			<li>
-				<i class="fa fa-star"></i> <span> {{ comment.rating }}</span>
-			</li>
-		</ul>
+	<div class="col-4">
+		{% if comment.author != null %}
+		<img
+			src="{{ comment.author.getPicture() }}"
+			alt=""
+			class="templatemo-item"
+		/>
+		{% else %}
+		<img
+			src="{{ asset('assets/User/user.png') }}"
+			alt=""
+			class="templatemo-item"
+		/>
+		{% endif %}
+	</div>
+	<div class="col-8">
+		<div class="comment-details">
+			<h4>{{ comment.author.name }}</h4>
+			<p>{{ comment.date ? comment.date|date('Y-m-d') }}</p>
+			<p>{{ comment.content }}</p>
+			<ul>
+				<li>
+					<i class="fa fa-star"></i> <span> {{ comment.rating }}</span>
+				</li>
+			</ul>
+		</div>
 	</div>
 </div>
