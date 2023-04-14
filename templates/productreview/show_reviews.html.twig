@@ -1,24 +1,13 @@
 {% extends 'baseF.html.twig' %}
-
 {% block content %}
-
-{% block title %}
-        <h4><em>Ready</em> Products</h4>
-<form action="{{ path('app_readyproduct_index') }}" method="GET">
-    <div class="form-group">
-    
-<a href="{{ path('app_readyproduct_new') }}" class="link-style"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
-  <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"/>
-</svg> Add new product</a>
-      <input type="text" id="search-term" name="q" class="form-control" value="{{ searchTerm }}" placeholder="Search by name...">
-      <a href="{{ path('app_readyproduct_index') }}" class="link-style-cancel"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
-  <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z"/>
-</svg></a>
-    </div>
-    
-</form> 
+    <a href="{{ path('app_readyproduct_index') }}"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-return-left" viewBox="0 0 16 16">
+  <path fill-rule="evenodd" d="M14.5 1.5a.5.5 0 0 1 .5.5v4.8a2.5 2.5 0 0 1-2.5 2.5H2.707l3.347 3.346a.5.5 0 0 1-.708.708l-4.2-4.2a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 8.3H12.5A1.5 1.5 0 0 0 14 6.8V2a.5.5 0 0 1 .5-.5z"/>
+</svg> back to list</a>
 <br><br>
+{% block title %}
+        <h4>Product <em>reviews</em></h4>
 {% endblock %}
+
 
 {% block stylesheets %}
 
@@ -74,14 +63,10 @@
 
 
 .ready-card {
-    border-radius: 10px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-    margin: 10px;
-    padding: 20px;
-    display: inline-block;
-    width: 100%;
-    background-color: #232931;
-    transition: box-shadow 0.2s ease-in-out;
+    margin-top: 0px;
+    padding: 30px;
+    background-color: #1f2122;
+    border-radius: 23px;
 }
 
 .ready-card:hover {
@@ -125,6 +110,62 @@
 }
 
 .ready-card:nth-child(4n+1) {
+    clear: left;
+}
+
+.review-card {
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    margin: 10px;
+    padding: 20px;
+    display: inline-block;
+    width: 100%;
+    background-color: #232931;
+    transition: box-shadow 0.2s ease-in-out;
+    align: center;
+}
+
+.review-card:hover {
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.3);
+    transform: translateY(-2px);
+}
+
+.review-card h2 {
+    margin-top: 0px;
+    margin-bottom: 10px;
+    font-size: 24px;
+    color: #FFFFFF;
+}
+
+.review-card p {
+    margin-top: 0px;
+    color: #FFFFFF;
+}
+
+.review-card a {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 12px 20px;
+    background-color: #AA336A;
+    color: #FFFFFF;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.review-card a:hover {
+    background-color: #0D6E72;
+}
+
+.review-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.review-card:nth-child(4n+1) {
     clear: left;
 }
 .orderby-link {
@@ -198,13 +239,14 @@
 .link-style {
   display: inline-block;
   padding: 10px 20px;
-  margin-right: 20px;
+  margin-right: 0px;
+  margin-top: 20px;
   border-radius: 4px;
   color: white;
   background-color: #43464B;
   font-weight: bold;
   text-decoration: none;
-  float: right;
+  align: right;
 }
 
 .link-style:hover {
@@ -277,8 +319,9 @@ input#search-term {
   float: left;
 }
 
-.align-review:hover {
-  color: #0D6E72;
+.align-review {
+  text-align: right;
+  margin-bottom: 10px;
 }
 
 #review {
@@ -286,7 +329,7 @@ input#search-term {
   padding: 0;
   margin-right: 0;
   border-radius: 0;
-  text-color: #0D6E72;
+  color: initial;
   background-color: initial;
   font-weight: normal;
   text-decoration: none;
@@ -296,76 +339,66 @@ input#search-term {
 #review:hover {
   color: #0D6E72;
 }
+
+.date {
+    float: right;
+}
+
+body .page-content {
+    margin-top: 0px;
+}
 </style>
 
-
-
 {% endblock %}
+<div class="container">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="page-content">
 
-{% block body %}
-
-
-
-
-        {% set count = 0 %}
-{% for readyproduct in readyproducts %}
-    {% if count % 3 == 0 %}
-        <div class="row">
-    {% endif %}
-
-<div class="col-sm-4">
-            <div class="ready-card">
-                <img src="{{ asset('imagescustom/' ~ readyproduct.productId.image) }}" alt="{{ readyproduct.productId.name }} image" />
-                <div>
-                <p class="pill">{{ readyproduct.productId.category }}</p>
-                </div>
-                <h2>{{ readyproduct.productId.name }}</h2>
-                <p><strong>Made by:</strong> {{ readyproduct.userId }}</p>
-                <div class="align-review">
-                <a id="review" href="{{ path('app_review_index', {'readyProductId': readyproduct.readyProductId}) }}">
-                  <p>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bookmark-star-fill" viewBox="0 0 16 16">
+<div class="ready-card">
+    <img src="{{ asset('imagescustom/' ~ productreviews[0].readyProductId.productId.image) }}" alt="{{ productreviews[0].readyProductId.productId.name }} image" />
+    <div>
+        <p class="pill">{{ productreviews[0].readyProductId.productId.category }}</p>
+    </div>
+    <h2>{{ productreviews[0].readyProductId.productId.name }}</h2>
+    <p><strong>Made by:</strong> {{productreviews[0].readyProductId.userId }}</p>
+        <p><strong>Weight:</strong> {{ productreviews[0].readyProductId.productId.weight }} Kg</p>
+        <p><strong>Material:</strong> {{ productreviews[0].readyProductId.productId.material }}</p>
+        <p><strong>Dimensions:</strong> {{ productreviews[0].readyProductId.productId.dimensions }}</p>
+        <p>{{ productreviews[0].readyProductId.productId.description }}</p>
+        <p><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bookmark-star-fill" viewBox="0 0 16 16">
                       <path fill-rule="evenodd" d="M2 15.5V2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.74.439L8 13.069l-5.26 2.87A.5.5 0 0 1 2 15.5zM8.16 4.1a.178.178 0 0 0-.32 0l-.634 1.285a.178.178 0 0 1-.134.098l-1.42.206a.178.178 0 0 0-.098.303L6.58 6.993c.042.041.061.1.051.158L6.39 8.565a.178.178 0 0 0 .258.187l1.27-.668a.178.178 0 0 1 .165 0l1.27.668a.178.178 0 0 0 .257-.187L9.368 7.15a.178.178 0 0 1 .05-.158l1.028-1.001a.178.178 0 0 0-.098-.303l-1.42-.206a.178.178 0 0 1-.134-.098L8.16 4.1z"/>
-                    </svg> check reviews
-                  </p>
-                </a>
-                </div>
-                <br>
-                <div class="align-price">
-                <p>{{ readyproduct.price }} TND</p>
-                </div>
-                
-  
-                <div class="align">
-                <a href="{{ path('app_readyproduct_show', {'readyProductId': readyproduct.readyProductId}) }}">show</a>
-                <a href="{{ path('app_readyproduct_edit', {'readyProductId': readyproduct.readyProductId}) }}">edit</a>
-                </div>
-            </div>
-             </div>
-             {% set count = count + 1 %}
-
-    {% if count % 3 == 0 %}
-        </div>
-    {% endif %}
+                    </svg> {{ averageRating }}</p>
+    <br>
+    <div class="align-price">
+        <p>{{ productreviews[0].readyProductId.price }} TND</p>
+    </div>
+    <div class="align">
     
-        {% else %}
-            <p>no ready products found</p>
-        {% endfor %}
-	  </ul>
-
-
-
-<script>
-// Add onclick event to all hyperlinks
-var links = document.getElementsByTagName("a");
-for (var i = 0; i < links.length; i++) {
-  links[i].setAttribute("onclick", "playSound()");
-}
-var linkss = document.getElementsByTagName("button");
-for (var i = 0; i < linkss.length; i++) {
-  linkss[i].setAttribute("onclick", "playSound()");
-}
-
-</script>
-{% endblock %}
+        <a href="{{ path('app_readyproduct_show', {'readyProductId': productreviews[0].readyProductId.productId}) }}">order</a>
+    </div>
+<div>
+{% for productreview in productreviews %}
+<div class="review-card">
+    <p class="date"><strong>Posted:</strong> {{ productreview.date ? productreview.date|date('Y-m-d H:i:s') : '' }}</p>
+    <h2>{{ productreview.title }}</h2>
+    <p><strong>By:</strong> {{ productreview.userId }}</p>
+        <p>{{ productreview.text }}</p>
+    <br>
+    <div class="align-price">
+        <p><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bookmark-star-fill" viewBox="0 0 16 16">
+                      <path fill-rule="evenodd" d="M2 15.5V2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.74.439L8 13.069l-5.26 2.87A.5.5 0 0 1 2 15.5zM8.16 4.1a.178.178 0 0 0-.32 0l-.634 1.285a.178.178 0 0 1-.134.098l-1.42.206a.178.178 0 0 0-.098.303L6.58 6.993c.042.041.061.1.051.158L6.39 8.565a.178.178 0 0 0 .258.187l1.27-.668a.178.178 0 0 1 .165 0l1.27.668a.178.178 0 0 0 .257-.187L9.368 7.15a.178.178 0 0 1 .05-.158l1.028-1.001a.178.178 0 0 0-.098-.303l-1.42-.206a.178.178 0 0 1-.134-.098L8.16 4.1z"/>
+                    </svg> {{ productreview.rating }} / 10</p>
+    </div>
+</div>
+{% endfor %}
+</div>
+</div>
+<a href="{{ path('app_productreview_new') }}" class="link-style"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
+         <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"/>
+            </svg> add review</a>
+                </div>
+              </div>
+            </div>
+          </div>
 {% endblock %}

@@ -4,26 +4,28 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Artmart</title>
- <style>
+  <style>
   .logo{
     align-items: center;
+    width: fit-content;
     height: 75px;
-    overflow-y: hidden;
-          top: -25px;
+    overflow: hidden;
+    margin-top: -25px;
 
   }
     .logo_img {
 		width: 125px;
 	}
   </style>
+
   <!-- Google Font: Source Sans Pro -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-  <!-- Font Awesome Icons -->
-  <link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
-  <!-- IonIcons -->
-  <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-  <!-- Theme style -->
-  <link rel="stylesheet" href="dist/css/adminlte.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+<!-- Font Awesome Icons -->
+<link rel="stylesheet" href="{{ asset('plugins/fontawesome-free/css/all.min.css') }}">
+<!-- IonIcons -->
+<link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+<!-- Theme style -->
+<link rel="stylesheet" href="{{ asset('dist/css/adminlte.min.css') }}">
 </head>
 <!--
 `body` tag options:
@@ -45,27 +47,27 @@
       </li>
       <li class="nav-item d-none d-sm-inline-block">
         <a href="{{ path('app_admin') }}"class="nav-link">Home</a>
+    
    
     </ul>
 
-    <!-- Right navbar links -->
-    <ul class="navbar-nav ml-auto">
+  <!-- Right navbar links -->
+
+  <ul class="navbar-nav ml-auto">
   
-
-      <li class="nav-item">
-        <a href="{{ path('app_admin') }}" class="nav-link d-flex align-items-center justify-content-end" style="height: 100%;">
+    <li class="nav-item">
+      <a href="{{ path('app_admin') }}" class="nav-link d-flex align-items-center justify-content-end" style="height: 100%;">
           <div class="logo">
-    <img src="{{ asset('assets/ArtMart_Logo.png') }}" class="logo_img" alt="ArtMart Logo" /></div>
-        </a>
-      </li>
-    </ul>
+    <img src="{{ asset('assets/ArtMart_Logo.png') }}" class="logo_img" alt="ArtMart Logo" /></div>      </a>
+    </li>
+  </ul>
+  
+  <a class="nav-link" data-widget="fullscreen" href="#" role="button">
+    <i class="fas fa-expand-arrows-alt"></i>
+  </a>
+</li>
 
-        <a class="nav-link" data-widget="fullscreen" href="#" role="button">
-          <i class="fas fa-expand-arrows-alt"></i>
-        </a>
-      </li>
-     
-    </ul>
+    
   </nav>
   <!-- /.navbar -->
 
@@ -73,14 +75,15 @@
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
     <a href="{{ path('app_admin') }}" class="brand-link">
-
-    <img src="{{ asset('assets/ArtMart_Logo.png') }}" class="logo_img" alt="ArtMart Logo" />
-    </a>
+      <img   class="brand-image img-circle elevation-3" style="opacity: .8">
+          <div class="logo">
+    <img src="{{ asset('assets/ArtMart_Logo.png') }}" class="logo_img" alt="ArtMart Logo" /></div>   </a>
 
     <!-- Sidebar -->
     <div class="sidebar">
       <!-- Sidebar user panel (optional) -->
       
+
 
 
       <!-- Sidebar Menu -->
@@ -89,8 +92,8 @@
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
 
-          <li class="nav-item menu-open">
-      <a href="{{ path('app_admin') }}" class="nav-link active">
+               <li class="nav-item">
+                <a href="{{ path('app_admin') }}" class="nav-link">
               <i class="nav-icon fas fa-tachometer-alt"></i>
               <p>
                 ArtMart Admin Panel
@@ -99,7 +102,6 @@
             </a>
           
             <li class="nav-item">
-            
               <a href="{{ path('app_home') }}" class="nav-link">
                 <i class="nav-icon fas fa-copy"></i>
                 <p>
@@ -107,8 +109,8 @@
             
                 </p>
               </a>
-                <li class="nav-item">
-            <a href="{{ path('app_user_index') }}"   class="nav-link ">
+          <li class="nav-item">
+            <a href="#"  class="nav-link ">
               <i class="nav-icon fas fa-th"></i>
               <p>
                 Users
@@ -116,28 +118,28 @@
               </p>
             </a>
             <li class="nav-item">
-              <a href="{{ path('app_readyproduct_admin') }}"  class="nav-link ">
+              <a href="{{ path('app_readyproduct_admin') }}"  class="nav-link active ">
                 <i class="nav-icon far fa-image"></i>
                 <p>
                   Ready Products
                 </p>
               </a>
               <li class="nav-item">
-                <a href="{{ path('app_customproduct_admin') }}"  class="nav-link">
+                <a href="{{ path('app_customproduct_admin') }}"  class="nav-link ">
                   <i class="nav-icon fas fa-edit"></i>
                   <p>
                     Custom Products
                   </p>
                 </a>
                 <li class="nav-item">
-                  <a href="{{ path('app_blogs_admin') }}"   class="nav-link ">
+                  <a href="{{ path('app_blogs_admin') }}"  class="nav-link">
                     <i class="nav-icon fas fa-book"></i>
                     <p>
                       Blogs
                     </p>
                   </a>
                   <li class="nav-item">
-                    <a href="#"  class="nav-link ">
+                    <a href="{{ path('app_order_admin') }}"  class="nav-link ">
                       <i class="nav-icon fas fa-columns"></i>
                       <p>
                         Orders
@@ -159,26 +161,21 @@
     <!-- /.sidebar -->
   </aside>
 
+  
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <div class="content-header">
       <div class="container-fluid">
-        <div class="row mb-2">
-          <div class="col-sm-6">
-            <h1 class="m-0">Artmart Admin Panel</h1>
-          </div><!-- /.col -->
-          <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
+            <ol class="breadcrumb float-sm-left">
               <li class="breadcrumb-item"><a href="{{ path('app_admin') }}">Home</a></li>
               <li class="breadcrumb-item active">Artmart Admin Panel</li>
             </ol>
-          </div><!-- /.col -->
-        </div><!-- /.row -->
       </div><!-- /.container-fluid -->
     </div>
     <!-- /.content-header -->
     {% block content %}
+  
     {% endblock %}
                 </div>
                 <!-- /.d-flex -->
@@ -198,32 +195,37 @@
   <!-- Control Sidebar -->
   <aside class="control-sidebar control-sidebar-dark">
     <!-- Control sidebar content goes here -->
-  
+  </aside>
   <!-- /.control-sidebar -->
-</aside>
-  <!-- Main Footer -->
-  <footer class="main-footer">
-    <strong>Copyright &copy; 2022-2023 </strong>
-   By CodeBusters All rights reserved.
-<img src="{{ asset('logo.PNG') }}" alt="logo" style="width: 50px; height: 50px;">
-  </footer>
 
+  <!-- Main Footer -->
+  <footer class="main-footer d-flex justify-content-center">
+    <strong class="align-self-center">Copyright &copy; 2022-2023 </strong>
+    <span class="align-self-center"> By CodeBusters All rights reserved.</span>
+   <img src="{{ asset('logo.PNG') }}" alt="logo" style="width: 50px; height: 50px;">
+  </footer>
 </div>
 <!-- ./wrapper -->
 
 <!-- REQUIRED SCRIPTS -->
 
-<!-- jQuery -->
-<script src="plugins/jquery/jquery.min.js"></script>
-<!-- Bootstrap -->
-<script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-<!-- AdminLTE -->
-<script src="dist/js/adminlte.js"></script>
+{% block javascripts %}
+    <!-- jQuery -->
+    <script src="{{ asset('plugins/jquery/jquery.min.js') }}"></script>
+    <!-- Bootstrap -->
+    <script src="{{ asset('plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <!-- AdminLTE -->
+    <script src="{{ asset('dist/js/adminlte.js') }}"></script>
 
-<!-- OPTIONAL SCRIPTS -->
-<script src="plugins/chart.js/Chart.min.js"></script>
-<!-- AdminLTE for demo purposes -->
+    <!-- OPTIONAL SCRIPTS -->
+    <script src="{{ asset('plugins/chart.js/Chart.min.js') }}"></script>
 
-<script src="dist/js/pages/dashboard3.js"></script>
+    <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
+    <script src="{{ asset('dist/js/pages/dashboard3.js') }}"></script>
+{# Admin Page Blog Management JS #}
+    <script src="{{ asset('assets/Blog/JS/AdminPage.js') }}"></script>
+{% endblock %}
+
+
 </body>
 </html>
