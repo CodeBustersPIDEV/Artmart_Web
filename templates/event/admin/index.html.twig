@@ -86,7 +86,11 @@
   <thead>
     <tr>
       <th scope="col">Event Name</th>
-      <th scope="col">Description</th>
+      <th scope="col">Artist</th>
+      <th scope="col">Artist @</th>
+      <th scope="col">Start Date</th>
+      <th scope="col">End Date</th>
+      <th scope="col">Status</th>
       <th scope="col">Actions</th>
     </tr>
   </thead>
@@ -94,7 +98,11 @@
     {% for event in events %}
     <tr>
       <td>{{ event.name }}</td>
-      <td>{{ event.description }}</td>
+      <td>{{ event.user.name }}</td>
+      <td>{{ event.user.email }}</td>
+      <td>{{ event.startdate ? event.startdate|date('Y-m-d') : '' }}</td>
+      <td>{{event.enddate ? event.enddate|date('Y-m-d') : '' }}</td>
+      <td>{{ event.status }}</td>
       <td>
         <a href="{{ path('app_event_show_admin', {'eventid': event.eventid}) }}" class="btn btn-outline-primary">Show</a>
         <a href="{{ path('app_event_edit_admin', {'eventid': event.eventid}) }}" class="btn btn-outline-success">Edit</a>
