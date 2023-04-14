@@ -19,12 +19,16 @@ class Orderrefund
     private $orderrefundId;
 
     #[ORM\Column(name: "RefundAmount", type: "decimal",precision:10, scale:2, nullable: true,options:["default"=>"NULL"])]
+    #[Assert\Positive]
+    #[Assert\NotBlank(message: "Please Enter A Refund Amount For The Refund")]
     private $refundamount;
 
     #[ORM\Column(name: "Reason", type: "text",length:65535, nullable: true,options:["default"=>"NULL"])]
+    #[Assert\NotBlank(message: "Please Enter A Reason For The Refund")]
     private $reason;
 
     #[ORM\Column(name: "Date", type: "date", nullable: true,options:["default"=>"NULL"])]
+    #[Assert\NotBlank(message: "Please Enter A Date For The Refund")] 
     private $date;
 
     #[ORM\ManyToOne(targetEntity: "Order")]

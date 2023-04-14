@@ -19,9 +19,11 @@ class Orderupdate
     private $orderupdateId;
 
     #[ORM\Column(name: "UpdateMessage", type: "text",length:65535, nullable: true,options:["default"=>"NULL"])]
+    #[Assert\NotBlank(message: "Please Enter A Message For The Update")]
     private $updatemessage;
 
     #[ORM\Column(name: "Date", type: "date", nullable: true,options:["default"=>"NULL"])]
+    #[Assert\NotBlank(message: "Please Enter A Date For The Update")]
     private $date;
 
     #[ORM\ManyToOne(targetEntity: "Order")]

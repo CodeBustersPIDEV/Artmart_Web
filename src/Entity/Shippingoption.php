@@ -16,19 +16,25 @@ class Shippingoption
     private $shippingoptionId;
 
     #[ORM\Column(name: "Name", type: "string", nullable: true,length:255,options:["default"=>"NULL"])]
+    #[Assert\NotBlank(message: "Please Enter A Name For The Shipping Option")]
     private $name;
 
     #[ORM\Column(name: "Carrier", type: "string", nullable: true,length:255,options:["default"=>"NULL"])]
+    #[Assert\NotBlank(message: "Please Enter A Carrier For The Shipping Option")]
     private $carrier;
 
     #[ORM\Column(name: "ShippingSpeed", type: "string", nullable: true,length:255,options:["default"=>"NULL"])]
+    #[Assert\NotBlank(message: "Please Enter A Shipping Speed For The Shipping Option")]
     private $shippingspeed;
 
     #[ORM\Column(name: "ShippingFee", type: "decimal", precision:10, scale:2,nullable: true,options:["default"=>"NULL"])]
+    #[Assert\NotNull]
+    #[Assert\Positive]
     private $shippingfee;
 
     #[ORM\Column(name: "AvailableRegions", type: "string", length:255, nullable: true,options:["default"=>"NULL"])]
-    private $availableregions;
+    #[Assert\NotBlank(message: "Please Enter Available Regions For The Shipping Option")]
+     private $availableregions;
 
     public function getShippingoptionId(): ?int
     {

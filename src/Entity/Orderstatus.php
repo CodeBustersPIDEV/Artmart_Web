@@ -18,10 +18,12 @@ class Orderstatus
     #[ORM\GeneratedValue(strategy: "IDENTITY")]
     private $orderstatusId;
 
-    #[ORM\Column(name: "Status", type: "decimal",length:255, nullable: true,options:["default"=>"NULL"])]
+    #[ORM\Column(name: "Status", type: "text",length:255, nullable: true,options:["default"=>"NULL"])]
+    #[Assert\NotBlank(message: "Please Enter A Status For The Status")]
     private $status;
 
     #[ORM\Column(name: "Date", type: "date", nullable: true,options:["default"=>"NULL"])]
+    #[Assert\NotBlank(message: "Please Enter A Date For The Status")]
     private $date;
 
     #[ORM\ManyToOne(targetEntity: "Order")]

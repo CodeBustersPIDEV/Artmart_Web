@@ -5,6 +5,7 @@ namespace App\Form;
 use App\Entity\Shippingoption;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ShippingoptionType extends AbstractType
@@ -15,7 +16,7 @@ class ShippingoptionType extends AbstractType
             ->add('name')
             ->add('carrier')
             ->add('shippingspeed')
-            ->add('shippingfee')
+            ->add('shippingfee',NumberType::class)
             ->add('availableregions')
         ;
     }

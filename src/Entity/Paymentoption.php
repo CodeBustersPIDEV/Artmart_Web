@@ -14,9 +14,11 @@ class Paymentoption
     private $paymentoptionId;
 
     #[ORM\Column(name: "Name", type: "string",length:255, nullable: true,options:["default"=>"NULL"])]
+    #[Assert\NotBlank(message: "Please Enter A Name For The Payment Option")]
     private $name;
 
     #[ORM\Column(name: "AvailableCountries", type: "string",length:255, nullable: true,options:["default"=>"NULL"])]
+    #[Assert\NotBlank(message: "Please Enter The Available Countries For The Payment Option")]
     private $availablecountries;
 
     public function getPaymentoptionId(): ?int

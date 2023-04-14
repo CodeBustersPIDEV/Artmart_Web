@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints\DateTime;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Table(name: "`order`",options: [
     'indexes' => [
@@ -23,16 +24,23 @@ class Order
     private $orderId;
 
     #[ORM\Column(name: "Quantity", type: "integer", nullable: false,options:["default"=>"NULL"])]
+    #[Assert\Positive]
+    #[Assert\NotBlank(message: "Please Enter A Quantity For The Order")]
     private $quantity;
 
     #[ORM\Column(name: "ShippingAddress", type: "text",length:65535, nullable: false,options:["default"=>"NULL"])]
+    #[Assert\NotBlank(message: "Please Enter A Shipping Address For The Order")]
     private $shippingaddress;
 
 
     #[ORM\Column(name: "OrderDate", type: "date", nullable: true,options:["default"=>"CURRENT_TIMESTAMP"])]
+    #[Assert\NotBlank(message: "Please Enter A Date For The Order")]
     private $orderdate;
 
     #[ORM\Column(name: "TotalCost", type: "decimal", nullable: true, precision:10, scale:2)]
+    #[Assert\NotNull]
+    #[Assert\Positive]
+    #[Assert\NotBlank(message: "Please Enter A Cost For The Order")]
     private $totalcost;
 
     #[ORM\ManyToOne(targetEntity: "User")]
