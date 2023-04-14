@@ -15,19 +15,19 @@ class Shippingoption
     #[ORM\GeneratedValue(strategy: "IDENTITY")]
     private $shippingoptionId;
 
-    #[ORM\Column(name: "Name", type: "string", nullable: true,length:255,options:["default"=>"NULL"])]
+    #[ORM\Column(name: "Name", type: "string", nullable: true,length:255)]
     #[Assert\NotBlank(message: "Please Enter A Name For The Shipping Option")]
     private $name;
 
-    #[ORM\Column(name: "Carrier", type: "string", nullable: true,length:255,options:["default"=>"NULL"])]
+    #[ORM\Column(name: "Carrier", type: "string", nullable: true,length:255)]
     #[Assert\NotBlank(message: "Please Enter A Carrier For The Shipping Option")]
     private $carrier;
 
-    #[ORM\Column(name: "ShippingSpeed", type: "string", nullable: true,length:255,options:["default"=>"NULL"])]
+    #[ORM\Column(name: "ShippingSpeed", type: "string", nullable: true,length:255)]
     #[Assert\NotBlank(message: "Please Enter A Shipping Speed For The Shipping Option")]
     private $shippingspeed;
 
-    #[ORM\Column(name: "ShippingFee", type: "decimal", precision:10, scale:2,nullable: true,options:["default"=>"NULL"])]
+    #[ORM\Column(name: "ShippingFee", type: "decimal", precision:10, scale:2,nullable: false)]
     #[Assert\NotNull]
     #[Assert\Positive]
     private $shippingfee;
