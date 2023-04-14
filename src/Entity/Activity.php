@@ -6,7 +6,11 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
-#[ORM\Table(name: 'activity', options: ['indexes' => ['eventID' => ['columns' => ['user_ID']]]])]
+#[ORM\Table(name: 'activity', options: [
+    'indexes' => [
+        'event' => ['columns' => ['eventID']]
+    ]
+])]
 class Activity
 {
     #[ORM\Id]
@@ -14,7 +18,7 @@ class Activity
     #[ORM\Column(name: "activityID", type: "integer")]
     private $activityid;
 
-    #[ORM\Column(name: "date", type: "datetime")]
+    #[ORM\Column(name: "date", type: "datetime",nullable: false)]
     private $date;
 
     #[ORM\Column(name: "title", type: "string", length: 255)]
@@ -25,7 +29,7 @@ class Activity
 
     #[ORM\ManyToOne(targetEntity: "Event")]
     #[ORM\JoinColumn(name: "eventID", referencedColumnName: "eventID")]
-    private $eventid;
+    private $event;
 
 
     public function getActivityid(): ?int
@@ -69,14 +73,14 @@ class Activity
         return $this;
     }
 
-    public function getEventid(): ?Event
+    public function getEvent(): ?Event
     {
-        return $this->eventid;
+        return $this->event;
     }
 
-    public function setEventid(?Event $eventid): self
+    public function setEvent(?Event $event): self
     {
-        $this->eventid = $eventid;
+        $this->event = $event;
 
         return $this;
     }

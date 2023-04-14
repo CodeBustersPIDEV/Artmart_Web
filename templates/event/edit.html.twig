@@ -1,6 +1,8 @@
 {% extends 'baseF.html.twig' %} 
 {% block content %}
 {% block body %}
+	{% include('event/eventBar.html.twig') %}
+
 <center><h1>Edit Event</h1>
     <div class="form-container">
         {{ form_start(form,{ 'attr' :{ 'novalidate':'novalidate'}}) }}
