@@ -34,7 +34,7 @@ class EventType extends AbstractType
             ->add('startdate', DateType::class)
             ->add('enddate', DateType::class)
             ->add('image', FileType::class, [
-                'label' => 'Product Image',
+                // 'label' => 'Event Image',
                 'mapped' => false,
                 'required' => false,
                 'attr' => [

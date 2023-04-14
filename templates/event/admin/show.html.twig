@@ -1,9 +1,9 @@
-{% extends 'baseF.html.twig' %}
+{% extends 'baseE.html.twig' %}
 {% block content %}
 
 
 {% block body %}
-	{% include('event/eventBar.html.twig') %}
+	{% include('event/admin/eventBar.html.twig') %}
 
     <h1 style="margin:20px; color: deeppink;"><u>{{ event.name }}</u></h1>
     <br>
@@ -50,12 +50,12 @@
             </tr>
         <tr>
             <td colspan="2">
-                <a href="{{ path('app_event_index') }}" class="btn btn-outline-secondary">
+                <a href="{{ path('app_event_index_admin') }}" class="btn btn-outline-secondary">
                     <i class="fas fa-arrow-left"></i> Back to List
                 </a>
                 <div style="float: right;">
-                    <a href="{{ path('app_event_edit', {'eventid': event.eventid}) }}" class="btn btn-outline-success" style="margin-right : 10px;">Edit</a>
-                    <a href="{{ path('app_event_delete', {'eventid': event.eventid}) }}" class="btn btn-outline-danger" style="margin-right : 10px;">Delete</a>
+                    <a href="{{ path('app_event_edit_admin', {'eventid': event.eventid}) }}" class="btn btn-outline-success" style="margin-right : 10px;">Edit</a>
+                    <a href="{{ path('app_event_delete_admin', {'eventid': event.eventid}) }}" class="btn btn-outline-danger" style="margin-right : 10px;">Delete</a>
                 </div>
             </td>
         </tr>
@@ -82,6 +82,7 @@
         </tbody>
 
     </table>
+    <br>
     {% endblock %}
 
     {% block stylesheets %}
