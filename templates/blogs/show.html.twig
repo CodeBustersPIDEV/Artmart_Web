@@ -1,21 +1,9 @@
-{% extends 'baseF.html.twig' %} {% block content %}
+{% extends 'baseF.html.twig' %}{% import "base.html.twig" as base %} {% block
+content %}
 <link rel="stylesheet" href="{{ asset('assets/Blog/CSS/BlogPage.css') }}" />
 <style>
-	/* =================================
-------------------------------------
-  SUNZINE | Photography HTML Template
-  Version: 1.0
-  Copyright By: ColorLib
- ------------------------------------
- ====================================*/
-
-	/*----------------------------------------*/
-	/* Template default CSS
-/*----------------------------------------*/
-
 	@import url("https://fonts.googleapis.com/css2?family=Aldrich&family=Raleway:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap");
 
-	html,
 	body {
 		height: 100%;
 		font-family: "Raleway", sans-serif;
@@ -28,7 +16,7 @@
 	h5,
 	h6 {
 		margin: 0;
-		color: #111111;
+		color: #dfdfdf;
 		font-family: "Aldrich", sans-serif;
 	}
 
@@ -160,6 +148,7 @@
 		font-size: 32px;
 		text-transform: uppercase;
 		margin-bottom: 25px;
+		color: #dfdfdf;
 	}
 
 	@media (max-width: 576px) {
@@ -224,49 +213,6 @@
 		background-color: #f3f3f3;
 	}
 </style>
-{#
-<table class="table">
-	<tbody>
-		<tr>
-			<th>Blogs_ID</th>
-			<td>{{ blog.getBlogsId() }}</td>
-		</tr>
-		<tr>
-			<th>Blog's media</th>
-			<td>
-				{% if blog_media != null %}
-				<img src="{{ blog_media.getFilePath() }}" alt="Blog Media" />
-				{% else %}
-				<img
-					src="{{ asset('assets/Blog/img/default-product.png') }}"
-					alt="Blog Media"
-				/>
-				{% endif %}
-			</td>
-		</tr>
-		<tr>
-			<th>Title</th>
-			<td>{{ blog.title }}</td>
-		</tr>
-		<tr>
-			<th>Content</th>
-			<td>{{ blog.content }}</td>
-		</tr>
-		<tr>
-			<th>Date</th>
-			<td>{{ blog.date ? blog.date|date('Y-m-d ') : '' }}</td>
-		</tr>
-		<tr>
-			<th>Rating</th>
-			<td>{{ blog.rating }}</td>
-		</tr>
-		<tr>
-			<th>NbViews</th>
-			<td>{{ blog.nbViews }}</td>
-		</tr>
-	</tbody>
-</table>
-#}
 
 <div class="blog__single">
 	<div class="container">
@@ -288,6 +234,7 @@
 									href="{{
 										path('app_user_show', { userId: blog.author.getUserId() })
 									}}"
+									style="color: #0ece91"
 									>{{ blog.author.name }}</a
 								>
 								On
@@ -308,54 +255,14 @@
 							{% endif %}
 							<div class="commentSection">
 								<h1>Comments index</h1>
-
-								<table class="table">
-									<thead>
-										<tr>
-											<th>CommentsId</th>
-											<th>Content</th>
-											<th>Date</th>
-											<th>Rating</th>
-											<th>actions</th>
-										</tr>
-									</thead>
-									<tbody>
-										{% for comment in blog_Comments %}
-										<tr>
-											<td>{{ comment.commentsId }}</td>
-											<td>{{ comment.content }}</td>
-											<td>
-												{{ comment.date ? comment.date|date('Y-m-d') : '' }}
-											</td>
-											<td>{{ comment.rating }}</td>
-											<td>
-												<a
-													href="{{
-														path('app_comments_show', {
-															commentsId: comment.commentsId
-														})
-													}}"
-													>show</a
-												>
-												<a
-													href="{{
-														path('app_comments_edit', {
-															commentsId: comment.commentsId
-														})
-													}}"
-													>edit</a
-												>
-											</td>
-										</tr>
-										{% else %}
-										<tr>
-											<td colspan="5">no records found</td>
-										</tr>
-										{% endfor %}
-									</tbody>
-								</table>
-
-								<a href="{{ path('app_comments_new') }}">Create new</a>
+								{{ include("comments/_form.html.twig") }}
+								{% for comment in blog_Comments %}
+								{{ base.commentCard(comment) }}
+								{% else %}
+								<tr>
+									<td colspan="5">no records found</td>
+								</tr>
+								{% endfor %}
 							</div>
 						</div>
 						<div class="part2 col">
@@ -371,6 +278,7 @@
 											{% endfor %}
 										</div>
 									</div>
+									{#
 									<div class="col-md-6">
 										<div class="post__share">
 											<a href="#"><i class="fa fa-facebook"></i></a>
@@ -379,6 +287,7 @@
 											<a href="#"><i class="fa fa-pinterest"></i></a>
 										</div>
 									</div>
+									#}
 								</div>
 							</div>
 						</div>
@@ -392,8 +301,13 @@
 </div>
 
 <a href="{{ path('app_blogs_index') }}">back to list</a>
+<div class="d-flex flex-row mb-3">
+	<a
+		href="{{ path('app_blogs_edit', { blogs_ID: blog.getBlogsId() }) }}"
+		class="btn btn-outline-success"
+		>Edit</a
+	>
 
-<a href="{{ path('app_blogs_edit', { blogs_ID: blog.getBlogsId() }) }}">edit</a>
-
-{{ include("blogs/_delete_form.html.twig") }}
+	{{ include("blogs/_delete_form.html.twig") }}
+</div>
 {% endblock %}

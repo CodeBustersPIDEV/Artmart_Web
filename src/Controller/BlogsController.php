@@ -5,10 +5,12 @@ namespace App\Controller;
 use App\Entity\Blogcategories;
 use App\Entity\Blogs;
 use App\Entity\BlogTags;
+use App\Entity\Comments;
 use App\Entity\HasBlogCategory;
 use App\Entity\Media;
 use App\Entity\Tags;
 use App\Form\BlogsType;
+use App\Form\CommentsType;
 use App\Repository\BlogcategoriesRepository;
 use App\Repository\BlogsRepository;
 use App\Repository\CommentsRepository;
@@ -202,14 +204,24 @@ class BlogsController extends AbstractController
         ]);
     }
 
-    #[Route('/{blogs_ID}', name: 'app_blogs_show', methods: ['GET'])]
-    public function show(Blogs $blog, MediaRepository $mediaRepository, HasBlogCategoryRepository $hasBlogCategoryRepository, HasTagRepository $hasTagRepository): Response
+    #[Route('/{blogs_ID}', name: 'app_blogs_show', methods: ['GET', 'POST'])]
+    public function show(Request $request, Blogs $blog): Response
     {
-        return $this->render('blogs/show.html.twig', [
+        $comment = new Comments();
+
+        $form = $this->createForm(CommentsType::class, $comment);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $comment->setBlog($blog);
+            $this->commentsRepository->save($comment, true);
+            return $this->redirectToRoute('app_blogs_show', ['blogs_ID' => $blog->getBlogsId()], Response::HTTP_SEE_OTHER);
+        }
+        return $this->renderForm('blogs/show.html.twig', [
+            'form' => $form,
             'blog' => $blog,
-            'blog_media' => $mediaRepository->findOneMediaByBlogID($blog->getBlogsId()),
-            'blog_cat' => $hasBlogCategoryRepository->findOneByBlogID($blog->getBlogsId()),
-            'blog_tags' => $hasTagRepository->findAllBlogsByBlogID($blog->getBlogsId()),
+            'blog_media' => $this->mediaRepository->findOneMediaByBlogID($blog->getBlogsId()),
+            'blog_cat' => $this->hasBlogCategoryRepository->findOneByBlogID($blog->getBlogsId()),
+            'blog_tags' => $this->hasTagRepository->findAllBlogsByBlogID($blog->getBlogsId()),
             'blog_Comments' => $this->commentsRepository->findCommentsByBlogID($blog->getBlogsId())
         ]);
     }

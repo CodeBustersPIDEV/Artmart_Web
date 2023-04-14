@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Comments;
 use App\Form\CommentsType;
+use App\Repository\BlogsRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -26,13 +27,15 @@ class CommentsController extends AbstractController
     }
 
     #[Route('/new', name: 'app_comments_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, BlogsRepository $blogsRepository): Response
     {
         $comment = new Comments();
         $form = $this->createForm(CommentsType::class, $comment);
         $form->handleRequest($request);
+        $addedBlog = $blogsRepository->findOneByTitle("TESTTHHHAAAAAAAAA");
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $comment->setBlog($addedBlog);
             $entityManager->persist($comment);
             $entityManager->flush();
 
