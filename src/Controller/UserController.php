@@ -244,6 +244,7 @@ class UserController extends AbstractController
         $artist = $artistRepository->findOneBy(['user' => $user]);
         $admin = $adminRepository->findOneBy(['user' => $user]);
         $role = $user->getRole();
+        $ProfilePic=$user->getPicture();
 
         $clientAttributes = [
             'nbrOrders' => null,
@@ -312,6 +313,7 @@ class UserController extends AbstractController
             'user' => $user,
             'form' => $form,
             'is_edit' => true,
+            'Pic'=>$ProfilePic,
             'client_attributes' => $clientAttributes,
             'artist_attributes' => $artistAttributes,
             'admin_attributes' => $adminAttributes,
