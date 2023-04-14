@@ -14,10 +14,10 @@ class Paymentoption
     private $paymentoptionId;
 
     #[ORM\Column(name: "Name", type: "string",length:255, nullable: true,options:["default"=>"NULL"])]
-    private $name = 'NULL';
+    private $name;
 
     #[ORM\Column(name: "AvailableCountries", type: "string",length:255, nullable: true,options:["default"=>"NULL"])]
-    private $availablecountries = 'NULL';
+    private $availablecountries;
 
     public function getPaymentoptionId(): ?int
     {

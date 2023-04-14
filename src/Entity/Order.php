@@ -23,10 +23,10 @@ class Order
     private $orderId;
 
     #[ORM\Column(name: "Quantity", type: "integer", nullable: false,options:["default"=>"NULL"])]
-    private $quantity = NULL;
+    private $quantity;
 
     #[ORM\Column(name: "ShippingAddress", type: "text",length:65535, nullable: false,options:["default"=>"NULL"])]
-    private $shippingaddress = 'NULL';
+    private $shippingaddress;
 
 
     #[ORM\Column(name: "OrderDate", type: "date", nullable: true,options:["default"=>"CURRENT_TIMESTAMP"])]

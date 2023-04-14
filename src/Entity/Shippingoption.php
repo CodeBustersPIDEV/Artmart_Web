@@ -16,19 +16,19 @@ class Shippingoption
     private $shippingoptionId;
 
     #[ORM\Column(name: "Name", type: "string", nullable: true,length:255,options:["default"=>"NULL"])]
-    private $name = 'NULL';
+    private $name;
 
     #[ORM\Column(name: "Carrier", type: "string", nullable: true,length:255,options:["default"=>"NULL"])]
-    private $carrier = 'NULL';
+    private $carrier;
 
     #[ORM\Column(name: "ShippingSpeed", type: "string", nullable: true,length:255,options:["default"=>"NULL"])]
-    private $shippingspeed = 'NULL';
+    private $shippingspeed;
 
     #[ORM\Column(name: "ShippingFee", type: "decimal", precision:10, scale:2,nullable: true,options:["default"=>"NULL"])]
-    private $shippingfee = 'NULL';
+    private $shippingfee;
 
     #[ORM\Column(name: "AvailableRegions", type: "string", length:255, nullable: true,options:["default"=>"NULL"])]
-    private $availableregions = 'NULL';
+    private $availableregions;
 
     public function getShippingoptionId(): ?int
     {

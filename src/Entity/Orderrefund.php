@@ -19,13 +19,13 @@ class Orderrefund
     private $orderrefundId;
 
     #[ORM\Column(name: "RefundAmount", type: "decimal",precision:10, scale:2, nullable: true,options:["default"=>"NULL"])]
-    private $refundamount = 'NULL';
+    private $refundamount;
 
     #[ORM\Column(name: "Reason", type: "text",length:65535, nullable: true,options:["default"=>"NULL"])]
-    private $reason = 'NULL';
+    private $reason;
 
     #[ORM\Column(name: "Date", type: "date", nullable: true,options:["default"=>"NULL"])]
-    private $date = 'NULL';
+    private $date;
 
     #[ORM\ManyToOne(targetEntity: "Order")]
     #[ORM\JoinColumn(name: "OrderID", referencedColumnName: "order_ID")]
