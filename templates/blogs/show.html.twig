@@ -212,6 +212,23 @@ content %}
 		margin-right: 6px;
 		background-color: #f3f3f3;
 	}
+	.commentCont {
+		border-radius: 15px;
+		background-color: #392534;
+		margin-top: 10px;
+		padding-top: 10px;
+		padding-bottom: 10px;
+		padding-right: 10px;
+		padding-left: 10px;
+	}
+	.commentSection {
+		display: inline-flex;
+		flex-direction: column;
+		flex-wrap: nowrap;
+		justify-content: space-around;
+		align-items: center;
+		align-content: center;
+	}
 </style>
 
 <div class="blog__single">
@@ -255,7 +272,9 @@ content %}
 							{% endif %}
 							<div class="commentSection">
 								<h1>Comments index</h1>
-								{{ include("comments/_form.html.twig") }}
+								<div class="commentCont">
+									{{ include("comments/_form.html.twig") }}
+								</div>
 								{% for comment in blog_Comments %}
 								{{ base.commentCard(comment) }}
 								{% else %}

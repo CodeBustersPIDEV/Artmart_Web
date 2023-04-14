@@ -1,79 +1,66 @@
-{% block title %}Comments{% endblock %} {% block body %}
 <style>
-	td,
-	th {
-		color: white;
-	}
-	.templatemo-item {
-		max-width: 80px;
-		border-radius: 23px;
-	}
-	.other-games {
-		border-radius: 23px;
-		padding: 30px 30px 0px 30px;
-		background-color: blueviolet;
-		margin-top: 60px;
-	}
-
-	.other-games {
-		position: relative;
-		border-bottom: 1px solid #27292a;
-		padding-bottom: 52px;
-		margin-bottom: 30px;
-	}
-
-	.other-games img {
-		float: left;
-		margin-right: 15px;
-	}
-
-	.other-games h4 {
-		display: inline-block;
-		font-size: 15px;
+	.comment-card {
+		background-color: #392534;
+		border-radius: 10px;
 		margin-bottom: 5px;
-		padding-top: 15px;
+		padding: 10px;
+		display: flex;
+		width: 450px;
+		flex-direction: row;
+		margin-top: 8px;
 	}
-
-	.other-games span {
-		color: #666;
+	.comment-card img {
+		width: 80px;
+		height: 80px;
+		border-radius: 50%;
+		margin-right: 10px;
+	}
+	.comment-card h4 {
+		font-size: 18px;
+		margin-bottom: 5px;
+	}
+	.comment-card p {
 		font-size: 14px;
-		display: block;
+		margin: 5px 0;
+	}
+	.comment-card ul {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+	}
+	.comment-card ul li {
+		font-size: 14px;
+		margin-right: 10px;
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+	}
+	.comment-card ul li i {
+		color: gold;
+		margin-right: 5px;
 	}
 </style>
-<div class="other-games">
-	<div class="col-lg-6">
-		{#
-		<div class="item">
-			#} {% if comment.author != null %}
-			<img
-				src="{{ comment.author.getPicture() }}"
-				alt=""
-				class="templatemo-item"
-			/>
-			{% else %}
-			<img
-				src="{{ asset('assets/User/user.png') }}"
-				alt=""
-				class="templatemo-item"
-			/>
-
-			{% endif %}
-			<h4>{{ comment.author.name }}</h4>
-			<span>{{ comment.content }}</span>
-			<ul>
-				<li><i class="fa fa-star"></i> {{ comment.rating }}</li>
-				<li>{{ comment.date ? comment.date|date('Y-m-d') : '' }}</li>
-			</ul>
-			{#
-		</div>
-		#}
+<div class="comment-card">
+	{% if comment.author != null %}
+	<img src="{{ comment.author.getPicture() }}" alt="" class="templatemo-item" />
+	{% else %}
+	<img
+		src="{{ asset('assets/User/user.png') }}"
+		alt=""
+		class="templatemo-item"
+	/>
+	{% endif %}
+	<div class="comment-details">
+		<h4>{{ comment.author.name }}</h4>
+		<p>{{ comment.date ? comment.date|date('Y-m-d') }}</p>
+		<p>{{ comment.content }}</p>
+		<ul>
+			<li>
+				<i class="fa fa-star"></i> <span> {{ comment.rating }}</span>
+			</li>
+		</ul>
 	</div>
 </div>
-
-{# <a href="{{ path('app_comments_index') }}">back to list</a>
-
-<a href="{{ path('app_comments_edit', { commentsId: comment.commentsId }) }}"
-	>edit</a
->
-
-{{ include("comments/_delete_form.html.twig") }} #} {% endblock %}
