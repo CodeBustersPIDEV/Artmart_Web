@@ -204,7 +204,7 @@ class BlogsController extends AbstractController
         ]);
     }
 
-    #[Route('/{blogs_ID}', name: 'app_blogs_show', methods: ['GET', 'POST'])]
+    #[Route('/show/{blogs_ID}', name: 'app_blogs_show', methods: ['GET', 'POST'])]
     public function show(Request $request, Blogs $blog): Response
     {
         $comment = new Comments();
