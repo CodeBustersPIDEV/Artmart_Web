@@ -59,7 +59,7 @@ class User
     #[ORM\Column(type: 'string', length: 255, nullable: false)]
     #[Assert\NotBlank(message:"This field must not be empty")]
     #[Assert\Length(min: 8)]
-    #[Regex(pattern: "/^(?=.*[A-Z])(?=.*\d).{8,}$/", message:"Must contain at least one Uppercase and One special caracter or number.")]
+    #[Regex(pattern: "/^(?=.*[A-Z])(?=.*\d).{8,}$/", message:"Must contain at least one Uppercase and One special caracter or number and must be of minimum length of 8 characters.")]
     private string $password;
 
     

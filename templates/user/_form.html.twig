@@ -1,6 +1,12 @@
 
 <link rel="stylesheet" href="{{ asset('assets/Blog/CSS/FormCss.css') }}" />
-
+<style>
+  #preview-image {
+  display: block;
+  margin: auto;
+  border-radius: 50%;
+}
+  </style>
 <div class="container">
 	<div class="row">
     <div class="col">
@@ -66,9 +72,37 @@
       <!-- The input field for the file upload -->
       <div class="form-group">
         {{ form_label(form.file, null, {'label_attr': {'class': 'form-label'}}) }}
-        {{ form_widget(form.file, {'attr': {'class': 'form-control blogImageFile', 'id': 'formFile'}}) }}
-      </div>
-    
+        {{ form_widget(form.file, {'attr': {'class': 'form-control blogImageFile', 'id': form.file.vars.id, 'onchange': 'updatePreviewImage(this)'}}) }}
+    <br>
+  {% if Pic != null %}
+  <img
+  id="preview-image" style="max-width: 128px"
+  src="{{ asset(Pic) }}";
+  />
+  {% else %}
+  <img
+  id="preview-image" style="max-width: 128px"
+           
+  />
+  {% endif %}
+  <script>
+  function updatePreviewImage(input) {
+      var preview = document.getElementById('preview-image');
+      var file = input.files[0];
+      var reader = new FileReader();
+  
+      reader.onloadend = function () {
+          preview.src = reader.result;
+      }
+  
+      if (file) {
+          reader.readAsDataURL(file);
+      } else {
+          preview.src = "";
+      }
+  }
+  </script>
+  </div>
       <br>
                     <button type="submit" class="btn btn-outline-primary mr-2" id="submitBtn">
                         {{ button_label|default('Edit') }}

@@ -6,12 +6,28 @@
         
 <style>
     label{
-color: white;
+color: Black;
+
 }
-.h1 {
-    width: 50%;
-    margin: auto;
+h1 {
+    font-size: 4rem; /* set the font size to 4rem */
+        color: #20247b; /* set the font color */
+        text-shadow: 2px 2px 4px #000000; /* add a text shadow */
+        border-bottom: 4px solid #20247b; /* add a border bottom */
+        padding-bottom: 10px; /* add some padding */
+        text-align: center; /* center the text */
+    
   }
+  .section {
+      padding: 100px 0;
+      position: relative;
+    }
+
+    .gray-bg {
+      background-color: #f5f5f5;
+    }
+
+  
   .password-field input,
 #confirm_password {
     border: none;
@@ -34,15 +50,18 @@ color: white;
     padding: 10px;
     font-size: 16px;
 }
+.form-group{
+    text-align: center;
 
+}
 .form-control:focus {
     border-bottom: 2px solid #2E9AFE;
 }
     </style>
 
 
-    <section class="container my-3">
-    <div class="row">
+<section class="section about-section gray-bg" id="about">
+<div class="container">
         <div class="col"></div>
          <h1> Please provide your new Password</h1>
     <div class="col-sm-12">
@@ -52,12 +71,16 @@ color: white;
       {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
       <div class="form-group">
       {{ form_row(form.password, {'attr': {'class': 'form-control', 'id': 'password'}}) }}
-  </div>
-
+  
+  {% if form.password.vars.errors|length %}
+  {% for error in form.password.vars.errors %}
+      <div class="alert alert-danger">{{ error.message }}</div>
+  {% endfor %}
+{% endif %}
+</div>
 <br></br>  
         
     <div class="button" style="text-align: center">
-<button type="submit" class="btn">Edit Password</button>
 <button type="submit" class="btn btn-outline-primary mr-2" id="submitBtn">
     {{ button_label|default('Edit Password') }}
 </button>

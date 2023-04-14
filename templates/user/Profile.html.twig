@@ -13,8 +13,9 @@
   }
   h1{
 
-  color:#20247b
-  }
+  font-size: 4rem; /* set the font size to 4rem */
+        color: #20247b; /* set the font color */
+        text-shadow: 2px 2px 4px #000000; /* add a text shadow */  }
     .section {
       padding: 100px 0;
       position: relative;
@@ -36,9 +37,14 @@
     /* About Me 
 ---------------------*/
     .about-text h3 {
-      font-size: 45px;
-      font-weight: 700;
-      margin: 0 0 6px;
+   
+        font-size: 2rem; /* set the font size to 4rem */
+        color: #20247b; /* set the font color */
+        text-shadow: 2px 2px 4px #000000; /* add a text shadow */
+        border-bottom: 4px solid #20247b; /* add a border bottom */
+        padding-bottom: 10px; /* add some padding */
+        text-align: center; /* center the text */
+    
     }
 
     @media (max-width: 767px) {
@@ -285,8 +291,8 @@
   <div class="button justify-content-center">
   <div class="button d-flex align-items-center" >
   
-      <a class="btn btn-outline-primary mr-2" href="{{ path('app_user_editProfile', {'userId': user.userId}) }}">edit</a>
-      {{ include('user/_delete_form.html.twig') }}
+      <a class="btn btn-outline-primary mr-2" href="{{ path('app_user_editProfile', {'userId': user.userId}) }}">Edit Profile</a>
+      {{ include('user/_delete_form.html.twig', {'button_label': 'Delete Account'}) }}
   </div>
   </div>
 
