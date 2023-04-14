@@ -1,0 +1,72 @@
+{% extends 'baseF.html.twig' %}
+
+{% block title %}Edit Password{% endblock %}
+
+{% block content %}
+        
+<style>
+    label{
+color: white;
+}
+.h1 {
+    width: 50%;
+    margin: auto;
+  }
+  .password-field input,
+#confirm_password {
+    border: none;
+    border-bottom: 2px solid #ddd;
+    margin-bottom: 20px;
+    padding: 10px;
+    font-size: 16px;
+}
+
+.password-field input:focus,
+#confirm_password:focus {
+    border-bottom: 2px solid #2E9AFE;
+}
+
+/* Input field styling */
+.form-control {
+    border: none;
+    border-bottom: 2px solid #ddd;
+    margin-bottom: 20px;
+    padding: 10px;
+    font-size: 16px;
+}
+
+.form-control:focus {
+    border-bottom: 2px solid #2E9AFE;
+}
+    </style>
+
+
+    <section class="container my-3">
+    <div class="row">
+        <div class="col"></div>
+         <h1> Please provide your new Password</h1>
+    <div class="col-sm-12">
+    <br><br>
+
+      <!-- Start the form and add a class attribute to it -->
+      {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+      <div class="form-group">
+      {{ form_row(form.password, {'attr': {'class': 'form-control', 'id': 'password'}}) }}
+  </div>
+
+<br></br>  
+        
+    <div class="button" style="text-align: center">
+<button type="submit" class="btn">Edit Password</button>
+<button type="submit" class="btn btn-outline-primary mr-2" id="submitBtn">
+    {{ button_label|default('Edit Password') }}
+</button>
+</div>
+{{ form_end(form) }}
+</div>
+</div>
+</div>
+</div>  
+</div>
+</section>
+{% endblock %}

@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Twig\HtmlExtension;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints\Regex;
@@ -11,8 +12,8 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-#[UniqueEntity(fields: ['username'], message: 'There is already an account with this username')]
-class User implements UserInterface
+#[UniqueEntity(fields: ['email','username'], message: "There is already an account with this username or email")]
+class User 
 
 {
     #[ORM\Id]
@@ -21,11 +22,11 @@ class User implements UserInterface
     private int $userId;
 
     #[ORM\Column(type: 'string', length: 255, nullable: false)]
-    #[Assert\NotBlank]
+    #[Assert\NotBlank(message:"This field must not be empty")]
     private string $name;
 
     #[ORM\Column(type: 'string', length: 255, nullable: false, unique: true)]
-    #[Assert\NotBlank]
+    #[Assert\NotBlank(message:"This field must not be empty")]
     #[Assert\Email(message: "The email is not a valid email")]
     private string $email;
 
@@ -44,7 +45,7 @@ class User implements UserInterface
     }
 
     #[ORM\Column(name: 'phoneNumber', type: 'string', length: 255, nullable: false)]
-    #[Assert\NotBlank]
+    #[Assert\NotBlank(message:"This field must not be empty")]
     private string $phonenumber;
 
     #[ORM\Column(type: 'string', length: 30, nullable: false)]
@@ -52,13 +53,13 @@ class User implements UserInterface
     private string $role;
 
     #[ORM\Column(type: 'string', length: 255, nullable: false)]
-    #[Assert\NotBlank]
+    #[Assert\NotBlank(message:"This field must not be empty")]
     private string $username;
 
     #[ORM\Column(type: 'string', length: 255, nullable: false)]
-    #[Assert\NotBlank]
+    #[Assert\NotBlank(message:"This field must not be empty")]
     #[Assert\Length(min: 8)]
-    #[Regex(pattern: "/^(?=.*[A-Z])(?=.*\d).{8,}$/")]
+    #[Regex(pattern: "/^(?=.*[A-Z])(?=.*\d).{8,}$/", message:"Must contain at least one Uppercase and One special caracter or number.")]
     private string $password;
 
     

@@ -3,7 +3,6 @@
 {% block title %}Profile{% endblock %}
 
 {% block content %}
-    <h1>Profile</h1>
   <style>
     main {
       color: #6F8BA4;
@@ -11,6 +10,10 @@
     }
 .button{
     align: center;
+  }
+  h1{
+
+  color:#20247b
   }
     .section {
       padding: 100px 0;
@@ -204,13 +207,11 @@
   </style>
 
 <section class="section about-section gray-bg" id="about">
+
 <div class="container">
-<div class="button justify-content-center">
-<div class="button d-flex align-items-center" >
-    <a class="btn btn-outline-primary mr-2" href="{{ path('app_user_editProfile', {'userId': user.userId}) }}">edit</a>
-    {{ include('user/_delete_form.html.twig') }}
-</div>
-</div>
+<h1>Profile</h1>
+<br><br>
+
   <div class="row align-items-center flex-row-reverse">
     <div class="col-lg-6">
       <div class="about-text go-to">
@@ -253,13 +254,11 @@
 		<img
                  class="about-avatar"
         			src="{{user.getPicture()}}"
-			     alt="Spinning glass cube"
 		/>
 		{% else %}
 		<img
                  class="about-avatar"
         	  		src="{{ asset('assets/User/user.png') }}"
-			        alt="Spinning glass cube"
 		/>
 		{% endif %}
             </div>
@@ -282,8 +281,14 @@
 </div>
         </tbody>
     </table>
-<br></br>
-
+<br><br><br><br>
+  <div class="button justify-content-center">
+  <div class="button d-flex align-items-center" >
+  
+      <a class="btn btn-outline-primary mr-2" href="{{ path('app_user_editProfile', {'userId': user.userId}) }}">edit</a>
+      {{ include('user/_delete_form.html.twig') }}
+  </div>
+  </div>
 
     
 
