@@ -25,7 +25,7 @@ class Feedback
     #[ORM\Column(name: "comment", type: "text",  length:65535,nullable: false)]
     private $comment;
 
-    #[ORM\Column(name: "date", type: "datetime", nullable: true,options:["default"=>"current_timestamp()"])]
+    #[ORM\Column(name: "date", type: "datetime", nullable: false,options:["default"=>"current_timestamp()"])]
     private $date = 'current_timestamp()';
 
     #[ORM\ManyToOne(targetEntity: "Event")]
