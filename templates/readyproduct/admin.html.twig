@@ -1,0 +1,258 @@
+{% extends 'baseR.html.twig' %}
+{% block content %}
+
+	{% block stylesheets %}
+
+		<style>
+			.table-container {
+				display: inline-block;
+				vertical-align: top;
+				margin-right: 20px;
+			}
+			.table {
+				border-collapse: collapse;
+				width: 100%;
+			}
+			.table th,
+			.table td {
+				border: 1px solid #ddd;
+				padding: 8px;
+				text-align: left;
+			}
+			.table th {
+				background-color: #f2f2f2;
+			}
+			.table td.actions {
+				text-align: center;
+			}
+			.table td.actions a {
+				display: inline-block;
+				margin: 0 5px;
+				padding: 5px 10px;
+				background-color: #4CAF50;
+				color: white;
+				text-decoration: none;
+				border-radius: 3px;
+				transition: background-color 0.3s ease;
+			}
+			.table td.actions a:hover {
+				background-color: #3e8e41;
+			}
+			.orderby-link {
+				display: inline-block;
+				padding: 10px 20px;
+				border: 1px solid #ddd;
+				border-radius: 3px;
+				background-color: #f2f2f2;
+				color: #333;
+				text-decoration: none;
+				transition: background-color 0.3s ease;
+			}
+
+			.orderby-link:hover {
+				background-color: #ddd;
+			}
+
+			.create-button {
+				margin-bottom: 20px;
+				text-align: right;
+			}
+			.create-button a {
+				display: inline-block;
+				padding: 10px 20px;
+				background-color: #4CAF50;
+				color: white;
+				text-decoration: none;
+				border-radius: 3px;
+				transition: background-color 0.3s ease;
+			}
+			.create-button a:hover {
+				background-color: #3e8e41;
+			}
+			.table td img {
+				max-width: 100%;
+				height: auto;
+				width: 100px;
+				display: block;
+				margin: 0 auto;
+				padding: 5px;
+			}
+			/* Styles for the custom products table */
+			.custom-products-container {
+				display: flex;
+				justify-content: center;
+				margin-top: 20px;
+			}
+
+			.custom-products-container table {
+				border-collapse: collapse;
+				width: 100%;
+			}
+
+			.custom-products-container th,
+			.custom-products-container td {
+				border: 1px solid #ddd;
+				padding: 8px;
+				text-align: left;
+			}
+
+			.custom-products-container th {
+				background-color: #f2f2f2;
+			}
+
+			.custom-products-container td.actions {
+				text-align: center;
+			}
+
+			.custom-products-container td.actions a {
+				display: inline-block;
+				margin: 0 5px;
+				padding: 5px 10px;
+				background-color: #4CAF50;
+				color: white;
+				text-decoration: none;
+				border-radius: 3px;
+				transition: background-color 0.3s ease;
+			}
+
+			.custom-products-container td.actions a:hover {
+				background-color: #3e8e41;
+			}
+
+			.custom-products-container td img {
+				max-width: 100%;
+				height: auto;
+				width: 100px;
+				display: block;
+				margin: 0 auto;
+				padding: 5px;
+			}
+            .nav_links {
+		cursor: pointer;
+	}
+	.adminSection {
+		margin-left: 5px;
+	}
+		</style>
+	{% endblock %}
+    {% block body %}
+<div class="adminSection">
+<br>
+
+	<section id="ready-products">
+
+			<h3>Ready products</h3>
+		<table class="table">
+			<thead>
+				<tr>
+					<th>Name</th>
+					<th>User</th>
+					<th>Category</th>
+					<th>Dimensions</th>
+					<th>Material</th>
+					<th>Weight</th>
+					<th>Description</th>
+					<th>Price</th>
+					<th>Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for readyproduct in readyproducts %}
+				<tr>
+					<td>{{ readyproduct.productId.name }}</td>
+					<td>{{ readyproduct.userId }}</td>
+					<td>{{ readyproduct.productId.category }}</td>
+					<td>{{ readyproduct.productId.dimensions }}</td>
+					<td>{{ readyproduct.productId.material }}</td>
+					<td>{{ readyproduct.productId.weight }}</td>
+					<td>{{ readyproduct.productId.description }}</td>
+					<td>{{ readyproduct.price }}</td>
+					<td>
+                        <a href="{{ path('app_readyproduct_show', {'readyProductId': readyproduct.readyProductId}) }}">show</a>
+                        <a href="{{ path('app_readyproduct_delete', {'readyProductId': readyproduct.readyProductId}) }}">delete</a>
+					</td>
+				</tr>
+				{% else %}
+				<tr>
+					<td colspan="7">no records found</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</section>
+
+    <section id="category">
+		<div class="col">
+			<h3>Categories</h3>
+
+			<table class="table">
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>Actions</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for category in categories %}
+					<tr>
+						<td>{{ category.name }}</td>
+						<td>
+                        <a href="{{ path('app_categories_edit', {'categoriesId': category.categoriesId}) }}">edit</a>
+                        <a href="{{ path('app_categories_delete', {'categoriesId': category.categoriesId}) }}">delete</a>
+					</td>
+					</tr>
+					{% else %}
+					<tr>
+						<td colspan="3">no records found</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</section>
+
+    <section id="ready-products">
+
+			<h3>Product reviews</h3>
+		<table class="table">
+			<thead>
+				<tr>
+					<th>Product</th>
+					<th>Title</th>
+					<th>User</th>
+					<th>Rating</th>
+					<th>Text</th>
+					<th>Date</th>
+					<th>Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for productreview in productreviews %}
+				<tr>
+					<td>{{ productreview.readyProductId.productId.name }}</td>
+					<td>{{ productreview.title }}</td>
+					<td>{{ productreview.userId }}</td>
+					<td>{{ productreview.rating }}</td>
+					<td>{{ productreview.text }}</td>
+					<td>{{ productreview.date ? productreview.date|date('Y-m-d H:i:s') : '' }}</td>
+					<td>
+                        <a href="{{ path('app_review_index', {'readyProductId': productreview.readyProductId}) }}">show</a>
+                        <a href="{{ path('app_productreview_delete', {'reviewId': productreview.reviewId}) }}">delete</a>
+					</td>
+				</tr>
+				{% else %}
+				<tr>
+					<td colspan="7">no records found</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</section>
+
+</div>
+<script
+	src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.bundle.min.js"
+	integrity="sha384-qKXV1j0HvMUeCBQ+QVp7JcfGl760yU08IQ+GpUo5hlbpg51QRiuqHAJz8+BrxE/N"
+	crossorigin="anonymous"
+></script>
+{% endblock %} {% endblock %}

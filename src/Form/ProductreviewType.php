@@ -17,8 +17,9 @@ class ProductreviewType extends AbstractType
             ->add('title')
             ->add('text')
             ->add('rating')
-            ->add('date')
-        ;
+            ->add('date', DateType::class, [
+                'data' => new \DateTime(),
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
@@ -26,5 +27,10 @@ class ProductreviewType extends AbstractType
         $resolver->setDefaults([
             'data_class' => Productreview::class,
         ]);
+    }
+
+    public function getBlockPrefix()
+    {
+        return '';
     }
 }
