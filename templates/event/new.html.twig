@@ -3,7 +3,7 @@
 {% block body %}
 	{% include('event/eventBar.html.twig') %}
 
-<center><h1>Create new Event</h1>
+<h1>Create new Event</h1>
     <div class="form-container">
 
         {{ form_start(form) }}
@@ -20,13 +20,12 @@
         {{ form_row(form.user) }}        
         {{ form_label(form.image, 'Event Image') }}
         {{ form_widget(form.image, {'attr': {'style': 'display:none;'}}) }}
-        {% if event.image is defined %}
-        <img id="preview-image" style="max-width: 128px" src="{{ asset('Event/images/' ~ event.image) }}" alt="Click here to add image" onclick="document.getElementById('event_image').click()">
-        <span id="image-name"></span>
+        {% if customproduct.product.image is defined %}
+            <img id="preview-image" style="max-width: 128px" src="{{ asset('imagescustom/' ~ customproduct.product.image) }}" alt="Event image" onclick="document.getElementById('event_image').click()">
+            <span id="image-name"></span>
         {% else %}
-        <img id="preview-image" style="max-width: 128px" src="{{ asset('Blog/img/default-product.png') }}" alt="Default event image" onclick="document.getElementById('event_image').click()">
+            <img id="preview-image" style="max-width: 128px" src="{{ asset('imagescustom/imagec.png') }}" alt="Default event image" onclick="document.getElementById('event_image').click()">
         {% endif %}
-
 
         <script>
             document.getElementById('event_image').addEventListener('change', function(e) {
@@ -42,13 +41,15 @@
 
 
 
+
+
+
         {{ include('event/_form.html.twig', {'button_label': 'add'}) }}
         {{ form_end(form) }}
         <a href="{{ path('app_event_index_admin') }}">
             <i class="fas fa-arrow-left"></i> Back to List
         </a>
     </div>
-</center>
 {% endblock %}
 
 {% block stylesheets %}
