@@ -178,7 +178,8 @@
 <table class="table">
 <thead>
 <tr>
-<th>Name</th>
+<th>Client Name</th>
+<th>Product Name</th>
 <th>Category</th>
 <th>Description</th>
 <th>Weight</th>
@@ -194,6 +195,7 @@
       {% set customproductCount = customproductCount + 1 %}
 
 <tr>
+<td>{{ customproduct.client }}</td>
 <td>{{ customproduct.product.name }}</td>
 <td>{{ customproduct.product.category }}</td>
 <td>{{ customproduct.product.description }}</td>
@@ -275,7 +277,9 @@
     <table class="table">
       <thead>
         <tr>
-          <th>Name</th>
+         <th>Artist</th>
+          <th>Product Name</th>
+              <th>Client</th>
           <th>Status</th>
           <th>Actions</th>
         </tr>
@@ -283,7 +287,9 @@
       <tbody>
         {% for apply in applies %}
         <tr>
+         <td>{{ apply.artist }}</td>
           <td>{{ apply.customproduct.product.name }}</td>
+              <td>{{ apply.customproduct.client}}</td>
           <td>{{ apply.status }}</td>
           <td class="actions">
            <a href="{{ path('app_apply_edit', { applyId: apply.applyId }) }}">Edit</a>

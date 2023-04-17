@@ -21,7 +21,7 @@ use App\Entity\Apply;
 use Symfony\Component\Routing\RouterInterface;
 
 use App\Entity\User;
-
+use Spatie\Emoji\Emoji;
 
 #[Route('/customproduct')]
 class CustomproductController extends AbstractController
@@ -31,7 +31,7 @@ class CustomproductController extends AbstractController
     {
         $searchTerm = $request->query->get('q');
         $order = $request->query->get('order');
-
+   
         $queryBuilder = $entityManager
             ->getRepository(Customproduct::class)
             ->createQueryBuilder('c')
@@ -60,6 +60,7 @@ class CustomproductController extends AbstractController
             'customproducts' => $pagination,
             'searchTerm' => $searchTerm,
             'order' => $order,
+         
         ]);
     }
 
@@ -123,9 +124,6 @@ class CustomproductController extends AbstractController
         $weightData['datasets'][0]['data'][] = $weightSum['weight_sum'];
     }
     
-
-
-
 
         return $this->render('customproduct/admin.html.twig', [
             'customproducts' => $customproducts,
@@ -453,7 +451,7 @@ class CustomproductController extends AbstractController
         $entityManager->flush();
 
         $sid    = "AC85fdc289caf6aa747109220798d39394";
-        $token  = "e100314f392f157e4341263440f1a7bc";
+        $token  = "e60a48d76fb61816ddc6e512f8a91178";
         $twilio = new Client($sid, $token);
     
         $message = $twilio->messages

@@ -75,34 +75,66 @@ img {
 
     <table>
         <tbody>
+            <tr>
+            <th><i class="fa fa-address-book fa-beat category-icon" aria-hidden="true"></i> client:</th>
+            <td>{{ customproduct.client }}</td>
+        </tr>
         <tr>
-            <th><i class="fa fa-tags category-icon" aria-hidden="true"></i> Product:</th>
+            <th><i class="fa fa-tags fa-beat category-icon" aria-hidden="true"></i> Product:</th>
             <td>{{ product.name }}</td>
         </tr>
         <tr>
-            <th><i class="fa fa-bookmark category-icon" aria-hidden="true"></i> Category:</th>
+            <th><i class="fa fa-bookmark fa-beat category-icon" aria-hidden="true"></i> Category:</th>
             <td>{{ product.category }}</td>
         </tr>
         <tr>
-            <th><i class="fa fa-info-circle category-icon" aria-hidden="true"></i> Description:</th>
+            <th><i class="fa fa-info-circle fa-beat category-icon" aria-hidden="true"></i> Description:</th>
             <td>{{ product.description }}</td>
         </tr>
         <tr>
-<th><i class="fa fa-arrows-alt category-icon" aria-hidden="true"></i> Dimensions:</th>
+<th><i class="fa fa-arrows-alt fa-beat category-icon" aria-hidden="true"></i> Dimensions:</th>
             <td>{{ product.dimensions }}</td>
         </tr>
         <tr>
-            <th><i class="fa fa-balance-scale category-icon" aria-hidden="true"></i> Weight:</th>
+            <th><i class="fa fa-balance-scale fa-beat category-icon" aria-hidden="true"></i> Weight:</th>
             <td>{{ product.weight }}</td>
         </tr>
         <tr>
-            <th><i class="fa fa-cubes category-icon" aria-hidden="true"></i> Material:</th>
+            <th><i class="fa fa-cubes fa-beat category-icon" aria-hidden="true"></i> Material:</th>
             <td>{{ product.material }}</td>
         </tr>
-        <tr>
-            <th><i class="fa fa-file-image-o category-icon" aria-hidden="true"></i> Image:</th>
-            <td><img src="{{ asset('imagescustom/' ~ product.image) }}" alt="Product Image"></td>
-        </tr>
+       <tr>
+  <th><i class="fa fa-file-image fa-beat category-icon" aria-hidden="true"></i> Image:</th>
+  <td><img src="{{ asset('imagescustom/' ~ product.image) }}" alt="Product Image" onclick="showImage(this)">
+   <div class="button-group">
+      <a href="{{ asset('imagescustom/' ~ product.image) }}" download class="btn btn-primary">
+        <i class="fa fa-download"></i> Download Image
+      </a>
+    </div>
+  </td>
+</tr>
+
+<script>
+function showImage(img) {
+  img.classList.toggle("enlarge");
+}
+</script>
+
+<style>
+.enlarge {
+  max-width: 100%;
+  max-height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+  z-index: 9999;
+  cursor: zoom-out;
+}
+</style>
+
     </tbody>
 </table>
 
@@ -111,7 +143,7 @@ img {
   <i class="fas fa-arrow-left"></i> Back to List
 </a>
       
-        {{ include('customproduct/_delete_form.html.twig') }}
+     
     </div>
 
  <script>

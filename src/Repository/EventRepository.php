@@ -64,6 +64,16 @@ class EventRepository extends ServiceEntityRepository
        ;
    }
 
+   public function findByUser($userID): array
+   {
+       return $this->createQueryBuilder('e')
+           ->andWhere('e.user = :val')
+           ->setParameter('val', $userID)
+           ->getQuery()
+           ->getResult()
+       ;
+   }
+
 //    public function findOneBySomeField($value): ?Event
 //    {
 //        return $this->createQueryBuilder('e')
@@ -105,6 +115,26 @@ class EventRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('e')
         ->andWhere('e.status = :val')
         ->setParameter('val', $status)
+        ->getQuery()
+        ->getResult();
+    }
+
+    // public function findByStatus($status, $userID): array
+    // {
+    //     return $this->createQueryBuilder('e')
+    //         ->andWhere('e.status = :status')
+    //         ->andWhere('e.user = :userID')
+    //         ->setParameter('status', $status)
+    //         ->setParameter('userID', $userID)
+    //         ->getQuery()
+    //         ->getResult();
+    // }
+
+    public function findByTerm($searchTerm): array
+    {
+        return $this->createQueryBuilder('e')
+        ->where('e.name LIKE :searchTerm')
+        ->setParameter('searchTerm', '%' . $searchTerm . '%')
         ->getQuery()
         ->getResult();
     }

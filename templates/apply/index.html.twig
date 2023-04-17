@@ -5,6 +5,7 @@ title %}Apply index{% endblock %} {% block body %}
 	<thead>
 		<tr>
 			<th>Product Name</th>
+				<th>artist</th>
 			<th>Status</th>
 			<th>actions</th>
 		</tr>
@@ -13,6 +14,7 @@ title %}Apply index{% endblock %} {% block body %}
 		{% for apply in applies %}
 		<tr>
 			<td>{{ apply.customproduct.product.name }}</td>
+				<td>{{ apply.artist }}</td>
 			<td>{{ apply.status }}</td>
 			<td>
 				<a href="{{ path('app_apply_show', { applyId: apply.applyId }) }}"

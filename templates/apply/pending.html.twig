@@ -8,6 +8,7 @@
         <thead>
             <tr>
                 <th>Product Name</th>
+                  <th>Client</th>
                 <th>Status</th>
             </tr>
         </thead>
@@ -15,6 +16,7 @@
         {% for apply in applies %}
             <tr>
                 <td>{{ apply.customproduct.product.name}}</td>
+                  <td>{{ apply.customproduct.client}}</td>
                 <td>{{ apply.status }}</td>
             </tr>
         {% else %}

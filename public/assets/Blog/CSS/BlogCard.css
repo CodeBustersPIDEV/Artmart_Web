@@ -30,7 +30,7 @@
 	img {
 		width: 100%;
 		border-radius: 15px;
-		display: block;
+		/* display: block; */
 	}
 
 	a {
@@ -242,6 +242,7 @@
 	.small-image {
 		width: 1.2em;
 		margin-right: 0.5em;
+		color: #8bacd9;
 	}
 
 	.small-avatar {

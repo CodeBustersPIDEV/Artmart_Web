@@ -1,10 +1,14 @@
-{% extends 'base.html.twig' %}
-{% import "base.html.twig" as base %}
-{% block title %}New Order
-{% endblock %}
-
-{% block body %}
-	{{ base.NavBar() }}
+{% extends 'baseO.html.twig' %} {% block content %} {% block stylesheets %}
+<link rel="stylesheet" href="{{ asset('assets/Blog/CSS/AdminPage.css') }}" />
+<style>
+	.nav_links {
+		cursor: pointer;
+	}
+	.adminSection {
+		margin-left: 5px;
+	}
+</style>
+{% endblock %} {% block body %}
 	{% include('order/orderBar.html.twig') %}
 	<link rel="stylesheet" href="{{ asset('assets/Components/form.css') }}"/>
 	<link rel="stylesheet" href="{{ asset('assets/Components/specialOrder.css') }}"/>
@@ -52,4 +56,5 @@
 		{{ form_end(form) }}
 	</div>
 </div>
+{% endblock %}
 {% endblock %}

@@ -4,12 +4,13 @@
 		align-items: center;
 		flex-wrap: wrap; */
 
-		display: flex;
-		flex-direction: row;
-		flex-wrap: wrap;
-		justify-content: space-between;
-		align-items: center;
-		align-content: center;
+display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	align-items: center;
+	align-content: center;
+	margin-top: -20px;
 	}
 
 	/* For Tablet View */

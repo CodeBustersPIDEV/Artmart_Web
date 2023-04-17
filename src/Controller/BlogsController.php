@@ -19,7 +19,6 @@ use App\Repository\TagsRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
-use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -147,12 +146,11 @@ class BlogsController extends AbstractController
     #[Route('/admin', name: 'app_blogs_admin', methods: ['GET'])]
     public function adminIndex(BlogsRepository $blogsRepository): Response
     {
-
-
         return $this->render('blogs/admin.html.twig', [
             'blogs' => $blogsRepository->findAll(),
             'blogCategories' => $this->blogCategoryRepository->findAll(),
-            'tags' => $this->tagsRepository->findAll()
+            'tags' => $this->tagsRepository->findAll(),
+
         ]);
     }
 
@@ -285,8 +283,8 @@ class BlogsController extends AbstractController
         $media = $mediaRepository->findOneMediaByBlogID($blogs_ID);
         $hasCat = $this->hasBlogCategoryRepository->findOneByBlogID($blogs_ID);
         if ($this->isCsrfTokenValid('delete' . $blog->getBlogsID(), $request->request->get('_token'))) {
-            $blogsRepository->remove($blog, true);
             $mediaRepository->remove($media, true);
+            $blogsRepository->remove($blog, true);
             $this->hasBlogCategoryRepository->remove($hasCat, true);
         }
 
