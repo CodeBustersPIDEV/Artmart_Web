@@ -3,8 +3,47 @@
 {% block title %}User{% endblock %}
 
 {% block content %}
-    <h1>User</h1>
+<style>
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
 
+    th, td {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+
+    tr:hover {
+        background-color: #f5f5f5;
+    }
+.about-avatar{
+    display: block;
+  margin: auto;
+  border-radius: 50%;
+  width: 150px;
+  height: 250px;
+}
+   
+
+</style>
+ {% if user != null %}
+ <img
+          class="about-avatar"
+             src="{{user.getPicture()}}"
+ />
+ {% else %}
+ <img
+          class="about-avatar"
+               src="{{ asset('assets/User/user.png') }}"
+ />
+ {% endif %}
+ <br><br>
     <table class="table">
         <tbody>
 
@@ -36,6 +75,8 @@
                 <th>Password</th>
                 <td>{{ user.password }}</td>
             </tr>
+
+           <div <div class="align-items-center text-center">
            {% if clientAttributes is defined %}
     <p><strong>Number of Orders:</strong> {{ clientAttributes.nbrOrders }}</p>
     <p><strong>Number of Demands:</strong> {{ clientAttributes.nbrDemands }}</p>
@@ -48,16 +89,15 @@
 {% if adminAttributes is defined %}
 <p><strong>Department:</strong> {{ adminAttributes.department }}</p>
 {% endif %}
-
+</div>
         </tbody>
     </table>
-
-    <a href="{{ path('app_user_index') }}">back to list</a>
-
-    <a href="{{ path('app_user_edit', {'userId': user.userId}) }}">edit</a>
-
+   
+    <div class="btn d-flex align-items-center justify-content-center">
+<a href="{{ path('app_user_index') }}"class="btn btn-outline-primary mr-2">Back to list</a>
+    <a href="{{ path('app_user_edit', {'userId': user.userId}) }}"class="btn btn-outline-primary mr-2">edit</a>
     {{ include('user/_delete_form.html.twig') }}
-
+</div>
 </div>
 </div>
 

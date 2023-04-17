@@ -143,7 +143,7 @@ class UserController extends AbstractController
                 $entityManager->flush();
             }
 
-            return $this->redirectToRoute('app_user_new', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('/', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('user/new.html.twig', [
@@ -244,6 +244,7 @@ class UserController extends AbstractController
         $artist = $artistRepository->findOneBy(['user' => $user]);
         $admin = $adminRepository->findOneBy(['user' => $user]);
         $role = $user->getRole();
+        $ProfilePic=$user->getPicture();
 
         $clientAttributes = [
             'nbrOrders' => null,
@@ -312,6 +313,7 @@ class UserController extends AbstractController
             'user' => $user,
             'form' => $form,
             'is_edit' => true,
+            'Pic'=>$ProfilePic,
             'client_attributes' => $clientAttributes,
             'artist_attributes' => $artistAttributes,
             'admin_attributes' => $adminAttributes,
@@ -325,7 +327,7 @@ class UserController extends AbstractController
         $artist = $artistRepository->findOneBy(['user' => $user]);
         $admin = $adminRepository->findOneBy(['user' => $user]);
         $role = $user->getRole();
-
+        $ProfilePic=$user->getPicture();
         $clientAttributes = [
             'nbrOrders' => null,
             'nbrDemands' => null,
@@ -386,19 +388,21 @@ class UserController extends AbstractController
             }
 
             $entityManager->flush();
-            return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_user_Profile', ['userId' => $user->getUserId()], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('user/editF.html.twig', [
             'user' => $user,
             'form' => $form,
             'is_edit' => true,
+            'Pic'=>$ProfilePic,
             'client_attributes' => $clientAttributes,
             'artist_attributes' => $artistAttributes,
             'admin_attributes' => $adminAttributes,
         ]);
     }
 
+ 
     #[Route('/{userId}', name: 'app_user_delete', methods: ['POST'])]
     public function delete(User $user, ClientRepository $clientRepository, ArtistRepository $artistRepository, AdminRepository $adminRepository, EntityManagerInterface $entityManager): Response
     {
@@ -422,12 +426,8 @@ class UserController extends AbstractController
         }
 
 
-        return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_home', [], Response::HTTP_SEE_OTHER);
     }
 
-    #[Route('/', name: 'main')]
-    public function main(): Response
-    {
-        return $this->render('main.html.twig', []);
-    }
+
 }

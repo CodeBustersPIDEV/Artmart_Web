@@ -6,11 +6,16 @@
         
 <style>
     label{
-color: white;
+color: black;
 }
-.h1 {
-    width: 50%;
-    margin: auto;
+h1 {
+        font-size: 4rem; /* set the font size to 4rem */
+        color: #20247b; /* set the font color */
+        text-shadow: 2px 2px 4px #000000; /* add a text shadow */
+        border-bottom: 4px solid #20247b; /* add a border bottom */
+        padding-bottom: 10px; /* add some padding */
+        text-align: center; /* center the text */
+    
   }
   .password-field input,
 #confirm_password {
@@ -20,6 +25,23 @@ color: white;
     padding: 10px;
     font-size: 16px;
 }
+main {
+      color: #6F8BA4;
+      margin-top: 20px;
+    }
+.button{
+    align: center;
+  }
+    .section {
+      padding: 100px 0;
+      position: relative;
+    }
+
+    .gray-bg {
+      background-color: #f5f5f5;
+    }
+
+  
 
 .password-field input:focus,
 #confirm_password:focus {
@@ -34,48 +56,46 @@ color: white;
     padding: 10px;
     font-size: 16px;
 }
-
+#preview-image {
+  display: block;
+  margin: auto;
+  border-radius: 50%;
+}
 .form-control:focus {
     border-bottom: 2px solid #2E9AFE;
 }
     </style>
 
-
-    <section class="container my-3">
-    <div class="row">
+<section class="section about-section gray-bg" id="about">
+<div class="container">
         <div class="col"></div>
          <h1>Sign Up</h1>
     <div class="col-sm-12">
     <br><br>
 
       <!-- Start the form and add a class attribute to it -->
-      {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+      {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'enctype': 'multipart/form-data'}}) }}
     
       <!-- The input fields for name, username, email, and password -->
       <div class="form-group">
-        {{ form_label(form.name, null, {'label_attr': {'class': 'form-label'}}) }}
-        {{ form_widget(form.name, {'attr': {'class': 'form-control', 'placeholder': 'Name', 'id': 'name'}}) }}
+        {{ form_row(form.name, {'attr': {'class': 'form-control', 'placeholder': 'Name', 'id': 'name'}}) }}
       </div>
     
       <div class="form-group">
-        {{ form_label(form.username, null, {'label_attr': {'class': 'form-label'}}) }}
-        {{ form_widget(form.username, {'attr': {'class': 'form-control', 'placeholder': 'Username', 'id': 'username'}}) }}
+        {{ form_row(form.username, {'attr': {'class': 'form-control', 'placeholder': 'Username', 'id': 'username'}}) }}
       </div>
     
       <div class="form-group">
-        {{ form_label(form.email, null, {'label_attr': {'class': 'form-label'}}) }}
-        {{ form_widget(form.email, {'attr': {'class': 'form-control', 'placeholder': 'Email', 'id': 'email'}}) }}
+        {{ form_row(form.email, {'attr': {'class': 'form-control', 'placeholder': 'Email', 'id': 'email'}}) }}
       </div>
 
       <div class="form-group">
-        {{ form_label(form.phonenumber, null, {'label_attr': {'class': 'form-label'}}) }}
-        {{ form_widget(form.phonenumber, {'attr': {'class': 'form-control', 'placeholder': 'phoneNumber', 'id': 'phonenumber'}}) }}
+        {{ form_row(form.phonenumber, {'attr': {'class': 'form-control', 'placeholder': 'phoneNumber', 'id': 'phonenumber'}}) }}
       </div>
     
       <!-- The input field for birthday -->
       <div class="form-group">
-        {{ form_label(form.birthday, null, {'label_attr': {'class': 'form-label'}}) }}
-        {{ form_widget(form.birthday, {'attr': {'class': 'form-control', 'id': 'birthday'}}) }}
+        {{ form_row(form.birthday, {'attr': {'class': 'form-control', 'id': 'birthday'}}) }}
       </div>
       
 
@@ -84,18 +104,37 @@ color: white;
 </div>
 
   <div class="form-group">
-        {{ form_label(form.role) }}
-        {{ form_widget(form.role, {'attr': {'class': 'form-control'}}) }}
+        {{ form_row(form.role, {'attr': {'class': 'form-control'}}) }}
     </div>
     <div class="form-group">
-        {{ form_label(form.file, null, {'label_attr': {'class': 'form-label'}}) }}
-        {{ form_widget(form.file, {'attr': {'class': 'form-control blogImageFile', 'id': 'formFile'}}) }}
-      </div>
-     
+    {{ form_widget(form.file, {'attr': {'class': 'form-control blogImageFile', 'id': form.file.vars.id, 'onchange': 'updatePreviewImage(this)'}}) }}
+
+<img id="preview-image" style="max-width: 128px">
+
+<script>
+function updatePreviewImage(input) {
+    var preview = document.getElementById('preview-image');
+    var file = input.files[0];
+    var reader = new FileReader();
+
+    reader.onloadend = function () {
+        preview.src = reader.result;
+    }
+
+    if (file) {
+        reader.readAsDataURL(file);
+    } else {
+        preview.src = "";
+    }
+}
+</script>
+
+
+
+
     <br></br>  
         
         <div class="button" style="text-align: center">
-    <button type="submit" class="btn">Register</button>
     <button type="submit" class="btn btn-outline-primary mr-2" id="submitBtn">
         {{ button_label|default('Register') }}
     </button>
@@ -106,5 +145,35 @@ color: white;
 </div>
 </div>  
 </div>
+
 </section>
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        // Get the file input field and create a new image element
+        const fileInput = document.getElementById('formFile');
+        const previewImg = document.createElement('img');
+
+        // Listen for changes to the file input field
+        fileInput.addEventListener('change', function() {
+            // Get the selected file and create a new file reader
+            const file = this.files[0];
+            const reader = new FileReader();
+
+            // Set up the file reader to load the image file as a data URL
+            reader.addEventListener('load', function() {
+                previewImg.src = reader.result;
+            }, false);
+
+            // Read the selected file as a data URL
+            if (file) {
+                reader.readAsDataURL(file);
+            }
+
+            // Add the preview image to the form
+            const formGroup = document.querySelector('.form-group.blog-image');
+            formGroup.appendChild(previewImg);
+        });
+    </script>
 {% endblock %}
