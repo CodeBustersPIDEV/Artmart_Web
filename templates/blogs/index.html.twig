@@ -69,7 +69,7 @@ as base %}
 		align-items: center;
 		align-content: flex-start;
 	}
-	.post_btn {
+	/* .post_btn {
 		text-decoration: none;
 		width: 135px;
 		background: #2cb3f0;
@@ -81,6 +81,23 @@ as base %}
 		font-size: 23px;
 		box-shadow: 0 10px 25px -5px rgba(44, 179, 240, 0.6);
 		cursor: pointer;
+	} */
+
+	.link-style {
+		display: inline-block;
+		padding: 10px 20px;
+		margin-right: 20px;
+		border-radius: 4px;
+		color: white;
+		background-color: #43464b;
+		font-weight: bold;
+		text-decoration: none;
+		float: right;
+	}
+
+	.link-style:hover {
+		background-color: #aa336a;
+		color: white;
 	}
 </style>
 
@@ -92,6 +109,22 @@ as base %}
 	{% endfor %}
 </section>
 <div class="btn-holder">
-	<a href="{{ path('app_blogs_new') }}" class="post_btn">Create new</a>
+	{# <a href="{{ path('app_blogs_new') }}" class="post_btn">Create new</a> #}
+	<a href="{{ path('app_blogs_new') }}" class="link-style"
+		><svg
+			xmlns="http://www.w3.org/2000/svg"
+			width="16"
+			height="16"
+			fill="currentColor"
+			class="bi bi-plus-lg"
+			viewBox="0 0 16 16"
+		>
+			<path
+				fill-rule="evenodd"
+				d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"
+			/>
+		</svg>
+		Post A New Blog</a
+	>
 </div>
 {% endblock %}

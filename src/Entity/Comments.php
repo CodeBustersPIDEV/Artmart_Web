@@ -23,7 +23,7 @@ class Comments
     private $content;
 
     #[ORM\Column(name: "date", type: "datetime", nullable: true, options: ["default" => "current_timestamp()"])]
-    private $date = 'current_timestamp()';
+    private $date;
 
     #[ORM\Column(name: "rating", type: "integer", nullable: true, options: ["default" => "NULL"])]
     private $rating = NULL;
@@ -53,12 +53,12 @@ class Comments
         return $this;
     }
 
-    public function getDate(): ?\DateTimeInterface
+    public function getDate(): ?\DateTime
     {
         return $this->date;
     }
 
-    public function setDate(?\DateTimeInterface $date): self
+    public function setDate(?\DateTime $date): self
     {
         $this->date = $date;
 
