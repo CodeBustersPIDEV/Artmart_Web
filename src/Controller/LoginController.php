@@ -3,66 +3,59 @@ namespace App\Controller;
 
 use App\Entity\User;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\Routing\Annotation\Route;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Response;
 use App\Form\LoginType;
 
 class LoginController extends AbstractController
 {
     #[Route('/login', name: 'app_login')]
-    public function login(Request $request, SessionInterface $session, AuthenticationUtils $authenticationUtils)
+    public function login(Request $request)
     {
-        
         $form = $this->createForm(LoginType::class);
         $form->handleRequest($request);
 
-
         if ($form->isSubmitted() && $form->isValid()) {
-            $username = $form->get('email')->getData();
+            $username = $form->get('username')->getData();
             $password = $form->get('password')->getData();
     
-        // Validate the user's credentials against your user database
         $isValid = $this->validateCredentials($username, $password);
 
         if ($isValid) {
-            // Start a new session and store the user's information
             $session = $request->getSession();
             $session->set('username', $username);
 
-            // Redirect the user to their dashboard
             return $this->redirectToRoute('Panel');
         }
-
-        // If the user's credentials are invalid, display an error message
-        $error = 'Invalid username or password';
-    } else {
-        $error = $authenticationUtils->getLastAuthenticationError();
     }
 
     return $this->render('security/login.html.twig', [
         'loginForm' => $form->createView(),
-        'error' => $error,
     ]);
 }
 
-
-
-
-private function validateCredentials($username, $password)
+#[Route('/session', name: 'app_session')]
+public function test(Request $request,EntityManagerInterface $entityManager)
 {
-    $userRepository = $this->getDoctrine()->getRepository(User::class);
+$session = $request->getSession();
 
-    // Get the user from the database based on the submitted username
-    $user = $userRepository->findOneBy(['username' => $username]);
+$userId = $session->get('user_id');
 
-    // If the user doesn't exist or the password is incorrect, return false
-    if (!$user || !password_verify($password, $user->getPassword())) {
-        return false;
-    }
+if (!$userId) {
+    return $this->redirectToRoute('login');
+}
 
-    // If the user exists and the password is correct, return true
-    return true;
+$user = $entityManager->getRepository(User::class)->find($userId);
+
+return new Response($user);
+}
+
+#[Route('/logout', name: 'app_logout')]
+public function logout(Request $request)
+{
+    $session->set('user_id', $user->getUserId());
+    return new Response("Logout Success");
 }
 }
