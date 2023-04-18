@@ -1,17 +1,35 @@
 {% extends 'baseU.html.twig' %} 
 {% block title %}User index{% endblock %} 
 {% block content %}
-
+  <style>
+        .cute {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 3em;
+            color: #20247b;
+            text-shadow: 2px 2px #ccc;
+            text-align: center;
+            margin: 0 auto;
+            padding: 10px;
+            border-radius: 10px;
+            background-color: #fff;
+            box-shadow: 0 0 10px #ccc;
+        }
+    </style>
 <form action="{{ path('app_user_index') }}" method="GET">
     <div class="form-group">
         <label for="search-term">Search for users:</label>
         <input type="text" id="search-term" name="search" class="form-control" value="{{ searchTerm }}">
-    </div>
-    <button type="submit" class="btn btn-primary">Search</button>
-</form>
-<a href="{{ path('app_user_index', {'userse': 'username'}) }}">User by name</a>
-<a href="{{ path('app_user_index', {'userse': 'name'}) }}">User by username</a>
+	<button type="submit" class="btn btn-outline-primary mr-2">Search</button>
 
+    </div>
+</form>
+<div class="button" style="text-align: center">
+
+<a class="btn btn-outline-primary mr-2" href="{{ path('app_user_index', {'userse': 'username'}) }}">User by name</a>
+<a class="btn btn-outline-primary mr-2" href="{{ path('app_user_index', {'userse': 'name'}) }}">User by username</a>
+</div>
+<br>
+<h1 class="cute">Users List</h1>
 <table class="table">
 	<thead>
 		<tr>
@@ -31,8 +49,8 @@
 			<td>{{ user.username }}</td>
 
 			<td>
-				<a href="{{ path('app_user_show', { userId: user.userId }) }}">show</a>
-				<a href="{{ path('app_user_edit', { userId: user.userId }) }}">edit</a>
+				<a class="btn btn-outline-primary mr-2" href="{{ path('app_user_show', { userId: user.userId }) }}">show</a>
+				<a class="btn btn-outline-primary mr-2" href="{{ path('app_user_edit', { userId: user.userId }) }}">edit</a>
 			</td>
 		</tr>
 		{% else %}
@@ -43,5 +61,4 @@
 	</tbody>
 </table>
 
-<a href="{{ path('app_user_new') }}">Create new</a>
 {% endblock %}

@@ -75,6 +75,6 @@ class BlogcategoriesController extends AbstractController
             $blogCategoryRepository->remove($blogcategory, true);
         }
 
-        return $this->redirectToRoute('app_blogcategories_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_blogs_admin', [], Response::HTTP_SEE_OTHER);
     }
 }

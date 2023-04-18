@@ -13,7 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
  * })
  * @ORM\Entity
  */
-#[ORM\Table(name: "Readyproduct",options: [
+#[ORM\Table(name: "Readyproduct", options: [
     'indexes' => [
         'user_ID' => ['columns' => ['user_ID']],
         'product_ID' => ['columns' => ['product_ID']]
@@ -77,5 +77,10 @@ class Readyproduct
         $this->userId = $userId;
 
         return $this;
+    }
+
+    public function __toString(): string
+    {
+        return (string) $this->readyProductId;
     }
 }

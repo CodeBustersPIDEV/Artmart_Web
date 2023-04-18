@@ -17,9 +17,9 @@
         <div class="col">
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">Activity {{ activity.activityid }}</h5>
+                    <h5 class="card-title">{{ activity.title }}</h5>
                     <p class="card-text">Date: {{ activity.date ? activity.date|date('Y-m-d H:i:s') : '' }}</p>
-                    <p class="card-text">Title: {{ activity.title }}</p>
+                    {# <p class="card-text">Title: {{ activity.title }}</p> #}
                     <p class="card-text">Host: {{ activity.host }}</p>
                     <a href="{{ path('app_activity_show', {'activityid': activity.activityid}) }}" class="btn btn-primary">Show</a>
                     <a href="{{ path('app_activity_edit', {'activityid': activity.activityid}) }}" class="btn btn-secondary">Edit</a>

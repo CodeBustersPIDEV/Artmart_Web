@@ -2,26 +2,34 @@
 
 namespace App\Controller;
 
+use App\Entity\Categories;
 use App\Entity\Readyproduct;
 use App\Entity\Product;
-use App\Entity\Categories;
-use App\Entity\User;
+use App\Entity\Productreview;
 
 use App\Form\ReadyproductType;
+use App\Form\ProductreviewType;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
-use Symfony\Component\Routing\RouterInterface;
 
 
 #[Route('/readyproduct')]
 class ReadyproductController extends AbstractController
 {
+    private $managerRegistry;
+
+    public function __construct(ManagerRegistry $managerRegistry)
+    {
+        $this->managerRegistry = $managerRegistry;
+    }
+
+
     #[Route('/', name: 'app_readyproduct_index', methods: ['GET'])]
     public function index(Request $request, EntityManagerInterface $entityManager): Response
     {
@@ -47,8 +55,54 @@ class ReadyproductController extends AbstractController
 
         $readyproducts = $queryBuilder->getQuery()->getResult();
 
+        $productreviews = $entityManager
+            ->getRepository(Productreview::class)
+            ->findAll();
+
         return $this->render('readyproduct/index.html.twig', [
             'readyproducts' => $readyproducts,
+            'productreviews' => $productreviews,
+            'searchTerm' => $searchTerm,
+            'order' => $order,
+        ]);
+    }
+
+    #[Route('/admin', name: 'app_readyproduct_admin', methods: ['GET'])]
+    public function indexadmin(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $searchTerm = $request->query->get('q');
+        $order = $request->query->get('order');
+
+        $queryBuilder = $entityManager
+            ->getRepository(Readyproduct::class)
+            ->createQueryBuilder('r')
+            ->innerJoin('r.productId', 'p');
+
+
+        if ($order === 'name') {
+            $queryBuilder->orderBy('p.name', 'ASC');
+        } elseif ($order === 'weight') {
+            $queryBuilder->orderBy('p.weight', 'ASC');
+        }
+
+        if ($searchTerm) {
+            $queryBuilder->where('p.name LIKE :searchTerm')
+                ->setParameter('searchTerm', '%' . $searchTerm . '%');
+        }
+
+        $readyproducts = $queryBuilder->getQuery()->getResult();
+
+        $productreviews = $entityManager
+            ->getRepository(Productreview::class)
+            ->findAll();
+        $categories = $entityManager
+            ->getRepository(Categories::class)
+            ->findAll();
+
+        return $this->render('readyproduct/admin.html.twig', [
+            'readyproducts' => $readyproducts,
+            'productreviews' => $productreviews,
+            'categories' => $categories,
             'searchTerm' => $searchTerm,
             'order' => $order,
         ]);
@@ -101,8 +155,20 @@ class ReadyproductController extends AbstractController
     #[Route('/{readyProductId}', name: 'app_readyproduct_show', methods: ['GET'])]
     public function show(Readyproduct $readyproduct): Response
     {
+        $productreviews = $this->managerRegistry->getRepository(Productreview::class)
+            ->findBy(['readyProductId' => $readyproduct]);
+
+        // Calculate the average rating
+        $totalRating = 0;
+        $count = count($productreviews);
+        foreach ($productreviews as $productreview) {
+            $totalRating += $productreview->getRating();
+        }
+        $averageRating = $count > 0 ? $totalRating / $count : 0;
+
         return $this->render('readyproduct/show.html.twig', [
             'readyproduct' => $readyproduct,
+            'averageRating' => $averageRating,
         ]);
     }
 
@@ -133,5 +199,45 @@ class ReadyproductController extends AbstractController
         }
 
         return $this->redirectToRoute('app_readyproduct_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('/reviews/{readyProductId}', name: 'app_review_index', methods: ['GET'])]
+    public function showReview(int $readyProductId): Response
+    {
+        $productreviews = $this->managerRegistry->getRepository(Productreview::class)
+            ->findBy(['readyProductId' => $readyProductId]);
+
+        // Calculate the average rating
+        $totalRating = 0;
+        $count = count($productreviews);
+        foreach ($productreviews as $productreview) {
+            $totalRating += $productreview->getRating();
+        }
+        $averageRating = $count > 0 ? $totalRating / $count : 0;
+
+        return $this->render('productreview/show_reviews.html.twig', [
+            'productreviews' => $productreviews,
+            'averageRating' => $averageRating,
+        ]);
+    }
+
+    #[Route('/productreview/new', name: 'app_productreview_new', methods: ['GET', 'POST'])]
+    public function newReview(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $productreview = new Productreview();
+        $form = $this->createForm(ProductreviewType::class, $productreview);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($productreview);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_productreview_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->renderForm('productreview/new.html.twig', [
+            'productreview' => $productreview,
+            'form' => $form,
+        ]);
     }
 }

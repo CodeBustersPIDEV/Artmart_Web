@@ -5,10 +5,12 @@ namespace App\Controller;
 use App\Entity\Blogcategories;
 use App\Entity\Blogs;
 use App\Entity\BlogTags;
+use App\Entity\Comments;
 use App\Entity\HasBlogCategory;
 use App\Entity\Media;
 use App\Entity\Tags;
 use App\Form\BlogsType;
+use App\Form\CommentsType;
 use App\Repository\BlogcategoriesRepository;
 use App\Repository\BlogsRepository;
 use App\Repository\CommentsRepository;
@@ -29,6 +31,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class BlogsController extends AbstractController
 {
     private $filesystem;
+    private BlogsRepository $blogsRepository;
     private MediaRepository $mediaRepository;
     private HasBlogCategoryRepository $hasBlogCategoryRepository;
     private TagsRepository $tagsRepository;
@@ -36,9 +39,10 @@ class BlogsController extends AbstractController
     private HasTagRepository $hasTagRepository;
     private CommentsRepository $commentsRepository;
 
-    public function __construct(Filesystem $filesystem, MediaRepository $mediaRepository, BlogcategoriesRepository $blogCategoryRepository, HasBlogCategoryRepository $hasBlogCategoryRepository, TagsRepository $tagsRepository, HasTagRepository $hasTagRepository, CommentsRepository $commentsRepository)
+    public function __construct(Filesystem $filesystem, BlogsRepository $blogsRepository, MediaRepository $mediaRepository, BlogcategoriesRepository $blogCategoryRepository, HasBlogCategoryRepository $hasBlogCategoryRepository, TagsRepository $tagsRepository, HasTagRepository $hasTagRepository, CommentsRepository $commentsRepository)
     {
         $this->filesystem = $filesystem;
+        $this->blogsRepository = $blogsRepository;
         $this->mediaRepository = $mediaRepository;
         $this->hasBlogCategoryRepository = $hasBlogCategoryRepository;
         $this->blogCategoryRepository = $blogCategoryRepository;
@@ -202,14 +206,30 @@ class BlogsController extends AbstractController
         ]);
     }
 
-    #[Route('/{blogs_ID}', name: 'app_blogs_show', methods: ['GET'])]
-    public function show(Blogs $blog, MediaRepository $mediaRepository, HasBlogCategoryRepository $hasBlogCategoryRepository, HasTagRepository $hasTagRepository): Response
+    #[Route('/show/{blogs_ID}', name: 'app_blogs_show', methods: ['GET', 'POST'])]
+    public function show(Request $request, Blogs $blog): Response
     {
-        return $this->render('blogs/show.html.twig', [
+        $comment = new Comments();
+        $newNbViews = $blog->getNbViews() + 1;
+        $this->blogsRepository->editViews($blog, $newNbViews, true);
+        $form = $this->createForm(CommentsType::class, $comment);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $rate = $form->get('rating')->getData();
+            $nbComments = $this->commentsRepository->findCommentsByBlogID($blog->getBlogsId());
+            $oldRating = $blog->getRating() * count($nbComments);
+            $newBlogRating = ($oldRating + $rate) / (count($nbComments) + 1);
+            $comment->setBlog($blog);
+            $this->commentsRepository->save($comment, true);
+            $this->blogsRepository->editRating($blog, $newBlogRating, true);
+            return $this->redirectToRoute('app_blogs_show', ['blogs_ID' => $blog->getBlogsId()], Response::HTTP_SEE_OTHER);
+        }
+        return $this->renderForm('blogs/show.html.twig', [
+            'form' => $form,
             'blog' => $blog,
-            'blog_media' => $mediaRepository->findOneMediaByBlogID($blog->getBlogsId()),
-            'blog_cat' => $hasBlogCategoryRepository->findOneByBlogID($blog->getBlogsId()),
-            'blog_tags' => $hasTagRepository->findAllBlogsByBlogID($blog->getBlogsId()),
+            'blog_media' => $this->mediaRepository->findOneMediaByBlogID($blog->getBlogsId()),
+            'blog_cat' => $this->hasBlogCategoryRepository->findOneByBlogID($blog->getBlogsId()),
+            'blog_tags' => $this->hasTagRepository->findAllBlogsByBlogID($blog->getBlogsId()),
             'blog_Comments' => $this->commentsRepository->findCommentsByBlogID($blog->getBlogsId())
         ]);
     }

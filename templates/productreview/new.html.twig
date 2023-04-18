@@ -1,11 +1,115 @@
-{% extends 'base.html.twig' %}
+{% extends 'baseF.html.twig' %}
+{% block content %}
+    <a href="{{ path('app_readyproduct_index') }}"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-return-left" viewBox="0 0 16 16">
+  <path fill-rule="evenodd" d="M14.5 1.5a.5.5 0 0 1 .5.5v4.8a2.5 2.5 0 0 1-2.5 2.5H2.707l3.347 3.346a.5.5 0 0 1-.708.708l-4.2-4.2a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 8.3H12.5A1.5 1.5 0 0 0 14 6.8V2a.5.5 0 0 1 .5-.5z"/>
+</svg> back to list</a>
+<br><br>
+{% block title %}
+        <h4><em>Review</em> Product</h4>
+{% endblock %}
+{% block stylesheets %}
+<style>
+/* Add your styles here */
+label {
+display: block;
+margin-bottom: 10px;
+font-weight: bold;
+color: #f2f2f2;
+}
+input[type="text"],
+textarea {
+display: block;
+width: 100%;
+padding: 10px;
+margin-bottom: 20px;
+border-radius: 5px;
+border: 1px solid #ccc;
+}
+select {
+display: block;
+width: 100%;
+padding: 10px;
+margin-bottom: 20px;
+border-radius: 5px;
+border: 1px solid #ccc;
+background-color: #fff;
+}
+input[type="submit"] {
+background-color: #4CAF50;
+color: #fff;
+padding: 10px 20px;
+border: none;
+border-radius: 5px;
+cursor: pointer;
+}
+input[type="submit"]:hover {
+background-color: #3e8e41;
+}
+.error {
+color: #f00;
+font-weight: bold;
+}
+.form-container {
+width: 70%;
+margin: auto;
+background-color: #232931;
+padding: 20px;
+border-radius: 10px;
+}
+.form-container h1 {
+text-align: center;
+margin-bottom: 20px;
+}
 
-{% block title %}New Productreview{% endblock %}
+.form-control {
+  color: #55595c;
+}
+.btn {
+  background-color: #4CAF50;
+  color: white;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 4px;
+  display: center;
+}
+
+.btn:hover {
+  background-color: #4CAF50;
+  color: black;
+}
+</style>
+{% endblock %}
 
 {% block body %}
-    <h1>Create new Productreview</h1>
 
-    {{ include('productreview/_form.html.twig') }}
+<div class="form-container">
+    {{ form_start(form,{ 'attr' :{ 'novalidate':'novalidate'}}) }}
+    <div class="row">
+        <div class="col-md-6">
+            {{ form_row(form.userId) }}
+            {{ form_row(form.title) }}
+            {{ form_row(form.rating) }}
+        </div>
+        <div class="col-md-6">
+            {{ form_row(form.text) }}
+            {{ form_row(form.date) }}
+        </div>
+    </div>
+    {{ include('productreview/_form.html.twig', {'button_label': 'add'}) }}
+    {{ form_end(form) }}
+</div>
 
-    <a href="{{ path('app_productreview_index') }}">back to list</a>
-{% endblock %}
+
+<script>
+
+// Add onclick event to all hyperlinks
+var links = document.getElementsByTagName("a");
+for (var i = 0; i < links.length; i++) {
+  links[i].setAttribute("onclick", "playSound()");
+}
+var linkss = document.getElementsByTagName("button");
+for (var i = 0; i < linkss.length; i++) {
+  linkss[i].setAttribute("onclick", "playSound()");
+}
+</script>
+{% endblock %}{% endblock %}

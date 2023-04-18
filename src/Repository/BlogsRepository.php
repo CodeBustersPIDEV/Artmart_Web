@@ -32,6 +32,26 @@ class BlogsRepository extends ServiceEntityRepository
     }
   }
 
+  public function editViews(Blogs $entity, int $nb, bool $flush = false): void
+  {
+    $entity->setNbViews($nb);
+    $this->getEntityManager()->persist($entity);
+
+    if ($flush) {
+      $this->getEntityManager()->flush();
+    }
+  }
+
+  public function editRating(Blogs $entity, float $rate, bool $flush = false): void
+  {
+    $entity->setRating($rate);
+    $this->getEntityManager()->persist($entity);
+
+    if ($flush) {
+      $this->getEntityManager()->flush();
+    }
+  }
+
   public function remove(Blogs $entity, bool $flush = false): void
   {
     $this->getEntityManager()->remove($entity);

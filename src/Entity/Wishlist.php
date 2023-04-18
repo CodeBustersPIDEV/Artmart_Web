@@ -20,19 +20,19 @@ class Wishlist
     private $wishlistId;
 
     #[ORM\Column(name: "UserID", type: "integer", nullable: true,options:["default"=>"NULL"])]
-    private $userid = NULL;
+    private $userid;
 
     #[ORM\Column(name: "ProductID", type: "integer", nullable: true,options:["default"=>"NULL"])]
-    private $productid = NULL;
+    private $productid;
 
     #[ORM\Column(name: "Date", type: "date", nullable: true,options:["default"=>"NULL"])]
-    private $date = 'NULL';
+    private $date;
 
     #[ORM\Column(name: "Quantity", type: "integer", nullable: true,options:["default"=>"NULL"])]
-    private $quantity = NULL;
+    private $quantity;
 
     #[ORM\Column(name: "Price", type: "float", precision:10, scale:0,nullable: true,options:["default"=>"NULL"])]
-    private $price = NULL;
+    private $price;
 
     public function getWishlistId(): ?int
     {

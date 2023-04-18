@@ -142,7 +142,7 @@
 					<tr>
 						<th>Name</th>
 						<th># of Blogs</th>
-						<th>Actions</th>
+						<th align="middle">Actions</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -153,6 +153,7 @@
 							{{ getNbBlogsPerCat(blogcategory.categoriesId) }}
 						</td>
 						<td>
+							{#
 							<a
 								href="{{
 									path('app_blogcategories_delete', {
@@ -162,15 +163,19 @@
 								class="btn btn-outline-danger"
 								>Delete</a
 							>
-							<a
-								href="{{
-									path('app_blogcategories_edit', {
-										categoriesId: blogcategory.categoriesId
-									})
-								}}"
-								class="btn btn-outline-success"
-								>Edit</a
-							>
+							#}
+							<div class="d-flex justify-content-evenly">
+								{{ include("blogcategories/_delete_form.html.twig") }}
+								<a
+									href="{{
+										path('app_blogcategories_edit', {
+											categoriesId: blogcategory.categoriesId
+										})
+									}}"
+									class="btn btn-outline-success"
+									>Edit</a
+								>
+							</div>
 						</td>
 					</tr>
 					{% else %}
@@ -223,17 +228,14 @@
 						<td>{{ tag.name }}</td>
 						<td>{{ getNbBlogsPerTag(tag.tagsId) }}</td>
 						<td>
-							<a
-								href="{{ path('app_tags_delete', { tagsId: tag.tagsId }) }}"
-								class="btn btn-outline-danger"
-								>Delete</a
-							>
-
-							<a
-								href="{{ path('app_tags_edit', { tagsId: tag.tagsId }) }}"
-								class="btn btn-outline-success"
-								>Edit</a
-							>
+							<div class="d-flex justify-content-evenly">
+								{{ include("tags/_delete_form.html.twig") }}
+								<a
+									href="{{ path('app_tags_edit', { tagsId: tag.tagsId }) }}"
+									class="btn btn-outline-success"
+									>Edit</a
+								>
+							</div>
 						</td>
 					</tr>
 					{% else %}
