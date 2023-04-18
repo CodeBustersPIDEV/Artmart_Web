@@ -9,6 +9,7 @@ parameters:
   file_base_url:
     host: "http://localhost"
     path: "PIDEV/BlogUploads"
+    google_recaptcha_site_key: '%env(GOOGLE_RECAPTCHA_SITE_KEY)%'
 
 services:
   Knp\Component\Pager\PaginatorInterface: '@knp_paginator'
