@@ -31,6 +31,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class BlogsController extends AbstractController
 {
     private $filesystem;
+    private BlogsRepository $blogsRepository;
     private MediaRepository $mediaRepository;
     private HasBlogCategoryRepository $hasBlogCategoryRepository;
     private TagsRepository $tagsRepository;
@@ -38,9 +39,10 @@ class BlogsController extends AbstractController
     private HasTagRepository $hasTagRepository;
     private CommentsRepository $commentsRepository;
 
-    public function __construct(Filesystem $filesystem, MediaRepository $mediaRepository, BlogcategoriesRepository $blogCategoryRepository, HasBlogCategoryRepository $hasBlogCategoryRepository, TagsRepository $tagsRepository, HasTagRepository $hasTagRepository, CommentsRepository $commentsRepository)
+    public function __construct(Filesystem $filesystem, BlogsRepository $blogsRepository, MediaRepository $mediaRepository, BlogcategoriesRepository $blogCategoryRepository, HasBlogCategoryRepository $hasBlogCategoryRepository, TagsRepository $tagsRepository, HasTagRepository $hasTagRepository, CommentsRepository $commentsRepository)
     {
         $this->filesystem = $filesystem;
+        $this->blogsRepository = $blogsRepository;
         $this->mediaRepository = $mediaRepository;
         $this->hasBlogCategoryRepository = $hasBlogCategoryRepository;
         $this->blogCategoryRepository = $blogCategoryRepository;
@@ -208,12 +210,18 @@ class BlogsController extends AbstractController
     public function show(Request $request, Blogs $blog): Response
     {
         $comment = new Comments();
-
+        $newNbViews = $blog->getNbViews() + 1;
+        $this->blogsRepository->editViews($blog, $newNbViews, true);
         $form = $this->createForm(CommentsType::class, $comment);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            $rate = $form->get('rating')->getData();
+            $nbComments = $this->commentsRepository->findCommentsByBlogID($blog->getBlogsId());
+            $oldRating = $blog->getRating() * count($nbComments);
+            $newBlogRating = ($oldRating + $rate) / (count($nbComments) + 1);
             $comment->setBlog($blog);
             $this->commentsRepository->save($comment, true);
+            $this->blogsRepository->editRating($blog, $newBlogRating, true);
             return $this->redirectToRoute('app_blogs_show', ['blogs_ID' => $blog->getBlogsId()], Response::HTTP_SEE_OTHER);
         }
         return $this->renderForm('blogs/show.html.twig', [
