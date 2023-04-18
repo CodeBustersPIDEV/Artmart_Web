@@ -44,7 +44,7 @@
 	}
 </style>
 <div class="comment-card">
-	<div class="col-4">
+	<div class="col-3">
 		{% if comment.author != null %}
 		<img
 			src="{{ comment.author.getPicture() }}"
@@ -59,16 +59,19 @@
 		/>
 		{% endif %}
 	</div>
-	<div class="col-8">
+	<div class="col-9">
 		<div class="comment-details">
-			<h4>{{ comment.author.name }}</h4>
+			<div class="d-flex justify-content-between">
+				<h4>{{ comment.author.name }}</h4>
+				<ul>
+					<li>
+						<i class="fa fa-star"></i>
+						<span style="color: whitesmoke"> {{ comment.rating }}</span>
+					</li>
+				</ul>
+			</div>
 			<p>{{ comment.date ? comment.date|date('Y-m-d') }}</p>
 			<p>{{ comment.content }}</p>
-			<ul>
-				<li>
-					<i class="fa fa-star"></i> <span> {{ comment.rating }}</span>
-				</li>
-			</ul>
 		</div>
 	</div>
 </div>

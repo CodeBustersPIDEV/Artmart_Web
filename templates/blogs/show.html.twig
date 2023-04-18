@@ -52,6 +52,12 @@ content %}
 		max-width: 100%;
 	}
 
+	.infoSpan {
+		font-family: "Aldrich", sans-serif;
+		font-size: 18px;
+		color: #dfdfdf;
+	}
+
 	input:focus,
 	button:focus,
 	textarea:focus {
@@ -177,33 +183,12 @@ content %}
 		margin-bottom: 5px;
 		margin-right: 2px;
 		background-color: #f3f3f3;
-	}
-
-	.post__share {
-		text-align: right;
-	}
-
-	@media only screen and (min-width: 576px) and (max-width: 767px),
-		(max-width: 576px) {
-		.post__share {
-			text-align: left;
-			padding-top: 35px;
-		}
-	}
-
-	.post__share a {
-		display: inline-block;
-		font-size: 16px;
-		color: #707070;
-		margin-left: 30px;
-	}
-
-	.post__share a:first-child {
-		margin-left: 0;
+		border-radius: 50px;
 	}
 
 	.tags__wedget a {
 		display: inline-block;
+		/* border-radius: 50px; */
 		font-family: "Raleway", sans-serif;
 		color: #707070;
 		font-size: 14px;
@@ -285,6 +270,40 @@ content %}
 							</div>
 						</div>
 						<div class="part2 col">
+							<div class="row">
+								<div class="col">
+									<ul>
+										<li>
+											<i
+												class="fa-solid fa-eye small-image fa-2xl"
+												style="color: #ffd700"
+											></i>
+											{% if blog.nbViews != null %}
+											<span class="infoSpan">{{ blog.nbViews }}</span>
+											{% else %}
+											<span class="infoSpan">0</span>
+											{% endif %}
+										</li>
+									</ul>
+								</div>
+
+								<div class="col">
+									<ul>
+										<li>
+											<i
+												class="fa-solid fa-star small-image fa-2xl"
+												style="color: #ffd700"
+											></i>
+											{% if blog.rating != null %}
+											<span class="infoSpan">{{ blog.rating }}</span>
+											{% else %}
+											<span class="infoSpan">0</span>
+											{% endif %}
+										</li>
+									</ul>
+								</div>
+							</div>
+							<br />
 							<p>{{ blog.content }}</p>
 							<div class="post__footer">
 								<div class="row">

@@ -1,3 +1,4 @@
+{# /*
 <style>
 	.cssbuttons-io-button {
 		background: #ec6090;
@@ -52,6 +53,7 @@
 		transform: scale(0.95);
 	}
 </style>
+*/ #}
 <form
 	method="post"
 	action="{{ path('app_tags_delete', { tagsId: tag.tagsId }) }}"
@@ -62,6 +64,9 @@
 		name="_token"
 		value="{{ csrf_token('delete' ~ tag.tagsId) }}"
 	/>
+	<button class="btn btn-outline-danger">Delete</button>
+
+	{#
 	<button class="cssbuttons-io-button">
 		Delete
 		<div class="icon">
@@ -72,4 +77,5 @@
 			</svg>
 		</div>
 	</button>
+	#}
 </form>
