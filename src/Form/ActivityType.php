@@ -21,7 +21,7 @@ class ActivityType extends AbstractType
             ->add('event', EntityType::class, [
                 'class' => Event::class,
                 'choice_label' => 'name',
-                'placeholder' => 'Choose an option:',
+                'placeholder' => 'Choose an option',
             ]);
     }
 

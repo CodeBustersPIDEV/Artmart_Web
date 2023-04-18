@@ -26,15 +26,20 @@ class Feedback
     private $comment;
 
     #[ORM\Column(name: "date", type: "datetime", nullable: false,options:["default"=>"current_timestamp()"])]
-    private $date = 'current_timestamp()';
+    private $date;
 
     #[ORM\ManyToOne(targetEntity: "Event")]
     #[ORM\JoinColumn(name: "eventID", referencedColumnName: "eventID")]
-    private $eventid;
+    private $event;
 
     #[ORM\ManyToOne(targetEntity: "User")]
     #[ORM\JoinColumn(name: "userID", referencedColumnName: "user_ID")]
-    private $userid;
+    private $user;
+
+    public function __construct()
+    {
+        $this->date= new \DateTime();
+    }
 
     public function getFeedbackid(): ?int
     {
@@ -77,26 +82,26 @@ class Feedback
         return $this;
     }
 
-    public function getEventid(): ?Event
+    public function getEvent(): ?Event
     {
-        return $this->eventid;
+        return $this->event;
     }
 
-    public function setEventid(?Event $eventid): self
+    public function setEvent(?Event $event): self
     {
-        $this->eventid = $eventid;
+        $this->event = $event;
 
         return $this;
     }
 
-    public function getUserid(): ?User
+    public function getUser(): ?User
     {
-        return $this->userid;
+        return $this->user;
     }
 
-    public function setUserid(?User $userid): self
+    public function setUser(?User $user): self
     {
-        $this->userid = $userid;
+        $this->user = $user;
 
         return $this;
     }

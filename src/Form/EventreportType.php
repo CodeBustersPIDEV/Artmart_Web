@@ -2,7 +2,9 @@
 
 namespace App\Form;
 
+use App\Entity\Event;
 use App\Entity\Eventreport;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -13,8 +15,11 @@ class EventreportType extends AbstractType
     {
         $builder
             ->add('attendance')
-            ->add('eventid')
-        ;
+            ->add('event', EntityType::class, [
+                'class' => Event::class,
+                'choice_label' => 'name',
+                'placeholder' => 'Choose an option',
+            ]);        ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void
