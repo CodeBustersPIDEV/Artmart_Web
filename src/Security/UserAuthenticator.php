@@ -13,61 +13,85 @@ use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Credentials\PasswordCredentials;
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\Util\TargetPathTrait;
+use Symfony\Component\Security\Core\Exception\AuthenticationException;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Psr\Log\LoggerInterface;
+use Doctrine\ORM\EntityManagerInterface;
+use App\Entity\User;
 
 class UserAuthenticator extends AbstractLoginFormAuthenticator
 {
     use TargetPathTrait;
 
     public const LOGIN_ROUTE = 'app_login';
+    
+    private $entityManager;
 
-    public function __construct(private UrlGeneratorInterface $urlGenerator)
+    public function __construct(private UrlGeneratorInterface $urlGenerator,private LoggerInterface $logger,EntityManagerInterface $entityManager)
     {
+        $this->entityManager = $entityManager;
     }
 
     public function authenticate(Request $request): Passport
     {
-        
-        // Retrieve the user identifier from the request, e.g. the email address
-        $userIdentifier = $request->request->get('username');
+        $userIdentifier = $request->request->get('login')['username'];
+        $password = $request->request->get('login')['password'];
+        if ($userIdentifier === null) {
+            $userIdentifier = 'default_user_identifier'; // provide a default value
+        }
         
         // Define the user loader function
         $userLoader = function ($userIdentifier) {
-            // Load the user from the database or other source
-            $user = $this->UserRepository->findOneByEmail($userIdentifier);
-            
-            // Return the user object or null if the user is not found
-            return $user ?: null;
+            $user = new User();
+            return $user;
         };
-        
+    
         // Create a new UserBadge object with the user loader function
         $userBadge = new UserBadge($userIdentifier, $userLoader);
-        
+    
         // Create a new Passport object with the UserBadge
-        $passport = new Passport(new UserBadge($userIdentifier, $userLoader));
-        
-
-        return new Passport(
-            new UserBadge('username', $username),
-            new PasswordCredentials($request->request->get('password', '')),
-            [
-                new CsrfTokenBadge('authenticate', $request->request->get('_csrf_token')),
-            ]
+        $passport = new Passport(
+            $userBadge,
+            new PasswordCredentials($request->request->get('login')['password']),
+            [new CsrfTokenBadge('authenticate', $request->get('login')['_token'])]
         );
+        return $passport;
     }
-
+    
+    public function onAuthenticationFailure(Request $request, AuthenticationException $exception): Response
+    {
+        $userIdentifier = $request->request->get('login')['username'];
+        $password = $request->request->get('login')['password'];
+    
+        $data = [
+            'message' => sprintf('Authentication failed for user '.$userIdentifier.' with password '.$password.'.'),
+        ];
+        
+        $user = $this->entityManager->getRepository(User::class)->findOneBy(['username' => $userIdentifier]);
+        
+        if($user != null){
+            $hashedPassword = hash('sha256', $password);
+            if($hashedPassword==$user->getPassword()){
+            $session = $request->getSession();
+            $session->set('user_id', $user->getUserId());
+            return new JsonResponse("Connected As ".$user->__toString());}
+                else 
+            return new JsonResponse("Password incorrect");
+        }
+    
+        return new JsonResponse($data, Response::HTTP_UNAUTHORIZED);
+    }
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
         if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
-             if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
-                return new RedirectResponse($targetPath);
-            }
-    
-            return new RedirectResponse($this->urlGenerator->generate('Panel'));
+            return new RedirectResponse($targetPath);
         }
+    
+        return new RedirectResponse($this->urlGenerator->generate('home'));
     }
-
     protected function getLoginUrl(Request $request): string
     {
         return $this->urlGenerator->generate(self::LOGIN_ROUTE);
     }
+
 }

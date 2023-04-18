@@ -14,10 +14,10 @@ class LoginType extends AbstractType
     {
         $builder
             ->add('username',TextType::class, [
-                'label' => 'Username'
+                'label' => 'username'
             ])
             ->add('password', PasswordType::class, [
-                'label' => 'Password'
+                'label' => 'password'
             ])
            ;
     }
