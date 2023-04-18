@@ -1,34 +1,74 @@
-{% extends 'base.html.twig' %}
-
-{% block title %}Comments{% endblock %}
-
-{% block body %}
-    <h1>Comments</h1>
-
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>CommentsId</th>
-                <td>{{ comment.commentsId }}</td>
-            </tr>
-            <tr>
-                <th>Content</th>
-                <td>{{ comment.content }}</td>
-            </tr>
-            <tr>
-                <th>Date</th>
-                <td>{{ comment.date ? comment.date|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-            <tr>
-                <th>Rating</th>
-                <td>{{ comment.rating }}</td>
-            </tr>
-        </tbody>
-    </table>
-
-    <a href="{{ path('app_comments_index') }}">back to list</a>
-
-    <a href="{{ path('app_comments_edit', {'commentsId': comment.commentsId}) }}">edit</a>
-
-    {{ include('comments/_delete_form.html.twig') }}
-{% endblock %}
+<style>
+	.comment-card {
+		background-color: #392534;
+		border-radius: 10px;
+		margin-bottom: 5px;
+		padding: 10px;
+		display: flex;
+		width: 450px;
+		flex-direction: row;
+		margin-top: 8px;
+	}
+	.comment-card img {
+		width: 80px;
+		height: 80px;
+		border-radius: 50%;
+		margin-right: 10px;
+	}
+	.comment-card h4 {
+		font-size: 18px;
+		margin-bottom: 5px;
+	}
+	.comment-card p {
+		font-size: 14px;
+		margin: 5px 0;
+	}
+	.comment-card ul {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+	}
+	.comment-card ul li {
+		font-size: 14px;
+		margin-right: 10px;
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+	}
+	.comment-card ul li i {
+		color: gold;
+		margin-right: 5px;
+	}
+</style>
+<div class="comment-card">
+	<div class="col-4">
+		{% if comment.author != null %}
+		<img
+			src="{{ comment.author.getPicture() }}"
+			alt=""
+			class="templatemo-item"
+		/>
+		{% else %}
+		<img
+			src="{{ asset('assets/User/user.png') }}"
+			alt=""
+			class="templatemo-item"
+		/>
+		{% endif %}
+	</div>
+	<div class="col-8">
+		<div class="comment-details">
+			<h4>{{ comment.author.name }}</h4>
+			<p>{{ comment.date ? comment.date|date('Y-m-d') }}</p>
+			<p>{{ comment.content }}</p>
+			<ul>
+				<li>
+					<i class="fa fa-star"></i> <span> {{ comment.rating }}</span>
+				</li>
+			</ul>
+		</div>
+	</div>
+</div>

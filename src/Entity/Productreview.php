@@ -5,7 +5,7 @@ namespace App\Entity;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Table(name: "productreview",options: [
+#[ORM\Table(name: "productreview", options: [
     'indexes' => [
         'user_ID' => ['columns' => ['user_ID']],
         'ready_product_ID' => ['columns' => ['ready_product_ID']]
@@ -19,22 +19,24 @@ class Productreview
     #[ORM\GeneratedValue(strategy: "IDENTITY")]
     private $reviewId;
 
-    #[ORM\Column(name: "ready_product_ID", type: "integer",nullable: false)]
+    #[ORM\ManyToOne(targetEntity: "Readyproduct")]
+    #[ORM\JoinColumn(name: "ready_product_ID", referencedColumnName: "ready_product_ID", nullable: false)]
     private $readyProductId;
 
-    #[ORM\Column(name: "user_ID", type: "integer",nullable: false)]
+    #[ORM\ManyToOne(targetEntity: "User")]
+    #[ORM\JoinColumn(name: "user_ID", referencedColumnName: "user_ID", nullable: false)]
     private $userId;
 
-    #[ORM\Column(name: "title", type: "string",nullable: false,length:255)]
+    #[ORM\Column(name: "title", type: "string", nullable: false, length: 255)]
     private $title;
 
-    #[ORM\Column(name: "text", type: "text",nullable: false,length:65535)]
+    #[ORM\Column(name: "text", type: "text", nullable: false, length: 65535)]
     private $text;
 
-    #[ORM\Column(name: "rating", type: "float",precision:10, scale:0,nullable: false,length:65535)]
+    #[ORM\Column(name: "rating", type: "float", precision: 10, scale: 0, nullable: false, length: 65535)]
     private $rating;
 
-    #[ORM\Column(name: "date", type: "datetime",options:["default"=>"current_timestamp()"],nullable: false,length:65535)]
+    #[ORM\Column(name: "date", type: "datetime", options: ["default" => "current_timestamp()"], nullable: false, length: 65535)]
     private $date = 'current_timestamp()';
 
     public function getReviewId(): ?int
@@ -42,7 +44,7 @@ class Productreview
         return $this->reviewId;
     }
 
-    public function getReadyProductId(): ?int
+    public function getReadyProductId(): ?Readyproduct
     {
         return $this->readyProductId;
     }
@@ -54,7 +56,7 @@ class Productreview
         return $this;
     }
 
-    public function getUserId(): ?int
+    public function getUserId(): ?User
     {
         return $this->userId;
     }
@@ -114,5 +116,8 @@ class Productreview
         return $this;
     }
 
-
+    public function __toString(): string
+    {
+        return $this->readyProductId;
+    }
 }
