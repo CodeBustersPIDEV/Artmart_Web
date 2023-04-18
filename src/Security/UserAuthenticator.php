@@ -37,16 +37,14 @@ class UserAuthenticator extends AbstractLoginFormAuthenticator
         $userIdentifier = $request->request->get('login')['username'];
         $password = $request->request->get('login')['password'];
         if ($userIdentifier === null) {
-            $userIdentifier = 'default_user_identifier'; // provide a default value
+            $userIdentifier = 'default_user_identifier';
         }
         
-        // Define the user loader function
         $userLoader = function ($userIdentifier) {
             $user = new User();
             return $user;
         };
     
-        // Create a new UserBadge object with the user loader function
         $userBadge = new UserBadge($userIdentifier, $userLoader);
     
         // Create a new Passport object with the UserBadge
@@ -74,7 +72,14 @@ class UserAuthenticator extends AbstractLoginFormAuthenticator
             if($hashedPassword==$user->getPassword()){
             $session = $request->getSession();
             $session->set('user_id', $user->getUserId());
-            return new JsonResponse("Connected As ".$user->__toString());}
+            $session->set('user_name', $user->getName());
+            $session->set('user_email', $user->getEmail());
+            $session->set('user_birthday', $user->getBirthday());
+            $session->set('user_phone', $user->getPhonenumber());
+            $session->set('user_role', $user->getRole());
+            //to Continue
+            return new RedirectResponse($this->urlGenerator->generate('app_home'));
+        }
                 else 
             return new JsonResponse("Password incorrect");
         }
