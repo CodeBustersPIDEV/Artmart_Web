@@ -1,0 +1,30 @@
+{% extends 'baseE.html.twig' %} 
+{% block content %}
+{% block body %}
+	{% include('event/admin/eventBar.html.twig') %}
+
+    <center>
+        {# <h1>Feedback List</h1> #}
+        <br>
+        <a href="{{ path('app_feedback_new') }}" class="btn btn-success">Create New</a>
+    </center>
+
+    <div class="row" style="margin:20px">
+        {% for feedback in feedback %}
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ feedback.rating }}</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">{{ feedback.date ? feedback.date|date('Y-m-d H:i:s') : '' }}</h6>
+                        <p class="card-text">{{ feedback.comment }}</p>
+                        <a href="{{ path('app_feedback_show', {'feedbackid': feedback.feedbackid}) }}" class="btn btn-primary">show</a>
+                        <a href="{{ path('app_feedback_edit', {'feedbackid': feedback.feedbackid}) }}" class="btn btn-secondary">edit</a>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <p>No feedback found</p>
+        {% endfor %}
+    </div>
+{% endblock %}
+{% endblock %}

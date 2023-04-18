@@ -1,0 +1,14 @@
+{% extends 'baseE.html.twig' %} 
+{% block content %}
+{% block body %}
+	{% include('event/admin/eventBar.html.twig') %}
+
+    <h1>Edit Eventreport</h1>
+
+    {{ include('eventreport/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_eventreport_index') }}">back to list</a>
+
+    {{ include('eventreport/_delete_form.html.twig') }}
+{% endblock %}
+{% endblock %}

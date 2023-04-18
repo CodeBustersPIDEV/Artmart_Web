@@ -24,7 +24,7 @@ class Eventreport
 
     #[ORM\ManyToOne(targetEntity: "Event")]
     #[ORM\JoinColumn(name: "eventID", referencedColumnName: "eventID")]
-    private $eventid;
+    private $event;
 
     public function getReportid(): ?int
     {
@@ -43,14 +43,14 @@ class Eventreport
         return $this;
     }
 
-    public function getEventid(): ?Event
+    public function getEvent(): ?Event
     {
-        return $this->eventid;
+        return $this->event;
     }
 
     public function setEventid(?Event $eventid): self
     {
-        $this->eventid = $eventid;
+        $this->event = $eventid;
 
         return $this;
     }

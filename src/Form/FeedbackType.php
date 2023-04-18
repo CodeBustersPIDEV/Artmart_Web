@@ -2,7 +2,11 @@
 
 namespace App\Form;
 
+use App\Entity\Event;
 use App\Entity\Feedback;
+use App\Entity\User;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -14,9 +18,15 @@ class FeedbackType extends AbstractType
         $builder
             ->add('rating')
             ->add('comment')
-            ->add('date')
-            ->add('eventid')
-            ->add('userid')
+            ->add('event', EntityType::class, [
+                'class' => Event::class,
+                'choice_label' => 'name',
+                'placeholder' => 'Choose an option',
+            ])
+            ->add('user', EntityType::class, [
+                'class' => User::class,
+                'placeholder' => 'Choose an option',
+            ])            
         ;
     }
 

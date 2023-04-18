@@ -6,7 +6,7 @@
 <h1>Create new Event</h1>
     <div class="form-container">
 
-        {{ form_start(form) }}
+  {{ form_start(form,{ 'attr' :{ 'novalidate':'novalidate'}}) }}
 
         {{ form_row(form.name) }}
         {{ form_row(form.location) }}
