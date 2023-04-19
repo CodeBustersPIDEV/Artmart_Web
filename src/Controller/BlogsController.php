@@ -18,6 +18,7 @@ use App\Repository\HasBlogCategoryRepository;
 use App\Repository\HasTagRepository;
 use App\Repository\MediaRepository;
 use App\Repository\TagsRepository;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
@@ -140,10 +141,23 @@ class BlogsController extends AbstractController
 
 
     #[Route('/', name: 'app_blogs_index', methods: ['GET'])]
-    public function index(BlogsRepository $blogsRepository): Response
+    public function index(BlogsRepository $blogsRepository, PaginatorInterface $paginator, Request $request): Response
     {
+        $blogs = $blogsRepository->findAll();
+        $searchTerm = $request->query->get('searchTerm');
+        if ($searchTerm) {
+            $blogs = $blogsRepository->findByTerm($searchTerm);
+        }
+
+        $pages = $paginator->paginate(
+            $blogs, // Requête contenant les données à paginer (ici nos articles)
+            $request->query->getInt('page', 1), // Numéro de la page en cours, passé dans l'URL, 1 si aucune page
+            3 // Nombre de résultats par page
+        );
+
         return $this->render('blogs/index.html.twig', [
-            'blogs' => $blogsRepository->findAll(),
+            'blogs' => $pages,
+            'searchTerm' => $searchTerm
         ]);
     }
 

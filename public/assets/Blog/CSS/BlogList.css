@@ -4,13 +4,13 @@
 		align-items: center;
 		flex-wrap: wrap; */
 
-display: flex;
-	flex-direction: row;
-	flex-wrap: wrap;
-	justify-content: space-between;
-	align-items: center;
-	align-content: center;
-	margin-top: -20px;
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+		justify-content: space-between;
+		align-items: center;
+		align-content: center;
+		margin-top: -20px;
 	}
 
 	/* For Tablet View */
@@ -57,6 +57,7 @@ display: flex;
 		position: sticky;
 		z-index: 100;
 		bottom: 0;
+		width: 100%;
 		display: flex;
 		flex-direction: row-reverse;
 		flex-wrap: nowrap;
@@ -65,9 +66,9 @@ display: flex;
 		align-content: flex-start;
 	}
 
-	.post_btn {
+	/* .post_btn {
 		text-decoration: none;
-		width: 125px;
+		width: 135px;
 		background: #2cb3f0;
 		border-radius: 15px;
 		margin: auto;
@@ -77,4 +78,21 @@ display: flex;
 		font-size: 23px;
 		box-shadow: 0 10px 25px -5px rgba(44, 179, 240, 0.6);
 		cursor: pointer;
+	} */
+
+	.link-style {
+		display: inline-block;
+		padding: 10px 20px;
+		margin-right: 20px;
+		border-radius: 4px;
+		color: white;
+		background-color: #43464b;
+		font-weight: bold;
+		text-decoration: none;
+		float: right;
+	}
+
+	.link-style:hover {
+		background-color: #aa336a;
+		color: white;
 	}

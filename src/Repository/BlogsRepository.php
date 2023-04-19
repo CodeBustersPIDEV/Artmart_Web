@@ -86,4 +86,13 @@ class BlogsRepository extends ServiceEntityRepository
       ->getQuery()
       ->getOneOrNullResult();
   }
+
+  public function findByTerm($searchTerm): array
+  {
+    return $this->createQueryBuilder('b')
+      ->where('b.title LIKE :searchTerm')
+      ->setParameter('searchTerm', '%' . $searchTerm . '%')
+      ->getQuery()
+      ->getResult();
+  }
 }
