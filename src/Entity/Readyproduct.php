@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Readyproduct
@@ -27,6 +28,8 @@ class Readyproduct
     #[ORM\GeneratedValue(strategy: "IDENTITY")]
     private $readyProductId;
 
+    #[Assert\NotNull]
+    #[Assert\Positive]
     #[ORM\Column(name: "price", type: "integer", nullable: false)]
     private $price;
 
@@ -60,7 +63,7 @@ class Readyproduct
         return $this->productId;
     }
 
-    public function setProductId(int $productId): self
+    public function setProductId(Product $productId): self
     {
         $this->productId = $productId;
 

@@ -54,6 +54,13 @@ class Product
         return $this->productId;
     }
 
+    public function setProductId(int $productId): self
+    {
+        $this->productId = $productId;
+
+        return $this;
+    }
+
     public function getCategoryId(): ?int
     {
         return $this->categoryId;
