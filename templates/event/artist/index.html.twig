@@ -1,9 +1,9 @@
 {% extends 'baseF.html.twig' %} 
 {% block content %}
 {% block body %}
-	{% include('event/eventBar.html.twig') %}
+	{% include('event/artist/eventBar.html.twig') %}
 
-  <form action="{{ path('app_event_index') }}" method="get">
+  <form action="{{ path('app_event_index_artist') }}" method="get">
     <p style="display:inline-block; margin: 20px;">Connect as</p>
     <select name="userID" onchange="this.form.submit()">
       <option value="" {% if app.request.query.get('userName') is empty %} selected {% endif %} disabled>Choose an option</option>
@@ -14,7 +14,7 @@
   </form>
 
   <center>
-    <form action="{{ path('app_event_index') }}" method="GET">
+    <form action="{{ path('app_event_index_artist') }}" method="GET">
       <div class="form-group">
         <input type="text" id="search-term" name="q" class="form-control" value="{{ searchTerm }}"placeholder="Search..."> 
       </div>
@@ -23,7 +23,7 @@
   
   <div class="select-container">
 
-    <form action="{{ path('app_event_index') }}" method="get">
+    <form action="{{ path('app_event_index_artist') }}" method="get">
       <p style="display:inline-block; margin-right: 10px;">Sort by Name</p>
       <select name="name" onchange="this.form.submit()">
         <option value="" {% if app.request.query.get('name') is empty %} selected {% endif %} disabled>Choose an option</option>
@@ -33,7 +33,7 @@
     </form>
 
       
-    <form action="{{ path('app_event_index') }}" method="get">
+    <form action="{{ path('app_event_index_artist') }}" method="get">
       <p style="display:inline-block; margin-right: 10px;">Sort by Price</p>
       <select name="feeOrder" onchange="this.form.submit()">
         <option value="" disabled {{ app.request.query.get('feeOrder') is empty ? 'selected' : '' }}>Choose an option</option>
@@ -42,7 +42,7 @@
       </select>
     </form>
 
-    <form action="{{ path('app_event_index') }}" method="get">
+    <form action="{{ path('app_event_index_artist') }}" method="get">
       <p style="display:inline-block; margin-right: 10px;">Sort by Type</p>
       <select name="type" onchange="this.form.submit()">
         <option value="" disabled {{ app.request.query.get('type') is empty ? 'selected' : '' }}>Choose an option</option>
@@ -53,7 +53,7 @@
       </select>
     </form>
 
-    <form action="{{ path('app_event_index') }}" method="get">
+    <form action="{{ path('app_event_index_artist') }}" method="get">
       <p style="display:inline-block; margin-right: 10px;">Sort by Status</p>
       <select name="status" onchange="this.form.submit()">
         <option value="" disabled {{ app.request.query.get('status') is empty ? 'selected' : '' }}>Choose an option</option>
@@ -68,7 +68,7 @@
 
   {# <h1>Event List</h1> #}
   <link rel="stylesheet" href="{{ asset('assets/Components/specialOrder.css') }}"/>
-  <a href="{{ path('app_event_new') }}">
+  <a href="{{ path('app_event_new_artist') }}">
     <div data-tooltip="New Event" class="button mid">
       <div class="button-wrapper">
         <div class="text">Create New</div>
@@ -89,8 +89,8 @@
           <div class="card-body">
             <h5 class="card-title">{{ event.name }}</h5>
             <p class="card-text">{{ event.description }}</p>
-            <a href="{{ path('app_event_show', {'eventid': event.eventid}) }}" class="btn btn-primary">Show</a>
-            <a href="{{ path('app_event_edit', {'eventid': event.eventid}) }}" class="btn btn-secondary">Edit</a>
+            <a href="{{ path('app_event_show_artist', {'eventid': event.eventid}) }}" class="btn btn-primary">Show</a>
+            <a href="{{ path('app_event_edit_artist', {'eventid': event.eventid}) }}" class="btn btn-secondary">Edit</a>
           </div>
         </div>
       </div>

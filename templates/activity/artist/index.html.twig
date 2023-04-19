@@ -4,12 +4,12 @@
 
 {% block body %}
 {{ base.NavBar() }}
-{% include('event/eventBar.html.twig') %}
+{% include('event/artist/eventBar.html.twig') %}
 
     <center>
         {# <h1>Activity List</h1> #}
         <br>
-        <a href="{{ path('app_activity_new') }}" class="btn btn-success">Create New</a>
+        <a href="{{ path('app_activity_new_artist') }}" class="btn btn-success">Create New</a>
     </center>
 
     <div class="row row-cols-1 row-cols-md-3 g-4" style="margin:20px">
@@ -21,8 +21,8 @@
                     <p class="card-text">Date: {{ activity.date ? activity.date|date('Y-m-d H:i:s') : '' }}</p>
                     {# <p class="card-text">Title: {{ activity.title }}</p> #}
                     <p class="card-text">Host: {{ activity.host }}</p>
-                    <a href="{{ path('app_activity_show', {'activityid': activity.activityid}) }}" class="btn btn-primary">Show</a>
-                    <a href="{{ path('app_activity_edit', {'activityid': activity.activityid}) }}" class="btn btn-secondary">Edit</a>
+                    <a href="{{ path('app_activity_show_artist', {'activityid': activity.activityid}) }}" class="btn btn-primary">Show</a>
+                    <a href="{{ path('app_activity_edit_artist', {'activityid': activity.activityid}) }}" class="btn btn-secondary">Edit</a>
                 </div>
             </div>
         </div>

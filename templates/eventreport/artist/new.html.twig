@@ -4,11 +4,11 @@
 
 {% block body %}
 {{ base.NavBar() }}
-{% include('event/eventBar.html.twig') %}
+{% include('event/artist/eventBar.html.twig') %}
 
     <h1>Create new Eventreport</h1>
 
     {{ include('eventreport/_form.html.twig') }}
 
-    <a href="{{ path('app_eventreport_index') }}">back to list</a>
+    <a href="{{ path('app_eventreport_index_artist') }}">back to list</a>
 {% endblock %}
