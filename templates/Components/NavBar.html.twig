@@ -128,7 +128,7 @@
 		margin-left: 4px;
 	}
 </style>
-
+	{% set connectedUser = returnConnectedUser() %}
 <nav class="navMenu">
 	<div class="logo">
 		<a href="/">
@@ -143,11 +143,24 @@
 		<a href="/">Home</a>
 		<a href="{{ path('app_blogs_index') }}">Blog</a>
 		<a href="{{ path('app_readyproduct_index') }}">Products</a>
-		<a href="{{ path('app_customproduct_index') }}">Custom Products</a>
+		{% if returnConnectedUser()!= null %}
+
+		{% if connectedUser.role is same as "artist" %}
+				<a href="{{ path('app_customproduct_index') }}">Custom Products</a>
+		{% else %}
+				<a href="{{ path('app_blogs_index') }}">Custom Products</a>
+		{% endif %}
+		{% endif %}
+
 		<a href="{{ path('app_wishlist_index') }}">Orders</a>
 		<a href="{{ path('app_event_index') }}">Events</a>
 		<a href="{{ path('app_user_Profile', {'userId': 55}) }}">Profile</a>
+		{% if returnConnectedUser()!= null %}
+		{% if connectedUser.role is same as "admin" %}
 		<a href="{{ path('app_admin') }}">panel</a>
+		{% endif %}
+		{% endif %}
+
 		<div class="dot"></div>
 	</div>
 	<div class="userButtons">

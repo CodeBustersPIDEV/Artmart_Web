@@ -63,6 +63,6 @@ class AppExtension extends AbstractExtension
 
   public function returnConnectedUser()
   {
-    return $this->connectedUser;
+    return $this->connectedUser??null;
   }
 }
