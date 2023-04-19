@@ -87,7 +87,6 @@ class UserController extends AbstractController
         $addedUser = new User();
         $artist = new Artist();
         $admin = new Admin();
-
         $form = $this->createForm(UserType::class, $user, [
             'is_edit' => false,
         ]);
@@ -95,7 +94,10 @@ class UserController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $role = $form->get('role')->getData();
+            $password=$form->get('password')->getData();
+            $hashedPassword = hash('sha256', $password);
             $user = $form->getData();
+            $user->setPassword($hashedPassword);
             $file = $form->get('file')->getData();
             $entityManager->persist($user);
             $entityManager->flush();
