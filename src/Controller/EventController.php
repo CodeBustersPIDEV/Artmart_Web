@@ -18,7 +18,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 #[Route('/event')]
 class EventController extends AbstractController
 {
-    public function uploadImage(UploadedFile $file, User $user): void
+    public function uploadImage(UploadedFile $file, Event $event): void
     {
         $destinationFilePath = $this->getParameter ('destinationPath');
         $newdestinationFilePath=$this->getParameter ('file_base_url');
@@ -35,7 +35,7 @@ class EventController extends AbstractController
         }
         // Move the uploaded file to the destination
         $file->move($destinationFilePath, $filename);
-        $user->setPicture($filePath.'/'. $filename);
+        $event->setImage($filePath.'/'. $filename);
     }
 
     #[Route('/admin', name: 'app_event_index_admin', methods: ['GET'])]
@@ -97,6 +97,7 @@ class EventController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
 
             $file = $form->get('file')->getData();
+            $event = $form->getData();
             $this->uploadImage($file, $event);
 
             // $imageFile = $form->get('image')->getData();

@@ -1,7 +1,7 @@
 {% extends 'baseF.html.twig' %} 
 {% block content %}
 {% block body %}
-	{% include('event/eventBar.html.twig') %}
+	{% include('event/artist/eventBar.html.twig') %}
 
 <h1>Create new Event</h1>
     <div class="form-container">
@@ -19,31 +19,74 @@
         {{ form_row(form.status) }}
         {{ form_row(form.user) }}        
         {{ form_label(form.image, 'Event Image') }}
-        {{ form_widget(form.image, {'attr': {'style': 'display:none;'}}) }}
+        {# {{ form_widget(form.image, {'attr': {'style': 'display:none;'}}) }}
         {% if customproduct.product.image is defined %}
             <img id="preview-image" style="max-width: 128px" src="{{ asset('/' ~ customproduct.product.image) }}" alt="Event image" onclick="document.getElementById('event_image').click()">
             <span id="image-name"></span>
         {% else %}
             <img id="preview-image" style="max-width: 128px" src="{{ asset('imagec.png') }}" alt="Default event image" onclick="document.getElementById('event_image').click()">
-        {% endif %}
+        {% endif %} #}
+            {{ form_widget(form.image, {'attr': {'class': 'form-control blogImageFile', 'id': form.image.vars.id, 'onchange': 'updatePreviewImage(this)'}}) }}
+
+    <img id="preview-image" style="max-width: 128px">
+    	{% if event.image != null %}
+			<img
+				src="{{ event.image }}"
+				class="img-fluid blogImg"
+				alt="Blog Post Image"
+                id="preview-image" 
+			/>
+			{% else %}
+			<img
+				src="{{ asset('assets/Blog/img/default-product.png') }}"
+				class="img-fluid blogImg"
+				alt="Blog Post Image"
+                id="preview-image" 
+			/>
+			{% endif %}
 
         <script>
-            document.getElementById('event_image').addEventListener('change', function(e) {
-                var fileName = e.target.files[0].name;
-                document.getElementById('image-name').innerHTML = fileName;
+            function updatePreviewImage(input) {
+                var preview = document.getElementById('preview-image');
+                var file = input.files[0];
                 var reader = new FileReader();
-                reader.onload = function (e) {
-                    document.getElementById('preview-image').setAttribute('src', e.target.result);
+
+                reader.onloadend = function () {
+                    preview.src = reader.result;
                 }
-                reader.readAsDataURL(e.target.files[0]);
-            });
+
+                if (file) {
+                    reader.readAsDataURL(file);
+                } else {
+                    preview.src = "";
+                }
+            }
+
+                    // Get the file input field and create a new image element
+        const fileInput = document.getElementById('formFile');
+        const previewImg = document.createElement('img');
+
+        // Listen for changes to the file input field
+        fileInput.addEventListener('change', function() {
+            // Get the selected file and create a new file reader
+            const file = this.files[0];
+            const reader = new FileReader();
+
+            // Set up the file reader to load the image file as a data URL
+            reader.addEventListener('load', function() {
+                previewImg.src = reader.result;
+            }, false);
+
+            // Read the selected file as a data URL
+            if (file) {
+                reader.readAsDataURL(file);
+            }
+
+            // Add the preview image to the form
+            const formGroup = document.querySelector('.form-group.blog-image');
+            formGroup.appendChild(previewImg);
+        });
         </script>
-
-
-
-
-
-
         {{ include('event/_form.html.twig', {'button_label': 'add'}) }}
         {{ form_end(form) }}
         <a href="{{ path('app_event_index_admin') }}">
