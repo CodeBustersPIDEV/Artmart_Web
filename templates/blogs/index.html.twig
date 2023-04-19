@@ -1,6 +1,9 @@
 {% extends 'baseF.html.twig' %} {% block content %} {% import "base.html.twig"
 as base %}
-
+<link
+	rel="stylesheet"
+	href="{{ asset('plugins/fontawesome-free/css/all.min.css') }}"
+/>
 <link rel="stylesheet" href="{{ asset('assets/Blog/CSS/BlogList.css') }}" />
 <style>
 	.articles {
@@ -122,18 +125,58 @@ as base %}
 </form>
 <button
 	type="button"
-	class="btn btn-danger dropdown-toggle"
+	class="btn btn-outline-light dropdown-toggle"
 	data-bs-toggle="dropdown"
 	aria-expanded="false"
 >
-	Action
+	Sort
 </button>
 <ul class="dropdown-menu">
-	<li><a class="dropdown-item" href="#">Action</a></li>
-	<li><a class="dropdown-item" href="#">Another action</a></li>
-	<li><a class="dropdown-item" href="#">Something else here</a></li>
+	<li><a class="dropdown-item" href="#"></a></li>
+	<li class="d-flex">
+		<a
+			class="dropdown-item align-self-center"
+			href="{{ path('app_blogs_index_rating_desc') }}"
+			><i class="fa-solid fa-sort-down"></i> By Rating
+		</a>
+	</li>
+	<li class="d-flex">
+		<a
+			class="dropdown-item align-self-center"
+			href="{{ path('app_blogs_index_rating_asc') }}"
+			><i class="fa-solid fa-sort-up"></i> By Rating
+		</a>
+	</li>
 	<li><hr class="dropdown-divider" /></li>
-	<li><a class="dropdown-item" href="#">Separated link</a></li>
+	<li class="d-flex">
+		<a
+			class="dropdown-item align-self-center"
+			href="{{ path('app_blogs_index_title_desc') }}"
+			><i class="fa-solid fa-sort-down"></i> By Title
+		</a>
+	</li>
+	<li class="d-flex">
+		<a
+			class="dropdown-item align-self-center"
+			href="{{ path('app_blogs_index_title_asc') }}"
+			><i class="fa-solid fa-sort-up"></i> By Title
+		</a>
+	</li>
+	<li><hr class="dropdown-divider" /></li>
+	<li class="d-flex">
+		<a
+			class="dropdown-item align-self-center"
+			href="{{ path('app_blogs_index_Views_desc') }}"
+			>Most Read
+		</a>
+	</li>
+	<li class="d-flex">
+		<a
+			class="dropdown-item align-self-center"
+			href="{{ path('app_blogs_index_Views_asc') }}"
+			>Least Read</a
+		>
+	</li>
 </ul>
 <section class="articles">
 	{% for blog in blogs %}
@@ -169,4 +212,6 @@ as base %}
 	integrity="sha384-qKXV1j0HvMUeCBQ+QVp7JcfGl760yU08IQ+GpUo5hlbpg51QRiuqHAJz8+BrxE/N"
 	crossorigin="anonymous"
 ></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.3/umd/popper.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.2/js/bootstrap.bundle.min.js"></script>
 {% endblock %}

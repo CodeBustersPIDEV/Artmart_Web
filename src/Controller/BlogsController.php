@@ -171,7 +171,137 @@ class BlogsController extends AbstractController
             'searchTerm' => $searchTerm
         ]);
     }
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////Sorting Routes///////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////
+    #[Route('/RatingDesc', name: 'app_blogs_index_rating_desc', methods: ['GET'])]
+    public function indexRatingDown(BlogsRepository $blogsRepository, PaginatorInterface $paginator, Request $request): Response
+    {
+        $blogs = $blogsRepository->findAllDesc();
+        $searchTerm = $request->query->get('searchTerm');
+        if ($searchTerm) {
+            $blogs = $blogsRepository->findByTerm($searchTerm);
+        }
 
+        $pages = $paginator->paginate(
+            $blogs, // Requête contenant les données à paginer (ici nos articles)
+            $request->query->getInt('page', 1), // Numéro de la page en cours, passé dans l'URL, 1 si aucune page
+            3 // Nombre de résultats par page
+        );
+
+        return $this->render('blogs/index.html.twig', [
+            'blogs' => $pages,
+            'searchTerm' => $searchTerm
+        ]);
+    }
+
+    #[Route('/RatingAsc', name: 'app_blogs_index_rating_asc', methods: ['GET'])]
+    public function indexRatingUp(BlogsRepository $blogsRepository, PaginatorInterface $paginator, Request $request): Response
+    {
+        $blogs = $blogsRepository->findAllAsc();
+        $searchTerm = $request->query->get('searchTerm');
+        if ($searchTerm) {
+            $blogs = $blogsRepository->findByTerm($searchTerm);
+        }
+
+        $pages = $paginator->paginate(
+            $blogs, // Requête contenant les données à paginer (ici nos articles)
+            $request->query->getInt('page', 1), // Numéro de la page en cours, passé dans l'URL, 1 si aucune page
+            3 // Nombre de résultats par page
+        );
+
+        return $this->render('blogs/index.html.twig', [
+            'blogs' => $pages,
+            'searchTerm' => $searchTerm
+        ]);
+    }
+
+    #[Route('/TitleDesc', name: 'app_blogs_index_title_desc', methods: ['GET'])]
+    public function indexTitleDown(BlogsRepository $blogsRepository, PaginatorInterface $paginator, Request $request): Response
+    {
+        $blogs = $blogsRepository->findAllTitleDesc();
+        $searchTerm = $request->query->get('searchTerm');
+        if ($searchTerm) {
+            $blogs = $blogsRepository->findByTerm($searchTerm);
+        }
+
+        $pages = $paginator->paginate(
+            $blogs, // Requête contenant les données à paginer (ici nos articles)
+            $request->query->getInt('page', 1), // Numéro de la page en cours, passé dans l'URL, 1 si aucune page
+            3 // Nombre de résultats par page
+        );
+
+        return $this->render('blogs/index.html.twig', [
+            'blogs' => $pages,
+            'searchTerm' => $searchTerm
+        ]);
+    }
+
+    #[Route('/TitleAsc', name: 'app_blogs_index_title_asc', methods: ['GET'])]
+    public function indexTitleUp(BlogsRepository $blogsRepository, PaginatorInterface $paginator, Request $request): Response
+    {
+        $blogs = $blogsRepository->findAllTitleAsc();
+        $searchTerm = $request->query->get('searchTerm');
+        if ($searchTerm) {
+            $blogs = $blogsRepository->findByTerm($searchTerm);
+        }
+
+        $pages = $paginator->paginate(
+            $blogs, // Requête contenant les données à paginer (ici nos articles)
+            $request->query->getInt('page', 1), // Numéro de la page en cours, passé dans l'URL, 1 si aucune page
+            3 // Nombre de résultats par page
+        );
+
+        return $this->render('blogs/index.html.twig', [
+            'blogs' => $pages,
+            'searchTerm' => $searchTerm
+        ]);
+    }
+
+    #[Route('/ViewsDesc', name: 'app_blogs_index_Views_desc', methods: ['GET'])]
+    public function indexViewsDown(BlogsRepository $blogsRepository, PaginatorInterface $paginator, Request $request): Response
+    {
+        $blogs = $blogsRepository->findAllViewsDesc();
+        $searchTerm = $request->query->get('searchTerm');
+        if ($searchTerm) {
+            $blogs = $blogsRepository->findByTerm($searchTerm);
+        }
+
+        $pages = $paginator->paginate(
+            $blogs, // Requête contenant les données à paginer (ici nos articles)
+            $request->query->getInt('page', 1), // Numéro de la page en cours, passé dans l'URL, 1 si aucune page
+            3 // Nombre de résultats par page
+        );
+
+        return $this->render('blogs/index.html.twig', [
+            'blogs' => $pages,
+            'searchTerm' => $searchTerm
+        ]);
+    }
+
+    #[Route('/ViewsAsc', name: 'app_blogs_index_Views_asc', methods: ['GET'])]
+    public function indexViewsUp(BlogsRepository $blogsRepository, PaginatorInterface $paginator, Request $request): Response
+    {
+        $blogs = $blogsRepository->findAllViewsAsc();
+        $searchTerm = $request->query->get('searchTerm');
+        if ($searchTerm) {
+            $blogs = $blogsRepository->findByTerm($searchTerm);
+        }
+
+        $pages = $paginator->paginate(
+            $blogs, // Requête contenant les données à paginer (ici nos articles)
+            $request->query->getInt('page', 1), // Numéro de la page en cours, passé dans l'URL, 1 si aucune page
+            3 // Nombre de résultats par page
+        );
+
+        return $this->render('blogs/index.html.twig', [
+            'blogs' => $pages,
+            'searchTerm' => $searchTerm
+        ]);
+    }
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////Admin Route///////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////
     #[Route('/admin', name: 'app_blogs_admin', methods: ['GET'])]
     public function adminIndex(BlogsRepository $blogsRepository): Response
     {
@@ -187,6 +317,10 @@ class BlogsController extends AbstractController
             return $this->redirectToRoute('app_blogs_index', [], Response::HTTP_SEE_OTHER);
         }
     }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////CRUD Routes///////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     #[Route('/new', name: 'app_blogs_new', methods: ['GET', 'POST'])]
     public function new(Request $request, BlogsRepository $blogsRepository): Response
