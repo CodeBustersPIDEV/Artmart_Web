@@ -24,6 +24,7 @@
   <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
   <!-- Theme style -->
   <link rel="stylesheet" href="dist/css/adminlte.min.css">
+ 
 </head>
 <!--
 `body` tag options:
@@ -45,14 +46,20 @@
       </li>
       <li class="nav-item d-none d-sm-inline-block">
         <a href="{{ path('app_admin') }}"class="nav-link">Home</a>
-   
+        
     </ul>
 
+  {% if app.session.get('user_id') %}	
+  <p>Welcome {{ app.session.get('user_name') }}!</p>
+  <a	class="btn btn-outline-primary mr-2"	href="/logout"	style="--clr: #ffc0cb"><span>Logout</span><i></i></a>
+{% endif %}
+    
     <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">
   
-
+  
       <li class="nav-item">
+      
         <a href="{{ path('app_admin') }}" class="nav-link d-flex align-items-center justify-content-end" style="height: 100%;">
           <div class="logo">
     <img src="{{ asset('assets/ArtMart_Logo.png') }}" class="logo_img" alt="ArtMart Logo" /></div>
@@ -98,15 +105,7 @@
               </p>
             </a>
           
-            <li class="nav-item">
             
-              <a href="{{ path('app_home') }}" class="nav-link">
-                <i class="nav-icon fas fa-copy"></i>
-                <p>
-                  Go Back To Front Page
-            
-                </p>
-              </a>
                 <li class="nav-item">
             <a href="{{ path('app_user_index') }}"   class="nav-link ">
               <i class="nav-icon fas fa-th"></i>
