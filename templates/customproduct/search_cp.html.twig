@@ -1,0 +1,25 @@
+<?php
+require '../Controller/clubC.php';
+
+$clubC = new clubC();
+
+if(isset($_POST['search'])) {
+    $search_query = $_POST['search'];
+    $club = $clubC->chercherClub($search_query);
+} else {
+    $club = $clubC->afficherclub();
+}
+?>
+
+<?php foreach ($club as $club_item): ?>
+    <div class="card-container">
+        <div class="card">
+            <h2><?php echo $club_item['titre']; ?></h2>
+            <p><?php echo $club_item['fondateur']; ?></p>
+            <p><strong>type:</strong> <?php echo $club_item['type']; ?></p>
+            <p><strong>date:</strong> <?php echo $club_item['date']; ?></p>
+            <a style="background-color: red;" href="supprimerclub.php?idclub=<?php echo $club_item['idclub']; ?>">Supprimer</a>
+            <a href="modifierclub.php?idclub=<?php echo $club_item['idclub']; ?>">Modifier</a>
+        </div>
+    </div>
+<?php endforeach; ?>

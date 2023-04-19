@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Controller;
-
+use ReCaptcha\ReCaptcha;
 use App\Entity\Customproduct;
 use App\Entity\Product;
 
@@ -137,14 +137,14 @@ class CustomproductController extends AbstractController
 
 
     #[Route('/stat', name: 'app_customproduct_stat', methods: ['GET'])]
-    public function statindex(EntityManagerInterface $entityManager): Response
+    public function statindex(Request $request,EntityManagerInterface $entityManager): Response
     {
         $sumQueryBuilder = $entityManager
-            ->createQueryBuilder()
-            ->select('p.material as material, SUM(p.weight) as weight_sum')
-            ->from(Product::class, 'p')
-            ->innerJoin(CustomProduct::class, 'cp', 'WITH', 'p.productId = cp.product')
-            ->groupBy('p.material');
+        ->createQueryBuilder()
+        ->select('p.material as material, SUM(p.weight) as weight_sum')
+        ->from(Product::class, 'p')
+        ->innerJoin(CustomProduct::class, 'cp', 'WITH', 'p.productId = cp.product')
+        ->groupBy('p.material');
     
         $weightSums = $sumQueryBuilder->getQuery()->getResult();
     
@@ -466,4 +466,5 @@ class CustomproductController extends AbstractController
         // Redirect to the filtered list of applies with status 'pending', 'done', or 'refused'
         return $this->redirectToRoute('app_apply_pending');
     }
+    
 }
