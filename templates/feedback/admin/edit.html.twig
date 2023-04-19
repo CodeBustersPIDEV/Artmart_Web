@@ -8,8 +8,8 @@
 
     {{ include('feedback/_form.html.twig', {'button_label': 'Update'}) }}
 
-    <a href="{{ path('app_feedback_index') }}">back to list</a>
+    <a href="{{ path('app_feedback_index_admin') }}">back to list</a>
 
-    {{ include('feedback/_delete_form.html.twig') }}
+    {{ include('feedback/admin/_delete_form.html.twig') }}
 {% endblock %}
 {% endblock %}

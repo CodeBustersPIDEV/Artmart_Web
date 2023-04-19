@@ -21,10 +21,10 @@
         {{ form_label(form.image, 'Event Image') }}
         {{ form_widget(form.image, {'attr': {'style': 'display:none;'}}) }}
         {% if customproduct.product.image is defined %}
-            <img id="preview-image" style="max-width: 128px" src="{{ asset('imagescustom/' ~ customproduct.product.image) }}" alt="Event image" onclick="document.getElementById('event_image').click()">
+            <img id="preview-image" style="max-width: 128px" src="{{ asset('/' ~ customproduct.product.image) }}" alt="Event image" onclick="document.getElementById('event_image').click()">
             <span id="image-name"></span>
         {% else %}
-            <img id="preview-image" style="max-width: 128px" src="{{ asset('imagescustom/imagec.png') }}" alt="Default event image" onclick="document.getElementById('event_image').click()">
+            <img id="preview-image" style="max-width: 128px" src="{{ asset('imagec.png') }}" alt="Default event image" onclick="document.getElementById('event_image').click()">
         {% endif %}
 
         <script>
