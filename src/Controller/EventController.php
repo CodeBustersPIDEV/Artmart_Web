@@ -13,9 +13,31 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+
 #[Route('/event')]
 class EventController extends AbstractController
 {
+    public function uploadImage(UploadedFile $file, Event $event): void
+    {
+        $destinationFilePath = $this->getParameter ('destinationPath');
+        $newdestinationFilePath=$this->getParameter ('file_base_url');
+        $filePath = sprintf('%s/%s', $newdestinationFilePath['host'], $newdestinationFilePath['path']);
+        // Get the original filename of the uploaded file
+        $filename = $file->getClientOriginalName();
+        if (!is_uploaded_file($file->getPathname())) {
+            throw new FileException('File was not uploaded via HTTP POST.');
+        }
+
+        if (!is_dir($destinationFilePath)) {
+            // Create the directory
+            mkdir($destinationFilePath, 0777, true);
+        }
+        // Move the uploaded file to the destination
+        $file->move($destinationFilePath, $filename);
+        $event->setImage($filePath.'/'. $filename);
+    }
+
     #[Route('/admin', name: 'app_event_index_admin', methods: ['GET'])]
     public function indexAdmin(EntityManagerInterface $entityManager, EventRepository $eventRepository, PaginatorInterface $paginator, Request $request): Response
     {
@@ -74,22 +96,26 @@ class EventController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $imageFile = $form->get('image')->getData();
-            if ($imageFile) {
-                $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
-                $newFilename = $originalFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
+            $file = $form->get('file')->getData();
+            $event = $form->getData();
+            $this->uploadImage($file, $event);
 
-                try {
-                    $imageFile->move(
-                        $this->getParameter('product_images_directory'),
-                        $newFilename
-                    );
-                } catch (FileException $e) {
-                    // handle exception if something happens during file upload
-                }
+            // $imageFile = $form->get('image')->getData();
+            // if ($imageFile) {
+            //     $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+            //     $newFilename = $originalFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
 
-                $event->setImage($newFilename);
-            }
+            //     try {
+            //         $imageFile->move(
+            //             $this->getParameter('product_images_directory'),
+            //             $newFilename
+            //         );
+            //     } catch (FileException $e) {
+            //         // handle exception if something happens during file upload
+            //     }
+
+            //     $event->setImage($newFilename);
+            // }
             $entityManager->persist($event);
             $entityManager->flush();
 
@@ -161,7 +187,7 @@ class EventController extends AbstractController
     /////////////////////////////////////////////////////
     /////////////////////////////////////////////////////
 
-    #[Route('/', name: 'app_event_index', methods: ['GET'])]
+    #[Route('/artist', name: 'app_event_index_artist', methods: ['GET'])]
     public function index(EntityManagerInterface $entityManager, EventRepository $eventRepository, PaginatorInterface $paginator, Request $request): Response
     {
         $userID = $request->query->get('userID');
@@ -203,7 +229,7 @@ class EventController extends AbstractController
             9 // Nombre de résultats par page
         );
 
-        return $this->render('event/index.html.twig', [
+        return $this->render('event/artist/index.html.twig', [
             'events' => $pages,
             'users' => $users,
             // 'userID' => $userID,
@@ -211,19 +237,19 @@ class EventController extends AbstractController
         ]);
     }
 
-    #[Route('/otherEvents/{id}', name: 'app_event_otherEvents', methods: ['GET'])]
+    #[Route('/artist/otherEvents/{id}', name: 'app_event_otherEvents_artist', methods: ['GET'])]
     public function findOtherEvents(EntityManagerInterface $entityManager, $id): Response
     {
         $events = $entityManager
             ->getRepository(Event::class)
             ->findOtherEvents($id);
 
-        return $this->render('event/index.html.twig', [
+        return $this->render('event/artist/index.html.twig', [
             'events' => $events,
         ]);
     }
 
-    #[Route('/new', name: 'app_event_new', methods: ['GET', 'POST'])]
+    #[Route('/artist/new', name: 'app_event_new_artist', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $event = new Event();
@@ -251,24 +277,24 @@ class EventController extends AbstractController
             $entityManager->persist($event);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_event_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_event_index_artist', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('event/new.html.twig', [
+        return $this->renderForm('event/artist/new.html.twig', [
             'event' => $event,
             'form' => $form,
         ]);
     }
 
-    #[Route('/{eventid}', name: 'app_event_show', methods: ['GET'])]
+    #[Route('/artist/{eventid}', name: 'app_event_show_artist', methods: ['GET'])]
     public function show(Event $event): Response
     {
-        return $this->render('event/show.html.twig', [
+        return $this->render('event/artist/show.html.twig', [
             'event' => $event,
         ]);
     }
 
-    #[Route('/{eventid}/edit', name: 'app_event_edit', methods: ['GET', 'POST'])]
+    #[Route('/artist/{eventid}/edit', name: 'app_event_edit_artist', methods: ['GET', 'POST'])]
     public function edit(Request $request, Event $event, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(EventType::class, $event);
@@ -294,16 +320,16 @@ class EventController extends AbstractController
            
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_event_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_event_index_artist', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('event/edit.html.twig', [
+        return $this->renderForm('event/artist/edit.html.twig', [
             'event' => $event,
             'form' => $form,
         ]);
     }
 
-    #[Route('/{eventid}', name: 'app_event_delete', methods: ['POST'])]
+    #[Route('/artist/{eventid}', name: 'app_event_delete_artist', methods: ['POST'])]
     public function delete(Request $request, Event $event, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$event->getEventid(), $request->request->get('_token'))) {
@@ -311,6 +337,6 @@ class EventController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('app_event_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_event_index_artist', [], Response::HTTP_SEE_OTHER);
     }
 }

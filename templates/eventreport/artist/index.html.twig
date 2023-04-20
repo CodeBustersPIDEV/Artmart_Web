@@ -4,12 +4,12 @@
 
 {% block body %}
 {{ base.NavBar() }}
-{% include('event/eventBar.html.twig') %}   
+{% include('event/artist/eventBar.html.twig') %}   
 
     <center>
         {# <h1>Eventreport index</h1> #}
         <br>
-        <a href="{{ path('app_eventreport_new') }}" class="btn btn-success">Create new</a>
+        <a href="{{ path('app_eventreport_new_artist') }}" class="btn btn-success">Create new</a>
     </center>
 
     <div class="row" style="margin:20px">
@@ -19,8 +19,8 @@
                     <div class="card-body">
                         <h5 class="card-title">Report ID: {{ eventreport.reportid }}</h5>
                         <p class="card-text">Attendance: {{ eventreport.attendance }}</p>
-                        <a href="{{ path('app_eventreport_show', {'reportid': eventreport.reportid}) }}" class="btn btn-primary">Show</a>
-                        <a href="{{ path('app_eventreport_edit', {'reportid': eventreport.reportid}) }}" class="btn btn-secondary">Edit</a>
+                        <a href="{{ path('app_eventreport_show_artist', {'reportid': eventreport.reportid}) }}" class="btn btn-primary">Show</a>
+                        <a href="{{ path('app_eventreport_edit_artist', {'reportid': eventreport.reportid}) }}" class="btn btn-secondary">Edit</a>
                     </div>
                 </div>
             </div>

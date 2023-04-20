@@ -7,8 +7,8 @@
 
     {{ include('participation/_form.html.twig', {'button_label': 'Update'}) }}
 
-    <a href="{{ path('app_participation_index') }}">back to list</a>
+    <a href="{{ path('app_participation_index_admin') }}">back to list</a>
 
-    {{ include('participation/_delete_form.html.twig') }}
+    {{ include('participation/admin/_delete_form.html.twig') }}
 {% endblock %}
 {% endblock %}

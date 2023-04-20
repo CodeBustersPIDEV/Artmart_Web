@@ -26,35 +26,25 @@ class Participation
     #[ORM\GeneratedValue(strategy: "IDENTITY")]
     private $participationid;
 
-    #[ORM\Column(name: "attendanceStatus", type: "string", length:255,nullable: false)]
-    private $attendancestatus = '\'Not attending\'';
-
     #[ORM\Column(name: "registrationDate", type: "datetime", length:255,nullable: true,options:["default"=>"current_timestamp()"])]
     private $registrationdate = 'current_timestamp()';
 
     #[ORM\ManyToOne(targetEntity: "Event")]
     #[ORM\JoinColumn(name: "eventID", referencedColumnName: "eventID")]
-    private $eventid;
+    private $event;
 
     #[ORM\ManyToOne(targetEntity: "User")]
     #[ORM\JoinColumn(name: "userID", referencedColumnName: "user_ID")]
-    private $userid;
+    private $user;
 
     public function getParticipationid(): ?int
     {
         return $this->participationid;
     }
 
-    public function getAttendancestatus(): ?string
+    public function __construct()
     {
-        return $this->attendancestatus;
-    }
-
-    public function setAttendancestatus(?string $attendancestatus): self
-    {
-        $this->attendancestatus = $attendancestatus;
-
-        return $this;
+        $this->registrationdate = new \DateTime();
     }
 
     public function getRegistrationdate(): ?\DateTimeInterface
@@ -69,26 +59,26 @@ class Participation
         return $this;
     }
 
-    public function getEventid(): ?Event
+    public function getEvent(): ?Event
     {
-        return $this->eventid;
+        return $this->event;
     }
 
-    public function setEventid(?Event $eventid): self
+    public function setEvent(?Event $event): self
     {
-        $this->eventid = $eventid;
+        $this->event = $event;
 
         return $this;
     }
 
-    public function getUserid(): ?User
+    public function getUser(): ?User
     {
-        return $this->userid;
+        return $this->user;
     }
 
-    public function setUserid(?User $userid): self
+    public function setUser(?User $user): self
     {
-        $this->userid = $userid;
+        $this->user = $user;
 
         return $this;
     }
