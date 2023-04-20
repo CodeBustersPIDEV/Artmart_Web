@@ -5,11 +5,7 @@
 </svg> back to list</a>
 <br><br>
 {% block title %}
-        <h4>Product <em>reviews</em></h4>
-        <a href="{{ path('app_productreview_new') }}" class="link-style1"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
-         <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"/>
-            </svg> add review</a>
-            <br><br><br>
+        <h4>Product <em>details</em></h4>
 {% endblock %}
 
 
@@ -275,41 +271,6 @@
   color: white;
 }
 
-.link-style1 {
-  display: inline-block;
-  padding: 10px 20px;
-  margin-right: 37px;
-  margin-top: -62px;
-  border-radius: 4px;
-  color: white;
-  background-color: #43464B;
-  font-weight: bold;
-  text-decoration: none;
-  float: right;
-}
-
-.link-style1:hover {
-  background-color: #3e8e41;
-  color: white;
-}
-
-.link-style1-cancel {
-  display: inline-block;
-  padding: 5px 10px;
-  margin-right: 20px;
-  border-radius: 4px;
-  color: white;
-  background-color: #43464B;
-  font-weight: bold;
-  text-decoration: none;
-  float: center;
-}
-
-.link-style1-cancel:hover {
-  background-color: #AA336A;
-  color: white;
-}
-
 .form-control {
     width: 20%;
 }
@@ -395,49 +356,65 @@ body .page-content {
         <div class="page-content">
 
 <div class="ready-card">
-    <img src="{{ asset('imagescustom/' ~ productreviews[0].readyProductId.productId.image) }}" alt="{{ productreviews[0].readyProductId.productId.name }} image" />
+    <img src="{{ asset('imagescustom/' ~ readyproduct.productId.image) }}" alt="{{ readyproduct.productId.name }} image" />
     <div>
-        <p class="pill">{{ productreviews[0].readyProductId.productId.category }}</p>
+        <p class="pill">{{ readyproduct.productId.category }}</p>
     </div>
-    <h2>{{ productreviews[0].readyProductId.productId.name }}</h2>
-    <p><strong>Made by:</strong> {{productreviews[0].readyProductId.userId }}</p>
-        <p><strong>Weight:</strong> {{ productreviews[0].readyProductId.productId.weight }} Kg</p>
-        <p><strong>Material:</strong> {{ productreviews[0].readyProductId.productId.material }}</p>
-        <p><strong>Dimensions:</strong> {{ productreviews[0].readyProductId.productId.dimensions }}</p>
-        <p>{{ productreviews[0].readyProductId.productId.description }}</p>
+    <h2>{{ readyproduct.productId.name }}</h2>
+    <p><strong>Made by:</strong> {{ readyproduct.userId }}</p>
+        <p><strong>Weight:</strong> {{ readyproduct.productId.weight }} Kg</p>
+        <p><strong>Material:</strong> {{ readyproduct.productId.material }}</p>
+        <p><strong>Dimensions:</strong> {{ readyproduct.productId.dimensions }}</p>
+        <br>
+        <p>{{ readyproduct.productId.description }}</p>
+        <br>
         <p><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bookmark-star-fill" viewBox="0 0 16 16">
                       <path fill-rule="evenodd" d="M2 15.5V2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.74.439L8 13.069l-5.26 2.87A.5.5 0 0 1 2 15.5zM8.16 4.1a.178.178 0 0 0-.32 0l-.634 1.285a.178.178 0 0 1-.134.098l-1.42.206a.178.178 0 0 0-.098.303L6.58 6.993c.042.041.061.1.051.158L6.39 8.565a.178.178 0 0 0 .258.187l1.27-.668a.178.178 0 0 1 .165 0l1.27.668a.178.178 0 0 0 .257-.187L9.368 7.15a.178.178 0 0 1 .05-.158l1.028-1.001a.178.178 0 0 0-.098-.303l-1.42-.206a.178.178 0 0 1-.134-.098L8.16 4.1z"/>
                     </svg> {{ averageRating }}</p>
     <br>
     <div class="align-price">
-        <p>{{ productreviews[0].readyProductId.price }} TND</p>
+        <p>{{ readyproduct.price }} TND</p>
     </div>
     <div class="align">
     
-        <a href="{{ path('app_readyproduct_show', {'readyProductId': productreviews[0].readyProductId.productId}) }}">order</a>
-    </div>
-<div>
-{% for productreview in productreviews %}
-<div class="review-card">
-    <p class="date"><strong>Posted:</strong> {{ productreview.date ? productreview.date|date('Y-m-d H:i:s') : '' }}</p>
-    <h2>{{ productreview.title }}</h2>
-    <p><strong>By:</strong> {{ productreview.userId }}</p>
-        <p>{{ productreview.text }}</p>
-    <br>
-    <div class="align-price">
-        <p><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bookmark-star-fill" viewBox="0 0 16 16">
-                      <path fill-rule="evenodd" d="M2 15.5V2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.74.439L8 13.069l-5.26 2.87A.5.5 0 0 1 2 15.5zM8.16 4.1a.178.178 0 0 0-.32 0l-.634 1.285a.178.178 0 0 1-.134.098l-1.42.206a.178.178 0 0 0-.098.303L6.58 6.993c.042.041.061.1.051.158L6.39 8.565a.178.178 0 0 0 .258.187l1.27-.668a.178.178 0 0 1 .165 0l1.27.668a.178.178 0 0 0 .257-.187L9.368 7.15a.178.178 0 0 1 .05-.158l1.028-1.001a.178.178 0 0 0-.098-.303l-1.42-.206a.178.178 0 0 1-.134-.098L8.16 4.1z"/>
-                    </svg> {{ productreview.rating }} / 10</p>
+        <a href="{{ path('app_readyproduct_edit', {'readyProductId': readyproduct.productId}) }}">edit</a>
     </div>
 </div>
-{% endfor %}
-</div>
-</div>
-<a href="{{ path('app_productreview_new') }}" class="link-style"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
-         <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"/>
-            </svg> add review</a>
                 </div>
               </div>
             </div>
           </div>
+{% endblock %}
+
+
+
+{% block body %}
+    <h1>Readyproduct</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>ReadyProductId</th>
+                <td>{{ readyproduct.readyProductId }}</td>
+            </tr>
+            <tr>
+                <th>Price</th>
+                <td>{{ readyproduct.price }}</td>
+            </tr>
+            <tr>
+                <th>ProductId</th>
+                <td>{{ readyproduct.productId }}</td>
+            </tr>
+            <tr>
+                <th>UserId</th>
+                <td>{{ readyproduct.userId }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_readyproduct_index') }}">back to list</a>
+
+    <a href="{{ path('app_readyproduct_edit', {'readyProductId': readyproduct.readyProductId}) }}">edit</a>
+
+    {{ include('readyproduct/_delete_form.html.twig') }}
 {% endblock %}
