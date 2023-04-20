@@ -145,8 +145,10 @@
 		<a href="{{ path('app_readyproduct_index') }}">Products</a>
 		<a href="{{ path('app_customproduct_index') }}">Custom Products</a>
 		<a href="{{ path('app_wishlist_index') }}">Orders</a>
-		<a href="{{ path('app_event_index_artist') }}">Events</a>
-		<a href="{{ path('app_user_Profile', {'userId': 55}) }}">Profile</a>
+		<a href="{{ path('app_event_index') }}">Events</a>
+		{% if app.session.get('user_id') %}	
+		<a href="{{ path('app_user_Profile', {'userId': app.session.get('user_id')}) }}">Profile</a>
+   		{% endif %}
 		<a href="{{ path('app_admin') }}">panel</a>
 		<div class="dot"></div>
 	</div>

@@ -20,7 +20,8 @@ class EditPwdController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $Pwd=$form->get('password')->getData();
-            $user->setPassword($Pwd);
+            $hashedPassword = hash('sha256', $Pwd);
+            $user->setPassword($hashedPassword);
             $entityManager->persist($user);
             $entityManager->flush();
             return $this->redirectToRoute('app_user_Profile', ['userId' => $user->getUserId()], Response::HTTP_SEE_OTHER);
