@@ -143,24 +143,16 @@
 		<a href="/">Home</a>
 		<a href="{{ path('app_blogs_index') }}">Blog</a>
 		<a href="{{ path('app_readyproduct_index') }}">Products</a>
-		{% if returnConnectedUser()!= null %}
-
-		{% if connectedUser.role is same as "artist" %}
+		{% if app.session.get('user_id') %}
+			{% if app.session.get('user_role') == "client" %}
 				<a href="{{ path('app_customproduct_index') }}">Custom Products</a>
-		{% else %}
-				<a href="{{ path('app_blogs_index') }}">Custom Products</a>
+				<a href="{{ path('app_wishlist_index') }}">Shopping Cart</a>
+			{% endif %}			
+			{% if app.session.get('user_role') == "admin" %}
+				<a href="{{ path('app_admin') }}">Admin Panel</a>
+			{% endif %}
+			<a href="{{ path('app_user_Profile', {'userId': app.session.get('user_id')}) }}">Profile</a>
 		{% endif %}
-		{% endif %}
-
-		<a href="{{ path('app_wishlist_index') }}">Orders</a>
-		<a href="{{ path('app_event_index') }}">Events</a>
-		{% if app.session.get('user_id') %}	
-		<a href="{{ path('app_user_Profile', {'userId': app.session.get('user_id')}) }}">Profile</a>
-   		{% endif %}
-		<a href="{{ path('app_admin') }}">panel</a>
-		{% endif %}
-		{% endif %}
-
 		<div class="dot"></div>
 	</div>
 	<div class="userButtons">

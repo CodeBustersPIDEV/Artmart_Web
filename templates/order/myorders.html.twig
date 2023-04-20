@@ -3,7 +3,7 @@
 {% block content %}
 
 {% block title %}
-        <h4><em>My</em> Shopping Cart</h4>
+        <h4><em>My</em> Orders</h4>
 <br><br>
 {% endblock %}
 
@@ -253,43 +253,45 @@ th,td{
 {% endblock %}
 
 {% block body %}
-<a href="{{ path('app_readyproduct_index') }}" class="link-style"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
-  <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"/>
-</svg> Browse Marketplace</a>
-<a href="{{ path('my_order_index') }}" class="link-style"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
-  <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"/>
-</svg> My Orders</a>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Product Ref</th>
-                <th>Date</th>
-                <th>Quantity</th>
-                <th>Price</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for wishlist in wishlists %}
-            <tr>
-                <td>000P0{{ wishlist.productid }}</td>
-                <td>{{ wishlist.date ? wishlist.date|date('Y-m-d') : '' }}</td>
-                <td>{{ wishlist.quantity }}</td>
-                <td>{{ wishlist.price }} DT</td>
-                <td>
-                    <a href="/readyproduct/{{wishlist.productid}}">Show</a>
-                    <a href="/wishlist/delete/{{wishlist.wishlistId}}">Remove</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="7">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-    <a href="{{ path('my_order_index') }}" class="link-style"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
-  <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"/>
-</svg> Checkout</a>
+    <table class="table table-hover table-bordered">
+		<thead>
+			<tr>
+				<th>Order ID</th>
+				<th>Quantity</th>
+				<th>Shippingaddress</th>
+				<th>Order Date</th>
+				<th>Total cost</th>
+				<th>Status</th>
+				<th>Options</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for order in orders  %}
+				<tr>
+					<td>{{ order.orderId }}</td>
+					<td>{{ order.quantity }}</td>
+					<td>{{ order.shippingaddress }}</td>
+					<td>{{ order.orderdate ? order.orderdate|date('Y-m-d') : '' }}</td>
+					<td>{{ order.totalcost }}</td>
+          <td>{{ order.status }}</td>
+					<td>
+						<a href="{{ path('app_order_show', { orderId: order.orderId }) }}">
+							<button class="btn3">
+								<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewbox="0 0 16 16">
+									<path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+									<path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+								</svg>
+								Info
+							</button>
+						</a>
+					</td>
+			{% else %}
+				<tr>
+					<td colspan="6">no records found</td>
+				</tr>
+			{% endfor %}
+				</tr>
+		</tbody>
+	</table>
 {% endblock %}
 {% endblock %}

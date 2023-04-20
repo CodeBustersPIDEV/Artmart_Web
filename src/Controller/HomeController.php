@@ -8,6 +8,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Customproduct;
 use App\Entity\User;
+use App\Entity\Readyproduct;
 use App\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
@@ -29,7 +30,8 @@ class HomeController extends AbstractController
 
     #[Route('/', name: 'app_home')]
     public function index(EntityManagerInterface $entityManager): Response
-    { $queryBuilder = $entityManager
+    { 
+        $queryBuilder = $entityManager
         ->getRepository(Readyproduct::class)
         ->createQueryBuilder('c')
         ->innerJoin('c.productId', 'p');

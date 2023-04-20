@@ -18,10 +18,6 @@ class AppExtension extends AbstractExtension
   private HasBlogCategoryRepository $hasBlogCategoryRepository;
   private User $connectedUser;
 
-
-
-
-
   public function __construct(SessionInterface $session, UserRepository $userRepository, MediaRepository $MediaRepository, HasTagRepository $hasTagRepository, HasBlogCategoryRepository $hasBlogCategoryRepository)
   {
     $this->MediaRepository = $MediaRepository;

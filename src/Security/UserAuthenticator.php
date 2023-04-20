@@ -73,10 +73,6 @@ class UserAuthenticator extends AbstractLoginFormAuthenticator
             if($hashedPassword==$user->getPassword()){
             $session = $request->getSession();
             $session->set('user_id', $user->getUserId());
-            $session->set('user_name', $user->getName());
-            $session->set('user_email', $user->getEmail());
-            $session->set('user_birthday', $user->getBirthday());
-            $session->set('user_phone', $user->getPhonenumber());
             $session->set('user_role', $user->getRole());
 
             if ($user->getRole()=='client'||$user->getRole()=='artist'){
