@@ -131,7 +131,7 @@
 /* Search Bar */
 .form-control {
   display: inline-block;
-  width: 70%;
+  width: 30%;
   padding: 6px 12px;
   font-size: 14px;
   font-weight: 400;
@@ -206,8 +206,8 @@
 
 {% block body %}
 
-
-<form action="{{ path('app_customproduct_index') }}" method="GET">
+<center>
+<form  action="{{ path('app_customproduct_index') }}" method="GET">
     <div class="form-group">
     
       <input type="text" id="search-term" name="q" class="form-control" value="{{ searchTerm }}" placeholder="Search...">
@@ -216,7 +216,7 @@
 
     
 
-</form>
+</form></center>
 
 
 

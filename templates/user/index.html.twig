@@ -49,8 +49,14 @@
 			<td>{{ user.username }}</td>
 
 			<td>
-				<a class="btn btn-outline-primary mr-2" href="{{ path('app_user_show', { userId: user.userId }) }}">show</a>
-				<a class="btn btn-outline-primary mr-2" href="{{ path('app_user_edit', { userId: user.userId }) }}">edit</a>
+					<a class="btn btn-outline-primary mr-2" href="{{ path('app_user_show', { userId: user.userId }) }}">Show</a>
+					<a class="btn btn-outline-primary mr-2" href="{{ path('app_user_edit', { userId: user.userId }) }}">Edit</a>
+				{% if user.blocked == 0 %}	
+					<a class="btn btn-outline-primary mr-2" href="{{ path('app_user_block', { userId: user.userId }) }}">Block</a>
+				{% else %}
+					<a class="btn btn-outline-primary mr-2" href="{{ path('app_user_unblock', { userId: user.userId }) }}">Unblock</a>
+				{% endif %}
+
 			</td>
 		</tr>
 		{% else %}
