@@ -222,14 +222,6 @@
 
 
 {% set totalWeight = customproducts|reduce((total, customproduct) => total + customproduct.product.weight, 0) %}
-
-{% if customproducts.getTotalItemCount() > 0 %}
-<p  style=" color: #fff;">Total weight of displayed Products: {{ totalWeight }}</p>
-<a href="{{ path('app_customproduct_index', {'order': 'name'}) }}" class="orderby-link">Order by Name</a>
-<a href="{{ path('app_customproduct_index', {'order': 'weight'}) }}" class="orderby-link">Order by Weight</a>
-     
-  
-    
 <link rel="stylesheet" href="{{ asset('assets/Components/specialOrder.css') }}"/>
 	<a href="{{ path('app_customproduct_newnew') }}">
 		<div data-tooltip="New Product" class="button mid">
@@ -245,6 +237,14 @@
 	</a>
 <a href="{{ path('app_apply_clients') }}" class="link-style">Demands</a>
 <a href="{{ path('app_apply_clientdone') }}" class="link-style">Check Progress</a>
+{% if customproducts.getTotalItemCount() > 0 %}
+<p  style=" color: #fff;">Total weight of displayed Products: {{ totalWeight }}</p>
+<a href="{{ path('app_customproduct_index', {'order': 'name'}) }}" class="orderby-link">Order by Name</a>
+<a href="{{ path('app_customproduct_index', {'order': 'weight'}) }}" class="orderby-link">Order by Weight</a>
+     
+  
+    
+
 
 
 
@@ -276,7 +276,7 @@
 	  </ul>
       
 	 {{ knp_pagination_render(customproducts) }}
-<a href="{{ path('app_customproduct_artist') }}">Go to artist page</a>
+
 
 {% else %}
     <p>No custom products found.</p>
