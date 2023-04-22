@@ -14,28 +14,15 @@ use Symfony\Component\Routing\Annotation\Route;
 class WishlistController extends AbstractController
 {
     #[Route('/', name: 'app_wishlist_index', methods: ['GET'])]
-    public function index(EntityManagerInterface $entityManager,Request $request): Response
+    public function index(EntityManagerInterface $entityManager): Response
     {
-        $session = $request->getSession();
-        $queryBuilder = $entityManager
-        ->getRepository(Wishlist::class)
-        ->createQueryBuilder('w')->where('w.userid LIKE :searchTerm')
-        ->setParameter('searchTerm', '%' . $session->get('user_id') . '%');
-
-        $wishlists = $queryBuilder->getQuery()->getResult();
+        $wishlists = $entityManager
+            ->getRepository(Wishlist::class)
+            ->findAll();
 
         return $this->render('wishlist/index.html.twig', [
             'wishlists' => $wishlists,
         ]);
-    }
-    
-    #[Route('/delete/{wishlistId}', name: 'app_wishlist_delete_now', methods: ['GET'])]
-    public function deleteNow(Request $request, int $wishlistId, EntityManagerInterface $entityManager): Response
-    {
-        $wishlist = $entityManager->getRepository(Wishlist::class)->find($wishlistId);
-        $entityManager->remove($wishlist);
-        $entityManager->flush();
-        return $this->redirectToRoute('app_wishlist_index');
     }
 
     #[Route('/new', name: 'app_wishlist_new', methods: ['GET', 'POST'])]
@@ -94,5 +81,4 @@ class WishlistController extends AbstractController
 
         return $this->redirectToRoute('app_wishlist_index', [], Response::HTTP_SEE_OTHER);
     }
-
 }

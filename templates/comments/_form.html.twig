@@ -82,7 +82,6 @@
 	</div>
 </div>
 
-{#
 <div class="form-group">
 	{#
 	{{ form_label(form.author, null, {'label_attr': {'class': 'form-label inputLabel'
@@ -93,12 +92,8 @@
 
 
 
-
-
-	}}) }}
+	}}) }} #}
 	{{ form_widget(form.author, {'attr': {'class': 'form-control select2 inputBg', 'id': 'author'
-
-
 
 
 
@@ -108,7 +103,6 @@
 
 	}}) }}
 </div>
-#}
 {{ form_widget(form._token) }}
 <button type="submit" class="btn btn-outline-light" id="submitBtn">
 	{{ button_label|default('submit') }}</button

@@ -26,10 +26,10 @@
         </tbody>
     </table>
 
-    <a href="{{ path('app_feedback_index_admin') }}">back to list</a>
+    <a href="{{ path('app_feedback_index') }}">back to list</a>
 
-    <a href="{{ path('app_feedback_edit_admin', {'feedbackid': feedback.feedbackid}) }}">edit</a>
+    <a href="{{ path('app_feedback_edit', {'feedbackid': feedback.feedbackid}) }}">edit</a>
 
-    {{ include('feedback/admin/_delete_form.html.twig') }}
+    {{ include('feedback/_delete_form.html.twig') }}
 {% endblock %}
 {% endblock %}

@@ -86,19 +86,19 @@ class ActivityController extends AbstractController
 //////////////////////////////////////////////
 //////////////////////////////////////////////
 //////////////////////////////////////////////
-    #[Route('/artist', name: 'app_activity_index_artist', methods: ['GET'])]
+    #[Route('/', name: 'app_activity_index', methods: ['GET'])]
     public function index(EntityManagerInterface $entityManager): Response
     {
         $activities = $entityManager
             ->getRepository(Activity::class)
             ->findAll();
 
-        return $this->render('activity/artist/index.html.twig', [
+        return $this->render('activity/index.html.twig', [
             'activities' => $activities,
         ]);
     }
 
-    #[Route('/artist/new', name: 'app_activity_new_artist', methods: ['GET', 'POST'])]
+    #[Route('/new', name: 'app_activity_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $activity = new Activity();
@@ -109,24 +109,24 @@ class ActivityController extends AbstractController
             $entityManager->persist($activity);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_activity_index_artist', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_activity_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('activity/artist/new.html.twig', [
+        return $this->renderForm('activity/new.html.twig', [
             'activity' => $activity,
             'form' => $form,
         ]);
     }
 
-    #[Route('/artist/{activityid}', name: 'app_activity_show_artist', methods: ['GET'])]
+    #[Route('/{activityid}', name: 'app_activity_show', methods: ['GET'])]
     public function show(Activity $activity): Response
     {
-        return $this->render('activity/artist/show.html.twig', [
+        return $this->render('activity/show.html.twig', [
             'activity' => $activity,
         ]);
     }
 
-    #[Route('/artist/{activityid}/edit', name: 'app_activity_edit_artist', methods: ['GET', 'POST'])]
+    #[Route('/{activityid}/edit', name: 'app_activity_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Activity $activity, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(ActivityType::class, $activity);
@@ -135,16 +135,16 @@ class ActivityController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_activity_index_artist', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_activity_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('activity/artist/edit.html.twig', [
+        return $this->renderForm('activity/edit.html.twig', [
             'activity' => $activity,
             'form' => $form,
         ]);
     }
 
-    #[Route('/artist/{activityid}', name: 'app_activity_delete_artist', methods: ['POST'])]
+    #[Route('/{activityid}', name: 'app_activity_delete', methods: ['POST'])]
     public function delete(Request $request, Activity $activity, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$activity->getActivityid(), $request->request->get('_token'))) {
@@ -152,6 +152,6 @@ class ActivityController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('app_activity_index_artist', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_activity_index', [], Response::HTTP_SEE_OTHER);
     }
 }

@@ -211,10 +211,11 @@
         {{ form_label(loginForm.password) }}
         {{ form_widget(loginForm.password, {'attr': {'class': 'form-control'}}) }}
     </div>
+   
   <br><br>
 <div class="button" style="text-align: center">
 <button type="submit" class="btn btn-outline-primary mr-2" id="submitBtn">
-{{ button_label|default('Sign in') }}
+{{ button_label|default('Post') }}
 </button>
 </div>
 {{ form_end(loginForm) }}

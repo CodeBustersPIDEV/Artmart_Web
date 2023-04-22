@@ -50,11 +50,6 @@
    
     </ul>
 
-    {% if app.session.get('user_id') %}	
-  <p>Welcome {{ app.session.get('user_name') }}!</p>
-  <a	class="btn btn-outline-primary mr-2"	href="/logout"	style="--clr: #ffc0cb"><span>Logout</span><i></i></a>
-{% endif %}
-    
   <!-- Right navbar links -->
 
   <ul class="navbar-nav ml-auto">
@@ -105,7 +100,14 @@
               </p>
             </a>
           
-           
+            <li class="nav-item">
+              <a href="{{ path('app_home') }}" class="nav-link">
+                <i class="nav-icon fas fa-copy"></i>
+                <p>
+                  Go Back To Front Page
+            
+                </p>
+              </a>
           <li class="nav-item">
             <a href="#"  class="nav-link active ">
               <i class="nav-icon fas fa-th"></i>

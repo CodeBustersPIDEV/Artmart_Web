@@ -69,29 +69,21 @@ class UserAuthenticator extends AbstractLoginFormAuthenticator
         
         if($user != null){
             $hashedPassword = hash('sha256', $password);
-          if($user->isEnabled() && !$user->isBlocked() ){
             if($hashedPassword==$user->getPassword()){
             $session = $request->getSession();
             $session->set('user_id', $user->getUserId());
+            $session->set('user_name', $user->getName());
+            $session->set('user_email', $user->getEmail());
+            $session->set('user_birthday', $user->getBirthday());
+            $session->set('user_phone', $user->getPhonenumber());
             $session->set('user_role', $user->getRole());
-
-            if ($user->getRole()=='client'||$user->getRole()=='artist'){
+            //to Continue
             return new RedirectResponse($this->urlGenerator->generate('app_home'));
-        }elseif($user->getRole()=='admin')
-        {
-            return new RedirectResponse($this->urlGenerator->generate('app_admin'));
-
-        }else 
+        }
+                else 
             return new JsonResponse("Password incorrect");
-        }}
-        elseif(!$user->isEnabled()){
-            
-            return new JsonResponse("your account is not activated");
-        } elseif($user->isBlocked()){
-            
-            return new JsonResponse("your account is blocked");
         }
-        }
+    
         return new JsonResponse($data, Response::HTTP_UNAUTHORIZED);
     }
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response

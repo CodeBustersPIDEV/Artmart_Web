@@ -12,16 +12,20 @@
                 <td>{{ participation.participationid }}</td>
             </tr>
             <tr>
+                <th>Attendancestatus</th>
+                <td>{{ participation.attendancestatus }}</td>
+            </tr>
+            <tr>
                 <th>Registrationdate</th>
                 <td>{{ participation.registrationdate ? participation.registrationdate|date('Y-m-d H:i:s') : '' }}</td>
             </tr>
         </tbody>
     </table>
 
-    <a href="{{ path('app_participation_index_admin') }}">back to list</a>
+    <a href="{{ path('app_participation_index') }}">back to list</a>
 
-    <a href="{{ path('app_participation_edit_admin', {'participationid': participation.participationid}) }}">edit</a>
+    <a href="{{ path('app_participation_edit', {'participationid': participation.participationid}) }}">edit</a>
 
-    {{ include('participation/admin/_delete_form.html.twig') }}
+    {{ include('participation/_delete_form.html.twig') }}
 {% endblock %}
 {% endblock %}

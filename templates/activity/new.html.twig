@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %} 
+{% import "base.html.twig" as base %}
+{% block title %}New Activity{% endblock %}
+
+{% block body %}
+{{ base.NavBar() }}
+{% include('event/eventBar.html.twig') %}
+
+    <h1>Create new Activity</h1>
+
+    {{ include('activity/_form.html.twig') }}
+
+    <a href="{{ path('app_activity_index') }}">back to list</a>
+{% endblock %}

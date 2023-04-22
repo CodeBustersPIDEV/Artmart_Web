@@ -15,20 +15,20 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Bridge\Twig\Mime\TemplatedEmail;
-use Symfony\Component\Mime\Address;
-use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+
 #[Route('/user')]
 class UserController extends AbstractController
 {
 
     public function uploadImage(UploadedFile $file, User $user): void
     {
-        $destinationFilePath = $this->getParameter('destinationPath');
-        $newdestinationFilePath = $this->getParameter('file_base_url');
+        $destinationFilePath = $this->getParameter ('destinationPath');
+        $newdestinationFilePath=$this->getParameter ('file_base_url');
         $filePath = sprintf('%s/%s', $newdestinationFilePath['host'], $newdestinationFilePath['path']);
         // Get the original filename of the uploaded file
         $filename = $file->getClientOriginalName();
@@ -42,7 +42,7 @@ class UserController extends AbstractController
         }
         // Move the uploaded file to the destination
         $file->move($destinationFilePath, $filename);
-        $user->setPicture($filePath . '/' . $filename);
+        $user->setPicture($filePath.'/'. $filename);
     }
 
 
@@ -81,12 +81,13 @@ class UserController extends AbstractController
     }
 
     #[Route('/new', name: 'app_user_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager, MailerInterface $mailer , UserRepository $userRepository, ArtistRepository $artistRepository, ClientRepository $clientRepository, AdminRepository $adminRepository): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, UserRepository $userRepository, ArtistRepository $artistRepository, ClientRepository $clientRepository, AdminRepository $adminRepository): Response
     {
         $user = new User();
         $addedUser = new User();
         $artist = new Artist();
         $admin = new Admin();
+
         $form = $this->createForm(UserType::class, $user, [
             'is_edit' => false,
         ]);
@@ -94,12 +95,7 @@ class UserController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $role = $form->get('role')->getData();
-            $password = $form->get('password')->getData();
-            $hashedPassword = hash('sha256', $password);
             $user = $form->getData();
-            $token = bin2hex(random_bytes(16));
-            $user->setToken($token);
-            $user->setPassword($hashedPassword);
             $file = $form->get('file')->getData();
             $entityManager->persist($user);
             $entityManager->flush();
@@ -146,24 +142,8 @@ class UserController extends AbstractController
                 $entityManager->persist($admin);
                 $entityManager->flush();
             }
-            $email = (new TemplatedEmail())
-            ->from(new Address('samar.hamdi@esprit.tn', 'Artmart'))
-            ->to($email)
-            ->subject('Your registration token')
-            ->htmlTemplate('user/email_token.html.twig')
-            ->context([
-                'user' => $user,
-                'token' => $token,
-            ]);
 
-            $sent = $mailer->send($email);
-
-            if ($sent > 0) {
-                $this->addFlash('success', 'Your registration token has been sent to your email.');
-                        } else {
-                            $this->addFlash('error', 'There was an error sending your registration token. Please try again later.');
-                        }
-            return $this->redirectToRoute('app_home', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('/', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('user/new.html.twig', [
@@ -264,7 +244,7 @@ class UserController extends AbstractController
         $artist = $artistRepository->findOneBy(['user' => $user]);
         $admin = $adminRepository->findOneBy(['user' => $user]);
         $role = $user->getRole();
-        $ProfilePic = $user->getPicture();
+        $ProfilePic=$user->getPicture();
 
         $clientAttributes = [
             'nbrOrders' => null,
@@ -333,7 +313,7 @@ class UserController extends AbstractController
             'user' => $user,
             'form' => $form,
             'is_edit' => true,
-            'Pic' => $ProfilePic,
+            'Pic'=>$ProfilePic,
             'client_attributes' => $clientAttributes,
             'artist_attributes' => $artistAttributes,
             'admin_attributes' => $adminAttributes,
@@ -347,7 +327,7 @@ class UserController extends AbstractController
         $artist = $artistRepository->findOneBy(['user' => $user]);
         $admin = $adminRepository->findOneBy(['user' => $user]);
         $role = $user->getRole();
-        $ProfilePic = $user->getPicture();
+        $ProfilePic=$user->getPicture();
         $clientAttributes = [
             'nbrOrders' => null,
             'nbrDemands' => null,
@@ -415,14 +395,14 @@ class UserController extends AbstractController
             'user' => $user,
             'form' => $form,
             'is_edit' => true,
-            'Pic' => $ProfilePic,
+            'Pic'=>$ProfilePic,
             'client_attributes' => $clientAttributes,
             'artist_attributes' => $artistAttributes,
             'admin_attributes' => $adminAttributes,
         ]);
     }
 
-
+ 
     #[Route('/{userId}', name: 'app_user_delete', methods: ['POST'])]
     public function delete(User $user, ClientRepository $clientRepository, ArtistRepository $artistRepository, AdminRepository $adminRepository, EntityManagerInterface $entityManager): Response
     {
@@ -446,50 +426,8 @@ class UserController extends AbstractController
         }
 
 
-        return $this->redirectToRoute('app_logout', [], Response::HTTP_SEE_OTHER);
-    }
-    #[Route('/{userId}', name: 'app_user_deleteAd', methods: ['POST'])]
-    public function deleteA(User $user, ClientRepository $clientRepository, ArtistRepository $artistRepository, AdminRepository $adminRepository, EntityManagerInterface $entityManager): Response
-    {
-        $client = $clientRepository->findOneBy(['user' => $user]);
-        $artist = $artistRepository->findOneBy(['user' => $user]);
-        $admin = $adminRepository->findOneBy(['user' => $user]);
-
-        $role = $user->getRole();
-        if ($role === 'client' && $client) {
-            $entityManager->remove($user);
-            $entityManager->remove($client);
-            $entityManager->flush();
-        } elseif ($role === 'artist' && $artist) {
-            $entityManager->remove($user);
-            $entityManager->remove($artist);
-            $entityManager->flush();
-        } elseif ($role === 'admin' && $admin) {
-            $entityManager->remove($user);
-            $entityManager->remove($admin);
-            $entityManager->flush();
-        }
-
-
-        return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_home', [], Response::HTTP_SEE_OTHER);
     }
 
-    #[Route('/{userId}', name: 'app_user_block', methods: ['POST'])]
-    public function block(User $user, EntityManagerInterface $entityManager): Response
-    {
-        $user->setBlocked(1);
-        $entityManager->persist($user);
-        $entityManager->flush();
-        return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
-    }
 
-    #[Route('/{userId}', name: 'app_user_unblock', methods: ['POST'])]
-    public function unblock(User $user, EntityManagerInterface $entityManager): Response
-    {
-        $user->setBlocked(0);
-        $entityManager->persist($user);
-        $entityManager->flush();
-        return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
-    }
-   
 }

@@ -9,15 +9,6 @@
 		margin-right: 0.5em;
 		color: #8bacd9;
 	}
-	.small-avatar {
-		width: 32px;
-		height: 32px;
-		border-radius: 50%;
-		outline: 2px solid white;
-		margin-right: 1.4em;
-		object-position: center center;
-		object-fit: cover;
-	}
 </style>
 <div class="card-container">
 	<a
@@ -79,25 +70,11 @@
 		<p class="blog_content">{{ blog.content }}...</p>
 		<div class="flex-row"></div>
 		<div class="card-attribute">
-			{#
 			<img
 				src="https://i.postimg.cc/SQBzNQf1/image-avatar.png"
 				alt="avatar"
 				class="small-avatar"
 			/>
-			#} {% if blog.author != null %}
-			<img
-				src="{{ blog.author.getPicture() }}"
-				alt="avatar"
-				class="small-avatar"
-			/>
-			{% else %}
-			<img
-				src="{{ asset('assets/User/user.png') }}"
-				alt="avatar"
-				class="small-avatar"
-			/>
-			{% endif %}
 			<p>
 				Posted By
 				<span>

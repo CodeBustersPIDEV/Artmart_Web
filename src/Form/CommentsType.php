@@ -26,16 +26,15 @@ class CommentsType extends AbstractType
         $builder
             ->add('content')
             ->add('rating')
-            // ->add('author', EntityType::class, [
-            //     'class' => User::class,
-            //     'choices' => $this->UserRepository->findAll(),
-            //     'choice_label' => 'name',
-            //     'placeholder' => 'Choose an option',
-            //     'choice_attr' => function ($choice, $key, $value) {
-            //         return ['style' => 'color:black;'];
-            //     }
-            // ])
-        ;
+            ->add('author', EntityType::class, [
+                'class' => User::class,
+                'choices' => $this->UserRepository->findAll(),
+                'choice_label' => 'name',
+                'placeholder' => 'Choose an option',
+                'choice_attr' => function ($choice, $key, $value) {
+                    return ['style' => 'color:black;'];
+                }
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

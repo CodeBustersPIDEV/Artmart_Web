@@ -117,10 +117,10 @@ class ReadyproductController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $product = new Product();
-            $product->setName($form->get('productId')->get('name')->getData());
-            $product->setDescription($form->get('productId')->get('description')->getData());
+            $product->setName($form->get('name')->getData());
+            $product->setDescription($form->get('description')->getData());
 
-            $imageFile = $form->get('productId')->get('image')->getData();
+            $imageFile = $form->get('image')->getData();
             if ($imageFile) {
                 $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
                 $newFilename = $originalFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
@@ -138,7 +138,7 @@ class ReadyproductController extends AbstractController
             }
 
             $entityManager->persist($product);
-            $readyproduct->setProductId($product);
+            $readyproduct->setProductId($product->getProductId());
             $entityManager->persist($readyproduct);
             $entityManager->flush();
 
@@ -177,23 +177,6 @@ class ReadyproductController extends AbstractController
     {
         $form = $this->createForm(ReadyproductType::class, $readyproduct);
         $form->handleRequest($request);
-        $product = $form->get('productId')->getData();
-        $imageFile = $form->get('productId')->get('image')->getData();
-        if ($imageFile) {
-            $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
-            $newFilename = $originalFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
-
-            try {
-                $imageFile->move(
-                    $this->getParameter('product_images_directory'),
-                    $newFilename
-                );
-            } catch (FileException $e) {
-                // handle exception if something happens during file upload
-            }
-
-            $product->setImage($newFilename);
-        }
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
