@@ -1,4 +1,7 @@
 <style>
+	.authorImg {
+		object-position: center center;
+	}
 	.comment-card {
 		background-color: #392534;
 		border-radius: 10px;
@@ -14,6 +17,8 @@
 		height: 80px;
 		border-radius: 50%;
 		margin-right: 10px;
+		object-position: center center;
+		object-fit: cover;
 	}
 	.comment-card h4 {
 		font-size: 18px;
@@ -46,17 +51,9 @@
 <div class="comment-card">
 	<div class="col-3">
 		{% if comment.author != null %}
-		<img
-			src="{{ comment.author.getPicture() }}"
-			alt=""
-			class="templatemo-item"
-		/>
+		<img src="{{ comment.author.getPicture() }}" alt="" class="authorImg" />
 		{% else %}
-		<img
-			src="{{ asset('assets/User/user.png') }}"
-			alt=""
-			class="templatemo-item"
-		/>
+		<img src="{{ asset('assets/User/user.png') }}" alt="" class="authorImg" />
 		{% endif %}
 	</div>
 	<div class="col-9">

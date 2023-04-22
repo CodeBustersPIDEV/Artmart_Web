@@ -128,7 +128,7 @@
 		margin-left: 4px;
 	}
 </style>
-
+	{% set connectedUser = returnConnectedUser() %}
 <nav class="navMenu">
 	<div class="logo">
 		<a href="/">
@@ -143,11 +143,16 @@
 		<a href="/">Home</a>
 		<a href="{{ path('app_blogs_index') }}">Blog</a>
 		<a href="{{ path('app_readyproduct_index') }}">Products</a>
-		<a href="{{ path('app_customproduct_index') }}">Custom Products</a>
-		<a href="{{ path('app_wishlist_index') }}">Orders</a>
-		<a href="{{ path('app_event_index') }}">Events</a>
-		<a href="{{ path('app_user_Profile', {'userId': 55}) }}">Profile</a>
-		<a href="{{ path('app_admin') }}">panel</a>
+		{% if app.session.get('user_id') %}
+			{% if app.session.get('user_role') == "client" %}
+				<a href="{{ path('app_customproduct_index') }}">Custom Products</a>
+				<a href="{{ path('app_wishlist_index') }}">Shopping Cart</a>
+			{% endif %}			
+			{% if app.session.get('user_role') == "admin" %}
+				<a href="{{ path('app_admin') }}">Admin Panel</a>
+			{% endif %}
+			<a href="{{ path('app_user_Profile', {'userId': app.session.get('user_id')}) }}">Profile</a>
+		{% endif %}
 		<div class="dot"></div>
 	</div>
 	<div class="userButtons">

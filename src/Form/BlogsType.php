@@ -98,15 +98,15 @@ class BlogsType extends AbstractType
             ])
             ->add('addTags', null, ['mapped' => false])
             // ->add('addedTags', null, ['mapped' => false, 'attr'  =>  ['style' => 'display:none;', 'value']])
-            ->add('author', EntityType::class, [
-                'class' => User::class,
-                'choices' => $this->UserRepository->findAll(),
-                'choice_label' => 'name',
-                'placeholder' => 'Choose an option',
-                'choice_attr' => function ($choice, $key, $value) {
-                    return ['style' => 'color:black;'];
-                }
-            ])
+            // ->add('author', EntityType::class, [
+            //     'class' => User::class,
+            //     'choices' => $this->UserRepository->findAll(),
+            //     'choice_label' => 'name',
+            //     'placeholder' => 'Choose an option',
+            //     'choice_attr' => function ($choice, $key, $value) {
+            //         return ['style' => 'color:black;'];
+            //     }
+            // ])
             ->add('file', FileType::class, [
                 'label' => 'Choose a file',
                 'mapped' => false,

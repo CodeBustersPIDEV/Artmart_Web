@@ -9,6 +9,7 @@ use App\Entity\Comments;
 use App\Entity\HasBlogCategory;
 use App\Entity\Media;
 use App\Entity\Tags;
+use App\Entity\User;
 use App\Form\BlogsType;
 use App\Form\CommentsType;
 use App\Repository\BlogcategoriesRepository;
@@ -18,6 +19,8 @@ use App\Repository\HasBlogCategoryRepository;
 use App\Repository\HasTagRepository;
 use App\Repository\MediaRepository;
 use App\Repository\TagsRepository;
+use App\Repository\UserRepository;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
@@ -25,6 +28,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 
 #[Route('/blogs')]
@@ -38,8 +42,10 @@ class BlogsController extends AbstractController
     private BlogcategoriesRepository $blogCategoryRepository;
     private HasTagRepository $hasTagRepository;
     private CommentsRepository $commentsRepository;
+    private User $connectedUser;
 
-    public function __construct(Filesystem $filesystem, BlogsRepository $blogsRepository, MediaRepository $mediaRepository, BlogcategoriesRepository $blogCategoryRepository, HasBlogCategoryRepository $hasBlogCategoryRepository, TagsRepository $tagsRepository, HasTagRepository $hasTagRepository, CommentsRepository $commentsRepository)
+
+    public function __construct(Filesystem $filesystem, SessionInterface $session, UserRepository $userRepository, BlogsRepository $blogsRepository, MediaRepository $mediaRepository, BlogcategoriesRepository $blogCategoryRepository, HasBlogCategoryRepository $hasBlogCategoryRepository, TagsRepository $tagsRepository, HasTagRepository $hasTagRepository, CommentsRepository $commentsRepository)
     {
         $this->filesystem = $filesystem;
         $this->blogsRepository = $blogsRepository;
@@ -49,6 +55,12 @@ class BlogsController extends AbstractController
         $this->tagsRepository = $tagsRepository;
         $this->hasTagRepository = $hasTagRepository;
         $this->commentsRepository = $commentsRepository;
+        if ($session != null) {
+            $connectedUserID = $session->get('user_id');
+            if (is_int($connectedUserID)) {
+                $this->connectedUser = $userRepository->find((int) $connectedUserID);
+            }
+        }
     }
 
     public function uploadImage(UploadedFile $file, Media $media, Blogs $addedBlog, $edit): void
@@ -140,23 +152,175 @@ class BlogsController extends AbstractController
 
 
     #[Route('/', name: 'app_blogs_index', methods: ['GET'])]
-    public function index(BlogsRepository $blogsRepository): Response
+    public function index(BlogsRepository $blogsRepository, PaginatorInterface $paginator, Request $request): Response
     {
+        $blogs = $blogsRepository->findAll();
+        $searchTerm = $request->query->get('searchTerm');
+        if ($searchTerm) {
+            $blogs = $blogsRepository->findByTerm($searchTerm);
+        }
+
+        $pages = $paginator->paginate(
+            $blogs, // Requête contenant les données à paginer (ici nos articles)
+            $request->query->getInt('page', 1), // Numéro de la page en cours, passé dans l'URL, 1 si aucune page
+            3 // Nombre de résultats par page
+        );
+
         return $this->render('blogs/index.html.twig', [
-            'blogs' => $blogsRepository->findAll(),
+            'blogs' => $pages,
+            'searchTerm' => $searchTerm
+        ]);
+    }
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////Sorting Routes///////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////
+    #[Route('/RatingDesc', name: 'app_blogs_index_rating_desc', methods: ['GET'])]
+    public function indexRatingDown(BlogsRepository $blogsRepository, PaginatorInterface $paginator, Request $request): Response
+    {
+        $blogs = $blogsRepository->findAllDesc();
+        $searchTerm = $request->query->get('searchTerm');
+        if ($searchTerm) {
+            $blogs = $blogsRepository->findByTerm($searchTerm);
+        }
+
+        $pages = $paginator->paginate(
+            $blogs, // Requête contenant les données à paginer (ici nos articles)
+            $request->query->getInt('page', 1), // Numéro de la page en cours, passé dans l'URL, 1 si aucune page
+            3 // Nombre de résultats par page
+        );
+
+        return $this->render('blogs/index.html.twig', [
+            'blogs' => $pages,
+            'searchTerm' => $searchTerm
         ]);
     }
 
+    #[Route('/RatingAsc', name: 'app_blogs_index_rating_asc', methods: ['GET'])]
+    public function indexRatingUp(BlogsRepository $blogsRepository, PaginatorInterface $paginator, Request $request): Response
+    {
+        $blogs = $blogsRepository->findAllAsc();
+        $searchTerm = $request->query->get('searchTerm');
+        if ($searchTerm) {
+            $blogs = $blogsRepository->findByTerm($searchTerm);
+        }
+
+        $pages = $paginator->paginate(
+            $blogs, // Requête contenant les données à paginer (ici nos articles)
+            $request->query->getInt('page', 1), // Numéro de la page en cours, passé dans l'URL, 1 si aucune page
+            3 // Nombre de résultats par page
+        );
+
+        return $this->render('blogs/index.html.twig', [
+            'blogs' => $pages,
+            'searchTerm' => $searchTerm
+        ]);
+    }
+
+    #[Route('/TitleDesc', name: 'app_blogs_index_title_desc', methods: ['GET'])]
+    public function indexTitleDown(BlogsRepository $blogsRepository, PaginatorInterface $paginator, Request $request): Response
+    {
+        $blogs = $blogsRepository->findAllTitleDesc();
+        $searchTerm = $request->query->get('searchTerm');
+        if ($searchTerm) {
+            $blogs = $blogsRepository->findByTerm($searchTerm);
+        }
+
+        $pages = $paginator->paginate(
+            $blogs, // Requête contenant les données à paginer (ici nos articles)
+            $request->query->getInt('page', 1), // Numéro de la page en cours, passé dans l'URL, 1 si aucune page
+            3 // Nombre de résultats par page
+        );
+
+        return $this->render('blogs/index.html.twig', [
+            'blogs' => $pages,
+            'searchTerm' => $searchTerm
+        ]);
+    }
+
+    #[Route('/TitleAsc', name: 'app_blogs_index_title_asc', methods: ['GET'])]
+    public function indexTitleUp(BlogsRepository $blogsRepository, PaginatorInterface $paginator, Request $request): Response
+    {
+        $blogs = $blogsRepository->findAllTitleAsc();
+        $searchTerm = $request->query->get('searchTerm');
+        if ($searchTerm) {
+            $blogs = $blogsRepository->findByTerm($searchTerm);
+        }
+
+        $pages = $paginator->paginate(
+            $blogs, // Requête contenant les données à paginer (ici nos articles)
+            $request->query->getInt('page', 1), // Numéro de la page en cours, passé dans l'URL, 1 si aucune page
+            3 // Nombre de résultats par page
+        );
+
+        return $this->render('blogs/index.html.twig', [
+            'blogs' => $pages,
+            'searchTerm' => $searchTerm
+        ]);
+    }
+
+    #[Route('/ViewsDesc', name: 'app_blogs_index_Views_desc', methods: ['GET'])]
+    public function indexViewsDown(BlogsRepository $blogsRepository, PaginatorInterface $paginator, Request $request): Response
+    {
+        $blogs = $blogsRepository->findAllViewsDesc();
+        $searchTerm = $request->query->get('searchTerm');
+        if ($searchTerm) {
+            $blogs = $blogsRepository->findByTerm($searchTerm);
+        }
+
+        $pages = $paginator->paginate(
+            $blogs, // Requête contenant les données à paginer (ici nos articles)
+            $request->query->getInt('page', 1), // Numéro de la page en cours, passé dans l'URL, 1 si aucune page
+            3 // Nombre de résultats par page
+        );
+
+        return $this->render('blogs/index.html.twig', [
+            'blogs' => $pages,
+            'searchTerm' => $searchTerm
+        ]);
+    }
+
+    #[Route('/ViewsAsc', name: 'app_blogs_index_Views_asc', methods: ['GET'])]
+    public function indexViewsUp(BlogsRepository $blogsRepository, PaginatorInterface $paginator, Request $request): Response
+    {
+        $blogs = $blogsRepository->findAllViewsAsc();
+        $searchTerm = $request->query->get('searchTerm');
+        if ($searchTerm) {
+            $blogs = $blogsRepository->findByTerm($searchTerm);
+        }
+
+        $pages = $paginator->paginate(
+            $blogs, // Requête contenant les données à paginer (ici nos articles)
+            $request->query->getInt('page', 1), // Numéro de la page en cours, passé dans l'URL, 1 si aucune page
+            3 // Nombre de résultats par page
+        );
+
+        return $this->render('blogs/index.html.twig', [
+            'blogs' => $pages,
+            'searchTerm' => $searchTerm
+        ]);
+    }
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////Admin Route///////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////
     #[Route('/admin', name: 'app_blogs_admin', methods: ['GET'])]
     public function adminIndex(BlogsRepository $blogsRepository): Response
     {
-        return $this->render('blogs/admin.html.twig', [
-            'blogs' => $blogsRepository->findAll(),
-            'blogCategories' => $this->blogCategoryRepository->findAll(),
-            'tags' => $this->tagsRepository->findAll(),
+        if ($this->connectedUser->getRole() === "admin") {
+            return $this->render('blogs/admin.html.twig', [
+                'blogs' => $blogsRepository->findAll(),
+                'blogCategories' => $this->blogCategoryRepository->findAll(),
+                'tags' => $this->tagsRepository->findAll(),
 
-        ]);
+            ]);
+        } else {
+            // return $this->render('Errors/errorPage.html.twig');
+            return $this->redirectToRoute('app_blogs_index', [], Response::HTTP_SEE_OTHER);
+        }
     }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////CRUD Routes///////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     #[Route('/new', name: 'app_blogs_new', methods: ['GET', 'POST'])]
     public function new(Request $request, BlogsRepository $blogsRepository): Response
@@ -178,7 +342,7 @@ class BlogsController extends AbstractController
             $title = $form->get('title')->getData();
             $addedTags = $_POST['addedTags'];
             $file = $form->get('file')->getData();
-
+            $blog->setAuthor($this->connectedUser);
             foreach ($tags as $tag) {
 
                 $strTags = $strTags . "#" . $tag->getName();
@@ -187,7 +351,6 @@ class BlogsController extends AbstractController
             $blogsRepository->save($blog, true);
 
             $addedBlog = $blogsRepository->findOneByTitle($title);
-
             $hasCategory->setBlog($addedBlog);
             $hasCategory->setCategory($cat);
 
@@ -220,6 +383,7 @@ class BlogsController extends AbstractController
             $oldRating = $blog->getRating() * count($nbComments);
             $newBlogRating = ($oldRating + $rate) / (count($nbComments) + 1);
             $comment->setBlog($blog);
+            $comment->setAuthor($this->connectedUser);
             $this->commentsRepository->save($comment, true);
             $this->blogsRepository->editRating($blog, $newBlogRating, true);
             return $this->redirectToRoute('app_blogs_show', ['blogs_ID' => $blog->getBlogsId()], Response::HTTP_SEE_OTHER);

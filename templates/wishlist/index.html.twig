@@ -256,6 +256,9 @@ th,td{
 <a href="{{ path('app_readyproduct_index') }}" class="link-style"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
   <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"/>
 </svg> Browse Marketplace</a>
+<a href="{{ path('my_order_index') }}" class="link-style"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
+  <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"/>
+</svg> My Orders</a>
     <table class="table">
         <thead>
             <tr>
@@ -274,8 +277,8 @@ th,td{
                 <td>{{ wishlist.quantity }}</td>
                 <td>{{ wishlist.price }} DT</td>
                 <td>
-                    <a href="">Show</a>
-                    <a href="">Remove</a>
+                    <a href="/readyproduct/{{wishlist.productid}}">Show</a>
+                    <a href="/wishlist/delete/{{wishlist.wishlistId}}">Remove</a>
                 </td>
             </tr>
         {% else %}
@@ -285,5 +288,8 @@ th,td{
         {% endfor %}
         </tbody>
     </table>
+    <a href="{{ path('my_order_index') }}" class="link-style"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
+  <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"/>
+</svg> Checkout</a>
 {% endblock %}
 {% endblock %}

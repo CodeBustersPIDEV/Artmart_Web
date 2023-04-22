@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Order;
+use App\Entity\Orderstatus;
 use App\Form\OrderType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -21,9 +22,33 @@ class OrderController extends AbstractController
         $orders = $entityManager
             ->getRepository(Order::class)
             ->findAll();
-
+    
         return $this->render('order/index.html.twig', [
             'orders' => $orders,
+        ]);
+    }
+    #[Route('/myOrders', name: 'my_order_index', methods: ['GET'])]
+    public function myIndexOrder(EntityManagerInterface $entityManager,Request $request): Response
+    {
+        $session = $request->getSession();
+        $queryBuilder = $entityManager
+        ->getRepository(Order::class)
+        ->createQueryBuilder('o')
+        ->where('o.userid = :userid')
+        ->setParameter('userid', $session->get('user_id'));
+        
+        $orders = $queryBuilder->getQuery()->getResult();
+        $orderStatuses = [];
+        foreach ($orders as $order) {
+            $orderStatus = $entityManager->getRepository(Orderstatus::class)->findOneBy(['orderid' => $order->getOrderId()]);
+        
+            $status = $orderStatus ? $orderStatus->getStatus() : null;
+            // Store $orderStatus somewhere for display later with the order details
+            $order->status = $status;
+        }
+
+        return $this->render('order/myorders.html.twig', [
+            'orders' => $orders        
         ]);
     }
     

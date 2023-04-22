@@ -89,6 +89,8 @@
 
 
 
+
+
 				}}) }}
 				<div class="form-group">
 					{{ form_label(form.title, null, {'label_attr': {'class': 'form-label inputLabel'
@@ -96,8 +98,12 @@
 
 
 
+
+
 					}})}}
 					{{ form_widget(form.title, {'attr': {'class': 'form-control inputBg', 'placeholder': 'Title', 'id': 'title'
+
+
 
 
 
@@ -114,8 +120,12 @@
 
 
 
+
+
 					}}) }}
 					{{ form_widget(form.content, {'attr': {'class': 'form-control inputBg', 'placeholder': 'Content', 'id': 'content'
+
+
 
 
 
@@ -132,8 +142,12 @@
 
 
 
+
+
 					}}) }}
 					{{ form_widget(form.category, {'attr': {'class': 'form-control select2 inputBg', 'id': 'category'
+
+
 
 
 
@@ -150,10 +164,14 @@
 
 
 
+
+
 					}})}}
 					<div class="row g-3">
 						<div class="col-auto">
 							{{ form_widget(form.tags, {'attr': {'class': 'form-select inputBg' ,'id': 'tags','size':'3'
+
+
 
 
 
@@ -171,6 +189,8 @@
 
 
 
+
+
 									}}) }}
 								</div>
 							</div>
@@ -184,8 +204,11 @@
 					<input type="hidden" name="addedTags" id="addedTags" />
 				</div>
 
+				{#
 				<div class="form-group">
 					{{ form_label(form.author, null, {'label_attr': {'class': 'form-label inputLabel'
+
+
 
 
 
@@ -196,8 +219,11 @@
 
 
 
+
+
 					}}) }}
 				</div>
+				#}
 
 				<div class="form-group">
 					{{ form_label(form.file, null, {'label_attr': {'class': 'form-label inputLabel'
@@ -205,8 +231,12 @@
 
 
 
+
+
 					}})}}
 					{{ form_widget(form.file, {'attr': {'class': 'form-control blogImageFile inputBg ', 'id': 'formFile'
+
+
 
 
 

@@ -1,0 +1,6 @@
+{% block email_body %}
+    <p>Dear {{ user.username }},</p>
+    <p>Thank you for signing up for our website.</p>
+    <p>Please use the following token to complete your registration:</p>
+    <p>{{ token }}</p>
+{% endblock %}
