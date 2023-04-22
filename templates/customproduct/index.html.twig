@@ -206,12 +206,39 @@
 
 {% block body %}
 
+<style>
+  form {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+  }
+
+  label {
+    margin-left: 10px;
+    margin-right: 5px;
+  }
+
+    select {
+    margin-right: 5px;
+  }
+
+
+</style>
+
 <center>
-<form  action="{{ path('app_customproduct_index') }}" method="GET">
-    <div class="form-group">
+  <form action="{{ path('app_customproduct_index') }}" method="GET">
+  <label  for="criteria">Search by:</label>
+    <select id="criteria" name="criteria">
+      <option value="name" {% if app.request.query.get('criteria') == 'name' %}selected{% endif %}>Name</option>
+      <option value="weight" {% if app.request.query.get('criteria') == 'weight' %}selected{% endif %}>Weight</option>
+      <option value="material" {% if app.request.query.get('criteria') == 'material' %}selected{% endif %}>Material</option>
+    </select>
+    <input type="text" id="search-term" name="q" class="form-control" value="{{ searchTerm }}" placeholder="Search...">
     
-      <input type="text" id="search-term" name="q" class="form-control" value="{{ searchTerm }}" placeholder="Search...">
-    </div>
+  </form>
+</center>
+
 
 
     

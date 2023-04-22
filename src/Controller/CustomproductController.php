@@ -29,41 +29,48 @@ class CustomproductController extends AbstractController
     #[Route('/', name: 'app_customproduct_index', methods: ['GET'])]
     public function index(Request $request, EntityManagerInterface $entityManager, PaginatorInterface $paginator): Response
     {
+      
         $searchTerm = $request->query->get('q');
         $order = $request->query->get('order');
-   
+    
         $queryBuilder = $entityManager
             ->getRepository(Customproduct::class)
             ->createQueryBuilder('c')
             ->innerJoin('c.product', 'p');
-
-
+    
         if ($order === 'name') {
             $queryBuilder->orderBy('p.name', 'ASC');
         } elseif ($order === 'weight') {
             $queryBuilder->orderBy('p.weight', 'ASC');
         }
-
+    
         if ($searchTerm) {
-            $queryBuilder->where('p.name LIKE :searchTerm')
+            $criteria = $request->query->get('criteria');
+            if ($criteria === 'name') {
+                $queryBuilder->andWhere('p.name LIKE :searchTerm')
+                    ->setParameter('searchTerm', '%' . $searchTerm . '%');
+            } elseif ($criteria === 'weight') {
+                $queryBuilder->andWhere('p.weight LIKE :searchTerm')
+                    ->setParameter('searchTerm', '%' . $searchTerm . '%');
+            } elseif ($criteria === 'material') {
+                $queryBuilder->andWhere('p.material LIKE :searchTerm')
                 ->setParameter('searchTerm', '%' . $searchTerm . '%');
+            }
         }
+    
         $pagination = $paginator->paginate(
             $queryBuilder->getQuery(),
             $request->query->getInt('page', 1),
             8
         );
-
-        $customproducts = $queryBuilder->getQuery()->getResult();
-
+    
         return $this->render('customproduct/index.html.twig', [
             'customproducts' => $pagination,
             'searchTerm' => $searchTerm,
             'order' => $order,
-         
         ]);
     }
-
+    
 
     #[Route('/admin', name: 'app_customproduct_admin', methods: ['GET'])]
     public function adminindex(Request $request, EntityManagerInterface $entityManager): Response
