@@ -11,6 +11,7 @@ use App\Repository\ArtistRepository;
 use App\Repository\ClientRepository;
 use App\Repository\UserRepository;
 use App\Repository\AdminRepository;
+use App\Form\TokenVerificationType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,8 +20,11 @@ use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use Symfony\Component\Mailer\Mailer;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+
 #[Route('/user')]
 class UserController extends AbstractController
 {
@@ -81,7 +85,7 @@ class UserController extends AbstractController
     }
 
     #[Route('/new', name: 'app_user_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager, MailerInterface $mailer , UserRepository $userRepository, ArtistRepository $artistRepository, ClientRepository $clientRepository, AdminRepository $adminRepository): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, MailerInterface $mailer, UserRepository $userRepository, ArtistRepository $artistRepository, ClientRepository $clientRepository, AdminRepository $adminRepository): Response
     {
         $user = new User();
         $addedUser = new User();
@@ -146,24 +150,8 @@ class UserController extends AbstractController
                 $entityManager->persist($admin);
                 $entityManager->flush();
             }
-            $email = (new TemplatedEmail())
-            ->from(new Address('samar.hamdi@esprit.tn', 'Artmart'))
-            ->to($email)
-            ->subject('Your registration token')
-            ->htmlTemplate('user/email_token.html.twig')
-            ->context([
-                'user' => $user,
-                'token' => $token,
-            ]);
-
-            $sent = $mailer->send($email);
-
-            if ($sent > 0) {
-                $this->addFlash('success', 'Your registration token has been sent to your email.');
-                        } else {
-                            $this->addFlash('error', 'There was an error sending your registration token. Please try again later.');
-                        }
-            return $this->redirectToRoute('app_home', [], Response::HTTP_SEE_OTHER);
+            $this->SendEmail($mailer, $user, $token, 'Verification Token');
+            return $this->redirectToRoute('app_EnableAccount', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('user/new.html.twig', [
@@ -171,6 +159,28 @@ class UserController extends AbstractController
             'form' => $form,
             'is_edit' => false,
         ]);
+    }
+
+    public function SendEmail(Mailer $mailer, User $user, String $token, String $subject)
+    {
+
+        $email = (new TemplatedEmail())
+            ->from(new Address('samar.hamdi@esprit.tn', 'Artmart'))
+            ->to($user->getEmail())
+            ->subject($subject)
+            ->htmlTemplate('user/email_token.html.twig')
+            ->context([
+                'user' => $user,
+                'token' => $token,
+            ]);
+
+        $sent = $mailer->send($email);
+
+        if ($sent > 0) {
+            $this->addFlash('success', 'Your registration token has been sent to your email.');
+        } else {
+            $this->addFlash('error', 'There was an error sending your registration token. Please try again later.');
+        }
     }
     #[Route('/{userId}', name: 'app_user_show', methods: ['GET'])]
     public function show(User $user, ClientRepository $clientRepository, ArtistRepository $artistRepository, AdminRepository $adminRepository): Response
@@ -491,5 +501,49 @@ class UserController extends AbstractController
         $entityManager->flush();
         return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
     }
-   
+
+    #[Route('/{userId}/ActivateAccount', name: 'app_user_EnableAccount', methods: ['GET'])]
+    public function ActivateAccount(User $user, EntityManagerInterface $entityManager, MailerInterface $mailer): Response
+    {
+        $token = bin2hex(random_bytes(16));
+        $user->setToken($token);
+        $entityManager->persist($user);
+        $entityManager->flush();
+        $this->SendEmail($mailer, $user, $token, 'Verification Token');
+        return $this->redirectToRoute('app_user_TokenVerif', ['userId' => $user->getUserId()], Response::HTTP_SEE_OTHER);
+    }
+    #[Route('/{userId}/TokenVerification', name: 'app_user_TokenVerif', methods: ['GET', 'POST'])]
+    public function TokenVerification(User $user, EntityManagerInterface $entityManager, Request $request, SessionInterface $session): Response
+    {
+        $tries = 3;
+       
+        $U = new User();
+        $form = $this->createForm(TokenVerificationType::class, $U);
+        $form->handleRequest($request);
+        $userToken = $user->getToken();
+        
+        if ($form->isSubmitted()) {
+            $token = $form->get('token')->getData();
+            $warningMessage = $session->get('warning_message');
+            if ($warningMessage) {
+                $session->remove('warning_message');}
+            if ($userToken == $token) {
+                $user->setEnabled(true);
+                $entityManager->persist($user);
+                $entityManager->flush();
+                return $this->redirectToRoute('app_login', [], Response::HTTP_SEE_OTHER);
+            } else {
+               
+                        $session->set('warning_message', 'Incorrect token.No attempts left.');
+                        return $this->redirectToRoute('app_home');
+            }
+        }
+
+        return $this->renderForm('user/tokenVerif.html.twig', [
+            'user' => $U,
+            'userId' => $user->getUserId(),
+            'form' => $form,
+
+        ]);
+    }
 }

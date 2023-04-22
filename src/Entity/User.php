@@ -62,17 +62,6 @@ class User
     #[Regex(pattern: "/^(?=.*[A-Z])(?=.*\d).{8,}$/", message:"Must contain at least one Uppercase and One special caracter or number and must be of minimum length of 8 characters.")]
     private string $password;
 
-    
-    #[ORM\PrePersist]
-    #[ORM\PreUpdate]
-    public function validatePassword()
-    {
-        $regex = "/^(?=.*[A-Z])(?=.*\d).{8,}$/";
-        if (!preg_match($regex, $this->password)) {
-            throw new \RuntimeException("Invalid password format.");
-        }
-    }
-    
     #[ORM\Column(type: 'string', length: 255, nullable: true, options: ['default' => 'NULL'])]
     private ?string $picture = null;
 
@@ -92,6 +81,8 @@ class User
     public function __construct()
     {
         $this->dateofcreation = new \DateTime();
+        $this->birthday = new \DateTime();
+
     }
 
 

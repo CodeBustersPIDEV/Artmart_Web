@@ -1,0 +1,7 @@
+{% extends 'baseF.html.twig' %}
+
+{% block content %}
+    <h1>Account Activation</h1>
+    <p>Your account has not been activated yet. Please click the button below to activate your account:</p>
+    <a href="{{ path('app_user_EnableAccount', {'userId': user_id}) }}" class="btn btn-outline-primary mr-2">Activate Account</a>
+{% endblock %}
