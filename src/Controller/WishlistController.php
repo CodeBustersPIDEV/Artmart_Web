@@ -58,6 +58,31 @@ class WishlistController extends AbstractController
         ]);
     }
 
+    #[Route('/new/{{id}}/{{price}}/{{quantity}}', name: 'app_wishlist_new_client', methods: ['GET', 'POST'])]
+    public function newClient(float $price,int $id,string $quantity,Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $session = $request->getSession();
+
+        $wishlist = new Wishlist();
+
+        $wishlist->setUserid($session->get('user_id'));
+        $wishlist->setProductid($id);
+
+        $dateObj = \DateTime::createFromFormat('Y-m-d', date('Y-m-d'));
+        $wishlist->setDate($dateObj);
+        $myFloat = floatval($quantity);
+        if (!$myFloat) {
+            $myFloat = 1;
+        }
+        $wishlist->setQuantity(floatval($myFloat));
+        $wishlist->setPrice($price);
+
+        $entityManager->persist($wishlist);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_wishlist_index', [], Response::HTTP_SEE_OTHER);
+    }
+
     #[Route('/{wishlistId}', name: 'app_wishlist_show', methods: ['GET'])]
     public function show(Wishlist $wishlist): Response
     {

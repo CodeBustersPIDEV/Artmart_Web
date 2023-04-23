@@ -375,10 +375,20 @@ body .page-content {
     <div class="align-price">
         <p>{{ readyproduct.price }} TND</p>
     </div>
-    <div class="align">
-    
-        <a href="{{ path('app_readyproduct_show', {'readyProductId': readyproduct.productId}) }}">order</a>
-    </div>
+<div class="align">
+<input type="number" id="quantity" name="quantity" value="1" min="1">
+<a href="#" id="order-link">order</a>
+
+<script>
+  var quantityField = document.getElementById("quantity");
+  var orderLink = document.getElementById("order-link");
+  orderLink.href = "{{ path('app_wishlist_new_client', {'id': readyproduct.getReadyProductId(),'price': readyproduct.price, 'quantity': 'PLACEHOLDER'})}}";
+  
+  quantityField.addEventListener("change", function() {
+    orderLink.href = orderLink.href.replace("PLACEHOLDER", quantityField.value);
+  });
+</script>
+</div>
 </div>
                 </div>
               </div>
