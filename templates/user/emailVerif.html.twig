@@ -65,10 +65,10 @@ h1 {
              <div class="col-sm-12">
     
              <br><br>
-          
+              
 {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
          <div class="form-group">
-              {{ form_row(form.token, {'attr': {'class': 'form-control', 'id': 'token'}}) }}
+              {{ form_row(form.email, {'attr': {'class': 'form-control', 'id': 'email'}}) }}
          </div>
 
 
@@ -83,8 +83,6 @@ h1 {
 {{ form_end(form) }}
                 </div>
             </div>
-        <a href="{{ path('app_user_EnableAccount', {'userId': userId}) }}" class="btn btn-outline-primary mr-2">Resend Email</a>
-
         </div>
 
     </div>  

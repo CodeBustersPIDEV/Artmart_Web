@@ -12,6 +12,7 @@ use App\Repository\ClientRepository;
 use App\Repository\UserRepository;
 use App\Repository\AdminRepository;
 use App\Form\TokenVerificationType;
+use App\Form\VerificationEmailType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -24,10 +25,19 @@ use Symfony\Component\Mailer\Mailer;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Twig\Environment;
 
 #[Route('/user')]
 class UserController extends AbstractController
+
 {
+    private Environment $twig;
+
+
+    public function __construct(Environment $twig)
+    {
+        $this->twig = $twig;
+    }
 
     public function uploadImage(UploadedFile $file, User $user): void
     {
@@ -182,7 +192,7 @@ class UserController extends AbstractController
             $this->addFlash('error', 'There was an error sending your registration token. Please try again later.');
         }
     }
-    #[Route('/{userId}', name: 'app_user_show', methods: ['GET'])]
+    #[Route('/{userId}/show', name: 'app_user_show', methods: ['GET'])]
     public function show(User $user, ClientRepository $clientRepository, ArtistRepository $artistRepository, AdminRepository $adminRepository): Response
     {
         $client = $clientRepository->findOneBy(['user' => $user]);
@@ -433,7 +443,7 @@ class UserController extends AbstractController
     }
 
 
-    #[Route('/{userId}', name: 'app_user_delete', methods: ['POST'])]
+    #[Route('/{userId}/delete', name: 'app_user_delete', methods: ['POST'])]
     public function delete(User $user, ClientRepository $clientRepository, ArtistRepository $artistRepository, AdminRepository $adminRepository, EntityManagerInterface $entityManager): Response
     {
         $client = $clientRepository->findOneBy(['user' => $user]);
@@ -458,7 +468,7 @@ class UserController extends AbstractController
 
         return $this->redirectToRoute('app_logout', [], Response::HTTP_SEE_OTHER);
     }
-    #[Route('/{userId}', name: 'app_user_deleteAd', methods: ['POST'])]
+    #[Route('/{userId}/deleteAd', name: 'app_user_deleteAd', methods: ['POST'])]
     public function deleteA(User $user, ClientRepository $clientRepository, ArtistRepository $artistRepository, AdminRepository $adminRepository, EntityManagerInterface $entityManager): Response
     {
         $client = $clientRepository->findOneBy(['user' => $user]);
@@ -484,7 +494,7 @@ class UserController extends AbstractController
         return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
     }
 
-    #[Route('/{userId}', name: 'app_user_block', methods: ['POST'])]
+    #[Route('/{userId}/block', name: 'app_user_block', methods: ['POST'])]
     public function block(User $user, EntityManagerInterface $entityManager): Response
     {
         $user->setBlocked(1);
@@ -493,7 +503,7 @@ class UserController extends AbstractController
         return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
     }
 
-    #[Route('/{userId}', name: 'app_user_unblock', methods: ['POST'])]
+    #[Route('/{userId}/unblock', name: 'app_user_unblock', methods: ['POST'])]
     public function unblock(User $user, EntityManagerInterface $entityManager): Response
     {
         $user->setBlocked(0);
@@ -512,36 +522,113 @@ class UserController extends AbstractController
         $this->SendEmail($mailer, $user, $token, 'Verification Token');
         return $this->redirectToRoute('app_user_TokenVerif', ['userId' => $user->getUserId()], Response::HTTP_SEE_OTHER);
     }
+    #[Route('/{userId}/ForgetPwd', name: 'app_user_ForgetPwd', methods: ['GET'])]
+    public function ForgetPwd(User $user, EntityManagerInterface $entityManager, MailerInterface $mailer): Response
+    {
+        $token = bin2hex(random_bytes(16));
+        $user->setToken($token);
+        $entityManager->persist($user);
+        $entityManager->flush();
+        $this->SendEmail($mailer, $user, $token, 'Verification Token');
+        return $this->redirectToRoute('app_user_TokenVerifPwd', ['userId' => $user->getUserId()], Response::HTTP_SEE_OTHER);
+    }
     #[Route('/{userId}/TokenVerification', name: 'app_user_TokenVerif', methods: ['GET', 'POST'])]
     public function TokenVerification(User $user, EntityManagerInterface $entityManager, Request $request, SessionInterface $session): Response
     {
         $tries = 3;
-       
+
         $U = new User();
         $form = $this->createForm(TokenVerificationType::class, $U);
         $form->handleRequest($request);
         $userToken = $user->getToken();
-        
+
         if ($form->isSubmitted()) {
             $token = $form->get('token')->getData();
             $warningMessage = $session->get('warning_message');
             if ($warningMessage) {
-                $session->remove('warning_message');}
+                $session->remove('warning_message');
+            }
             if ($userToken == $token) {
                 $user->setEnabled(true);
                 $entityManager->persist($user);
                 $entityManager->flush();
                 return $this->redirectToRoute('app_login', [], Response::HTTP_SEE_OTHER);
             } else {
-               
-                        $session->set('warning_message', 'Incorrect token.No attempts left.');
-                        return $this->redirectToRoute('app_home');
+
+                $session->set('warning_message', 'Incorrect token.No attempts left.');
+                return $this->redirectToRoute('app_home');
             }
         }
 
         return $this->renderForm('user/tokenVerif.html.twig', [
             'user' => $U,
             'userId' => $user->getUserId(),
+            'form' => $form,
+
+        ]);
+    }
+
+
+    #[Route('/{userId}/TokenVerificationPwd', name: 'app_user_TokenVerifPwd', methods: ['GET', 'POST'])]
+    public function TokenVerificationPwd(User $user, EntityManagerInterface $entityManager, Request $request): Response
+    {
+
+        $U = new User();
+        $form = $this->createForm(TokenVerificationType::class, $U);
+        $form->handleRequest($request);
+        $userToken = $user->getToken();
+
+        if ($form->isSubmitted()) {
+            $token = $form->get('token')->getData();
+            if ($userToken == $token) {
+                $user->setEnabled(true);
+                $entityManager->persist($user);
+                $entityManager->flush();
+                return $this->redirectToRoute('app_pwd_resetPwd', ['userId' => $user->getUserId()], Response::HTTP_SEE_OTHER);
+            } else {
+                return $this->redirectToRoute('app_home');
+            }
+        }
+        return $this->renderForm('user/tokenVerif.html.twig', [
+            'user' => $U,
+            'userId' => $user->getUserId(),
+            'form' => $form,
+
+        ]);
+    }
+
+
+
+    #[Route('/EmailVerif', name: 'app_user_EmailVerif', methods: ['GET', 'POST'])]
+    public function EmailVerification(Request $request, UserRepository $userRepository,MailerInterface $mailer,EntityManagerInterface $entityManager): Response
+    {
+        $u = new User();
+        $SearchedUser=new User();
+        $form = $this->createForm(VerificationEmailType::class, $u);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() ) {
+            $email = $form->get('email')->getData();
+
+            $SearchedUser = $userRepository->findOneBy(['email'=>$email]);
+
+            if ($SearchedUser && $SearchedUser->isEnabled()) {
+                $token = bin2hex(random_bytes(16));
+                $SearchedUser->setToken($token);
+                $entityManager->persist($SearchedUser);
+                $entityManager->flush();
+                $this->SendEmail($mailer, $SearchedUser, $token, 'Verification Token');
+                return $this->redirectToRoute('app_user_TokenVerifPwd', ['userId' => $SearchedUser->getUserId()], Response::HTTP_SEE_OTHER);
+            } elseif ($SearchedUser && !$SearchedUser->isEnabled()) {
+                $content = $this->twig->render('user/account_activation.html.twig', ['user_id' => $SearchedUser->getUserId()]);
+                return new Response($content);
+            } else {
+                return $this->redirectToRoute('app_home');
+            }
+
+        
+        }
+        return $this->renderForm('user/emailVerif.html.twig', [
+            'user' => $u,
             'form' => $form,
 
         ]);
