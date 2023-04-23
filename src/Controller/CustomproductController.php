@@ -4,6 +4,7 @@ namespace App\Controller;
 use ReCaptcha\ReCaptcha;
 use App\Entity\Customproduct;
 use App\Entity\Product;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 use Twilio\Rest\Client;
 use App\Entity\Categories;
@@ -26,44 +27,83 @@ use Spatie\Emoji\Emoji;
 #[Route('/customproduct')]
 class CustomproductController extends AbstractController
 {
+   
+        
+        
+    #[Route('/customproduct/searchCustomProduct', name: 'app_customproduct_admin_search', methods: ['GET'])]
+    public function searchCustomProduct(Request $request, EntityManagerInterface $entityManager): JsonResponse
+    {
+        $searchValue = $request->query->get('searchValue');
+        
+        $queryBuilder = $entityManager
+            ->getRepository(Customproduct::class)
+            ->createQueryBuilder('c')
+            ->innerJoin('c.product', 'p')
+            ->where('p.name LIKE :searchTerm')
+            ->setParameter('searchTerm', '%' . $searchValue . '%');
+        
+        $customProducts = $queryBuilder->getQuery()->getResult();
+        
+        $result = [];
+        foreach ($customProducts as $customProduct) {
+            $result[] = [
+                'customProductId' => $customProduct->getCustomProductId(),
+                'clientId' => $customProduct->getClient()->getUserId(),
+                'clientName' => $customProduct->getClient()->getFullName(),
+                'productName' => $customProduct->getProduct()->getName(),
+                'productWeight' => $customProduct->getProduct()->getWeight(),
+            ];
+        }
+        
+        return new JsonResponse($result);
+    }
+    
+    
     #[Route('/', name: 'app_customproduct_index', methods: ['GET'])]
     public function index(Request $request, EntityManagerInterface $entityManager, PaginatorInterface $paginator): Response
     {
+      
         $searchTerm = $request->query->get('q');
         $order = $request->query->get('order');
-   
+    
         $queryBuilder = $entityManager
             ->getRepository(Customproduct::class)
             ->createQueryBuilder('c')
             ->innerJoin('c.product', 'p');
-
-
+    
         if ($order === 'name') {
             $queryBuilder->orderBy('p.name', 'ASC');
         } elseif ($order === 'weight') {
             $queryBuilder->orderBy('p.weight', 'ASC');
         }
-
+    
         if ($searchTerm) {
-            $queryBuilder->where('p.name LIKE :searchTerm')
+            $criteria = $request->query->get('criteria');
+            if ($criteria === 'name') {
+                $queryBuilder->andWhere('p.name LIKE :searchTerm')
+                    ->setParameter('searchTerm', '%' . $searchTerm . '%');
+            } elseif ($criteria === 'weight') {
+                $queryBuilder->andWhere('p.weight LIKE :searchTerm')
+                    ->setParameter('searchTerm', '%' . $searchTerm . '%');
+            } elseif ($criteria === 'material') {
+                $queryBuilder->andWhere('p.material LIKE :searchTerm')
                 ->setParameter('searchTerm', '%' . $searchTerm . '%');
+            }
         }
+    
         $pagination = $paginator->paginate(
             $queryBuilder->getQuery(),
             $request->query->getInt('page', 1),
             8
         );
-
-        $customproducts = $queryBuilder->getQuery()->getResult();
-
+    
         return $this->render('customproduct/index.html.twig', [
             'customproducts' => $pagination,
             'searchTerm' => $searchTerm,
             'order' => $order,
-         
         ]);
     }
-
+    
 
     #[Route('/admin', name: 'app_customproduct_admin', methods: ['GET'])]
     public function adminindex(Request $request, EntityManagerInterface $entityManager): Response
@@ -179,14 +219,32 @@ class CustomproductController extends AbstractController
     #[Route('/customproduct', name: 'app_customproduct_artist', methods: ['GET'])]
     public function artist(Request $request, EntityManagerInterface $entityManager, PaginatorInterface $paginator): Response
     {
+        $searchTerm = $request->query->get('q');
         $queryBuilder = $entityManager
             ->getRepository(Customproduct::class)
             ->createQueryBuilder('c')
             ->innerJoin('c.product', 'p');
 
+
+
         $customproducts = $entityManager
             ->getRepository(Customproduct::class)
             ->findAll();
+
+
+            if ($searchTerm) {
+                $criteria = $request->query->get('criteria');
+                if ($criteria === 'name') {
+                    $queryBuilder->andWhere('p.name LIKE :searchTerm')
+                        ->setParameter('searchTerm', '%' . $searchTerm . '%');
+                } elseif ($criteria === 'weight') {
+                    $queryBuilder->andWhere('p.weight LIKE :searchTerm')
+                        ->setParameter('searchTerm', '%' . $searchTerm . '%');
+                } elseif ($criteria === 'material') {
+                    $queryBuilder->andWhere('p.material LIKE :searchTerm')
+                    ->setParameter('searchTerm', '%' . $searchTerm . '%');
+                }
+            }
         $pagination = $paginator->paginate(
             $queryBuilder->getQuery(),
             $request->query->getInt('page', 1),
@@ -194,6 +252,7 @@ class CustomproductController extends AbstractController
         );
 
         return $this->render('customproduct/artist.html.twig', [
+            'searchTerm' => $searchTerm,
             'customproducts' => $pagination,
         ]);
     }
@@ -466,5 +525,8 @@ class CustomproductController extends AbstractController
         // Redirect to the filtered list of applies with status 'pending', 'done', or 'refused'
         return $this->redirectToRoute('app_apply_pending');
     }
+    
+
+ 
     
 }

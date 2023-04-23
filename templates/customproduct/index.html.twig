@@ -206,12 +206,39 @@
 
 {% block body %}
 
+<style>
+  form {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+  }
+
+  label {
+    margin-left: 10px;
+    margin-right: 5px;
+  }
+
+    select {
+    margin-right: 5px;
+  }
+
+
+</style>
+
 <center>
-<form  action="{{ path('app_customproduct_index') }}" method="GET">
-    <div class="form-group">
+  <form action="{{ path('app_customproduct_index') }}" method="GET">
+  <label  for="criteria">Search by:</label>
+    <select id="criteria" name="criteria">
+      <option value="name" {% if app.request.query.get('criteria') == 'name' %}selected{% endif %}>Name</option>
+      <option value="weight" {% if app.request.query.get('criteria') == 'weight' %}selected{% endif %}>Weight</option>
+      <option value="material" {% if app.request.query.get('criteria') == 'material' %}selected{% endif %}>Material</option>
+    </select>
+    <input type="text" id="search-term" name="q" class="form-control" value="{{ searchTerm }}" placeholder="Search...">
     
-      <input type="text" id="search-term" name="q" class="form-control" value="{{ searchTerm }}" placeholder="Search...">
-    </div>
+  </form>
+</center>
+
 
 
     
@@ -222,14 +249,6 @@
 
 
 {% set totalWeight = customproducts|reduce((total, customproduct) => total + customproduct.product.weight, 0) %}
-
-{% if customproducts.getTotalItemCount() > 0 %}
-<p  style=" color: #fff;">Total weight of displayed Products: {{ totalWeight }}</p>
-<a href="{{ path('app_customproduct_index', {'order': 'name'}) }}" class="orderby-link">Order by Name</a>
-<a href="{{ path('app_customproduct_index', {'order': 'weight'}) }}" class="orderby-link">Order by Weight</a>
-     
-  
-    
 <link rel="stylesheet" href="{{ asset('assets/Components/specialOrder.css') }}"/>
 	<a href="{{ path('app_customproduct_newnew') }}">
 		<div data-tooltip="New Product" class="button mid">
@@ -245,6 +264,14 @@
 	</a>
 <a href="{{ path('app_apply_clients') }}" class="link-style">Demands</a>
 <a href="{{ path('app_apply_clientdone') }}" class="link-style">Check Progress</a>
+{% if customproducts.getTotalItemCount() > 0 %}
+<p  style=" color: #fff;">Total weight of displayed Products: {{ totalWeight }}</p>
+<a href="{{ path('app_customproduct_index', {'order': 'name'}) }}" class="orderby-link">Order by Name</a>
+<a href="{{ path('app_customproduct_index', {'order': 'weight'}) }}" class="orderby-link">Order by Weight</a>
+     
+  
+    
+
 
 
 
@@ -276,7 +303,7 @@
 	  </ul>
       
 	 {{ knp_pagination_render(customproducts) }}
-<a href="{{ path('app_customproduct_artist') }}">Go to artist page</a>
+
 
 {% else %}
     <p>No custom products found.</p>
