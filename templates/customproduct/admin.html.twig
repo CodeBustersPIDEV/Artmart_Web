@@ -171,6 +171,15 @@ $(document).ready(function() {
 
 
 
+
+
+<input class="form-control" type="text" id="search" placeholder="Search">
+<br>
+
+<a href="{{ path('app_customproduct_admin', {'order': 'name'}) }}" class="orderby-link mx-2">Order by Name</a>
+<a href="{{ path('app_customproduct_admin', {'order': 'weight'}) }}" class="orderby-link mx-2">Order by Weight</a>
+<a href="{{ path('app_customproduct_stat') }}" class="btn btn-danger btn-sm mx-2"><i class="fas fa-chart-bar"></i> Statistics</a>
+
  <link rel="stylesheet" href="{{ asset('assets/Components/specialOrder.css') }}"/>
 	<a href="{{ path('app_customproduct_newadmin') }}">
 		<div data-tooltip="New Product" class="button mid">
@@ -184,18 +193,8 @@ $(document).ready(function() {
 			</div>
 		</div>
 	</a>
-
-
-
-<a href="{{ path('app_customproduct_admin', {'order': 'name'}) }}" class="orderby-link mx-2">Order by Name</a>
-<a href="{{ path('app_customproduct_admin', {'order': 'weight'}) }}" class="orderby-link mx-2">Order by Weight</a>
-<a href="{{ path('app_customproduct_stat') }}" class="btn btn-danger btn-sm mx-2"><i class="fas fa-chart-bar"></i> Statistics</a>
-
-
-</form>
 {% if customproducts %}
 
-<input type="text" id="search" placeholder="Search">
 
 <div class="custom-products-container">
     <table class="table" id="custom-product-table">
