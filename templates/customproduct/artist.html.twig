@@ -118,6 +118,66 @@
 {% block title %}
         <h4><em>Custom</em> Products</h4>
 {% endblock %}
+<style>
+  form {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+  }
+
+  label {
+    margin-left: 10px;
+    margin-right: 5px;
+  }
+
+    select {
+    margin-right: 5px;
+  }
+.form-control {
+  display: inline-block;
+  width: 30%;
+  padding: 6px 12px;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #55595c;
+  background-color: #fff;
+  background-image: none;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+          box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+  -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+  transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+  transition: box-shadow ease-in-out .15s,border-color ease-in-out .15s;
+  transition: box-shadow ease-in-out .15s,border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+}
+
+.form-control:focus {
+  border-color: #66afe9;
+  outline: 0;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6);
+          box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6);
+}
+
+
+
+</style>
+
+<center>
+  <form action="{{ path('app_customproduct_artist') }}" method="GET">
+  <label  for="criteria">Search by:</label>
+    <select id="criteria" name="criteria">
+      <option value="name" {% if app.request.query.get('criteria') == 'name' %}selected{% endif %}>Name</option>
+      <option value="weight" {% if app.request.query.get('criteria') == 'weight' %}selected{% endif %}>Weight</option>
+      <option value="material" {% if app.request.query.get('criteria') == 'material' %}selected{% endif %}>Material</option>
+    </select>
+    <input type="text" id="search-term" name="q" class="form-control" value="{{ searchTerm }}" placeholder="Search...">
+    
+  </form>
+</center>
+
     <a  class="orderby-link" href="{{ path('app_apply_accepted') }}">Accepted Works</a>
     <a  class="orderby-link" href="{{ path('app_apply_pending') }}">Your Demands</a>
     <div class="card-container">

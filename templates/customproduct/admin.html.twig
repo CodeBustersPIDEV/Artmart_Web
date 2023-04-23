@@ -4,6 +4,38 @@
 
 {% block stylesheets %}
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+$(document).ready(function() {
+  // Listen for form submission
+  $('form#search-form').submit(function(e) {
+    e.preventDefault(); // Prevent form from submitting normally
+    var formData = $(this).serialize(); // Get form data as string
+    $.ajax({
+      url: '{{ path('app_customproduct_admin_search') }}', // Path to your search function
+      type: 'GET',
+      data: formData,
+      dataType: 'json', // Expect JSON response from server
+      success: function(response) {
+        // If there are search results
+        if (response.length > 0) {
+          var rows = '';
+          $.each(response, function(index, customproduct) {
+            rows += '<tr><td>' + customproduct.product.name + '</td><td>' + customproduct.product.weight + '</td><td>' + customproduct.client.username + '</td></tr>';
+          });
+          $('table#customproduct-table tbody').html(rows); // Replace table rows with search results
+        } else {
+          $('table#customproduct-table tbody').html('<tr><td colspan="3">No results found.</td></tr>'); // Display "no results" message
+        }
+      },
+      error: function(xhr, status, error) {
+        alert('Error: ' + xhr.responseText); // Display error message
+      }
+    });
+  });
+});
+</script>
+
 <style>
 .table-container {
     display: inline-block;
@@ -154,15 +186,6 @@
 	</a>
 
 
-{% if customproducts %}
-
-
-
-<form action="{{ path('app_customproduct_admin') }}" method="GET">
-    <div class="form-group">
-        <label for="search-term">Search for custom products:</label>
-        <input type="text" id="search-term" name="q" class="form-control" value="{{ searchTerm }}">
-    </div>
 
 <a href="{{ path('app_customproduct_admin', {'order': 'name'}) }}" class="orderby-link mx-2">Order by Name</a>
 <a href="{{ path('app_customproduct_admin', {'order': 'weight'}) }}" class="orderby-link mx-2">Order by Weight</a>
@@ -170,55 +193,84 @@
 
 
 </form>
+{% if customproducts %}
 
+<input type="text" id="search" placeholder="Search">
 
-
-
- <div class="custom-products-container">
-<table class="table">
-<thead>
-<tr>
-<th>Client Name</th>
-<th>Product Name</th>
-<th>Category</th>
-<th>Description</th>
-<th>Weight</th>
-<th>Demension</th>
-<th>Material</th>
-<th>Image</th>
-<th class="actions">Actions</th>
-</tr>
-</thead>
-<tbody>
-{% set customproductCount = 0 %}
-{% for customproduct in customproducts %}
-      {% set customproductCount = customproductCount + 1 %}
-
-<tr>
-<td>{{ customproduct.client }}</td>
-<td>{{ customproduct.product.name }}</td>
-<td>{{ customproduct.product.category }}</td>
-<td>{{ customproduct.product.description }}</td>
-<td>{{ customproduct.product.weight }}</td>
-  <td>{{ customproduct.product.dimensions }}</td>
-    <td>{{ customproduct.product.material }}</td>
-       <td><img src="{{ asset('imagescustom/' ~ customproduct.product.image) }}" alt="Product Image"></td>
-      
-<td class="actions">
-
-<a href="{{ path('app_customproduct_editadmin', {'customProductId': customproduct.customProductId}) }}">edit</a>
-{{ include('customproduct/delete.html.twig') }}
-</td>
-</tr>
-        {% else %}
+<div class="custom-products-container">
+    <table class="table" id="custom-product-table">
+        <thead>
             <tr>
-                <td colspan="4">No records found.</td>
+                <th>Client Name</th>
+                <th>Product Name</th>
+                <th>Category</th>
+                <th>Description</th>
+                <th>Weight</th>
+                <th>Dimension</th>
+                <th>Material</th>
+                <th>Image</th>
+                <th class="actions">Actions</th>
             </tr>
-        {% endfor %}
+        </thead>
+        <tbody id="custom-product-body">
+            {% set customproductCount = 0 %}
+            {% for customproduct in customproducts %}
+                {% set customproductCount = customproductCount + 1 %}
+                <tr>
+                    <td>{{ customproduct.client }}</td>
+                    <td>{{ customproduct.product.name }}</td>
+                    <td>{{ customproduct.product.category }}</td>
+                    <td>{{ customproduct.product.description }}</td>
+                    <td>{{ customproduct.product.weight }}</td>
+                    <td>{{ customproduct.product.dimensions }}</td>
+                    <td>{{ customproduct.product.material }}</td>
+                    <td><img src="{{ asset('imagescustom/' ~ customproduct.product.image) }}" alt="Product Image"></td>
+                    <td class="actions">
+                        <a href="{{ path('app_customproduct_editadmin', {'customProductId': customproduct.customProductId}) }}">edit</a>
+                        {{ include('customproduct/delete.html.twig') }}
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="9">No records found.</td>
+                </tr>
+            {% endfor %}
         </tbody>
     </table>
-    
 </div>
+
+<script>
+    var searchInput = document.getElementById("search");
+    var customProductBody = document.getElementById("custom-product-body");
+    var allRows = customProductBody.getElementsByTagName("tr");
+
+    searchInput.addEventListener("keyup", function() {
+        var searchString = searchInput.value.toLowerCase();
+        for (var i = 0; i < allRows.length; i++) {
+            var row = allRows[i];
+            var clientName = row.getElementsByTagName("td")[0].textContent.toLowerCase();
+            var productName = row.getElementsByTagName("td")[1].textContent.toLowerCase();
+            var category = row.getElementsByTagName("td")[2].textContent.toLowerCase();
+            var description = row.getElementsByTagName("td")[3].textContent.toLowerCase();
+            var weight = row.getElementsByTagName("td")[4].textContent.toLowerCase();
+            var dimension = row.getElementsByTagName("td")[5].textContent.toLowerCase();
+            var material = row.getElementsByTagName("td")[6].textContent.toLowerCase();
+            if (clientName.includes(searchString) ||
+                productName.includes(searchString) ||
+                category.includes(searchString) ||
+                description.includes(searchString) ||
+                weight.includes(searchString) ||
+                dimension.includes(searchString) ||
+                material.includes(searchString)) {
+                row.style.display = "";
+            } else {
+                row.style.display = "none";
+            }
+        }
+    });
+</script>
+
+
 
   <p>Your total custom product count is: {{ customproductCount }}</p>
 {% else %}
@@ -306,6 +358,10 @@
     </table>
   </div>
 </div>
+
+
+
+
 
 
 
