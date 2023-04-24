@@ -30,7 +30,7 @@ class ReadyproductController extends AbstractController
     }
 
 
-    #[Route('/', name: 'app_readyproduct_index', methods: ['GET'])]
+    #[Route('/rp', name: 'app_readyproduct_index', methods: ['GET'])]
     public function index(Request $request, EntityManagerInterface $entityManager): Response
     {
         $searchTerm = $request->query->get('q');
@@ -60,6 +60,43 @@ class ReadyproductController extends AbstractController
             ->findAll();
 
         return $this->render('readyproduct/index.html.twig', [
+            'readyproducts' => $readyproducts,
+            'productreviews' => $productreviews,
+            'searchTerm' => $searchTerm,
+            'order' => $order,
+        ]);
+    }
+
+    #[Route('/', name: 'app_readyproduct_client_index', methods: ['GET'])]
+    public function index_client(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $searchTerm = $request->query->get('q');
+        $order = $request->query->get('order');
+
+        $queryBuilder = $entityManager
+            ->getRepository(Readyproduct::class)
+            ->createQueryBuilder('r')
+            ->innerJoin('r.productId', 'p');
+
+
+        if ($order === 'name') {
+            $queryBuilder->orderBy('p.name', 'ASC');
+        } elseif ($order === 'weight') {
+            $queryBuilder->orderBy('p.weight', 'ASC');
+        }
+
+        if ($searchTerm) {
+            $queryBuilder->where('p.name LIKE :searchTerm')
+                ->setParameter('searchTerm', '%' . $searchTerm . '%');
+        }
+
+        $readyproducts = $queryBuilder->getQuery()->getResult();
+
+        $productreviews = $entityManager
+            ->getRepository(Productreview::class)
+            ->findAll();
+
+        return $this->render('readyproduct/client.html.twig', [
             'readyproducts' => $readyproducts,
             'productreviews' => $productreviews,
             'searchTerm' => $searchTerm,
