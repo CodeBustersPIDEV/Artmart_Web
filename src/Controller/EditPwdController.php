@@ -32,5 +32,24 @@ class EditPwdController extends AbstractController
             'form' => $form,
         ]);
     }
+    #[Route('/{userId}/resetPwd', name: 'app_pwd_resetPwd', methods: ['GET', 'POST'])]
+    public function resetPwd(Request $request, User $user, EntityManagerInterface $entityManager): Response
+    {
+        $form = $this->createForm(EditPwdType::class, $user);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $Pwd=$form->get('password')->getData();
+            $hashedPassword = hash('sha256', $Pwd);
+            $user->setPassword($hashedPassword);
+            $entityManager->persist($user);
+            $entityManager->flush();
+            return $this->redirectToRoute('app_login', [], Response::HTTP_SEE_OTHER);
+
+        }
+        return $this->renderForm('editPwd/editPwd.html.twig', [
+            'user' => $user,
+            'form' => $form,
+        ]);
+    }
 
 }

@@ -4,6 +4,7 @@ namespace App\Security;
 
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Templating\EngineInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -18,6 +19,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Psr\Log\LoggerInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\User;
+use Twig\Environment;
 
 class UserAuthenticator extends AbstractLoginFormAuthenticator
 {
@@ -26,10 +28,13 @@ class UserAuthenticator extends AbstractLoginFormAuthenticator
     public const LOGIN_ROUTE = 'app_login';
     
     private $entityManager;
+    private Environment $twig;
 
-    public function __construct(private UrlGeneratorInterface $urlGenerator,private LoggerInterface $logger,EntityManagerInterface $entityManager)
+    public function __construct(private UrlGeneratorInterface $urlGenerator,private LoggerInterface $logger,EntityManagerInterface $entityManager,Environment $twig)
     {
         $this->entityManager = $entityManager;
+        $this->twig = $twig;
+
     }
 
     public function authenticate(Request $request): Passport
@@ -86,7 +91,9 @@ class UserAuthenticator extends AbstractLoginFormAuthenticator
         }}
         elseif(!$user->isEnabled()){
             
-            return new JsonResponse("your account is not activated");
+            $content = $this->twig->render('user/account_activation.html.twig', ['user_id' => $user->getUserId()]);
+                return new Response($content);
+
         } elseif($user->isBlocked()){
             
             return new JsonResponse("your account is blocked");
