@@ -105,9 +105,9 @@ img {
         </tr>
        <tr>
   <th><i class="fa fa-file-image fa-beat category-icon" aria-hidden="true"></i> Image:</th>
-  <td><img src="{{ customproduct.product.image }}" alt="Product Image" onclick="showImage(this)">
+  <td><img src="{{ asset(customproduct.product.image)  }}" alt="Product Image" onclick="showImage(this)">
    <div class="button-group">
-  <a href="{{ customproduct.product.image }}" download="{{ customproduct.product.image }}" class="btn btn-primary">
+  <a href="{{ asset(customproduct.product.image)  }}" download="{{ customproduct.product.image }}" class="btn btn-primary">
     <i class="fa fa-download"></i> Download Image
   </a>
 </div>
