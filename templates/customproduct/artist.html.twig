@@ -1,11 +1,21 @@
 {% extends 'baseF.html.twig' %}
 
 {% block content %}
-
-
+<link rel="stylesheet" href="{{ asset('bundles/mercuryseriesflashy/css/flashy.css') }}">
+      <!-- Flashy depends on jQuery -->
+        <script src="//code.jquery.com/jquery.js"></script>
+    <!-- Load Flashy default JavaScript -->
+    <script src="{{ asset('bundles/mercuryseriesflashy/js/flashy.js') }}"></script>
+    <!-- Include Flashy default partial -->
+{{ include('@MercurySeriesFlashy/flashy.html.twig') }}
 
 {% block stylesheets %}
-
+      <!-- Flashy depends on jQuery -->
+        <script src="//code.jquery.com/jquery.js"></script>
+    <!-- Load Flashy default JavaScript -->
+    <script src="{{ asset('bundles/mercuryseriesflashy/js/flashy.js') }}"></script>
+    <!-- Include Flashy default partial -->
+{{ include('@MercurySeriesFlashy/flashy.html.twig') }}
 <style>
 
 .custom-card {
@@ -45,6 +55,10 @@
     border-radius: 5px;
     text-decoration: none;
     transition: background-color 0.2s ease-in-out;
+}
+
+.custom-card a:hover {
+    background-color: #0D6E72;
 }
 .custom-card btn {
     display: inline-block;
@@ -193,14 +207,14 @@
                     <h2>{{ customproduct.product.name }}</h2>
                     <p>{{ customproduct.product.dimensions }}</p>
            
-               <div class="actions">
-                    <form action="{{ path('app_customproduct_apply', {'customProductId': customproduct.customProductId}) }}" method="post">
-                        <button  id="applyBtn-{{ customproduct.customProductId }}" type="submit" class="btn btn-success">Apply</button>
-                    </form>
-                </div>
-                     <form action="{{ path('app_customproduct_showartist', {'customProductId': customproduct.customProductId}) }}" method="get">
-                        <button class="btn btn-secondary">Show</button>
-                    </form>
+
+             <a  style="background-color: green;" href="{{ path('app_customproduct_apply', {'customProductId': customproduct.customProductId}) }}">Apply</a>
+                 <a href="{{ path('app_customproduct_showartist', {'customProductId': customproduct.customProductId}) }}">show</a>
+                   
+                
+  
+                       
+             
               </div>   </div>
       {% set customproductCount = customproductCount + 1 %}
 

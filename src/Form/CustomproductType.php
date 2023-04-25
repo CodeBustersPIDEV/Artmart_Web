@@ -11,7 +11,7 @@ class CustomproductType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('client')
+        
             ->add('product', ProductType::class)
         
         ;
