@@ -127,132 +127,129 @@
 				margin: 0 auto;
 				padding: 5px;
 			}
-            .nav_links {
-		cursor: pointer;
-	}
-	.adminSection {
-		margin-left: 5px;
-	}
+			.nav_links {
+				cursor: pointer;
+			}
+			.adminSection {
+				margin-left: 5px;
+			}
 		</style>
 	{% endblock %}
-    {% block body %}
-<div class="adminSection">
-<br>
+	{% block body %}
+		<div class="adminSection">
+			<br>
 
-	<section id="ready-products">
+			<section id="ready-products">
 
-			<h3>Ready products</h3>
-		<table class="table">
-			<thead>
-				<tr>
-					<th>Name</th>
-					<th>User</th>
-					<th>Category</th>
-					<th>Dimensions</th>
-					<th>Material</th>
-					<th>Weight</th>
-					<th>Description</th>
-					<th>Price</th>
-					<th>Actions</th>
-				</tr>
-			</thead>
-			<tbody>
-				{% for readyproduct in readyproducts %}
-				<tr>
-					<td>{{ readyproduct.productId.name }}</td>
-					<td>{{ readyproduct.userId }}</td>
-					<td>{{ readyproduct.productId.category }}</td>
-					<td>{{ readyproduct.productId.dimensions }}</td>
-					<td>{{ readyproduct.productId.material }}</td>
-					<td>{{ readyproduct.productId.weight }}</td>
-					<td>{{ readyproduct.productId.description }}</td>
-					<td>{{ readyproduct.price }}</td>
-					<td>
-                        <a href="{{ path('app_readyproduct_show', {'readyProductId': readyproduct.readyProductId}) }}">show</a>
-                        <a href="{{ path('app_readyproduct_delete', {'readyProductId': readyproduct.readyProductId}) }}">delete</a>
-					</td>
-				</tr>
-				{% else %}
-				<tr>
-					<td colspan="7">no records found</td>
-				</tr>
-				{% endfor %}
-			</tbody>
-		</table>
-	</section>
+				<h3>Ready products</h3>
+				<table class="table">
+					<thead>
+						<tr>
+							<th>Name</th>
+							<th>User</th>
+							<th>Category</th>
+							<th>Dimensions</th>
+							<th>Material</th>
+							<th>Weight</th>
+							<th>Description</th>
+							<th>Price</th>
+							<th>Actions</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for readyproduct in readyproducts %}
+							<tr>
+								<td>{{ readyproduct.productId.name }}</td>
+								<td>{{ readyproduct.userId }}</td>
+								<td>{{ readyproduct.productId.category }}</td>
+								<td>{{ readyproduct.productId.dimensions }}</td>
+								<td>{{ readyproduct.productId.material }}</td>
+								<td>{{ readyproduct.productId.weight }}</td>
+								<td>{{ readyproduct.productId.description }}</td>
+								<td>{{ readyproduct.price }}</td>
+								<td>
+									<a href="{{ path('app_readyproduct_show', {'readyProductId': readyproduct.readyProductId}) }}">show</a>
+									<a href="{{ path('app_readyproduct_delete', {'readyProductId': readyproduct.readyProductId}) }}">delete</a>
+								</td>
+							</tr>
+						{% else %}
+							<tr>
+								<td colspan="7">no records found</td>
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</section>
 
-    <section id="category">
-		<div class="col">
-			<h3>Categories</h3>
+			<section id="category">
+				<div class="col">
+					<h3>Categories</h3>
 
-			<table class="table">
-				<thead>
-					<tr>
-						<th>Name</th>
-						<th>Actions</th>
-					</tr>
-				</thead>
-				<tbody>
-					{% for category in categories %}
-					<tr>
-						<td>{{ category.name }}</td>
-						<td>
-                        <a href="{{ path('app_categories_edit', {'categoriesId': category.categoriesId}) }}">edit</a>
-                        <a href="{{ path('app_categories_delete', {'categoriesId': category.categoriesId}) }}">delete</a>
-					</td>
-					</tr>
-					{% else %}
-					<tr>
-						<td colspan="3">no records found</td>
-					</tr>
-					{% endfor %}
-				</tbody>
-			</table>
+					<table class="table">
+						<thead>
+							<tr>
+								<th>Name</th>
+								<th>Actions</th>
+							</tr>
+						</thead>
+						<tbody>
+							{% for category in categories %}
+								<tr>
+									<td>{{ category.name }}</td>
+									<td>
+										<a href="{{ path('app_categories_edit', {'categoriesId': category.categoriesId}) }}">edit</a>
+										<a href="{{ path('app_categories_delete', {'categoriesId': category.categoriesId}) }}">delete</a>
+									</td>
+								</tr>
+							{% else %}
+								<tr>
+									<td colspan="3">no records found</td>
+								</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
+			</section>
+
+			<section id="ready-products">
+
+				<h3>Product reviews</h3>
+				<table class="table">
+					<thead>
+						<tr>
+							<th>Product</th>
+							<th>Title</th>
+							<th>User</th>
+							<th>Rating</th>
+							<th>Text</th>
+							<th>Date</th>
+							<th>Actions</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for productreview in productreviews %}
+							<tr>
+								<td>{{ productreview.readyProductId.productId.name }}</td>
+								<td>{{ productreview.title }}</td>
+								<td>{{ productreview.userId }}</td>
+								<td>{{ productreview.rating }}</td>
+								<td>{{ productreview.text }}</td>
+								<td>{{ productreview.date ? productreview.date|date('Y-m-d H:i:s') : '' }}</td>
+								<td>
+									<a href="{{ path('app_review_index', {'readyProductId': productreview.readyProductId}) }}">show</a>
+									<a href="{{ path('app_productreview_delete', {'reviewId': productreview.reviewId}) }}">delete</a>
+								</td>
+							</tr>
+						{% else %}
+							<tr>
+								<td colspan="7">no records found</td>
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</section>
+
 		</div>
-	</section>
-
-    <section id="ready-products">
-
-			<h3>Product reviews</h3>
-		<table class="table">
-			<thead>
-				<tr>
-					<th>Product</th>
-					<th>Title</th>
-					<th>User</th>
-					<th>Rating</th>
-					<th>Text</th>
-					<th>Date</th>
-					<th>Actions</th>
-				</tr>
-			</thead>
-			<tbody>
-				{% for productreview in productreviews %}
-				<tr>
-					<td>{{ productreview.readyProductId.productId.name }}</td>
-					<td>{{ productreview.title }}</td>
-					<td>{{ productreview.userId }}</td>
-					<td>{{ productreview.rating }}</td>
-					<td>{{ productreview.text }}</td>
-					<td>{{ productreview.date ? productreview.date|date('Y-m-d H:i:s') : '' }}</td>
-					<td>
-                        <a href="{{ path('app_review_index', {'readyProductId': productreview.readyProductId}) }}">show</a>
-                        <a href="{{ path('app_productreview_delete', {'reviewId': productreview.reviewId}) }}">delete</a>
-					</td>
-				</tr>
-				{% else %}
-				<tr>
-					<td colspan="7">no records found</td>
-				</tr>
-				{% endfor %}
-			</tbody>
-		</table>
-	</section>
-
-</div>
-<script
-	src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.bundle.min.js"
-	integrity="sha384-qKXV1j0HvMUeCBQ+QVp7JcfGl760yU08IQ+GpUo5hlbpg51QRiuqHAJz8+BrxE/N"
-	crossorigin="anonymous"
-></script>
-{% endblock %} {% endblock %}
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.bundle.min.js" integrity="sha384-qKXV1j0HvMUeCBQ+QVp7JcfGl760yU08IQ+GpUo5hlbpg51QRiuqHAJz8+BrxE/N" crossorigin="anonymous"></script>
+	{% endblock %}
+{% endblock %}

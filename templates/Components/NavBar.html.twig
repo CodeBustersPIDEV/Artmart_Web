@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="{{ asset('assets/Components/NavBar.css') }}" />
+<link rel="stylesheet" href="{{ asset('assets/Components/NavBar.css') }}"/>
 
 <style>
 	.logo {
@@ -128,15 +128,11 @@
 		margin-left: 4px;
 	}
 </style>
-	{% set connectedUser = returnConnectedUser() %}
+{% set connectedUser = returnConnectedUser() %}
 <nav class="navMenu">
 	<div class="logo">
 		<a href="/">
-			<img
-				src="{{ asset('assets/ArtMart_Logo.png') }}"
-				class="logo_img"
-				alt="ArtMart Logo"
-			/>
+			<img src="{{ asset('assets/ArtMart_Logo.png') }}" class="logo_img" alt="ArtMart Logo"/>
 		</a>
 	</div>
 	<div class="options">
@@ -147,11 +143,11 @@
 			{% if app.session.get('user_role') == "client" %}
 				<a href="{{ path('app_customproduct_index') }}">Custom Products</a>
 				<a href="{{ path('app_wishlist_index') }}">Shopping Cart</a>
-			{% endif %}		
-			{% if app.session.get('user_role') == "artist" %}	
-		<a href="{{ path('app_readyproduct_index') }}">Products</a>
-			<a href="{{ path('app_customproduct_artist') }}">Custom Products</a>
-				{% endif %}		
+			{% endif %}
+			{% if app.session.get('user_role') == "artist" %}
+				<a href="{{ path('app_readyproduct_index') }}">Products</a>
+				<a href="{{ path('app_customproduct_artist') }}">Custom Products</a>
+			{% endif %}
 			{% if app.session.get('user_role') == "admin" %}
 				<a href="{{ path('app_admin') }}">Admin Panel</a>
 			{% endif %}
@@ -160,12 +156,22 @@
 		<div class="dot"></div>
 	</div>
 	<div class="userButtons">
-	{% if app.session.get('user_id') %}	
-		<p>Welcome {{ app.session.get('user_name') }}!</p>
-		<a	class="signIn_btn btns"	href="/logout"	style="--clr: #ffc0cb"><span>Logout</span><i></i></a>
-	{% else %}
-	<a	class="signIn_btn btns"	href="{{ path('app_login') }}"	style="--clr: #ffc0cb"><span>Sign In</span><i></i></a>
-	<a class="signUp_btn btns"	href="{{ path('app_user_new') }}" style="--clr: #ffc0cb"><span>Sign Up</span><i></i></a>
-	{% endif %}
+		{% if app.session.get('user_id') %}
+			<p>Welcome
+				{{ app.session.get('user_name') }}!</p>
+			<a class="signIn_btn btns" href="/logout" style="--clr: #ffc0cb">
+				<span>Logout</span>
+				<i></i>
+			</a>
+		{% else %}
+			<a class="signIn_btn btns" href="{{ path('app_login') }}" style="--clr: #ffc0cb">
+				<span>Sign In</span>
+				<i></i>
+			</a>
+			<a class="signUp_btn btns" href="{{ path('app_user_new') }}" style="--clr: #ffc0cb">
+				<span>Sign Up</span>
+				<i></i>
+			</a>
+		{% endif %}
 	</div>
 </nav>
