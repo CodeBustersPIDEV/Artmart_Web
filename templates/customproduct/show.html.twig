@@ -102,7 +102,7 @@ img {
      <tr>
   <th><i class="fa fa-file-image fa-beat category-icon" aria-hidden="true"></i> Image:</th>
   {{ include('customproduct/_delete_form.html.twig') }}
-  <td><img src="{{ asset('imagescustom/' ~ product.image) }}" alt="Product Image" onclick="showImage(this)"></td>
+  <td><img src="{{ customproduct.product.image }}" alt="Product Image" onclick="showImage(this)"></td>
   
 </tr>
   

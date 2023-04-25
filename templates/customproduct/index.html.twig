@@ -208,7 +208,17 @@
   color: white;
 }
 
+.pill {
+  display: inline-block;
+  background-color: #0D6E72;
+  color: #fff;
+  border-radius: 20px;
+  padding: 2px 5px;
+  margin-right: 10px;
+  font-size: 70%;
+  text-align: left;
 
+}
 
 </style>
 
@@ -295,10 +305,10 @@
 
 <div class="col-sm-3">
             <div class="custom-card">
-                <img src="{{ asset('imagescustom/' ~ customproduct.product.image) }}" alt="{{ customproduct.product.name }} image" />
+                <img src="{{ customproduct.product.image }}" alt="{{ customproduct.product.name }} image" />
                 <h2>{{ customproduct.product.name }}</h2>
                 <p>{{ customproduct.product.dimensions }}</p>
-  
+         <p class="pill">{{ customproduct.product.category }}</p>
                 <a href="{{ path('app_customproduct_show', {'customProductId': customproduct.customProductId}) }}">show</a>
                 <a href="{{ path('app_customproduct_edit', {'customProductId': customproduct.customProductId}) }}">edit</a>
             </div>

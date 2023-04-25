@@ -229,7 +229,7 @@ $(document).ready(function() {
                     <td>{{ customproduct.product.weight }}</td>
                     <td>{{ customproduct.product.dimensions }}</td>
                     <td>{{ customproduct.product.material }}</td>
-                    <td><img src="{{ asset('imagescustom/' ~ customproduct.product.image) }}" alt="Product Image"></td>
+                    <td><img src="{{ customproduct.product.image }}" alt="Product Image"></td>
                     <td class="actions">
                         <a href="{{ path('app_customproduct_editadmin', {'customProductId': customproduct.customProductId}) }}">edit</a>
                         {{ include('customproduct/delete.html.twig') }}
