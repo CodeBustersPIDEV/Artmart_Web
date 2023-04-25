@@ -27,7 +27,7 @@
 		{% if blog_media != null %}
 		<img
 			class="hero-image"
-			src="{{ blog_media.getFilePath() }}"
+			src="{{ getRemoteBlogsMedia(blog_media.getFilePath()) }}"
 			alt="Spinning glass cube"
 		/>
 		{% else %}
@@ -87,7 +87,7 @@
 			/>
 			#} {% if blog.author != null %}
 			<img
-				src="{{ blog.author.getPicture() }}"
+				src="{{ getRemoteBlogsMedia(blog.author.getPicture()) }}"
 				alt="avatar"
 				class="small-avatar"
 			/>

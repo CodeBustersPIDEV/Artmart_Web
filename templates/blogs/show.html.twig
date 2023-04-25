@@ -1,6 +1,7 @@
 {% extends 'baseF.html.twig' %}{% import "base.html.twig" as base %} {% block
 content %}
 <link rel="stylesheet" href="{{ asset('assets/Blog/CSS/BlogPage.css') }}" />
+
 <style>
 	@import url("https://fonts.googleapis.com/css2?family=Aldrich&family=Raleway:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap");
 
@@ -245,7 +246,7 @@ content %}
 							{% if blog_media != null %}
 							<img
 								class="hero-image"
-								src="{{ blog_media.getFilePath() }}"
+								src="{{ getRemoteBlogsMedia(blog_media.getFilePath()) }}"
 								alt="Spinning glass cube"
 							/>
 							{% else %}
@@ -316,16 +317,20 @@ content %}
 											{% endfor %}
 										</div>
 									</div>
-									{#
 									<div class="col-md-6">
+										{# {% set qr_code = builder.getString() %}
+										<img src="{{ qr_code }}" alt="QR Code" /> #}
+										<img src="{{ qr_code_url(url) }}" />
+
+										{#
 										<div class="post__share">
 											<a href="#"><i class="fa fa-facebook"></i></a>
 											<a href="#"><i class="fa fa-twitter"></i></a>
 											<a href="#"><i class="fa fa-google"></i></a>
 											<a href="#"><i class="fa fa-pinterest"></i></a>
 										</div>
+										#}
 									</div>
-									#}
 								</div>
 							</div>
 						</div>
@@ -348,4 +353,36 @@ content %}
 
 	{{ include("blogs/_delete_form.html.twig") }}
 </div>
-{% endblock %}
+
+{# //
+<script>
+	// 	async function translateText() {
+	// 		const url =
+	// 			"https://microsoft-translator-text.p.rapidapi.com/translate?to%5B0%5D=%3CREQUIRED%3E&api-version=3.0&profanityAction=NoAction&textType=plain";
+	// 		const options = {
+	// 			method: "POST",
+	// 			headers: {
+	// 				"content-type": "application/json",
+	// 				"X-RapidAPI-Key": "6f3263b87emsh731a59fef986bd4p12c1ccjsn09010e141dad",
+	// 				"X-RapidAPI-Host": "microsoft-translator-text.p.rapidapi.com",
+	// 			},
+	// 			body: [
+	// 				{
+	// 					Text: "I would really like to drive your car around the block a few times.",
+	// 				},
+	// 			],
+	// 		};
+
+	// 		try {
+	// 			const response = await fetch(url, options);
+	// 			const result = await response.text();
+	// 			console.log(result);
+	// 		} catch (error) {
+	// 			console.error(error);
+	// 		}
+	// 	}
+
+	// 	translateText();
+	//
+</script>
+#} {% endblock %}
