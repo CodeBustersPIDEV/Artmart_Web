@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Entity\Artist;
-use App\Entity\Client;
+use App\Entity\Clients;
 use App\Entity\Admin;
 use App\Form\UserType;
 use App\Repository\ArtistRepository;
@@ -26,6 +26,13 @@ use Symfony\Component\Mime\Address;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Twig\Environment;
+use Twilio\Rest\Api\V2010\Account\MessageList;
+use Twilio\TwiML\Voice\Sms;
+use Vonage\Client;
+use Vonage\Client\Credentials\Basic;
+use Vonage\Messages\Channel\SMS\SMSText;
+use Vonage\Response\Message;
+use Vonage\SMS\Message\SMS as MessageSMS;
 
 #[Route('/user')]
 class UserController extends AbstractController
@@ -118,7 +125,7 @@ class UserController extends AbstractController
             $entityManager->persist($user);
             $entityManager->flush();
             $email = $form->get('email')->getData();
-            $client = new Client();
+            $client = new Clients();
             $this->uploadImage($file, $user);
 
             // $user->setRole($role);
@@ -632,5 +639,26 @@ class UserController extends AbstractController
             'form' => $form,
 
         ]);
+    }
+    #[Route('/{userId}/SMSVerif', name: 'app_user_SMSVerif', methods: ['GET', 'POST'])]
+    public function SMSVerification(User $user,EntityManagerInterface $entityManager): Response
+
+    {
+
+        $basic  = new Basic('f871a0cc', 'Fx3aGR7W6cEy6qcQ');
+        $client = new Client($basic);
+
+        $code = mt_rand(1000, 9999);
+        $user->setToken($code);
+        $entityManager->persist($user);
+        $entityManager->flush();
+        $vpn = "216" . $user->getPhonenumber();
+        $message = new SMSText($vpn, 'Vonage APIs', 'Hello this is your verification token'.$code);
+        $result = $client->messages()->send($message);
+        
+   
+            return $this->redirectToRoute('app_user_TokenVerifPwd', ['userId' => $user->getUserId()], Response::HTTP_SEE_OTHER);
+       
+    
     }
 }

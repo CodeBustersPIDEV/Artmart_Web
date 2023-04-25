@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: ClientRepository::class)]
 #[ORM\Table('client', options: ['indexes' => ['user_ID' => ['columns' => ['user_ID']]]])]
 
-class Client 
+class Clients 
 {
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
