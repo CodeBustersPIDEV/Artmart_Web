@@ -2,7 +2,7 @@
 
 namespace App\Repository;
 
-use App\Entity\Client;
+use App\Entity\Clients;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -18,10 +18,10 @@ class ClientRepository extends ServiceEntityRepository
 {
   public function __construct(ManagerRegistry $registry)
   {
-    parent::__construct($registry, Client::class);
+    parent::__construct($registry, Clients::class);
   }
 
-  public function save(Client $entity, bool $flush = false): void
+  public function save(Clients $entity, bool $flush = false): void
   {
     $this->getEntityManager()->persist($entity);
 
@@ -30,7 +30,7 @@ class ClientRepository extends ServiceEntityRepository
     }
   }
  
-  public function remove(Client $entity, bool $flush = false): void
+  public function remove(Clients $entity, bool $flush = false): void
   {
     $this->getEntityManager()->remove($entity);
 
