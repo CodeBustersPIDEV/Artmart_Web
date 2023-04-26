@@ -51,7 +51,12 @@
 <div class="comment-card">
 	<div class="col-3">
 		{% if comment.author != null %}
-		<img src="{{ comment.author.getPicture() }}" alt="" class="authorImg" />
+
+		<img
+			src="{{ getRemoteBlogsMedia(comment.author.getPicture()) }}"
+			alt=""
+			class="authorImg"
+		/>
 		{% else %}
 		<img src="{{ asset('assets/User/user.png') }}" alt="" class="authorImg" />
 		{% endif %}

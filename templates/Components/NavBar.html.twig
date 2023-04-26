@@ -127,6 +127,35 @@
 	.signUp_btn {
 		margin-left: 4px;
 	}
+
+	/* media query for small screens */
+	@media (max-width: 1093px) {
+		.menu-toggle {
+			display: flex;
+		}
+		/* hide the navigation menu by default */
+		.navMenu .options {
+			display: none;
+		}
+
+		/* show the menu toggle button */
+		.menu-toggle {
+			display: block;
+		}
+
+		/* style the expanded navigation menu */
+		.navMenu .options.expanded {
+			display: flex;
+			flex-direction: column;
+			position: absolute;
+			top: 100%;
+			left: 0;
+			width: 100%;
+			background-color: #272727;
+			padding: 1rem;
+			z-index: 2;
+		}
+	}
 </style>
 {% set connectedUser = returnConnectedUser() %}
 <nav class="navMenu">
@@ -174,4 +203,15 @@
 			</a>
 		{% endif %}
 	</div>
+	<button class="menu-toggle">
+		<i class="fas fa-bars"></i>
+	</button>
 </nav>
+<script>
+	const menuToggle = document.querySelector(".menu-toggle");
+	const menuOptions = document.querySelector(".navMenu .options");
+
+	menuToggle.addEventListener("click", () => {
+		menuOptions.classList.toggle("expanded");
+	});
+</script>
