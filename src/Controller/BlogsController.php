@@ -435,24 +435,12 @@ class BlogsController extends AbstractController
     #[Route('/show/{blogs_ID}', name: 'app_blogs_show', methods: ['GET', 'POST'])]
     public function show(Request $request, Blogs $blog, RequestStack $requestStack, UrlGeneratorInterface $urlGenerator): Response
     {
-        // $request = $requestStack->getCurrentRequest();
-        // $url = $urlGenerator->generate('app_blogs_show', ['blogs_ID' => $blog->getBlogsId()], UrlGeneratorInterface::ABSOLUTE_URL);
-        // $request = Request::createFromGlobals();
-        // $ip = $request->getClientIp();
-        // $url = $request->getSchemeAndHttpHost() . $request->getPathInfo();
-        // $newUrl = str_replace('127.0.0.1', $ip, $url);
-        // $newUrl = "http://192.168.43.134:8000/blogs/show/1";
-        // $response = new QrCodeResponse($this->result);
+
         $currentUrl = $requestStack->getCurrentRequest()->getUri();
         $serverIpAddress = '127.0.0.1'; // replace with your server's IP address
         $pcIpAddress = getHostByName(getHostName());
         $newUrl = str_replace($serverIpAddress, $pcIpAddress, $currentUrl);
-        // $ipAddress = $request->getClientIp();
-        // $url = $this->generateUrl('app_blogs_show', [
-        //     'param1' => 'value1',
-        //     'param2' => 'value2',
-        // ]);
-        // $fullUrl = 'http://' . $ipAddress . $url;
+
         $comment = new Comments();
         $newNbViews = $blog->getNbViews() + 1;
         $this->blogsRepository->editViews($blog, $newNbViews, true);
