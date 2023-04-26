@@ -2,90 +2,79 @@
 
 {% block title %}Token Verification{% endblock %}
 
+{% block stylesheets %}
+  {{ parent() }}
+  <style>
+    .section {
+      padding: 80px 0;
+    }
+
+    h1 {
+      margin-bottom: 40px;
+      font-size: 36px;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .form-control {
+      border-radius: 0;
+      padding: 12px 20px;
+      font-size: 16px;
+      border: none;
+      border-bottom: 2px solid #e1e1e1;
+    }
+
+    .form-control:focus {
+      border-color: #007bff;
+      box-shadow: none;
+    }
+
+    .button {
+      margin-top: 30px;
+      text-align: center;
+    }
+
+    .btn {
+      border-radius: 0;
+      font-size: 16px;
+      padding: 12px 30px;
+      letter-spacing: 1px;
+      font-weight: 600;
+    }
+
+    .btn-outline-primary {
+      color: #007bff;
+      border-color: #007bff;
+    }
+
+    .btn-outline-primary:hover {
+      color: #fff;
+      background-color: #007bff;
+      border-color: #007bff;
+    }
+  </style>
+{% endblock %}
+
 {% block content %}
-<style>
-    label{
-color: Black;
-
-}
-h1 {
-    font-size: 4rem; /* set the font size to 4rem */
-        color: #20247b; /* set the font color */
-        text-shadow: 2px 2px 4px #000000; /* add a text shadow */
-        border-bottom: 4px solid #20247b; /* add a border bottom */
-        padding-bottom: 10px; /* add some padding */
-        text-align: center; /* center the text */
-    
-  }
-  .section {
-      padding: 100px 0;
-      position: relative;
-    }
-
-    .gray-bg {
-      background-color: #f5f5f5;
-    }
-
-  
-  .password-field input,
-#confirm_password {
-    border: none;
-    border-bottom: 2px solid #ddd;
-    margin-bottom: 20px;
-    padding: 10px;
-    font-size: 16px;
-}
-
-.password-field input:focus,
-#confirm_password:focus {
-    border-bottom: 2px solid #2E9AFE;
-}
-
-/* Input field styling */
-.form-control {
-    border: none;
-    border-bottom: 2px solid #ddd;
-    margin-bottom: 20px;
-    padding: 10px;
-    font-size: 16px;
-}
-.form-group{
-    text-align: center;
-
-}
-.form-control:focus {
-    border-bottom: 2px solid #2E9AFE;
-}
-    </style>
-
-
-<section class="section about-section gray-bg" id="about">
+  <section class="section">
     <div class="container">
+      <div class="row">
         <div class="col"></div>
-             <div class="col-sm-12">
-    
-             <br><br>
-              
-{{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
-         <div class="form-group">
-              {{ form_row(form.email, {'attr': {'class': 'form-control', 'id': 'email'}}) }}
-         </div>
+        <div class="col-sm-12">
+          <h1>Token Verification</h1>
 
-
-            <br></br> 
-
-    <div class="button" style="text-align: center">
-        <button type="submit" class="btn btn-outline-primary mr-2" id="submitBtn">
-            {{ button_label|default('Verify') }}
-        </button>
-
-    </div>
-{{ form_end(form) }}
-                </div>
+          {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+            <div class="form-group">
+              {{ form_row(form.email, {'attr': {'class': 'form-control', 'id': 'email', 'placeholder': 'Enter your email'}}) }}
             </div>
+<br>
+            <div class="button">
+              <button type="submit" class="btn btn-outline-primary">{{ button_label|default('Verify') }}</button>
+            </div>
+          {{ form_end(form) }}
         </div>
-
-    </div>  
-</div>
-</section>
+      </div>
+    </div>
+  </section>
+  <br><br><br><br><br><br><br><br><br><br><br>
 {% endblock %}

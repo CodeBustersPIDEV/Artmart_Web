@@ -5,7 +5,7 @@ use ReCaptcha\ReCaptcha;
 use App\Entity\Customproduct;
 use App\Entity\Product;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
-
+use MercurySeries\FlashyBundle\FlashyNotifier;
 use Twilio\Rest\Client;
 use App\Entity\Categories;
 
@@ -20,16 +20,30 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Apply;
 use Symfony\Component\Routing\RouterInterface;
-
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use App\Entity\User;
 use Spatie\Emoji\Emoji;
-
+use App\Repository\UserRepository;
 #[Route('/customproduct')]
 class CustomproductController extends AbstractController
 {
    
-        
-        
+    private User $connectedUser; 
+    public function __construct(SessionInterface $session, UserRepository $userRepository)
+    {
+        if ($session != null) {
+            $connectedUserID = $session->get('user_id');
+            if (is_int($connectedUserID)) {
+                $this->connectedUser = $userRepository->find((int) $connectedUserID);
+                
+                // Debugging code
+                if (!$this->connectedUser instanceof User) {
+                    throw new \Exception('Connected user is not a User object');
+                }
+            }
+        }
+    }
+    
     #[Route('/customproduct/searchCustomProduct', name: 'app_customproduct_admin_search', methods: ['GET'])]
     public function searchCustomProduct(Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
@@ -60,17 +74,20 @@ class CustomproductController extends AbstractController
     
     
     #[Route('/', name: 'app_customproduct_index', methods: ['GET'])]
-    public function index(Request $request, EntityManagerInterface $entityManager, PaginatorInterface $paginator): Response
+    public function index( UserRepository $userRepository,FlashyNotifier $flashy,Request $request, EntityManagerInterface $entityManager, PaginatorInterface $paginator): Response
     {
-      
+        
         $searchTerm = $request->query->get('q');
         $order = $request->query->get('order');
     
         $queryBuilder = $entityManager
             ->getRepository(Customproduct::class)
             ->createQueryBuilder('c')
-            ->innerJoin('c.product', 'p');
-    
+            ->innerJoin('c.product', 'p')
+            ->andWhere('c.client = :userId') // Filter by connected user's ID
+            ->setParameter('userId', $this->connectedUser->getUserId());
+
+         
         if ($order === 'name') {
             $queryBuilder->orderBy('p.name', 'ASC');
         } elseif ($order === 'weight') {
@@ -90,24 +107,26 @@ class CustomproductController extends AbstractController
                 ->setParameter('searchTerm', '%' . $searchTerm . '%');
             }
         }
-    
+        $flashy->info('Welcome To Your Custom Products List');
         $pagination = $paginator->paginate(
             $queryBuilder->getQuery(),
             $request->query->getInt('page', 1),
             8
         );
-    
+   
         return $this->render('customproduct/index.html.twig', [
             'customproducts' => $pagination,
             'searchTerm' => $searchTerm,
             'order' => $order,
         ]);
+   
     }
     
 
     #[Route('/admin', name: 'app_customproduct_admin', methods: ['GET'])]
-    public function adminindex(Request $request, EntityManagerInterface $entityManager): Response
+    public function adminindex(FlashyNotifier $flashy,Request $request, EntityManagerInterface $entityManager): Response
     {
+        $flashy->info('Welcome to Custom Products Admin Panel');
         $searchTerm = $request->query->get('q');
         $order = $request->query->get('order');
         $categories = $entityManager
@@ -135,7 +154,7 @@ class CustomproductController extends AbstractController
 
         $customproducts = $queryBuilder->getQuery()->getResult();
 
-
+      
         $sumQueryBuilder = $entityManager
         ->createQueryBuilder()
         ->select('p.material as material, SUM(p.weight) as weight_sum')
@@ -179,6 +198,7 @@ class CustomproductController extends AbstractController
     #[Route('/stat', name: 'app_customproduct_stat', methods: ['GET'])]
     public function statindex(Request $request,EntityManagerInterface $entityManager): Response
     {
+     
         $sumQueryBuilder = $entityManager
         ->createQueryBuilder()
         ->select('p.material as material, SUM(p.weight) as weight_sum')
@@ -211,14 +231,16 @@ class CustomproductController extends AbstractController
             'weightData' => $weightData,
             'weightSums' => $weightSums,
         ]);
+      
     }
     
 
 
 
     #[Route('/customproduct', name: 'app_customproduct_artist', methods: ['GET'])]
-    public function artist(Request $request, EntityManagerInterface $entityManager, PaginatorInterface $paginator): Response
+    public function artist(FlashyNotifier $flashy,Request $request, EntityManagerInterface $entityManager, PaginatorInterface $paginator): Response
     {
+      
         $searchTerm = $request->query->get('q');
         $queryBuilder = $entityManager
             ->getRepository(Customproduct::class)
@@ -250,7 +272,7 @@ class CustomproductController extends AbstractController
             $request->query->getInt('page', 1),
             8
         );
-
+        $flashy->info('Welcome to Custom Products Application List');
         return $this->render('customproduct/artist.html.twig', [
             'searchTerm' => $searchTerm,
             'customproducts' => $pagination,
@@ -263,7 +285,8 @@ class CustomproductController extends AbstractController
     {
         $customproduct = new Customproduct();
         $product = new Product();
-        $product->setImage('imagec.png');
+        $product->setImage('http://localhost/PIDEV/BlogUploads/imagec.png');
+        $customproduct->setClient($this->connectedUser);
         $customproduct->setProduct($product);
         $form = $this->createForm(CustomproductType::class, $customproduct);
         $form->handleRequest($request);
@@ -271,24 +294,26 @@ class CustomproductController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $product = $form->get('product')->getData();
             $customproduct->setProduct($product);
-            $customproduct->setClient($form->get('client')->getData());
-
+        
 
             $imageFile = $form->get('product')->get('image')->getData();
             if ($imageFile) {
                 $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
                 $newFilename = $originalFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
-
+                $destinationPath = $this->getParameter('destinationPath') . '/' . $newFilename;
+                $imageURL = $this->getParameter('file_base_url')['host'] . '/' . $this->getParameter('file_base_url')['path'] . '/' . $newFilename;
+                $imagePath = $this->getParameter('destinationPath') . '/' . $newFilename;
+            
                 try {
                     $imageFile->move(
-                        $this->getParameter('product_images_directory'),
+                        $this->getParameter('destinationPath'),
                         $newFilename
                     );
                 } catch (FileException $e) {
                     // handle exception if something happens during file upload
                 }
-
-                $product->setImage($newFilename);
+            
+                $product->setImage($imageURL);
             }
 
             $entityManager->persist($product);
@@ -311,7 +336,8 @@ class CustomproductController extends AbstractController
     {
         $customproduct = new Customproduct();
         $product = new Product();
-        $product->setImage('imagec.png');
+        $product->setImage('http://localhost/PIDEV/BlogUploads/imagec.png');
+        $customproduct->setClient($this->connectedUser);
         $customproduct->setProduct($product);
         $form = $this->createForm(CustomproductType::class, $customproduct);
         $form->handleRequest($request);
@@ -319,26 +345,28 @@ class CustomproductController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $product = $form->get('product')->getData();
             $customproduct->setProduct($product);
-            $customproduct->setClient($form->get('client')->getData());
-
-
+      
             $imageFile = $form->get('product')->get('image')->getData();
             if ($imageFile) {
                 $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
                 $newFilename = $originalFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
-
+                $destinationPath = $this->getParameter('destinationPath') . '/' . $newFilename;
+                $imageURL = $this->getParameter('file_base_url')['host'] . '/' . $this->getParameter('file_base_url')['path'] . '/' . $newFilename;
+                $imagePath = $this->getParameter('destinationPath') . '/' . $newFilename;
+            
                 try {
                     $imageFile->move(
-                        $this->getParameter('product_images_directory'),
+                        $this->getParameter('destinationPath'),
                         $newFilename
                     );
                 } catch (FileException $e) {
                     // handle exception if something happens during file upload
                 }
-
-                $product->setImage($newFilename);
+            
+                $product->setImage($imageURL);
             }
-
+            
+            
             $entityManager->persist($product);
             $entityManager->persist($customproduct);
             $entityManager->flush();
@@ -351,7 +379,7 @@ class CustomproductController extends AbstractController
             'form' => $form,
         ]);
     }
-
+    
 
     #[Route('/{customProductId}', name: 'app_customproduct_show', methods: ['GET'])]
     public function show(Customproduct $customproduct): Response
@@ -390,17 +418,20 @@ class CustomproductController extends AbstractController
         if ($imageFile) {
             $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
             $newFilename = $originalFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
-
+            $destinationPath = $this->getParameter('destinationPath') . '/' . $newFilename;
+            $imageURL = $this->getParameter('file_base_url')['host'] . '/' . $this->getParameter('file_base_url')['path'] . '/' . $newFilename;
+            $imagePath = $this->getParameter('destinationPath') . '/' . $newFilename;
+        
             try {
                 $imageFile->move(
-                    $this->getParameter('product_images_directory'),
+                    $this->getParameter('destinationPath'),
                     $newFilename
                 );
             } catch (FileException $e) {
                 // handle exception if something happens during file upload
             }
-
-            $product->setImage($newFilename);
+        
+            $product->setImage($imageURL);
         }
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -427,17 +458,20 @@ class CustomproductController extends AbstractController
         if ($imageFile) {
             $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
             $newFilename = $originalFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
-
+            $destinationPath = $this->getParameter('destinationPath') . '/' . $newFilename;
+            $imageURL = $this->getParameter('file_base_url')['host'] . '/' . $this->getParameter('file_base_url')['path'] . '/' . $newFilename;
+            $imagePath = $this->getParameter('destinationPath') . '/' . $newFilename;
+        
             try {
                 $imageFile->move(
-                    $this->getParameter('product_images_directory'),
+                    $this->getParameter('destinationPath'),
                     $newFilename
                 );
             } catch (FileException $e) {
                 // handle exception if something happens during file upload
             }
-
-            $product->setImage($newFilename);
+        
+            $product->setImage($imageURL);
         }
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -482,9 +516,10 @@ class CustomproductController extends AbstractController
 
 
     #[Route('/customproduct/{customProductId}/apply', name: 'app_customproduct_apply', methods: ['GET', 'POST'])]
-    public function apply(int $customProductId, RouterInterface $router): Response
+    public function apply(FlashyNotifier $flashy,int $customProductId, RouterInterface $router): Response
 
     {
+        $flashy->success('application sent successfully');
         $entityManager = $this->getDoctrine()->getManager();
 
         $customProduct = $entityManager->getRepository(Customproduct::class)->find($customProductId);
@@ -503,14 +538,14 @@ class CustomproductController extends AbstractController
 
         $apply = new Apply();
         $apply->setStatus('pending');
-        $apply->setArtist($entityManager->getRepository(User::class)->find(1));
+        $apply->setArtist($this->connectedUser);
         $apply->setCustomproduct($customProduct);
 
         $entityManager->persist($apply);
         $entityManager->flush();
 
         $sid    = "AC85fdc289caf6aa747109220798d39394";
-        $token  = "e60a48d76fb61816ddc6e512f8a91178";
+        $token  = "6e5451f36b8e32a567b9e67984f60a16";
         $twilio = new Client($sid, $token);
     
         $message = $twilio->messages

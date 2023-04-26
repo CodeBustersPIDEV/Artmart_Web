@@ -71,10 +71,10 @@ margin-bottom: 20px;
 {{ form_label(form.product.image, 'Product Image') }}
 {{ form_widget(form.product.image, {'attr': {'style': 'display:none;'}}) }}
 {% if customproduct.product.image is defined %}
- <img id="preview-image" style="max-width: 128px" src="{{ asset('imagescustom/' ~ customproduct.product.image) }}" alt="Product image" onclick="document.getElementById('product_image').click()">
+ <img id="preview-image" style="max-width: 128px" src="{{  asset(customproduct.product.image)  }}" alt="Product image" onclick="document.getElementById('product_image').click()">
 <span id="image-name"></span>
 {% else %}
-  <img id="preview-image" style="max-width: 128px" src="{{ asset('imagescustom/imagec.png') }}" alt="Default product image" onclick="document.getElementById('product_image').click()">
+  <img id="preview-image" style="max-width: 128px" src="{{ 'http://localhost/PIDEV/BlogUploads/imagec.png' }}" alt="Default product image" onclick="document.getElementById('product_image').click()">
 {% endif %}
 
 
@@ -92,7 +92,7 @@ margin-bottom: 20px;
 
 
 
-        {{ form_row(form.client) }}
+    <br>
     {{ include('customproduct/_form.html.twig', {'button_label': 'add'}) }}
     {{ form_end(form) }}
                 <a href="{{ path('app_customproduct_admin') }}">

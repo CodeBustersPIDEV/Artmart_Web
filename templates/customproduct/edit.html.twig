@@ -72,7 +72,7 @@ input[type="file"] {
         {{ form_row(form.product.weight) }}
         {{ form_row(form.product.material) }}
            {{ form_row(form.product.image) }}
-<img id="preview-image" style="max-width: 128px" src="{{ asset('imagescustom/' ~ customproduct.product.image) }}" alt="Product image" onclick="document.getElementById('product_image').click()">
+<img id="preview-image" style="max-width: 128px" src="{{ asset(customproduct.product.image)  }}" alt="Product image" onclick="document.getElementById('product_image').click()">
 <span id="image-name"></span>
 
 <script>
@@ -86,7 +86,7 @@ input[type="file"] {
         reader.readAsDataURL(e.target.files[0]);
     });
 </script>
-
+<br><br>
         
     {{ include('customproduct/_form.html.twig', {'button_label': 'Update'}) }}
     {{ form_end(form) }}
