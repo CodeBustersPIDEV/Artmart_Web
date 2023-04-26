@@ -1,55 +1,17 @@
 {% extends 'baseF.html.twig' %}
-
 {% block content %}
-
+	<a href="{{ path('app_readyproduct_no_user_index') }}">
+		<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-return-left" viewbox="0 0 16 16">
+			<path fill-rule="evenodd" d="M14.5 1.5a.5.5 0 0 1 .5.5v4.8a2.5 2.5 0 0 1-2.5 2.5H2.707l3.347 3.346a.5.5 0 0 1-.708.708l-4.2-4.2a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 8.3H12.5A1.5 1.5 0 0 0 14 6.8V2a.5.5 0 0 1 .5-.5z"/>
+		</svg>
+		back to list</a>
+	<br><br>
 	{% block title %}
-		<h4>
-			<em>Ready</em>
-			Products</h4>
-		<form action="{{ path('app_readyproduct_index') }}" method="GET">
-			<div class="form-group">
-
-				<a href="{{ path('app_readyproduct_new') }}" class="link-style">
-					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewbox="0 0 16 16">
-						<path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"/>
-					</svg>
-					Add new product</a>
-				<button type="button" style="background-color: #43464B; align: left;" class="btn btn-dark dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-					Order by Price
-				</button>
-				<ul class="dropdown-menu">
-					<li class="d-flex">
-						<a class="dropdown-item align-self-center" href="{{ path('app_readyproduct__asc_price_index') }}">
-							<i class="fa-solid fa-sort-up"></i>
-							Lowest to highest
-						</a>
-					</li>
-					<li class="d-flex">
-						<a class="dropdown-item align-self-center" href="{{ path('app_readyproduct__desc_price_index') }}">
-							<i class="fa-solid fa-sort-down"></i>
-							Highest to lowest
-						</a>
-					</li>
-				</ul>
-				<select id="category-select" class="orderby-link" name="category">
-					<option value="">Order by category</option>
-					{% for category in categories %}
-						<option class="orderby-option-link" value="{{ category.categoriesId }}">{{ category.name }}</option>
-					{% endfor %}
-				</select>
-				<input type="text" id="search-term" name="q" class="form-control" value="{{ searchTerm }}" placeholder="Search by name...">
-				<a href="{{ path('app_readyproduct_index') }}" class="link-style-cancel">
-					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-lg" viewbox="0 0 16 16">
-						<path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z"/>
-					</svg>
-				</a>
-			</div>
-
-		</form>
-		<br><br>
+		<h4>Product
+			<em>details</em>
+		</h4>
 	{% endblock %}
 
-	<link rel="stylesheet" href="{{ asset('assets/Blog/CSS/BlogList.css') }}"/>
 
 	{% block stylesheets %}
 
@@ -105,14 +67,10 @@
 
 
 			.ready-card {
-				border-radius: 10px;
-				box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-				margin: 10px;
-				padding: 20px;
-				display: inline-block;
-				width: 100%;
-				background-color: #232931;
-				transition: box-shadow 0.2s ease-in-out;
+				margin-top: 0;
+				padding: 30px;
+				background-color: #1f2122;
+				border-radius: 23px;
 			}
 
 			.ready-card:hover {
@@ -158,33 +116,76 @@
 			.ready-card:nth-child(4n + 1) {
 				clear: left;
 			}
+
+			.review-card {
+				border-radius: 10px;
+				box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+				margin: 10px;
+				padding: 20px;
+				display: inline-block;
+				width: 100%;
+				background-color: #232931;
+				transition: box-shadow 0.2s ease-in-out;
+				align: center;
+			}
+
+			.review-card:hover {
+				box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+				transform: translateY(-2px);
+			}
+
+			.review-card h2 {
+				margin-top: 0;
+				margin-bottom: 10px;
+				font-size: 24px;
+				color: #FFFFFF;
+			}
+
+			.review-card p {
+				margin-top: 0;
+				color: #FFFFFF;
+			}
+
+			.review-card a {
+				display: inline-block;
+				margin-top: 10px;
+				padding: 12px 20px;
+				background-color: #AA336A;
+				color: #FFFFFF;
+				border-radius: 5px;
+				text-decoration: none;
+				transition: background-color 0.2s ease-in-out;
+			}
+
+			.review-card a:hover {
+				background-color: #0D6E72;
+			}
+
+			.review-card img {
+				width: 100%;
+				height: 200px;
+				object-fit: cover;
+				border-radius: 5px;
+				margin-bottom: 10px;
+			}
+
+			.review-card:nth-child(4n + 1) {
+				clear: left;
+			}
 			.orderby-link {
 				display: inline-block;
-				background-color: #43464B;
-				padding: 4px 5px 5px 9px;
+				padding: 8px 16px;
+				background-color: #AA336A;
 				color: white;
+				text-align: center;
 				text-decoration: none;
 				font-size: 16px;
 				border-radius: 4px;
-				border-color: #43464B;
 				transition: background-color 0.3s ease;
 			}
 
-
-			.orderby-option-link {
-				display: inline-block;
-				background-color: white;
-				padding: 4px 5px 5px 9px;
-				color: black;
-				text-decoration: none;
-				font-size: 16px;
-				border-radius: 4px;
-				border-color: #43464B;
-				transition: background-color 0.3s ease;
-			}
-
-			.orderby-option-link:hover {
-				background-color: #e9ecef;
+			.orderby-link:hover {
+				background-color: #AA336A;
 			}
 
 			/* Search Bar */
@@ -241,13 +242,14 @@
 			.link-style {
 				display: inline-block;
 				padding: 10px 20px;
-				margin-right: 20px;
+				margin-right: 0;
+				margin-top: 20px;
 				border-radius: 4px;
 				color: white;
 				background-color: #43464B;
 				font-weight: bold;
 				text-decoration: none;
-				float: right;
+				align: right;
 			}
 
 			.link-style:hover {
@@ -320,8 +322,9 @@
 				float: left;
 			}
 
-			.align-review:hover {
-				color: #0D6E72;
+			.align-review {
+				text-align: right;
+				margin-bottom: 10px;
 			}
 
 			#review {
@@ -329,7 +332,7 @@
 				padding: 0;
 				margin-right: 0;
 				border-radius: 0;
-				text-color: #0D6E72;
+				color: initial;
 				background-color: initial;
 				font-weight: normal;
 				text-decoration: none;
@@ -339,21 +342,28 @@
 			#review:hover {
 				color: #0D6E72;
 			}
+
+			.date {
+				float: right;
+			}
+
+			body .page-content {
+				margin-top: 0;
+			}
+			.disabled-link {
+				pointer-events: none;
+				color: gray;
+				text-decoration: none;
+				cursor: default;
+			}
 		</style>
 
-
 	{% endblock %}
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="page-content">
 
-	{% block body %}
-
-
-		{% set count = 0 %}
-		{% for readyproduct in readyproducts %}
-			{% if count % 3 == 0 %}
-				<div class="row">
-				{% endif %}
-
-				<div class="col-sm-4">
 					<div class="ready-card">
 						<img src="{{ asset('imagescustom/' ~ readyproduct.productId.image) }}" alt="{{ readyproduct.productId.name }} image"/>
 						<div>
@@ -363,61 +373,36 @@
 						<p>
 							<strong>Made by:</strong>
 							{{ readyproduct.userId }}</p>
-						<div class="align-review">
-							<a id="review" href="{{ path('app_review_index', {'readyProductId': readyproduct.readyProductId}) }}">
-								<p>
-									<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bookmark-star-fill" viewbox="0 0 16 16">
-										<path fill-rule="evenodd" d="M2 15.5V2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.74.439L8 13.069l-5.26 2.87A.5.5 0 0 1 2 15.5zM8.16 4.1a.178.178 0 0 0-.32 0l-.634 1.285a.178.178 0 0 1-.134.098l-1.42.206a.178.178 0 0 0-.098.303L6.58 6.993c.042.041.061.1.051.158L6.39 8.565a.178.178 0 0 0 .258.187l1.27-.668a.178.178 0 0 1 .165 0l1.27.668a.178.178 0 0 0 .257-.187L9.368 7.15a.178.178 0 0 1 .05-.158l1.028-1.001a.178.178 0 0 0-.098-.303l-1.42-.206a.178.178 0 0 1-.134-.098L8.16 4.1z"/>
-									</svg>
-									check reviews
-								</p>
-							</a>
-						</div>
+						<p>
+							<strong>Weight:</strong>
+							{{ readyproduct.productId.weight }}
+							Kg</p>
+						<p>
+							<strong>Material:</strong>
+							{{ readyproduct.productId.material }}</p>
+						<p>
+							<strong>Dimensions:</strong>
+							{{ readyproduct.productId.dimensions }}</p>
+						<br>
+						<p>{{ readyproduct.productId.description }}</p>
+						<br>
+						<p>
+							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bookmark-star-fill" viewbox="0 0 16 16">
+								<path fill-rule="evenodd" d="M2 15.5V2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.74.439L8 13.069l-5.26 2.87A.5.5 0 0 1 2 15.5zM8.16 4.1a.178.178 0 0 0-.32 0l-.634 1.285a.178.178 0 0 1-.134.098l-1.42.206a.178.178 0 0 0-.098.303L6.58 6.993c.042.041.061.1.051.158L6.39 8.565a.178.178 0 0 0 .258.187l1.27-.668a.178.178 0 0 1 .165 0l1.27.668a.178.178 0 0 0 .257-.187L9.368 7.15a.178.178 0 0 1 .05-.158l1.028-1.001a.178.178 0 0 0-.098-.303l-1.42-.206a.178.178 0 0 1-.134-.098L8.16 4.1z"/>
+							</svg>
+							{{ averageRating }}</p>
 						<br>
 						<div class="align-price">
 							<p>{{ readyproduct.price }}
 								TND</p>
 						</div>
-
-
 						<div class="align">
-							<a href="{{ path('app_readyproduct_show', {'readyProductId': readyproduct.readyProductId}) }}">show</a>
-							<a href="{{ path('app_readyproduct_edit', {'readyProductId': readyproduct.readyProductId}) }}">edit</a>
+
+							<a href="{{ path('app_readyproduct_show', {'readyProductId': readyproduct.productId}) }}" class="disabled-link">order</a>
 						</div>
 					</div>
 				</div>
-				{% set count = count + 1 %}
-
-				{% if count % 3 == 0 %}
-				</div>
-			{% endif %}
-
-		{% else %}
-			<p>no ready products found</p>
-		{% endfor %}
-	</ul>
-
-	{{ knp_pagination_render(readyproducts) }}
-
-	<script>
-		// Add onclick event to all hyperlinks
-var links = document.getElementsByTagName("a");
-for (var i = 0; i < links.length; i++) {
-links[i].setAttribute("onclick", "playSound()");
-}
-var linkss = document.getElementsByTagName("button");
-for (var i = 0; i < linkss.length; i++) {
-linkss[i].setAttribute("onclick", "playSound()");
-}
-	</script>
-	<script>
-		const categorySelect = document.getElementById('category-select');
-categorySelect.addEventListener('change', (event) => {
-const selectedValue = event.target.value;
-if (selectedValue) {
-window.location.href = "{{ path('app_readyproduct__desc_cat_index') }}?category=" + selectedValue;
-}
-});
-	</script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.3/umd/popper.min.js"></script>
+			</div>
+		</div>
+	</div>
 {% endblock %}{% endblock %}

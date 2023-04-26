@@ -138,7 +138,7 @@
 	<div class="options">
 		<a href="/">Home</a>
 		<a href="{{ path('app_blogs_index') }}">Blog</a>
-		<a href="{{ path('app_readyproduct_client_index') }}">Products</a>
+		<a href="{{ path('app_readyproduct_no_user_index') }}">Products</a>
 		{% if app.session.get('user_id') %}
 			{% if app.session.get('user_role') == "client" %}
 				<a href="{{ path('app_customproduct_index') }}">Custom Products</a>

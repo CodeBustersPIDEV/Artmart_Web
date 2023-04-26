@@ -75,7 +75,7 @@ class Readyproduct
         return $this->userId;
     }
 
-    public function setUserId(int $userId): self
+    public function setUserId(User $userId): self
     {
         $this->userId = $userId;
 
