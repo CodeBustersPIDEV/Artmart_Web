@@ -30,9 +30,12 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Endroid\QrCode\Builder\BuilderInterface;
-use Endroid\QrCodeBundle\Response\QrCodeResponse;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Facebook\Facebook;
+use Facebook\Exceptions\FacebookResponseException;
+use Facebook\Exceptions\FacebookSDKException;
 
 #[Route('/blogs')]
 class BlogsController extends AbstractController
@@ -180,6 +183,56 @@ class BlogsController extends AbstractController
             'searchTerm' => $searchTerm
         ]);
     }
+
+    #[Route('/BlogsPerUser/{User_ID}', name: 'app_blogsByUser_index', methods: ['GET'])]
+    public function indexBlogByUser(BlogsRepository $blogsRepository, PaginatorInterface $paginator, Request $request): Response
+    {
+        $blogs = $blogsRepository->findAllByUser($this->connectedUser);
+        $searchTerm = $request->query->get('searchTerm');
+        if ($searchTerm) {
+            $blogs = $blogsRepository->findByTerm($searchTerm);
+        }
+
+        $pages = $paginator->paginate(
+            $blogs, // Requête contenant les données à paginer (ici nos articles)
+            $request->query->getInt('page', 1), // Numéro de la page en cours, passé dans l'URL, 1 si aucune page
+            3 // Nombre de résultats par page
+        );
+
+        return $this->render('blogs/index.html.twig', [
+            'blogs' => $pages,
+            'searchTerm' => $searchTerm
+        ]);
+    }
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////Sharing Functions///////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public function shareOnFacebook(Request $request)
+    {
+        $fb = new Facebook([
+            'app_id' => $_ENV['FB_APP_ID'],
+            'app_secret' => $_ENV['FB_APP_SECRET'],
+            'default_graph_version' => 'v3.3',
+        ]);
+
+        $linkData = [
+            'link' => $request->request->get('link'),
+            'message' => $request->request->get('message')
+        ];
+
+        try {
+            $response = $fb->post('/me/feed', $linkData, $_ENV['FB_APP_TOKEN']);
+        } catch (FacebookResponseException  $e) {
+            // Handle error
+        } catch (FacebookSDKException  $e) {
+            // Handle error
+        }
+
+        $graphNode = $response->getGraphNode();
+        return new JsonResponse(['id' => $graphNode['id']]);
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////Sorting Routes///////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -193,9 +246,9 @@ class BlogsController extends AbstractController
         }
 
         $pages = $paginator->paginate(
-            $blogs, // Requête contenant les données à paginer (ici nos articles)
-            $request->query->getInt('page', 1), // Numéro de la page en cours, passé dans l'URL, 1 si aucune page
-            3 // Nombre de résultats par page
+            $blogs,
+            $request->query->getInt('page', 1),
+            3
         );
 
         return $this->render('blogs/index.html.twig', [
@@ -214,9 +267,9 @@ class BlogsController extends AbstractController
         }
 
         $pages = $paginator->paginate(
-            $blogs, // Requête contenant les données à paginer (ici nos articles)
-            $request->query->getInt('page', 1), // Numéro de la page en cours, passé dans l'URL, 1 si aucune page
-            3 // Nombre de résultats par page
+            $blogs,
+            $request->query->getInt('page', 1),
+            3
         );
 
         return $this->render('blogs/index.html.twig', [
