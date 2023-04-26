@@ -26,24 +26,27 @@ use Symfony\Component\Mime\Address;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Twig\Environment;
-use Twilio\Rest\Api\V2010\Account\MessageList;
-use Twilio\TwiML\Voice\Sms;
 use Vonage\Client;
 use Vonage\Client\Credentials\Basic;
 use Vonage\Messages\Channel\SMS\SMSText;
-use Vonage\Response\Message;
-use Vonage\SMS\Message\SMS as MessageSMS;
 
 #[Route('/user')]
 class UserController extends AbstractController
 
 {
     private Environment $twig;
+    private User $connectedUser;
 
 
-    public function __construct(Environment $twig)
+    public function __construct(SessionInterface $session, UserRepository $userRepository, Environment $twig)
     {
         $this->twig = $twig;
+        if ($session != null) {
+            $connectedUserID = $session->get('user_id');
+            if (is_int($connectedUserID)) {
+                $this->connectedUser = $userRepository->find((int) $connectedUserID);
+            }
+        }
     }
 
     public function uploadImage(UploadedFile $file, User $user): void
@@ -70,6 +73,7 @@ class UserController extends AbstractController
     #[Route('/', name: 'app_user_index', methods: ['GET'])]
     public function index(Request $request, EntityManagerInterface $entityManager): Response
     {
+        $hasAdminAccess = $this->AdminAccess();
         $searchTerm = $request->query->get('search');
         $userse = $request->query->get('userse');
 
@@ -95,10 +99,14 @@ class UserController extends AbstractController
             ->getRepository(User::class)
             ->findAll();
 */
-        return $this->render('user/index.html.twig', [
-            'users' => $users,
-            'searchTerm' => $searchTerm,
-        ]);
+        if ($hasAdminAccess) {
+            return $this->render('user/index.html.twig', [
+                'users' => $users,
+                'searchTerm' => $searchTerm,
+            ]);
+        } else {
+            return $this->redirectToRoute('app_home', [], Response::HTTP_SEE_OTHER);
+        }
     }
 
     #[Route('/new', name: 'app_user_new', methods: ['GET', 'POST'])]
@@ -202,6 +210,7 @@ class UserController extends AbstractController
     #[Route('/{userId}/show', name: 'app_user_show', methods: ['GET'])]
     public function show(User $user, ClientRepository $clientRepository, ArtistRepository $artistRepository, AdminRepository $adminRepository): Response
     {
+        $hasAdminAccess = $this->AdminAccess();
         $client = $clientRepository->findOneBy(['user' => $user]);
         $artist = $artistRepository->findOneBy(['user' => $user]);
         $admin = $adminRepository->findOneBy(['user' => $user]);
@@ -224,26 +233,32 @@ class UserController extends AbstractController
                 'department' => $admin->getDepartment(),
             ];
         }
-        if ($role === 'client') {
-            return $this->render('user/show.html.twig', [
-                'user' => $user,
-                'clientAttributes' => $clientAttributes ?? null,
-            ]);
-        } elseif ($role === 'artist') {
-            return $this->render('user/show.html.twig', [
-                'user' => $user,
-                'artistAttributes' => $artistAttributes ?? null,
-            ]);
-        } elseif ($role === 'admin') {
-            return $this->render('user/show.html.twig', [
-                'user' => $user,
-                'adminAttributes' => $adminAttributes ?? null,
-            ]);
+        if ($hasAdminAccess) {
+            if ($role === 'client') {
+                return $this->render('user/show.html.twig', [
+                    'user' => $user,
+                    'clientAttributes' => $clientAttributes ?? null,
+                ]);
+            } elseif ($role === 'artist') {
+                return $this->render('user/show.html.twig', [
+                    'user' => $user,
+                    'artistAttributes' => $artistAttributes ?? null,
+                ]);
+            } elseif ($role === 'admin') {
+                return $this->render('user/show.html.twig', [
+                    'user' => $user,
+                    'adminAttributes' => $adminAttributes ?? null,
+                ]);
+            }
+        } else {
+            return $this->redirectToRoute('app_home', [], Response::HTTP_SEE_OTHER);
         }
     }
     #[Route('/{userId}/Profile', name: 'app_user_Profile', methods: ['GET'])]
     public function Profile(User $user, ClientRepository $clientRepository, ArtistRepository $artistRepository, AdminRepository $adminRepository): Response
     {
+        $hasAccess = $this->ArtistClientAccess();
+
         $client = $clientRepository->findOneBy(['user' => $user]);
         $artist = $artistRepository->findOneBy(['user' => $user]);
         $admin = $adminRepository->findOneBy(['user' => $user]);
@@ -266,27 +281,32 @@ class UserController extends AbstractController
                 'department' => $admin->getDepartment(),
             ];
         }
-        if ($role === 'client') {
-            return $this->render('user/Profile.html.twig', [
-                'user' => $user,
-                'clientAttributes' => $clientAttributes ?? null,
-            ]);
-        } elseif ($role === 'artist') {
-            return $this->render('user/Profile.html.twig', [
-                'user' => $user,
-                'artistAttributes' => $artistAttributes ?? null,
-            ]);
-        } elseif ($role === 'admin') {
-            return $this->render('user/Profile.html.twig', [
-                'user' => $user,
-                'adminAttributes' => $adminAttributes ?? null,
-            ]);
+        if ($hasAccess) {
+            if ($role === 'client') {
+                return $this->render('user/Profile.html.twig', [
+                    'user' => $user,
+                    'clientAttributes' => $clientAttributes ?? null,
+                ]);
+            } elseif ($role === 'artist') {
+                return $this->render('user/Profile.html.twig', [
+                    'user' => $user,
+                    'artistAttributes' => $artistAttributes ?? null,
+                ]);
+            } elseif ($role === 'admin') {
+                return $this->render('user/Profile.html.twig', [
+                    'user' => $user,
+                    'adminAttributes' => $adminAttributes ?? null,
+                ]);
+            }
+        } else {
+            return $this->redirectToRoute('app_admin', [], Response::HTTP_SEE_OTHER);
         }
     }
 
     #[Route('/{userId}/edit', name: 'app_user_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, User $user, EntityManagerInterface $entityManager, ClientRepository $clientRepository, ArtistRepository $artistRepository, AdminRepository $adminRepository): Response
     {
+        $hasAccess=$this->AdminAccess();
         $client = $clientRepository->findOneBy(['user' => $user]);
         $artist = $artistRepository->findOneBy(['user' => $user]);
         $admin = $adminRepository->findOneBy(['user' => $user]);
@@ -355,7 +375,7 @@ class UserController extends AbstractController
             $entityManager->flush();
             return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
         }
-
+if($hasAccess){
         return $this->renderForm('user/edit.html.twig', [
             'user' => $user,
             'form' => $form,
@@ -364,12 +384,16 @@ class UserController extends AbstractController
             'client_attributes' => $clientAttributes,
             'artist_attributes' => $artistAttributes,
             'admin_attributes' => $adminAttributes,
-        ]);
+        ]);}
+        else{
+            return $this->redirectToRoute('app_home', [], Response::HTTP_SEE_OTHER);
+        }
     }
 
     #[Route('/{userId}/editProfile', name: 'app_user_editProfile', methods: ['GET', 'POST'])]
     public function editProfile(Request $request, User $user, EntityManagerInterface $entityManager, ClientRepository $clientRepository, ArtistRepository $artistRepository, AdminRepository $adminRepository): Response
     {
+        $hasAccess=$this->ArtistClientAccess();
         $client = $clientRepository->findOneBy(['user' => $user]);
         $artist = $artistRepository->findOneBy(['user' => $user]);
         $admin = $adminRepository->findOneBy(['user' => $user]);
@@ -437,7 +461,7 @@ class UserController extends AbstractController
             $entityManager->flush();
             return $this->redirectToRoute('app_user_Profile', ['userId' => $user->getUserId()], Response::HTTP_SEE_OTHER);
         }
-
+if($hasAccess){
         return $this->renderForm('user/editF.html.twig', [
             'user' => $user,
             'form' => $form,
@@ -447,6 +471,9 @@ class UserController extends AbstractController
             'artist_attributes' => $artistAttributes,
             'admin_attributes' => $adminAttributes,
         ]);
+    }else{
+        return $this->redirectToRoute('app_admin', ['userId' => $user->getUserId()], Response::HTTP_SEE_OTHER);
+    }
     }
 
 
@@ -607,16 +634,16 @@ class UserController extends AbstractController
 
 
     #[Route('/EmailVerif', name: 'app_user_EmailVerif', methods: ['GET', 'POST'])]
-    public function EmailVerification(Request $request, UserRepository $userRepository,MailerInterface $mailer,EntityManagerInterface $entityManager): Response
+    public function EmailVerification(Request $request, UserRepository $userRepository, MailerInterface $mailer, EntityManagerInterface $entityManager): Response
     {
         $u = new User();
-        $SearchedUser=new User();
+        $SearchedUser = new User();
         $form = $this->createForm(VerificationEmailType::class, $u);
         $form->handleRequest($request);
-        if ($form->isSubmitted() ) {
+        if ($form->isSubmitted()) {
             $email = $form->get('email')->getData();
 
-            $SearchedUser = $userRepository->findOneBy(['email'=>$email]);
+            $SearchedUser = $userRepository->findOneBy(['email' => $email]);
 
             if ($SearchedUser && $SearchedUser->isEnabled()) {
                 $token = bin2hex(random_bytes(16));
@@ -631,8 +658,6 @@ class UserController extends AbstractController
             } else {
                 return $this->redirectToRoute('app_home');
             }
-
-        
         }
         return $this->renderForm('user/emailVerif.html.twig', [
             'user' => $u,
@@ -641,7 +666,7 @@ class UserController extends AbstractController
         ]);
     }
     #[Route('/{userId}/SMSVerif', name: 'app_user_SMSVerif', methods: ['GET', 'POST'])]
-    public function SMSVerification(User $user,EntityManagerInterface $entityManager): Response
+    public function SMSVerification(User $user, EntityManagerInterface $entityManager): Response
 
     {
 
@@ -653,12 +678,42 @@ class UserController extends AbstractController
         $entityManager->persist($user);
         $entityManager->flush();
         $vpn = "216" . $user->getPhonenumber();
-        $message = new SMSText($vpn, 'Vonage APIs', 'Hello this is your verification token'.$code);
+        $message = new SMSText($vpn, 'Vonage APIs', 'Hello this is your verification token' . $code);
         $result = $client->messages()->send($message);
-        
-   
-            return $this->redirectToRoute('app_user_TokenVerifPwd', ['userId' => $user->getUserId()], Response::HTTP_SEE_OTHER);
-       
-    
+
+
+        return $this->redirectToRoute('app_user_TokenVerifPwd', ['userId' => $user->getUserId()], Response::HTTP_SEE_OTHER);
+    }
+    private function AdminAccess()
+    {
+        if ($this->connectedUser->getRole() == "admin") {
+            return true; // return a value to indicate that access is allowed
+        } else {
+            return false; // return a value to indicate that access is not allowed
+        }
+    }
+    /* private function ClientAccess()
+    {
+        if ($this->connectedUser->getRole() === "client") {
+            return true; // return a value to indicate that access is allowed
+        } else {
+            return false; // return a value to indicate that access is not allowed
+        }
+    } 
+    private function ArtistAccess()
+    {
+        if ($this->connectedUser->getRole() === "artist") {
+           return true; // return a value to indicate that access is allowed
+        } else {
+            return false; // return a value to indicate that access is not allowed
+        }
+    }*/
+    private function ArtistClientAccess()
+    {
+        if ($this->connectedUser->getRole() == "artist" || $this->connectedUser->getRole() == "client") {
+            return true; // return a value to indicate that access is allowed
+        } else {
+            return false; // return a value to indicate that access is not allowed
+        }
     }
 }
