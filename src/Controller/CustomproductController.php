@@ -401,8 +401,15 @@ class CustomproductController extends AbstractController
             'product' => $product,
         ]);
     }
-
-
+    #[Route('draw/', name: 'draw', methods: ['GET'])]
+    public function draw(): Response
+    {
+        $customproduct = new Customproduct(); 
+    
+        return $this->render('customproduct/draw.html.twig', [
+            'customproduct' => $customproduct,
+        ]);
+    }
     #[Route('s/{customProductId}', name: 'app_customproduct_showartist', methods: ['GET'])]
     public function showartist(Customproduct $customproduct): Response
     {
