@@ -21,6 +21,7 @@ use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Mailer\Mailer;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mailer\MailerInterface;
@@ -255,9 +256,14 @@ class UserController extends AbstractController
         }
     }
     #[Route('/{userId}/Profile', name: 'app_user_Profile', methods: ['GET'])]
-    public function Profile(User $user, ClientRepository $clientRepository, ArtistRepository $artistRepository, AdminRepository $adminRepository): Response
+    public function Profile(User $user,RequestStack $requestStack, ClientRepository $clientRepository, ArtistRepository $artistRepository, AdminRepository $adminRepository): Response
     {
         $hasAccess = $this->ArtistClientAccess();
+
+        $currentUrl = $requestStack->getCurrentRequest()->getUri();
+        $serverIpAddress = '127.0.0.1'; // replace with your server's IP address
+        $pcIpAddress = getHostByName(getHostName());
+        $newUrl = str_replace($serverIpAddress, $pcIpAddress, $currentUrl);
 
         $client = $clientRepository->findOneBy(['user' => $user]);
         $artist = $artistRepository->findOneBy(['user' => $user]);
@@ -286,11 +292,14 @@ class UserController extends AbstractController
                 return $this->render('user/Profile.html.twig', [
                     'user' => $user,
                     'clientAttributes' => $clientAttributes ?? null,
+
                 ]);
             } elseif ($role === 'artist') {
                 return $this->render('user/Profile.html.twig', [
                     'user' => $user,
                     'artistAttributes' => $artistAttributes ?? null,
+                    'url' => $newUrl,
+
                 ]);
             } elseif ($role === 'admin') {
                 return $this->render('user/Profile.html.twig', [

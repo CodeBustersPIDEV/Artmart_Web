@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Entity\Client;
+use App\Entity\Clients;
 use App\Form\ClientType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -17,7 +17,7 @@ class ClientController extends AbstractController
     public function index(EntityManagerInterface $entityManager): Response
     {
         $clients = $entityManager
-            ->getRepository(Client::class)
+            ->getRepository(Clients::class)
             ->findAll();
 
         return $this->render('client/index.html.twig', [
@@ -28,7 +28,7 @@ class ClientController extends AbstractController
     #[Route('/new', name: 'app_client_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
-        $client = new Client();
+        $client = new Clients();
         $form = $this->createForm(ClientType::class, $client);
         $form->handleRequest($request);
 
@@ -48,7 +48,7 @@ class ClientController extends AbstractController
     }
 
     #[Route('/{clientId}', name: 'app_client_show', methods: ['GET'])]
-    public function show(Client $client): Response
+    public function show(Clients $client): Response
     {
         return $this->render('client/show.html.twig', [
             'client' => $client,
@@ -56,7 +56,7 @@ class ClientController extends AbstractController
     }
 
     #[Route('/{clientId}/edit', name: 'app_client_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Client $client, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, Clients $client, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(ClientType::class, $client);
         $form->handleRequest($request);
@@ -74,7 +74,7 @@ class ClientController extends AbstractController
     }
 
     #[Route('/{clientId}', name: 'app_client_delete', methods: ['POST'])]
-    public function delete(Request $request, Client $client, EntityManagerInterface $entityManager): Response
+    public function delete(Request $request, Clients $client, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$client->getClientId(), $request->request->get('_token'))) {
             $entityManager->remove($client);

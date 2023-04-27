@@ -15,14 +15,41 @@
             box-shadow: 0 0 10px #ccc;
         }
     </style>
-<form action="{{ path('app_user_index') }}" method="GET">
-    <div class="form-group">
-        <label for="search-term">Search for users:</label>
-        <input type="text" id="search-term" name="search" class="form-control" value="{{ searchTerm }}">
-	<button type="submit" class="btn btn-outline-primary mr-2">Search</button>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+  $('th').click(function() {
+    var table = $(this).parents('table').eq(0)
+    var rows = table.find('tr:gt(0)').toArray().sort(comparer($(this).index()))
+    this.asc = !this.asc
+    if (!this.asc) { rows = rows.reverse() }
+    for (var i = 0; i < rows.length; i++) { table.append(rows[i]) }
+  })
+})
 
-    </div>
-</form>
+function comparer(index) {
+  return function(a, b) {
+    var valA = getCellValue(a, index), valB = getCellValue(b, index)
+    return $.isNumeric(valA) && $.isNumeric(valB) ? valA - valB : valA.toString().localeCompare(valB)
+  }
+}
+
+function getCellValue(row, index){ return $(row).children('td').eq(index).text() }
+
+$(document).ready(function() {
+  // Sorting code goes here...
+
+  // Search code starts here
+  $('#searchInput').keyup(function() {
+    var value = $(this).val().toLowerCase()
+    $('table tbody tr').filter(function() {
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    })
+  })
+})
+</script>
+
+<input type="text" id="searchInput" placeholder="Search...">
 <div class="button" style="text-align: center">
 
 <a class="btn btn-outline-primary mr-2" href="{{ path('app_user_index', {'userse': 'username'}) }}">User by name</a>
@@ -30,6 +57,7 @@
 </div>
 <br>
 <h1 class="cute">Users List</h1>
+<div class="table-container">
 <table class="table">
 	<thead>
 		<tr>
@@ -66,5 +94,5 @@
 		{% endfor %}
 	</tbody>
 </table>
-
+</div>
 {% endblock %}
