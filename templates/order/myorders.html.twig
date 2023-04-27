@@ -253,13 +253,14 @@
 
 	{% endblock %}
 	{% block body %}
+	<a href="{{ path('app_order_export_el')}}">Export Excel Report</a>
 		<div class="row">
 			{% for order in orders %}
 				<div class="col-md-4 mb-4">
 					<div class="card">
 						<div class="card-body">
-							<h5 class="card-title" style='color:black'>Order ID:
-								{{ order.orderId }}</h5>
+							<h5 class="card-title" style='color:black'>
+								0A000{{ order.orderId }}</h5>
 							<p class="card-text">Quantity:
 								{{ order.quantity }}</p>
 							<p class="card-text">Shipping Address:
@@ -286,8 +287,9 @@
 							{% else %}
 								<p class="card-text">Status:
 									{{ order.status }}</p>
+								<a href="{{ path('app_order_cancel', { orderId: order.orderId }) }}" class="btn btn-primary">Cancel</a>
 							{% endif %}
-							<a href="{{ path('app_order_show', { orderId: order.orderId }) }}" class="btn btn-primary">Info</a>
+							<a href="{{ path('app_order_export_pdf', { id: order.orderId }) }}" class="btn btn-primary">Details</a>
 						</div>
 					</div>
 				</div>

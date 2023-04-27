@@ -16,6 +16,7 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Dompdf\Dompdf;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
@@ -23,9 +24,7 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 #[Route('/order')]
 class OrderController extends AbstractController
 {
-    private User $connectedUser;
-
-   
+    private $connectedUser;
     public function __construct(SessionInterface $session, UserRepository $userRepository)
     {
         if ($session != null) {
@@ -62,19 +61,29 @@ class OrderController extends AbstractController
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
 
-        $sheet->setCellValue('A1', 'ID');
-        $sheet->setCellValue('B1', 'Customer Name');
-        $sheet->setCellValue('C1', 'Total Price');
+        $sheet->setCellValue('A1', 'Order ID');
+        $sheet->setCellValue('B1', 'Product');
+        $sheet->setCellValue('C1', 'Shippingaddress');
+        $sheet->setCellValue('E1', 'Order Date');
+        $sheet->setCellValue('F1', 'Quantity');
+        $sheet->setCellValue('G1', 'Total Price');
         $row = 2;
-
         foreach ($orders as $order) {
-            $sheet->setCellValue('A'.$row, $order->getOrderId());
-            $sheet->setCellValue('B'.$row, $order->getUserid()->getName()); // Assuming your User entity has a "name" property
-            $sheet->setCellValue('C'.$row, $order->getTotalcost());
+            $sheet->setCellValue('A'.$row, "000P0".$order->getOrderId());
+            $sheet->setCellValue('B'.$row, $order->getProductid()->getName());
+            $sheet->setCellValue('C'.$row, $order->getShippingaddress());
+            $sheet->setCellValue('E'.$row, $order->getOrderdate());
+            $sheet->setCellValue('F'.$row, $order->getQuantity());
+            $sheet->setCellValue('G'.$row, $order->getTotalcost());
             $row++;
         }
+        $sheet->setCellValue('I1', 'Statistics');
+        $sheet->setCellValue('I2', 'Total Cost');
+        $sheet->setCellValue('J2', '=SUM(G2:G'.$row.')');
+        $sheet->setCellValue('I3', 'Average Quantity');
+        $sheet->setCellValue('J3', '=AVERAGE(F2:F'.$row.')');
         $writer = new Xlsx($spreadsheet);
-        $filename = 'orders_export.xlsx';
+        $filename = 'Orders_Statistics_Artmart_2023.xlsx';
         $writer->save($filename);
     
         $response = new BinaryFileResponse($filename);
@@ -86,6 +95,87 @@ class OrderController extends AbstractController
     
         return $response;
     }
+
+    
+    #[Route('admin/export/excel', name: 'app_order_export_admin', methods: ['GET','POST'])]
+    public function exportAdmin(EntityManagerInterface $entityManager,Request $request): Response
+    { 
+        $orders = $entityManager
+        ->getRepository(Order::class)
+        ->findAll();
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $sheet->setCellValue('A1', 'Order ID');
+        $sheet->setCellValue('B1', 'Product');
+        $sheet->setCellValue('C1', 'Shippingaddress');
+        $sheet->setCellValue('E1', 'Order Date');
+        $sheet->setCellValue('F1', 'Quantity');
+        $sheet->setCellValue('G1', 'Total Price');
+        $sheet->setCellValue('H1', 'User');
+        $row = 2;
+        foreach ($orders as $order) {
+            $sheet->setCellValue('A'.$row, "000P0".$order->getOrderId());
+            $sheet->setCellValue('B'.$row, $order->getProductid()->getName());
+            $sheet->setCellValue('C'.$row, $order->getShippingaddress());
+            $sheet->setCellValue('E'.$row, $order->getOrderdate());
+            $sheet->setCellValue('F'.$row, $order->getQuantity());
+            $sheet->setCellValue('G'.$row, $order->getTotalcost());
+            $sheet->setCellValue('H'.$row, $order->getUserId()->getName());
+            $row++;
+        }
+        $sheet->setCellValue('I1', 'Statistics');
+        $sheet->setCellValue('I2', 'Total Cost');
+        $sheet->setCellValue('J2', '=SUM(G2:G'.$row.')');
+        $sheet->setCellValue('I3', 'Average Quantity');
+        $sheet->setCellValue('J3', '=AVERAGE(F2:F'.$row.')');
+        $writer = new Xlsx($spreadsheet);
+        $filename = 'Orders_Statistics_Artmart_2023.xlsx';
+        $writer->save($filename);
+    
+        $response = new BinaryFileResponse($filename);
+        $disposition = $response->headers->makeDisposition(
+            ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+            $filename
+        );
+        $response->headers->set('Content-Disposition', $disposition);
+    
+        return $response;
+    }
+
+    #[Route('export/Pdf/{id}', name: 'app_order_export_pdf', methods: ['GET','POST'])]
+    public function exportOrderPdf($id,EntityManagerInterface $entityManager)
+    {
+        $order = $entityManager->getRepository(Order::class)->find($id);
+
+        $html = '<div style="text-align: center;">
+        <h1 style="font-size: 24px; margin-bottom: 20px;">ARTMART</h1>
+        <p><strong>Order ID:</strong> '.$order->getOrderId().'</p>
+        <p><strong>Product:</strong>'.$order->getProductid()->getName().'</p>
+        <p><strong>Shipping Address:</strong> '.$order->getShippingaddress().'</p>
+        <p><strong>Order Date:</strong> '.$order->getOrderdate().'</p>
+        <p><strong>Quantity:</strong> '.$order->getQuantity().'</p>
+        <hr style="margin: 20px 0;">
+        <p style="text-align: right;"><strong>Shipping:</strong> '.$order->getShippingmethod()->getShippingfee().' DT</p>
+        <p style="text-align: right;"><strong>Total:</strong> $'.$order->getTotalcost().' DT</p>
+        <hr style="margin: 20px 0;">
+        <p>Thank you for shopping at ArtMart!</p>
+        <p>Please contact us if you have any questions or concerns.</p>
+        <p>Phone: (216) 29-972-339<br>Email: support@artmmart.com<br>Website: www.artmmart.tn</p>
+    </div>';
+
+        $dompdf = new Dompdf();
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4', 'portrait');
+        $dompdf->render();
+
+        return new Response($dompdf->output(), 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="order-receipt.pdf"'
+        ]);
+    }
+
     #[Route('/myOrders', name: 'my_order_index', methods: ['GET'])]
     public function myIndexOrder(EntityManagerInterface $entityManager,Request $request): Response
     {
@@ -157,6 +247,26 @@ class OrderController extends AbstractController
         return $this->render('order/show.html.twig', [
             'order' => $order,
         ]);
+    }
+
+    #[Route('/cancel/{orderId}', name: 'app_order_cancel', methods: ['GET'])]
+    public function cancelOrder($orderId,EntityManagerInterface $entityManager): Response
+    {
+        $queryBuilder = $entityManager->createQueryBuilder();
+        $query = $queryBuilder
+        ->select('os')
+        ->from(Orderstatus::class, 'os')
+        ->where('os.orderid = :orderId')
+        ->setParameter('orderId', $orderId)
+        ->getQuery();
+
+        $orderStatus = $query->getOneOrNullResult();
+        if ($orderStatus == "PENDING") {
+            $orderStatus->setStatus('CANCELED');
+            $entityManager->flush();
+        }
+
+        return $this->redirectToRoute('my_order_index', [], Response::HTTP_SEE_OTHER);
     }
 
     #[Route('/{orderId}/edit', name: 'app_order_edit', methods: ['GET', 'POST'])]

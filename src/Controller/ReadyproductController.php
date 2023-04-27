@@ -1025,7 +1025,7 @@ class ReadyproductController extends AbstractController
         ]);
     }
 
-    #[Route('/delete/{readyProductId}', name: 'app_readyproduct_delete', methods: ['POST'])]
+    #[Route('/delete/{readyProductId}', name: 'app_readyproduct_delete', methods: ['GET'])]
     public function delete(Request $request, Readyproduct $readyproduct, EntityManagerInterface $entityManager): Response
     {
 

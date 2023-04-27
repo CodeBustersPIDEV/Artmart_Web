@@ -40,6 +40,22 @@ function comparer(index) {
 
 function getCellValue(row, index){ return $(row).children('td').eq(index).text() }
 </script>
+<script>
+$(document).ready(function() {
+  $('#searchInput').keyup(function() {
+    var searchText = $(this).val().toLowerCase();
+    $('table tbody tr').each(function() {
+      var rowText = $(this).text().toLowerCase();
+
+      if (rowText.includes(searchText)) {
+        $(this).show();
+      } else {
+        $(this).hide();
+      }
+    });
+  });
+});
+</script>
 	{% include('order/orderBar.html.twig') %}
 	<link rel="stylesheet" href="{{ asset('assets/Components/specialOrder.css') }}"/>
 	<input type="text" id="searchInput" placeholder="Search...">
@@ -55,6 +71,7 @@ function getCellValue(row, index){ return $(row).children('td').eq(index).text()
 			</div>
 		</div>
 	</a>
+	<a href="{{ path('app_order_export_admin') }}">Export Stats </a>
 	<div class="table-container">
 	<table id="orders-table" class="table table-hover table-bordered">
 		<thead>
@@ -103,7 +120,5 @@ function getCellValue(row, index){ return $(row).children('td').eq(index).text()
 		</tbody>
 	</table>
 </div>
-
-
 {% endblock %}
 {% endblock %}
