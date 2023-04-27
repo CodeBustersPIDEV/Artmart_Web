@@ -57,13 +57,21 @@ class BlogcategoriesRepository extends ServiceEntityRepository
   //        ;
   //    }
 
-  //    public function findOneBySomeField($value): ?Blogcategories
-  //    {
-  //        return $this->createQueryBuilder('c')
-  //            ->andWhere('c.exampleField = :val')
-  //            ->setParameter('val', $value)
-  //            ->getQuery()
-  //            ->getOneOrNullResult()
-  //        ;
-  //    }
+  // public function findOneBySomeField($searchTerm): ?Blogcategories
+  // {
+  //   return $this->createQueryBuilder('c')
+  //     ->andWhere('c.name LIKE :searchTerm')
+  //     ->setParameter('val', '%' . $searchTerm . '%')
+  //     ->getQuery()
+  //     ->getOneOrNullResult();
+  // }
+
+  public function findByTerm($searchTerm): array
+  {
+    return $this->createQueryBuilder('bc')
+      ->where('bc.name LIKE :searchTerm')
+      ->setParameter('searchTerm', '%' . $searchTerm . '%')
+      ->getQuery()
+      ->getResult();
+  }
 }

@@ -344,7 +344,7 @@ class ReadyproductController extends AbstractController
     {
         $readyproduct = new Readyproduct();
         $product = new Product();
-        $product->setImage('imagec.png');
+        $product->setImage('http://localhost/PIDEV/BlogUploads/imagec.png');
         $readyproduct->setProductId($product);
         $form = $this->createForm(ReadyproductType::class, $readyproduct);
         $form->handleRequest($request);
@@ -364,17 +364,20 @@ class ReadyproductController extends AbstractController
             if ($imageFile) {
                 $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
                 $newFilename = $originalFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
+                $destinationPath = $this->getParameter('destinationPath') . '/' . $newFilename;
+                $imageURL = $this->getParameter('file_base_url')['host'] . '/' . $this->getParameter('file_base_url')['path'] . '/' . $newFilename;
+                $imagePath = $this->getParameter('destinationPath') . '/' . $newFilename;
 
                 try {
                     $imageFile->move(
-                        $this->getParameter('product_images_directory'),
+                        $this->getParameter('destinationPath'),
                         $newFilename
                     );
                 } catch (FileException $e) {
                     // handle exception
                 }
 
-                $product->setImage($newFilename);
+                $product->setImage($imageURL);
             }
 
             $entityManager->persist($product);
@@ -441,17 +444,20 @@ class ReadyproductController extends AbstractController
         if ($imageFile) {
             $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
             $newFilename = $originalFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
+            $destinationPath = $this->getParameter('destinationPath') . '/' . $newFilename;
+            $imageURL = $this->getParameter('file_base_url')['host'] . '/' . $this->getParameter('file_base_url')['path'] . '/' . $newFilename;
+            $imagePath = $this->getParameter('destinationPath') . '/' . $newFilename;
 
             try {
                 $imageFile->move(
-                    $this->getParameter('product_images_directory'),
+                    $this->getParameter('destinationPath'),
                     $newFilename
                 );
             } catch (FileException $e) {
                 // handle exception if something happens during file upload
             }
 
-            $product->setImage($newFilename);
+            $product->setImage($imageURL);
         }
 
         if ($form->isSubmitted() && $form->isValid()) {

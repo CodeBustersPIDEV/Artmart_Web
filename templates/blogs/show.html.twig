@@ -257,7 +257,7 @@ content %}
 							/>
 							{% endif %}
 							<div class="commentSection">
-								<h1>Comments index</h1>
+								<h1>Comments</h1>
 								<div class="commentCont">
 									{{ include("comments/_form.html.twig") }}
 								</div>
@@ -362,6 +362,7 @@ content %}
 		</div>
 	</div>
 </div>
+{% if app.session.get('user_id') == blog.author.getUserID() %}
 
 <a href="{{ path('app_blogs_index') }}">back to list</a>
 <div class="d-flex flex-row mb-3">
@@ -372,6 +373,7 @@ content %}
 	>
 
 	{{ include("blogs/_delete_form.html.twig") }}
+	{% endif %}
 </div>
 <script
 	async

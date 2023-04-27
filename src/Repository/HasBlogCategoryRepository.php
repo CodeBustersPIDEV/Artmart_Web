@@ -71,4 +71,13 @@ class HasBlogCategoryRepository extends ServiceEntityRepository
       ->getQuery()
       ->getOneOrNullResult();
   }
+
+  public function findByTerm($searchTerm): array
+  {
+    return $this->createQueryBuilder('h')
+      ->where('h.blog_id = :searchTerm')
+      ->setParameter('searchTerm', $searchTerm)
+      ->getQuery()
+      ->getResult();
+  }
 }
