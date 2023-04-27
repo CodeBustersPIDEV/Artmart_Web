@@ -134,6 +134,7 @@
   display: inline-block;
   padding: 8px 16px;
   background-color: #AA336A;
+  
   color: white;
   text-align: center;
   text-decoration: none;
@@ -201,7 +202,7 @@
 .link-style {
   display: inline-block;
   padding: 10px 20px;
-  margin-right: 20px;
+  margin-right: 10px;
   border-radius: 4px;
   color: white;
   background-color: #43464B;
@@ -290,15 +291,17 @@
 			</div>
 		</div>
 	</a>
+
+{% if customproducts.getTotalItemCount() > 0 %}
 <a href="{{ path('app_apply_clients') }}" class="link-style">Demands</a>
 <a href="{{ path('app_apply_clientdone') }}" class="link-style">Check Progress</a>
-{% if customproducts.getTotalItemCount() > 0 %}
+<div>
+<center>
 <p  style=" color: #fff;">Total weight of displayed Products: {{ totalWeight }}</p>
-
 <a href="{{ path('app_customproduct_index', {'order': 'name', 'direction': (app.request.get('direction') == 'asc' ? 'desc' : 'asc')}) }}" class="orderby-link">Order by Name {{ app.request.get('direction') == 'asc' ? '&#9660;' : '&#9650;' }}</a>
 <a href="{{ path('app_customproduct_index', {'order': 'weight', 'direction': (app.request.get('direction') == 'asc' ? 'desc' : 'asc')}) }}" class="orderby-link">Order by Weight {{ app.request.get('direction') == 'asc' ? '&#9660;' : '&#9650;' }}</a>
-     
-  
+     </center>
+  	</div>
     
 
 
