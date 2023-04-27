@@ -2,20 +2,39 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Entity\Order;
 use App\Entity\Orderstatus;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use App\Form\OrderType;
+use App\Repository\UserRepository;   
+use Symfony\Component\Form\FormError;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Validator\Constraints\DateTime;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 
 #[Route('/order')]
 class OrderController extends AbstractController
 {
+    private User $connectedUser;
+
+   
+    public function __construct(SessionInterface $session, UserRepository $userRepository)
+    {
+        if ($session != null) {
+            $connectedUserID = $session->get('user_id');
+            if (is_int($connectedUserID)) {
+                $this->connectedUser = $userRepository->find((int) $connectedUserID);
+            }
+        }
+    }
     #[Route('/', name: 'app_order_index', methods: ['GET'])]
     public function index(EntityManagerInterface $entityManager): Response
     {
@@ -26,6 +45,46 @@ class OrderController extends AbstractController
         return $this->render('order/index.html.twig', [
             'orders' => $orders,
         ]);
+    }
+    
+    #[Route('export/excel', name: 'app_order_export_el', methods: ['GET','POST'])]
+    public function export(EntityManagerInterface $entityManager,Request $request): Response
+    { 
+        $session = $request->getSession();
+        $queryBuilder = $entityManager
+        ->getRepository(Order::class)
+        ->createQueryBuilder('o')
+        ->where('o.userid = :userid')
+        ->setParameter('userid', $session->get('user_id'));
+        
+        $orders = $queryBuilder->getQuery()->getResult();
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $sheet->setCellValue('A1', 'ID');
+        $sheet->setCellValue('B1', 'Customer Name');
+        $sheet->setCellValue('C1', 'Total Price');
+        $row = 2;
+
+        foreach ($orders as $order) {
+            $sheet->setCellValue('A'.$row, $order->getOrderId());
+            $sheet->setCellValue('B'.$row, $order->getUserid()->getName()); // Assuming your User entity has a "name" property
+            $sheet->setCellValue('C'.$row, $order->getTotalcost());
+            $row++;
+        }
+        $writer = new Xlsx($spreadsheet);
+        $filename = 'orders_export.xlsx';
+        $writer->save($filename);
+    
+        $response = new BinaryFileResponse($filename);
+        $disposition = $response->headers->makeDisposition(
+            ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+            $filename
+        );
+        $response->headers->set('Content-Disposition', $disposition);
+    
+        return $response;
     }
     #[Route('/myOrders', name: 'my_order_index', methods: ['GET'])]
     public function myIndexOrder(EntityManagerInterface $entityManager,Request $request): Response
@@ -140,5 +199,38 @@ class OrderController extends AbstractController
         return $this->render('order/orderGui.html.twig', [
         ]);
     }
+    private function AdminAccess()
+    {
+        if ($this->connectedUser->getRole() == "admin") {
+            return true; // return a value to indicate that access is allowed
+        } else {
+            return false; // return a value to indicate that access is not allowed
+        }
+    }
+     private function ClientAccess()
+    {
+        if ($this->connectedUser->getRole() === "client") {
+            return true; // return a value to indicate that access is allowed
+        } else {
+            return false; // return a value to indicate that access is not allowed
+        }
+    } 
+    private function ArtistAccess()
+    {
+        if ($this->connectedUser->getRole() === "artist") {
+           return true; // return a value to indicate that access is allowed
+        } else {
+            return false; // return a value to indicate that access is not allowed
+        }
+    }
+    private function ArtistClientAccess()
+    {
+        if ($this->connectedUser->getRole() == "artist" || $this->connectedUser->getRole() == "client") {
+            return true; // return a value to indicate that access is allowed
+        } else {
+            return false; // return a value to indicate that access is not allowed
+        }
+    }
+
 
 }

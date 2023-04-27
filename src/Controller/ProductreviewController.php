@@ -9,10 +9,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-
 #[Route('/productreview')]
 class ProductreviewController extends AbstractController
-{
+{ 
     #[Route('/', name: 'app_productreview_index', methods: ['GET'])]
     public function index(EntityManagerInterface $entityManager): Response
     {
@@ -23,6 +22,7 @@ class ProductreviewController extends AbstractController
         return $this->render('productreview/index.html.twig', [
             'productreviews' => $productreviews,
         ]);
+        
     }
 
     #[Route('/new', name: 'app_productreview_new', methods: ['GET', 'POST'])]

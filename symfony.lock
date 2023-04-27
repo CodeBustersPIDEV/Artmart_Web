@@ -62,6 +62,18 @@
             "ref": "cc04e10cf7171525b50c18b36004edf64cb478be"
         }
     },
+    "karser/karser-recaptcha3-bundle": {
+        "version": "0.1",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "main",
+            "version": "0.1",
+            "ref": "c51ce07c10331d506762efe25b6f5843c1a5ea17"
+        },
+        "files": [
+            "./config/packages/karser_recaptcha3.yaml"
+        ]
+    },
     "knplabs/knp-paginator-bundle": {
         "version": "v5.9.0"
     },
@@ -76,6 +88,15 @@
     },
     "mercuryseries/flashy-bundle": {
         "version": "v5.1.0"
+    },
+    "payum/payum-bundle": {
+        "version": "2.5",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "main",
+            "version": "2.4",
+            "ref": "518ac22defa04a8a1d82479ed362e2921487adf0"
+        }
     },
     "phpunit/phpunit": {
         "version": "9.6",
@@ -263,6 +284,9 @@
         "files": [
             "./config/packages/security.yaml"
         ]
+    },
+    "symfony/swiftmailer-bundle": {
+        "version": "v2.3.8"
     },
     "symfony/translation": {
         "version": "5.4",

@@ -1,20 +1,32 @@
 <?php
 
 namespace App\Controller;
-
+use App\Entity\User;
 use App\Entity\Wishlist;
 use App\Form\WishlistType;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 #[Route('/wishlist')]
 class WishlistController extends AbstractController
-{
+{    
+    private User $connectedUser;
+    public function __construct(SessionInterface $session, UserRepository $userRepository)
+    {
+        if ($session != null) {
+            $connectedUserID = $session->get('user_id');
+            if (is_int($connectedUserID)) {
+                $this->connectedUser = $userRepository->find((int) $connectedUserID);
+            }
+        }
+    }
     #[Route('/', name: 'app_wishlist_index', methods: ['GET'])]
-    public function index(EntityManagerInterface $entityManager,Request $request): Response
+    public function index(EntityManagerInterface $entityManager,Request $request,UserRepository $userRepository): Response
     {
         $session = $request->getSession();
         $queryBuilder = $entityManager
@@ -27,6 +39,7 @@ class WishlistController extends AbstractController
         return $this->render('wishlist/index.html.twig', [
             'wishlists' => $wishlists,
         ]);
+       
     }
     
     #[Route('/delete/{wishlistId}', name: 'app_wishlist_delete_now', methods: ['GET'])]
@@ -119,5 +132,36 @@ class WishlistController extends AbstractController
 
         return $this->redirectToRoute('app_wishlist_index', [], Response::HTTP_SEE_OTHER);
     }
-
+    private function AdminAccess()
+    {
+        if ($this->connectedUser->getRole() == "admin") {
+            return true; // return a value to indicate that access is allowed
+        } else {
+            return false; // return a value to indicate that access is not allowed
+        }
+    }
+     private function ClientAccess()
+    {
+        if ($this->connectedUser->getRole() === "client") {
+            return true; // return a value to indicate that access is allowed
+        } else {
+            return false; // return a value to indicate that access is not allowed
+        }
+    } 
+    private function ArtistAccess()
+    {
+        if ($this->connectedUser->getRole() === "artist") {
+           return true; // return a value to indicate that access is allowed
+        } else {
+            return false; // return a value to indicate that access is not allowed
+        }
+    }
+    private function ArtistClientAccess()
+    {
+        if ($this->connectedUser->getRole() == "artist" || $this->connectedUser->getRole() == "client") {
+            return true; // return a value to indicate that access is allowed
+        } else {
+            return false; // return a value to indicate that access is not allowed
+        }
+    }
 }

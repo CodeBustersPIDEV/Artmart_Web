@@ -1,4 +1,4 @@
-{% extends 'baseF.html.twig' %}
+{% extends 'baseR.html.twig' %}
 {% block content %}
 	<a href="{{ path('app_readyproduct_index') }}">
 		<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-return-left" viewbox="0 0 16 16">
@@ -98,7 +98,6 @@
 					{{ form_row(form.productId.category) }}
 					{{ form_row(form.productId.description) }}
 					{{ form_row(form.price) }}
-					{{ form_row(form.userId) }}
 				</div>
 				<div class="col-md-6">
 					{{ form_row(form.productId.dimensions) }}

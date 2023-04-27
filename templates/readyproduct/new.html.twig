@@ -89,22 +89,23 @@
 			{{ form_start(form,{ 'attr' :{ 'novalidate':'novalidate'}}) }}
 			<div class="row">
 				<div class="col-md-6">
-					{{ form_row(form.productId.name) }}
+					{{ form_row(form.productId.name, {'attr': {'placeholder': 'e.g: Beautiful Painting'}}) }}
 					{{ form_row(form.productId.category) }}
-					{{ form_row(form.productId.description) }}
-					{{ form_row(form.price) }}
+					{{ form_row(form.productId.description, {'attr': {'placeholder': 'Write a description for your product...'}}) }}
+					{{ form_row(form.price, {'attr': {'placeholder': 'e.g: 560'}}) }}
+					{{ form_row(form.userId) }}
 				</div>
 				<div class="col-md-6">
-					{{ form_row(form.productId.dimensions) }}
-					{{ form_row(form.productId.weight) }}
-					{{ form_row(form.productId.material) }}
-					{{ form_label(form.productId.image, 'Product Image') }}
+					{{ form_row(form.productId.dimensions, {'attr': {'placeholder': 'e.g: 72" L x 30" H x 36" D'}}) }}
+					{{ form_row(form.productId.weight, {'attr': {'placeholder': 'e.g: 23'}}) }}
+					{{ form_row(form.productId.material, {'attr': {'placeholder': 'e.g: Paper'}}) }}
+					{{ form_label(form.productId.image, 'Product Image', {'style': 'color: #ec6090; cursor: pointer;'}) }}
 					{{ form_widget(form.productId.image, {'attr': {'style': 'display:none;'}}) }}
 					{% if readyproduct.productId.image is defined %}
-						<img id="preview-image" style="max-width: 128px" src="{{ asset('imagescustom/' ~ readyproduct.productId.image) }}" alt="Product image" onclick="document.getElementById('product_image').click()">
+						<img id="preview-image" style="max-width: 128px" src="{{ asset(readyproduct.productId.image) }}" alt="Product image" onclick="document.getElementById('product_image').click()">
 						<span id="image-name"></span>
 					{% else %}
-						<img id="preview-image" style="max-width: 128px" src="{{ asset('imagescustom/imagec.png') }}" alt="Default product image" onclick="document.getElementById('product_image').click()">
+						<img id="preview-image" style="max-width: 128px" src="{{ 'http://localhost/PIDEV/BlogUploads/imagec.png' }}" alt="Default product image" onclick="document.getElementById('product_image').click()">
 					{% endif %}
 				</div>
 			</div>
@@ -124,6 +125,17 @@ var linkss = document.getElementsByTagName("button");
 for (var i = 0; i < linkss.length; i++) {
 linkss[i].setAttribute("onclick", "playSound()");
 }
+		</script>
+		<script>
+			document.getElementById('product_image').addEventListener('change', function (e) {
+var fileName = e.target.files[0].name;
+document.getElementById('image-name').innerHTML = fileName;
+var reader = new FileReader();
+reader.onload = function (e) {
+document.getElementById('preview-image').setAttribute('src', e.target.result);
+}
+reader.readAsDataURL(e.target.files[0]);
+});
 		</script>
 	{% endblock %}
 {% endblock %}

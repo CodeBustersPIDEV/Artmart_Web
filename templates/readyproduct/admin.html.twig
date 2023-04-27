@@ -133,123 +133,237 @@
 			.adminSection {
 				margin-left: 5px;
 			}
+
+			.link-style {
+				display: inline-block;
+				padding: 10px 20px;
+				margin-right: 20px;
+				border-radius: 4px;
+				color: white;
+				background-color: #43464B;
+				font-weight: bold;
+				text-decoration: none;
+				float: right;
+			}
+
+			.link-style:hover {
+				background-color: #3e8e41;
+				color: white;
+			}
+
+			/* Search Bar */
+			.form-control {
+				display: inline-block;
+				width: 30%;
+				padding: 6px 12px;
+				font-size: 14px;
+				font-weight: 400;
+				line-height: 1.5;
+				color: #55595c;
+				background-color: #fff;
+				background-image: none;
+				border: 1px solid #ccc;
+				border-radius: 4px;
+				-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+				box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+				-webkit-transition: border-color ease-in-out 0.15s, -webkit-box-shadow ease-in-out 0.15s;
+				transition: border-color ease-in-out 0.15s, -webkit-box-shadow ease-in-out 0.15s;
+				transition: box-shadow ease-in-out 0.15s, border-color ease-in-out 0.15s;
+				transition: box-shadow ease-in-out 0.15s, border-color ease-in-out 0.15s, -webkit-box-shadow ease-in-out 0.15s;
+			}
+
+			.orderby-link {
+				display: inline-block;
+				background-color: #43464B;
+				padding: 5px 10px 9px 9px;
+				color: white;
+				text-decoration: none;
+				font-size: 16px;
+				border-radius: 4px;
+				border-color: #43464B;
+				transition: background-color 0.3s ease;
+			}
+
+
+			.orderby-option-link {
+				display: inline-block;
+				background-color: white;
+				padding: 6px 5px 5px 9px;
+				color: black;
+				text-decoration: none;
+				font-size: 16px;
+				border-radius: 4px;
+				border-color: #43464B;
+				transition: background-color 0.3s ease;
+			}
 		</style>
 	{% endblock %}
 	{% block body %}
 		<div class="adminSection">
 			<br>
+			<form action="{{ path('app_readyproduct_index') }}" method="GET">
+				<div class="form-group">
 
-			<section id="ready-products">
-
-				<h3>Ready products</h3>
-				<table class="table">
-					<thead>
-						<tr>
-							<th>Name</th>
-							<th>User</th>
-							<th>Category</th>
-							<th>Dimensions</th>
-							<th>Material</th>
-							<th>Weight</th>
-							<th>Description</th>
-							<th>Price</th>
-							<th>Actions</th>
-						</tr>
-					</thead>
-					<tbody>
-						{% for readyproduct in readyproducts %}
-							<tr>
-								<td>{{ readyproduct.productId.name }}</td>
-								<td>{{ readyproduct.userId }}</td>
-								<td>{{ readyproduct.productId.category }}</td>
-								<td>{{ readyproduct.productId.dimensions }}</td>
-								<td>{{ readyproduct.productId.material }}</td>
-								<td>{{ readyproduct.productId.weight }}</td>
-								<td>{{ readyproduct.productId.description }}</td>
-								<td>{{ readyproduct.price }}</td>
-								<td>
-									<a href="{{ path('app_readyproduct_show', {'readyProductId': readyproduct.readyProductId}) }}">show</a>
-									<a href="{{ path('app_readyproduct_delete', {'readyProductId': readyproduct.readyProductId}) }}">delete</a>
-								</td>
-							</tr>
-						{% else %}
-							<tr>
-								<td colspan="7">no records found</td>
-							</tr>
+					<button type="button" style="background-color: #43464B; align: left;" class="btn btn-dark dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+						Order by Price
+					</button>
+					<ul class="dropdown-menu">
+						<li class="d-flex">
+							<a class="dropdown-item align-self-center" href="{{ path('app_readyproduct__asc_price_index_admin') }}">
+								<i class="fa-solid fa-sort-up"></i>
+								Lowest to highest
+							</a>
+						</li>
+						<li class="d-flex">
+							<a class="dropdown-item align-self-center" href="{{ path('app_readyproduct__desc_price_index_admin') }}">
+								<i class="fa-solid fa-sort-down"></i>
+								Highest to lowest
+							</a>
+						</li>
+					</ul>
+					<select id="category-select" class="orderby-link" name="category">
+						<option value="">Order by category</option>
+						{% for category in categories %}
+							<option class="orderby-option-link" value="{{ category.categoriesId }}">{{ category.name }}</option>
 						{% endfor %}
-					</tbody>
-				</table>
-			</section>
+					</select>
+					<input type="text" id="search-term" name="s" class="form-control" value="{{ searchTerm }}" placeholder="Search by name...">
+					<a href="{{ path('app_readyproduct_admin') }}" class="link-style-cancel">
+						<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-lg" viewbox="0 0 16 16">
+							<path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z"/>
+						</svg>
+					</a>
+				</div>
+				<a href="{{ path('app_readyproduct_new_admin') }}" class="link-style">
+					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewbox="0 0 16 16">
+						<path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"/>
+					</svg>
+					Add new product</a>
+				<br>
 
-			<section id="category">
-				<div class="col">
-					<h3>Categories</h3>
+				<section id="ready-products">
 
+					<h3>Ready products</h3>
 					<table class="table">
 						<thead>
 							<tr>
 								<th>Name</th>
+								<th>User</th>
+								<th>Category</th>
+								<th>Dimensions</th>
+								<th>Material</th>
+								<th>Weight</th>
+								<th>Description</th>
+								<th>Price</th>
 								<th>Actions</th>
 							</tr>
 						</thead>
 						<tbody>
-							{% for category in categories %}
+							{% for readyproduct in readyproducts %}
 								<tr>
-									<td>{{ category.name }}</td>
+									<td>{{ readyproduct.productId.name }}</td>
+									<td>{{ readyproduct.userId }}</td>
+									<td>{{ readyproduct.productId.category }}</td>
+									<td>{{ readyproduct.productId.dimensions }}</td>
+									<td>{{ readyproduct.productId.material }}</td>
+									<td>{{ readyproduct.productId.weight }}</td>
+									<td>{{ readyproduct.productId.description }}</td>
+									<td>{{ readyproduct.price }}</td>
 									<td>
-										<a href="{{ path('app_categories_edit', {'categoriesId': category.categoriesId}) }}">edit</a>
-										<a href="{{ path('app_categories_delete', {'categoriesId': category.categoriesId}) }}">delete</a>
+										<a href="{{ path('app_readyproduct_show_admin', {'readyProductId': readyproduct.readyProductId}) }}">show</a>
+										<a href="{{ path('app_readyproduct_delete', {'readyProductId': readyproduct.readyProductId}) }}">delete</a>
 									</td>
 								</tr>
 							{% else %}
 								<tr>
-									<td colspan="3">no records found</td>
+									<td colspan="7">no records found</td>
 								</tr>
 							{% endfor %}
 						</tbody>
 					</table>
-				</div>
-			</section>
+				</section>
 
-			<section id="ready-products">
+				<section id="category">
+					<div class="col">
+						<h3>Categories</h3>
 
-				<h3>Product reviews</h3>
-				<table class="table">
-					<thead>
-						<tr>
-							<th>Product</th>
-							<th>Title</th>
-							<th>User</th>
-							<th>Rating</th>
-							<th>Text</th>
-							<th>Date</th>
-							<th>Actions</th>
-						</tr>
-					</thead>
-					<tbody>
-						{% for productreview in productreviews %}
+						<table class="table">
+							<thead>
+								<tr>
+									<th>Name</th>
+									<th>Actions</th>
+								</tr>
+							</thead>
+							<tbody>
+								{% for category in categories %}
+									<tr>
+										<td>{{ category.name }}</td>
+										<td>
+											<a href="{{ path('app_categories_edit', {'categoriesId': category.categoriesId}) }}">edit</a>
+											<a href="{{ path('app_categories_delete', {'categoriesId': category.categoriesId}) }}">delete</a>
+										</td>
+									</tr>
+								{% else %}
+									<tr>
+										<td colspan="3">no records found</td>
+									</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+					</div>
+				</section>
+
+				<section id="ready-products">
+
+					<h3>Product reviews</h3>
+					<table class="table">
+						<thead>
 							<tr>
-								<td>{{ productreview.readyProductId.productId.name }}</td>
-								<td>{{ productreview.title }}</td>
-								<td>{{ productreview.userId }}</td>
-								<td>{{ productreview.rating }}</td>
-								<td>{{ productreview.text }}</td>
-								<td>{{ productreview.date ? productreview.date|date('Y-m-d H:i:s') : '' }}</td>
-								<td>
-									<a href="{{ path('app_review_index', {'readyProductId': productreview.readyProductId}) }}">show</a>
-									<a href="{{ path('app_productreview_delete', {'reviewId': productreview.reviewId}) }}">delete</a>
-								</td>
+								<th>Product</th>
+								<th>Title</th>
+								<th>User</th>
+								<th>Rating</th>
+								<th>Text</th>
+								<th>Date</th>
+								<th>Actions</th>
 							</tr>
-						{% else %}
-							<tr>
-								<td colspan="7">no records found</td>
-							</tr>
-						{% endfor %}
-					</tbody>
-				</table>
-			</section>
+						</thead>
+						<tbody>
+							{% for productreview in productreviews %}
+								<tr>
+									<td>{{ productreview.readyProductId.productId.name }}</td>
+									<td>{{ productreview.title }}</td>
+									<td>{{ productreview.userId }}</td>
+									<td>{{ productreview.rating }}</td>
+									<td>{{ productreview.text }}</td>
+									<td>{{ productreview.date ? productreview.date|date('Y-m-d H:i:s') : '' }}</td>
+									<td>
+										<a href="{{ path('app_review_index', {'readyProductId': productreview.readyProductId}) }}">show</a>
+										<a href="{{ path('app_productreview_delete', {'reviewId': productreview.reviewId}) }}">delete</a>
+									</td>
+								</tr>
+							{% else %}
+								<tr>
+									<td colspan="7">no records found</td>
+								</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+				</section>
 
-		</div>
-		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.bundle.min.js" integrity="sha384-qKXV1j0HvMUeCBQ+QVp7JcfGl760yU08IQ+GpUo5hlbpg51QRiuqHAJz8+BrxE/N" crossorigin="anonymous"></script>
+			</div>
+			<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.bundle.min.js" integrity="sha384-qKXV1j0HvMUeCBQ+QVp7JcfGl760yU08IQ+GpUo5hlbpg51QRiuqHAJz8+BrxE/N" crossorigin="anonymous"></script>
+
+
+			<script>
+				const categorySelect = document.getElementById('category-select');
+categorySelect.addEventListener('change', (event) => {
+const selectedValue = event.target.value;
+if (selectedValue) {
+window.location.href = "{{ path('app_readyproduct__desc_cat_index_admin') }}?category=" + selectedValue;
+}
+});
+			</script>
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.3/umd/popper.min.js"></script>
+		{% endblock %}
 	{% endblock %}
-{% endblock %}

@@ -21,6 +21,7 @@ use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Mailer\Mailer;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mailer\MailerInterface;
@@ -29,7 +30,7 @@ use Twig\Environment;
 use Vonage\Client;
 use Vonage\Client\Credentials\Basic;
 use Vonage\Messages\Channel\SMS\SMSText;
-
+use DateTime;
 #[Route('/user')]
 class UserController extends AbstractController
 
@@ -122,6 +123,7 @@ class UserController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
             $role = $form->get('role')->getData();
             $password = $form->get('password')->getData();
             $hashedPassword = hash('sha256', $password);
@@ -176,7 +178,7 @@ class UserController extends AbstractController
                 $entityManager->flush();
             }
             $this->SendEmail($mailer, $user, $token, 'Verification Token');
-            return $this->redirectToRoute('app_EnableAccount', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_user_EnableAccount', ['userId' => $user->getUserId()], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('user/new.html.twig', [
@@ -255,10 +257,17 @@ class UserController extends AbstractController
         }
     }
     #[Route('/{userId}/Profile', name: 'app_user_Profile', methods: ['GET'])]
-    public function Profile(User $user, ClientRepository $clientRepository, ArtistRepository $artistRepository, AdminRepository $adminRepository): Response
+    public function Profile(User $user,RequestStack $requestStack, ClientRepository $clientRepository, ArtistRepository $artistRepository, AdminRepository $adminRepository): Response
     {
-        $hasAccess = $this->ArtistClientAccess();
+        $date = new DateTime();
 
+        $hasAccess = $this->ArtistClientAccess();
+        $currentUrl = $requestStack->getCurrentRequest()->getUri();
+        $serverIpAddress = '127.0.0.1'; // replace with your server's IP address
+        $pcIpAddress = getHostByName(getHostName());
+        
+        
+        $newUrl = str_replace($serverIpAddress, $pcIpAddress, $currentUrl);
         $client = $clientRepository->findOneBy(['user' => $user]);
         $artist = $artistRepository->findOneBy(['user' => $user]);
         $admin = $adminRepository->findOneBy(['user' => $user]);
@@ -281,21 +290,30 @@ class UserController extends AbstractController
                 'department' => $admin->getDepartment(),
             ];
         }
+        $formatted_date = $date->format('Y-m-d H:i:s');
         if ($hasAccess) {
             if ($role === 'client') {
                 return $this->render('user/Profile.html.twig', [
                     'user' => $user,
                     'clientAttributes' => $clientAttributes ?? null,
+                    'lastloggedin' =>$formatted_date,
+
                 ]);
             } elseif ($role === 'artist') {
                 return $this->render('user/Profile.html.twig', [
                     'user' => $user,
                     'artistAttributes' => $artistAttributes ?? null,
+                    'url' => $newUrl,
+                    'lastloggedin' =>$formatted_date,
+
+
                 ]);
             } elseif ($role === 'admin') {
                 return $this->render('user/Profile.html.twig', [
                     'user' => $user,
                     'adminAttributes' => $adminAttributes ?? null,
+                    'lastloggedin' =>$formatted_date,
+
                 ]);
             }
         } else {
@@ -569,7 +587,6 @@ if($hasAccess){
     #[Route('/{userId}/TokenVerification', name: 'app_user_TokenVerif', methods: ['GET', 'POST'])]
     public function TokenVerification(User $user, EntityManagerInterface $entityManager, Request $request, SessionInterface $session): Response
     {
-        $tries = 3;
 
         $U = new User();
         $form = $this->createForm(TokenVerificationType::class, $U);
@@ -598,7 +615,8 @@ if($hasAccess){
             'user' => $U,
             'userId' => $user->getUserId(),
             'form' => $form,
-
+            'userId'=>$user->getUserId(),
+            'enabled'=>$user->isEnabled(),
         ]);
     }
 
@@ -627,6 +645,7 @@ if($hasAccess){
             'user' => $U,
             'userId' => $user->getUserId(),
             'form' => $form,
+            'userId'=>$user->getUserId(),
 
         ]);
     }
@@ -644,7 +663,6 @@ if($hasAccess){
             $email = $form->get('email')->getData();
 
             $SearchedUser = $userRepository->findOneBy(['email' => $email]);
-
             if ($SearchedUser && $SearchedUser->isEnabled()) {
                 $token = bin2hex(random_bytes(16));
                 $SearchedUser->setToken($token);
@@ -681,8 +699,12 @@ if($hasAccess){
         $message = new SMSText($vpn, 'Vonage APIs', 'Hello this is your verification token' . $code);
         $result = $client->messages()->send($message);
 
-
+if($user->isEnabled()){
         return $this->redirectToRoute('app_user_TokenVerifPwd', ['userId' => $user->getUserId()], Response::HTTP_SEE_OTHER);
+}else{
+    return $this->redirectToRoute('app_user_TokenVerif', ['userId' => $user->getUserId()], Response::HTTP_SEE_OTHER);
+   
+}
     }
     private function AdminAccess()
     {
@@ -692,7 +714,7 @@ if($hasAccess){
             return false; // return a value to indicate that access is not allowed
         }
     }
-    /* private function ClientAccess()
+     private function ClientAccess()
     {
         if ($this->connectedUser->getRole() === "client") {
             return true; // return a value to indicate that access is allowed
@@ -707,7 +729,7 @@ if($hasAccess){
         } else {
             return false; // return a value to indicate that access is not allowed
         }
-    }*/
+    }
     private function ArtistClientAccess()
     {
         if ($this->connectedUser->getRole() == "artist" || $this->connectedUser->getRole() == "client") {
