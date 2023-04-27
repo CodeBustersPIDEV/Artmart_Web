@@ -2,13 +2,17 @@
 
 namespace App\Controller;
 
-use App\Entity\Order;
 use App\Entity\Orderstatus;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use App\Form\OrderType;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use App\Entity\Order;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Constraints\DateTime;
 
@@ -26,6 +30,46 @@ class OrderController extends AbstractController
         return $this->render('order/index.html.twig', [
             'orders' => $orders,
         ]);
+    }
+    
+    #[Route('export/excel', name: 'app_order_export_el', methods: ['GET','POST'])]
+    public function export(EntityManagerInterface $entityManager,Request $request): Response
+    { 
+        $session = $request->getSession();
+        $queryBuilder = $entityManager
+        ->getRepository(Order::class)
+        ->createQueryBuilder('o')
+        ->where('o.userid = :userid')
+        ->setParameter('userid', $session->get('user_id'));
+        
+        $orders = $queryBuilder->getQuery()->getResult();
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $sheet->setCellValue('A1', 'ID');
+        $sheet->setCellValue('B1', 'Customer Name');
+        $sheet->setCellValue('C1', 'Total Price');
+        $row = 2;
+
+        foreach ($orders as $order) {
+            $sheet->setCellValue('A'.$row, $order->getOrderId());
+            $sheet->setCellValue('B'.$row, $order->getUserid()->getName()); // Assuming your User entity has a "name" property
+            $sheet->setCellValue('C'.$row, $order->getTotalcost());
+            $row++;
+        }
+        $writer = new Xlsx($spreadsheet);
+        $filename = 'orders_export.xlsx';
+        $writer->save($filename);
+    
+        $response = new BinaryFileResponse($filename);
+        $disposition = $response->headers->makeDisposition(
+            ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+            $filename
+        );
+        $response->headers->set('Content-Disposition', $disposition);
+    
+        return $response;
     }
     #[Route('/myOrders', name: 'my_order_index', methods: ['GET'])]
     public function myIndexOrder(EntityManagerInterface $entityManager,Request $request): Response
@@ -140,5 +184,6 @@ class OrderController extends AbstractController
         return $this->render('order/orderGui.html.twig', [
         ]);
     }
+
 
 }

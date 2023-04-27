@@ -4,3 +4,7 @@
 app_customproduct_new:
   path: /customproducts/new
   controller: App\Controller\CustomproductController::new
+app_order_export_el:
+  path: "/export/excel"
+  controller: App\Controller\OrderController::export
+  methods: ["GET"]
