@@ -124,14 +124,21 @@ class CustomproductController extends AbstractController
     
 
     #[Route('/admin', name: 'app_customproduct_admin', methods: ['GET'])]
-    public function adminindex(FlashyNotifier $flashy,Request $request, EntityManagerInterface $entityManager): Response
+    public function adminindex(PaginatorInterface $paginator,FlashyNotifier $flashy,Request $request, EntityManagerInterface $entityManager): Response
     {
         $flashy->info('Welcome to Custom Products Admin Panel');
         $searchTerm = $request->query->get('q');
         $order = $request->query->get('order');
         $categories = $entityManager
             ->getRepository(Categories::class)
-            ->findAll();
+            ->createQueryBuilder('e');
+
+            $pagination = $paginator->paginate(
+                $categories->getQuery(),
+                $request->query->getInt('page', 1),
+                4
+            );
+
         $applies = $entityManager
             ->getRepository(Apply::class)
             ->findAll();
@@ -141,11 +148,14 @@ class CustomproductController extends AbstractController
             ->innerJoin('c.product', 'p');
 
 
-        if ($order === 'name') {
-            $queryBuilder->orderBy('p.name', 'ASC');
-        } elseif ($order === 'weight') {
-            $queryBuilder->orderBy('p.weight', 'ASC');
-        }
+            $direction = $request->query->get('direction', 'asc');
+
+            if ($order === 'name') {
+                $queryBuilder->orderBy('p.name', $direction);
+            } elseif ($order === 'weight') {
+                $queryBuilder->orderBy('p.weight', $direction);
+            }
+            
 
         if ($searchTerm) {
             $queryBuilder->where('p.name LIKE :searchTerm')
@@ -188,7 +198,7 @@ class CustomproductController extends AbstractController
             'customproducts' => $customproducts,
             'searchTerm' => $searchTerm,
             'order' => $order,
-            'categories' => $categories,
+            'categories' => $pagination,
             'applies' => $applies,
             'weightData' => $weightData,
         ]);
@@ -391,8 +401,15 @@ class CustomproductController extends AbstractController
             'product' => $product,
         ]);
     }
-
-
+    #[Route('draw/', name: 'draw', methods: ['GET'])]
+    public function draw(): Response
+    {
+        $customproduct = new Customproduct(); 
+    
+        return $this->render('customproduct/draw.html.twig', [
+            'customproduct' => $customproduct,
+        ]);
+    }
     #[Route('s/{customProductId}', name: 'app_customproduct_showartist', methods: ['GET'])]
     public function showartist(Customproduct $customproduct): Response
     {
