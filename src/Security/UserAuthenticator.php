@@ -79,7 +79,9 @@ class UserAuthenticator extends AbstractLoginFormAuthenticator
             $session = $request->getSession();
             $session->set('user_id', $user->getUserId());
             $session->set('user_role', $user->getRole());
-
+            $user->setLastLogin(new \DateTime());
+            $this->entityManager->persist($user);
+            $this->entityManager->flush();
             if ($user->getRole()=='client'||$user->getRole()=='artist'){
             return new RedirectResponse($this->urlGenerator->generate('app_home'));
         }elseif($user->getRole()=='admin')

@@ -30,7 +30,7 @@ use Twig\Environment;
 use Vonage\Client;
 use Vonage\Client\Credentials\Basic;
 use Vonage\Messages\Channel\SMS\SMSText;
-
+use DateTime;
 #[Route('/user')]
 class UserController extends AbstractController
 
@@ -258,13 +258,15 @@ class UserController extends AbstractController
     #[Route('/{userId}/Profile', name: 'app_user_Profile', methods: ['GET'])]
     public function Profile(User $user,RequestStack $requestStack, ClientRepository $clientRepository, ArtistRepository $artistRepository, AdminRepository $adminRepository): Response
     {
-        $hasAccess = $this->ArtistClientAccess();
+        $date = new DateTime();
 
+        $hasAccess = $this->ArtistClientAccess();
         $currentUrl = $requestStack->getCurrentRequest()->getUri();
         $serverIpAddress = '127.0.0.1'; // replace with your server's IP address
         $pcIpAddress = getHostByName(getHostName());
+        
+        
         $newUrl = str_replace($serverIpAddress, $pcIpAddress, $currentUrl);
-
         $client = $clientRepository->findOneBy(['user' => $user]);
         $artist = $artistRepository->findOneBy(['user' => $user]);
         $admin = $adminRepository->findOneBy(['user' => $user]);
@@ -287,11 +289,13 @@ class UserController extends AbstractController
                 'department' => $admin->getDepartment(),
             ];
         }
+        $formatted_date = $date->format('Y-m-d H:i:s');
         if ($hasAccess) {
             if ($role === 'client') {
                 return $this->render('user/Profile.html.twig', [
                     'user' => $user,
                     'clientAttributes' => $clientAttributes ?? null,
+                    'lastloggedin' =>$formatted_date,
 
                 ]);
             } elseif ($role === 'artist') {
@@ -299,12 +303,16 @@ class UserController extends AbstractController
                     'user' => $user,
                     'artistAttributes' => $artistAttributes ?? null,
                     'url' => $newUrl,
+                    'lastloggedin' =>$formatted_date,
+
 
                 ]);
             } elseif ($role === 'admin') {
                 return $this->render('user/Profile.html.twig', [
                     'user' => $user,
                     'adminAttributes' => $adminAttributes ?? null,
+                    'lastloggedin' =>$formatted_date,
+
                 ]);
             }
         } else {
