@@ -123,6 +123,7 @@ class UserController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
             $role = $form->get('role')->getData();
             $password = $form->get('password')->getData();
             $hashedPassword = hash('sha256', $password);
@@ -177,7 +178,7 @@ class UserController extends AbstractController
                 $entityManager->flush();
             }
             $this->SendEmail($mailer, $user, $token, 'Verification Token');
-            return $this->redirectToRoute('app_EnableAccount', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_user_EnableAccount', ['userId' => $user->getUserId()], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('user/new.html.twig', [
@@ -586,7 +587,6 @@ if($hasAccess){
     #[Route('/{userId}/TokenVerification', name: 'app_user_TokenVerif', methods: ['GET', 'POST'])]
     public function TokenVerification(User $user, EntityManagerInterface $entityManager, Request $request, SessionInterface $session): Response
     {
-        $tries = 3;
 
         $U = new User();
         $form = $this->createForm(TokenVerificationType::class, $U);
@@ -615,7 +615,8 @@ if($hasAccess){
             'user' => $U,
             'userId' => $user->getUserId(),
             'form' => $form,
-
+            'userId'=>$user->getUserId(),
+            'enabled'=>$user->isEnabled(),
         ]);
     }
 
@@ -644,6 +645,7 @@ if($hasAccess){
             'user' => $U,
             'userId' => $user->getUserId(),
             'form' => $form,
+            'userId'=>$user->getUserId(),
 
         ]);
     }
@@ -661,7 +663,6 @@ if($hasAccess){
             $email = $form->get('email')->getData();
 
             $SearchedUser = $userRepository->findOneBy(['email' => $email]);
-
             if ($SearchedUser && $SearchedUser->isEnabled()) {
                 $token = bin2hex(random_bytes(16));
                 $SearchedUser->setToken($token);
@@ -698,8 +699,12 @@ if($hasAccess){
         $message = new SMSText($vpn, 'Vonage APIs', 'Hello this is your verification token' . $code);
         $result = $client->messages()->send($message);
 
-
+if($user->isEnabled()){
         return $this->redirectToRoute('app_user_TokenVerifPwd', ['userId' => $user->getUserId()], Response::HTTP_SEE_OTHER);
+}else{
+    return $this->redirectToRoute('app_user_TokenVerif', ['userId' => $user->getUserId()], Response::HTTP_SEE_OTHER);
+   
+}
     }
     private function AdminAccess()
     {

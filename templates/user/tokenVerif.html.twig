@@ -73,10 +73,19 @@
          <div class="button" style="text-align: center">
                       <button type="submit" class="btn btn-outline-primary">{{ button_label|default('Verify') }}</button>
             </div>
+          <a class="btn btn-outline-primary mr-2" href="{{ path('app_user_SMSVerif', {'userId': userId}) }}">Send SMS</a>
+          {% if user.isEnabled()  %}
+        <a class="btn btn-outline-primary mr-2" href="{{ path('app_user_ForgetPwd', {'userId': userId}) }}">Resend Email</a>
+      {% else %}
+    <a class="btn btn-outline-primary mr-2" href="{{ path('app_user_EnableAccount', {'userId': userId}) }}">Resend Email</a>
+  {% endif %}
+
+
           {{ form_end(form) }}
         </div>
       </div>
     </div>
   </section>
+
   <br><br><br><br><br><br><br><br><br><br><br>
 {% endblock %}
