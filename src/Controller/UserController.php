@@ -692,7 +692,7 @@ if($hasAccess){
             return false; // return a value to indicate that access is not allowed
         }
     }
-    /* private function ClientAccess()
+     private function ClientAccess()
     {
         if ($this->connectedUser->getRole() === "client") {
             return true; // return a value to indicate that access is allowed
@@ -707,7 +707,7 @@ if($hasAccess){
         } else {
             return false; // return a value to indicate that access is not allowed
         }
-    }*/
+    }
     private function ArtistClientAccess()
     {
         if ($this->connectedUser->getRole() == "artist" || $this->connectedUser->getRole() == "client") {

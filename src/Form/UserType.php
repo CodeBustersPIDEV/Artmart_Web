@@ -3,20 +3,24 @@
 namespace App\Form;
 
 use App\Entity\User;
-use App\Entity\Client;
-use App\Entity\Artist;
 use App\Entity\Admin;
+use App\Entity\Artist;
+use App\Entity\Clients;
+use App\Form\ClientType;
+use App\Validator\NotFutureDate;
 use Symfony\Component\Form\AbstractType;
+use Karser\Recaptcha3Bundle\Form\Recaptcha3Type;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
-use Symfony\Component\Form\Extension\Core\Type\EmailType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
-use App\Validator\NotFutureDate;
-use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
+use Karser\Recaptcha3Bundle\Validator\Constraints\Recaptcha3;
+
 
 class UserType extends AbstractType
 {
@@ -76,7 +80,7 @@ class UserType extends AbstractType
         if ($options['is_edit']) {
             if (isset($clientAttributes['nbrOrders']) && $clientAttributes['nbrOrders'] !== null) {
                 $builder->add('client', ClientType::class, [
-                    'data' => new Client(),
+                    'data' => new Clients(),
                     'mapped' => false,
                     'attr' => [
                         'class' => 'client-form',

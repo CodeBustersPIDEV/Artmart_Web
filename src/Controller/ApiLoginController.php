@@ -14,6 +14,12 @@ class ApiLoginController extends AbstractController
     #[Route('/api/login', name: 'app_api_login')]
     public function index(#[CurrentUser] ?User $user, JWTTokenManagerInterface $jwtManager): Response
       {
+        if ($this->isGranted('IS_AUTHENTICATED_FULLY')) {
+            return $this->json([
+                'message' => 'already authenticated',
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
          if (null === $user) {
              return $this->json([
                  'message' => 'missing credentials',

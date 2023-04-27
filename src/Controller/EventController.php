@@ -14,10 +14,23 @@ use Symfony\Component\Routing\Annotation\Route;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use App\Repository\UserRepository;   
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 #[Route('/event')]
 class EventController extends AbstractController
-{
+{ private User $connectedUser;
+
+   
+    public function __construct(SessionInterface $session, UserRepository $userRepository)
+    {
+        if ($session != null) {
+            $connectedUserID = $session->get('user_id');
+            if (is_int($connectedUserID)) {
+                $this->connectedUser = $userRepository->find((int) $connectedUserID);
+            }
+        }
+    }
     public function uploadImage(UploadedFile $file, Event $event): void
     {
         $destinationFilePath = $this->getParameter ('destinationPath');
@@ -338,5 +351,37 @@ class EventController extends AbstractController
         }
 
         return $this->redirectToRoute('app_event_index_artist', [], Response::HTTP_SEE_OTHER);
+    }
+    private function AdminAccess()
+    {
+        if ($this->connectedUser->getRole() == "admin") {
+            return true; // return a value to indicate that access is allowed
+        } else {
+            return false; // return a value to indicate that access is not allowed
+        }
+    }
+     private function ClientAccess()
+    {
+        if ($this->connectedUser->getRole() === "client") {
+            return true; // return a value to indicate that access is allowed
+        } else {
+            return false; // return a value to indicate that access is not allowed
+        }
+    } 
+    private function ArtistAccess()
+    {
+        if ($this->connectedUser->getRole() === "artist") {
+           return true; // return a value to indicate that access is allowed
+        } else {
+            return false; // return a value to indicate that access is not allowed
+        }
+    }
+    private function ArtistClientAccess()
+    {
+        if ($this->connectedUser->getRole() == "artist" || $this->connectedUser->getRole() == "client") {
+            return true; // return a value to indicate that access is allowed
+        } else {
+            return false; // return a value to indicate that access is not allowed
+        }
     }
 }

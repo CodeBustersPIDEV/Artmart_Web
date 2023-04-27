@@ -581,4 +581,36 @@ class BlogsController extends AbstractController
 
         return $this->redirectToRoute('app_blogs_index', [], Response::HTTP_SEE_OTHER);
     }
+    private function AdminAccess()
+    {
+        if ($this->connectedUser->getRole() == "admin") {
+            return true; // return a value to indicate that access is allowed
+        } else {
+            return false; // return a value to indicate that access is not allowed
+        }
+    }
+     private function ClientAccess()
+    {
+        if ($this->connectedUser->getRole() === "client") {
+            return true; // return a value to indicate that access is allowed
+        } else {
+            return false; // return a value to indicate that access is not allowed
+        }
+    } 
+    private function ArtistAccess()
+    {
+        if ($this->connectedUser->getRole() === "artist") {
+           return true; // return a value to indicate that access is allowed
+        } else {
+            return false; // return a value to indicate that access is not allowed
+        }
+    }
+    private function ArtistClientAccess()
+    {
+        if ($this->connectedUser->getRole() == "artist" || $this->connectedUser->getRole() == "client") {
+            return true; // return a value to indicate that access is allowed
+        } else {
+            return false; // return a value to indicate that access is not allowed
+        }
+    }
 }

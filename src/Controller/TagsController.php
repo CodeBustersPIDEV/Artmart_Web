@@ -3,18 +3,31 @@
 namespace App\Controller;
 
 use App\Entity\Tags;
+use App\Entity\User;
 use App\Form\TagsType;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 #[Route('/tags')]
 class TagsController extends AbstractController
-{
+{ 
+    private User $connectedUser;
+    public function __construct(SessionInterface $session, UserRepository $userRepository)
+    {
+        if ($session != null) {
+            $connectedUserID = $session->get('user_id');
+            if (is_int($connectedUserID)) {
+                $this->connectedUser = $userRepository->find((int) $connectedUserID);
+            }
+        }
+    }
     #[Route('/', name: 'app_tags_index', methods: ['GET'])]
-    public function index(EntityManagerInterface $entityManager): Response
+    public function index(EntityManagerInterface $entityManager,Request $request,UserRepository $userRepository): Response
     {
         $tags = $entityManager
             ->getRepository(Tags::class)
@@ -23,6 +36,7 @@ class TagsController extends AbstractController
         return $this->render('tags/index.html.twig', [
             'tags' => $tags,
         ]);
+       
     }
 
     #[Route('/new', name: 'app_tags_new', methods: ['GET', 'POST'])]

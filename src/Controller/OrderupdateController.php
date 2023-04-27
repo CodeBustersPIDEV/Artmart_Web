@@ -9,10 +9,26 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Entity\User;
+use App\Repository\UserRepository;   
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+
 
 #[Route('/orderupdate')]
 class OrderupdateController extends AbstractController
 {
+    private User $connectedUser;
+
+   
+    public function __construct(SessionInterface $session, UserRepository $userRepository)
+    {
+        if ($session != null) {
+            $connectedUserID = $session->get('user_id');
+            if (is_int($connectedUserID)) {
+                $this->connectedUser = $userRepository->find((int) $connectedUserID);
+            }
+        }
+    }
     #[Route('/', name: 'app_orderupdate_index', methods: ['GET'])]
     public function index(EntityManagerInterface $entityManager): Response
     {
