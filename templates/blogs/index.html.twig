@@ -110,6 +110,12 @@ as base %}
 	class="d-flex justify-content-center"
 >
 	<div class="form-group">
+		<label  for="criteria">Search by:</label>
+    <select id="criteria" name="criteria">
+      <option value="Title" {% if app.request.query.get('criteria') == 'Title' %}selected{% endif %}>Title</option>
+      <option value="Category" {% if app.request.query.get('criteria') == 'Category' %}selected{% endif %}>Category</option>
+      <option value="Tag" {% if app.request.query.get('criteria') == 'Tag' %}selected{% endif %}>Tag</option>
+    </select>
 		<input
 			type="text"
 			id="search-term"
