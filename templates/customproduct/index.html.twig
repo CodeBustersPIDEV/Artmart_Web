@@ -294,8 +294,9 @@
 <a href="{{ path('app_apply_clientdone') }}" class="link-style">Check Progress</a>
 {% if customproducts.getTotalItemCount() > 0 %}
 <p  style=" color: #fff;">Total weight of displayed Products: {{ totalWeight }}</p>
-<a href="{{ path('app_customproduct_index', {'order': 'name'}) }}" class="orderby-link">Order by Name</a>
-<a href="{{ path('app_customproduct_index', {'order': 'weight'}) }}" class="orderby-link">Order by Weight</a>
+
+<a href="{{ path('app_customproduct_index', {'order': 'name', 'direction': (app.request.get('direction') == 'asc' ? 'desc' : 'asc')}) }}" class="orderby-link">Order by Name {{ app.request.get('direction') == 'asc' ? '&#9660;' : '&#9650;' }}</a>
+<a href="{{ path('app_customproduct_index', {'order': 'weight', 'direction': (app.request.get('direction') == 'asc' ? 'desc' : 'asc')}) }}" class="orderby-link">Order by Weight {{ app.request.get('direction') == 'asc' ? '&#9660;' : '&#9650;' }}</a>
      
   
     
