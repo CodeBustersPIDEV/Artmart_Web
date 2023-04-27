@@ -53,24 +53,6 @@ class ProductreviewController extends AbstractController
         ]);
     }
 
-    #[Route('/{reviewId}/edit', name: 'app_productreview_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Productreview $productreview, EntityManagerInterface $entityManager): Response
-    {
-        $form = $this->createForm(ProductreviewType::class, $productreview);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_productreview_index', [], Response::HTTP_SEE_OTHER);
-        }
-
-        return $this->renderForm('productreview/edit.html.twig', [
-            'productreview' => $productreview,
-            'form' => $form,
-        ]);
-    }
-
     #[Route('/{reviewId}', name: 'app_productreview_delete', methods: ['POST'])]
     public function delete(Request $request, Productreview $productreview, EntityManagerInterface $entityManager): Response
     {
