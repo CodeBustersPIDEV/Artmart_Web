@@ -174,7 +174,6 @@
 				<a href="{{ path('app_wishlist_index') }}">Shopping Cart</a>
 			{% endif %}
 			{% if app.session.get('user_role') == "artist" %}
-				<a href="{{ path('app_readyproduct_index') }}">Products</a>
 				<a href="{{ path('app_customproduct_artist') }}">Custom Products</a>
 			{% endif %}
 			{% if app.session.get('user_role') == "admin" %}
