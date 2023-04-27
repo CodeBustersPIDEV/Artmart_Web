@@ -10,8 +10,10 @@ use App\Entity\HasBlogCategory;
 use App\Entity\Media;
 use App\Entity\Tags;
 use App\Entity\User;
+
 use App\Form\BlogsType;
 use App\Form\CommentsType;
+
 use App\Repository\BlogcategoriesRepository;
 use App\Repository\BlogsRepository;
 use App\Repository\CommentsRepository;
@@ -20,8 +22,9 @@ use App\Repository\HasTagRepository;
 use App\Repository\MediaRepository;
 use App\Repository\TagsRepository;
 use App\Repository\UserRepository;
-use Knp\Component\Pager\PaginatorInterface;
+
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -29,13 +32,13 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Endroid\QrCode\Builder\BuilderInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Facebook\Facebook;
 use Facebook\Exceptions\FacebookResponseException;
 use Facebook\Exceptions\FacebookSDKException;
+use Endroid\QrCode\Builder\BuilderInterface;
 
 #[Route('/blogs')]
 class BlogsController extends AbstractController
@@ -68,11 +71,6 @@ class BlogsController extends AbstractController
                 $this->connectedUser = $userRepository->find((int) $connectedUserID);
             }
         }
-        // $this->result = $customQrCodeBuilder
-        //     ->size(400)
-        //     ->margin(20)
-        //     ->data($url)
-        //     ->build();
     }
 
     public function uploadImage(UploadedFile $file, Media $media, Blogs $addedBlog, $edit): void
@@ -168,9 +166,48 @@ class BlogsController extends AbstractController
     {
         $blogs = $blogsRepository->findAll();
         $searchTerm = $request->query->get('searchTerm');
+        // $criteria = $request->query->get('criteria');
+
         if ($searchTerm) {
-            $blogs = $blogsRepository->findByTerm($searchTerm);
+            $criteria = $request->query->get('criteria');
+            if ($criteria === 'Title') {
+                $blogs = $blogsRepository->findByTerm($searchTerm);
+                $pages = $paginator->paginate(
+                    $blogs, // Requête contenant les données à paginer (ici nos articles)
+                    $request->query->getInt('page', 1), // Numéro de la page en cours, passé dans l'URL, 1 si aucune page
+                    3 // Nombre de résultats par page
+                );
+            } elseif ($criteria === 'Category') {
+                $categories = $this->blogCategoryRepository->findByTerm($searchTerm);
+                $blogs = [];
+                foreach ($categories as $cat) {
+                    $blogsPerCat =  $this->hasBlogCategoryRepository->findAllBlogsByCatID($cat);
+                    foreach ($blogsPerCat as $blg) {
+                        array_push($blogs, $blg->getBlog());
+                    }
+                }
+                $pages = $paginator->paginate(
+                    $blogs, // Requête contenant les données à paginer (ici nos articles)
+                    $request->query->getInt('page', 1), // Numéro de la page en cours, passé dans l'URL, 1 si aucune page
+                    3 // Nombre de résultats par page
+                );
+            } elseif ($criteria === 'Tag') {
+                $tags = $this->tagsRepository->findByTerm($searchTerm);
+                $blogs = [];
+                foreach ($tags as $tag) {
+                    $blogsPerTag =  $this->hasTagRepository->findAllBlogsByTagID($tag);
+                    foreach ($blogsPerTag as $blg) {
+                        array_push($blogs, $blg->getBlog());
+                    }
+                }
+                $pages = $paginator->paginate(
+                    $blogs, // Requête contenant les données à paginer (ici nos articles)
+                    $request->query->getInt('page', 1), // Numéro de la page en cours, passé dans l'URL, 1 si aucune page
+                    3 // Nombre de résultats par page
+                );
+            }
         }
+
 
         $pages = $paginator->paginate(
             $blogs, // Requête contenant les données à paginer (ici nos articles)
