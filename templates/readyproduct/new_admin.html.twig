@@ -1,19 +1,31 @@
-{% extends 'baseF.html.twig' %}
+{% extends 'baseR.html.twig' %}
 {% block content %}
-	<a href="{{ path('app_readyproduct_index') }}">
+	<br><br>
+	<a href="{{ path('app_readyproduct_admin') }}">
 		<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-return-left" viewbox="0 0 16 16">
 			<path fill-rule="evenodd" d="M14.5 1.5a.5.5 0 0 1 .5.5v4.8a2.5 2.5 0 0 1-2.5 2.5H2.707l3.347 3.346a.5.5 0 0 1-.708.708l-4.2-4.2a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 8.3H12.5A1.5 1.5 0 0 0 14 6.8V2a.5.5 0 0 1 .5-.5z"/>
 		</svg>
 		back to list</a>
 	<br><br>
 	{% block title %}
-		<h4>
-			<em>Add</em>
-			Product</h4>
+		
 	{% endblock %}
 	{% block stylesheets %}
 		<style>
 			/* Add your styles here */
+			.h4 {
+				color: #ec6090;
+				font-size: 34px;
+				text-decoration: none;
+				margin-bottom: 30px;
+				margin-left: 20px;
+			}
+
+			.h4 em {
+				color: #fff;
+				font-style: normal;
+				text-decoration: underline;
+			}
 			label {
 				display: block;
 				margin-bottom: 10px;
@@ -86,18 +98,23 @@
 	{% block body %}
 
 		<div class="form-container">
+			<div style="margin-left: 40%; color: #f2f2f2;">
+			<h4><strong>Add Product</strong></h4>
+			<br>
+		</div>
 			{{ form_start(form,{ 'attr' :{ 'novalidate':'novalidate'}}) }}
 			<div class="row">
 				<div class="col-md-6">
+					{{ form_row(form.userId) }}
 					{{ form_row(form.productId.name) }}
 					{{ form_row(form.productId.category) }}
 					{{ form_row(form.productId.description) }}
-					{{ form_row(form.price) }}
 				</div>
 				<div class="col-md-6">
 					{{ form_row(form.productId.dimensions) }}
 					{{ form_row(form.productId.weight) }}
 					{{ form_row(form.productId.material) }}
+					{{ form_row(form.price) }}
 					{{ form_label(form.productId.image, 'Product Image') }}
 					{{ form_widget(form.productId.image, {'attr': {'style': 'display:none;'}}) }}
 					{% if readyproduct.productId.image is defined %}

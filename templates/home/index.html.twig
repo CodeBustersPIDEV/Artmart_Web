@@ -91,12 +91,9 @@
 					{% if customproducts|length > i %}
 						{% set customproduct = customproducts[i] %}
 						<div class="custom-card">
-							<img src="{{ asset('imagescustom/' ~ customproduct.productId.image) }}" alt="{{ customproduct.productId.name }} image"/>
+						<img src="{{ customproduct.productId.image }}" alt="{{ customproduct.productId.name }} image"/>
 							<h2>{{ customproduct.productId.name }}</h2>
 							<p>{{ customproduct.productId.description }}</p>
-
-							<a href="{{ path('app_readyproduct_show', {'readyProductId': customproduct.readyProductId}) }}">show</a>
-
 						</div>
 					{% endif %}
 				</div>
