@@ -2,6 +2,7 @@
 
 namespace App\Twig;
 
+use App\Entity\Media;
 use App\Entity\User;
 use App\Repository\HasBlogCategoryRepository;
 use App\Repository\HasTagRepository;
@@ -35,6 +36,7 @@ class AppExtension extends AbstractExtension
   {
     return [
       new TwigFunction('getBlogsMedia', [$this, 'getBlogsMedia']),
+      new TwigFunction('getRemoteBlogsMedia', [$this, 'getRemoteBlogsMedia']),
       new TwigFunction('getNbBlogsPerTag', [$this, 'getNbBlogsPerTag']),
       new TwigFunction('getNbBlogsPerCat', [$this, 'getNbBlogsPerCat']),
       new TwigFunction('returnConnectedUser', [$this, 'returnConnectedUser']),
@@ -44,6 +46,12 @@ class AppExtension extends AbstractExtension
   public function getBlogsMedia(int $blog_id)
   {
     return $this->MediaRepository->findOneMediaByBlogID($blog_id);
+  }
+
+  public function getRemoteBlogsMedia(string $blogMediaPath)
+  {
+    $pcIpAddress = getHostByName(getHostName());
+    return str_replace('localhost', $pcIpAddress, $blogMediaPath);
   }
   public function getNbBlogsPerTag(int $tag_id)
   {
@@ -59,6 +67,6 @@ class AppExtension extends AbstractExtension
 
   public function returnConnectedUser()
   {
-    return $this->connectedUser??null;
+    return $this->connectedUser ?? null;
   }
 }

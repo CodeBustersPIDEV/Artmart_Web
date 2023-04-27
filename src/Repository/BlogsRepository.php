@@ -134,4 +134,13 @@ class BlogsRepository extends ServiceEntityRepository
       ->getQuery()
       ->getResult();
   }
+
+  public function findAllByUser($author): array
+  {
+    return $this->createQueryBuilder('b')
+      ->andWhere('b.author = :val')
+      ->setParameter('val', $author)
+      ->getQuery()
+      ->getResult();
+  }
 }

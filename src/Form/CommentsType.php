@@ -9,6 +9,8 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use blackknight467\StarRatingBundle\Form\RatingType;
+
 
 class CommentsType extends AbstractType
 {
@@ -25,17 +27,17 @@ class CommentsType extends AbstractType
     {
         $builder
             ->add('content')
-            ->add('rating')
-            // ->add('author', EntityType::class, [
-            //     'class' => User::class,
-            //     'choices' => $this->UserRepository->findAll(),
-            //     'choice_label' => 'name',
-            //     'placeholder' => 'Choose an option',
-            //     'choice_attr' => function ($choice, $key, $value) {
-            //         return ['style' => 'color:black;'];
-            //     }
-            // ])
-        ;
+            ->add('rating');
+        // ->add('author', EntityType::class, [
+        //     'class' => User::class,
+        //     'choices' => $this->UserRepository->findAll(),
+        //     'choice_label' => 'name',
+        //     'placeholder' => 'Choose an option',
+        //     'choice_attr' => function ($choice, $key, $value) {
+        //         return ['style' => 'color:black;'];
+        //     }
+        // ])
+
     }
 
     public function configureOptions(OptionsResolver $resolver): void

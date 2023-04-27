@@ -10,8 +10,10 @@ use App\Entity\HasBlogCategory;
 use App\Entity\Media;
 use App\Entity\Tags;
 use App\Entity\User;
+
 use App\Form\BlogsType;
 use App\Form\CommentsType;
+
 use App\Repository\BlogcategoriesRepository;
 use App\Repository\BlogsRepository;
 use App\Repository\CommentsRepository;
@@ -20,8 +22,9 @@ use App\Repository\HasTagRepository;
 use App\Repository\MediaRepository;
 use App\Repository\TagsRepository;
 use App\Repository\UserRepository;
-use Knp\Component\Pager\PaginatorInterface;
+
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -29,7 +32,13 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
-
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Facebook\Facebook;
+use Facebook\Exceptions\FacebookResponseException;
+use Facebook\Exceptions\FacebookSDKException;
+use Endroid\QrCode\Builder\BuilderInterface;
 
 #[Route('/blogs')]
 class BlogsController extends AbstractController
@@ -43,9 +52,10 @@ class BlogsController extends AbstractController
     private HasTagRepository $hasTagRepository;
     private CommentsRepository $commentsRepository;
     private User $connectedUser;
+    private $result;
 
 
-    public function __construct(Filesystem $filesystem, SessionInterface $session, UserRepository $userRepository, BlogsRepository $blogsRepository, MediaRepository $mediaRepository, BlogcategoriesRepository $blogCategoryRepository, HasBlogCategoryRepository $hasBlogCategoryRepository, TagsRepository $tagsRepository, HasTagRepository $hasTagRepository, CommentsRepository $commentsRepository)
+    public function __construct(BuilderInterface $customQrCodeBuilder, Filesystem $filesystem, SessionInterface $session, UserRepository $userRepository, BlogsRepository $blogsRepository, MediaRepository $mediaRepository, BlogcategoriesRepository $blogCategoryRepository, HasBlogCategoryRepository $hasBlogCategoryRepository, TagsRepository $tagsRepository, HasTagRepository $hasTagRepository, CommentsRepository $commentsRepository)
     {
         $this->filesystem = $filesystem;
         $this->blogsRepository = $blogsRepository;
@@ -156,6 +166,66 @@ class BlogsController extends AbstractController
     {
         $blogs = $blogsRepository->findAll();
         $searchTerm = $request->query->get('searchTerm');
+        // $criteria = $request->query->get('criteria');
+
+        if ($searchTerm) {
+            $criteria = $request->query->get('criteria');
+            if ($criteria === 'Title') {
+                $blogs = $blogsRepository->findByTerm($searchTerm);
+                $pages = $paginator->paginate(
+                    $blogs, // Requête contenant les données à paginer (ici nos articles)
+                    $request->query->getInt('page', 1), // Numéro de la page en cours, passé dans l'URL, 1 si aucune page
+                    3 // Nombre de résultats par page
+                );
+            } elseif ($criteria === 'Category') {
+                $categories = $this->blogCategoryRepository->findByTerm($searchTerm);
+                $blogs = [];
+                foreach ($categories as $cat) {
+                    $blogsPerCat =  $this->hasBlogCategoryRepository->findAllBlogsByCatID($cat);
+                    foreach ($blogsPerCat as $blg) {
+                        array_push($blogs, $blg->getBlog());
+                    }
+                }
+                $pages = $paginator->paginate(
+                    $blogs, // Requête contenant les données à paginer (ici nos articles)
+                    $request->query->getInt('page', 1), // Numéro de la page en cours, passé dans l'URL, 1 si aucune page
+                    3 // Nombre de résultats par page
+                );
+            } elseif ($criteria === 'Tag') {
+                $tags = $this->tagsRepository->findByTerm($searchTerm);
+                $blogs = [];
+                foreach ($tags as $tag) {
+                    $blogsPerTag =  $this->hasTagRepository->findAllBlogsByTagID($tag);
+                    foreach ($blogsPerTag as $blg) {
+                        array_push($blogs, $blg->getBlog());
+                    }
+                }
+                $pages = $paginator->paginate(
+                    $blogs, // Requête contenant les données à paginer (ici nos articles)
+                    $request->query->getInt('page', 1), // Numéro de la page en cours, passé dans l'URL, 1 si aucune page
+                    3 // Nombre de résultats par page
+                );
+            }
+        }
+
+
+        $pages = $paginator->paginate(
+            $blogs, // Requête contenant les données à paginer (ici nos articles)
+            $request->query->getInt('page', 1), // Numéro de la page en cours, passé dans l'URL, 1 si aucune page
+            3 // Nombre de résultats par page
+        );
+
+        return $this->render('blogs/index.html.twig', [
+            'blogs' => $pages,
+            'searchTerm' => $searchTerm
+        ]);
+    }
+
+    #[Route('/BlogsPerUser/{User_ID}', name: 'app_blogsByUser_index', methods: ['GET'])]
+    public function indexBlogByUser(BlogsRepository $blogsRepository, PaginatorInterface $paginator, Request $request): Response
+    {
+        $blogs = $blogsRepository->findAllByUser($this->connectedUser);
+        $searchTerm = $request->query->get('searchTerm');
         if ($searchTerm) {
             $blogs = $blogsRepository->findByTerm($searchTerm);
         }
@@ -172,6 +242,35 @@ class BlogsController extends AbstractController
         ]);
     }
     //////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////Sharing Functions///////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public function shareOnFacebook(Request $request)
+    {
+        $fb = new Facebook([
+            'app_id' => $_ENV['FB_APP_ID'],
+            'app_secret' => $_ENV['FB_APP_SECRET'],
+            'default_graph_version' => 'v3.3',
+        ]);
+
+        $linkData = [
+            'link' => $request->request->get('link'),
+            'message' => $request->request->get('message')
+        ];
+
+        try {
+            $response = $fb->post('/me/feed', $linkData, $_ENV['FB_APP_TOKEN']);
+        } catch (FacebookResponseException  $e) {
+            // Handle error
+        } catch (FacebookSDKException  $e) {
+            // Handle error
+        }
+
+        $graphNode = $response->getGraphNode();
+        return new JsonResponse(['id' => $graphNode['id']]);
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////Sorting Routes///////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////////////////
     #[Route('/RatingDesc', name: 'app_blogs_index_rating_desc', methods: ['GET'])]
@@ -184,9 +283,9 @@ class BlogsController extends AbstractController
         }
 
         $pages = $paginator->paginate(
-            $blogs, // Requête contenant les données à paginer (ici nos articles)
-            $request->query->getInt('page', 1), // Numéro de la page en cours, passé dans l'URL, 1 si aucune page
-            3 // Nombre de résultats par page
+            $blogs,
+            $request->query->getInt('page', 1),
+            3
         );
 
         return $this->render('blogs/index.html.twig', [
@@ -205,9 +304,9 @@ class BlogsController extends AbstractController
         }
 
         $pages = $paginator->paginate(
-            $blogs, // Requête contenant les données à paginer (ici nos articles)
-            $request->query->getInt('page', 1), // Numéro de la page en cours, passé dans l'URL, 1 si aucune page
-            3 // Nombre de résultats par page
+            $blogs,
+            $request->query->getInt('page', 1),
+            3
         );
 
         return $this->render('blogs/index.html.twig', [
@@ -325,6 +424,7 @@ class BlogsController extends AbstractController
     #[Route('/new', name: 'app_blogs_new', methods: ['GET', 'POST'])]
     public function new(Request $request, BlogsRepository $blogsRepository): Response
     {
+
         $blog = new Blogs();
         $addedBlog = new Blogs();
         $cat = new Blogcategories();
@@ -370,8 +470,14 @@ class BlogsController extends AbstractController
     }
 
     #[Route('/show/{blogs_ID}', name: 'app_blogs_show', methods: ['GET', 'POST'])]
-    public function show(Request $request, Blogs $blog): Response
+    public function show(Request $request, Blogs $blog, RequestStack $requestStack, UrlGeneratorInterface $urlGenerator): Response
     {
+
+        $currentUrl = $requestStack->getCurrentRequest()->getUri();
+        $serverIpAddress = '127.0.0.1'; // replace with your server's IP address
+        $pcIpAddress = getHostByName(getHostName());
+        $newUrl = str_replace($serverIpAddress, $pcIpAddress, $currentUrl);
+
         $comment = new Comments();
         $newNbViews = $blog->getNbViews() + 1;
         $this->blogsRepository->editViews($blog, $newNbViews, true);
@@ -391,6 +497,7 @@ class BlogsController extends AbstractController
         return $this->renderForm('blogs/show.html.twig', [
             'form' => $form,
             'blog' => $blog,
+            'url' => $newUrl,
             'blog_media' => $this->mediaRepository->findOneMediaByBlogID($blog->getBlogsId()),
             'blog_cat' => $this->hasBlogCategoryRepository->findOneByBlogID($blog->getBlogsId()),
             'blog_tags' => $this->hasTagRepository->findAllBlogsByBlogID($blog->getBlogsId()),

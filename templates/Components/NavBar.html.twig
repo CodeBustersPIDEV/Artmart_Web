@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="{{ asset('assets/Components/NavBar.css') }}" />
+<link rel="stylesheet" href="{{ asset('assets/Components/NavBar.css') }}"/>
 
 <style>
 	.logo {
@@ -127,22 +127,47 @@
 	.signUp_btn {
 		margin-left: 4px;
 	}
+
+	/* media query for small screens */
+	@media (max-width: 1093px) {
+		.menu-toggle {
+			display: flex;
+		}
+		/* hide the navigation menu by default */
+		.navMenu .options {
+			display: none;
+		}
+
+		/* show the menu toggle button */
+		.menu-toggle {
+			display: block;
+		}
+
+		/* style the expanded navigation menu */
+		.navMenu .options.expanded {
+			display: flex;
+			flex-direction: column;
+			position: absolute;
+			top: 100%;
+			left: 0;
+			width: 100%;
+			background-color: #272727;
+			padding: 1rem;
+			z-index: 2;
+		}
+	}
 </style>
-	{% set connectedUser = returnConnectedUser() %}
+{% set connectedUser = returnConnectedUser() %}
 <nav class="navMenu">
 	<div class="logo">
 		<a href="/">
-			<img
-				src="{{ asset('assets/ArtMart_Logo.png') }}"
-				class="logo_img"
-				alt="ArtMart Logo"
-			/>
+			<img src="{{ asset('assets/ArtMart_Logo.png') }}" class="logo_img" alt="ArtMart Logo"/>
 		</a>
 	</div>
 	<div class="options">
 		<a href="/">Home</a>
 		<a href="{{ path('app_blogs_index') }}">Blog</a>
-		<a href="{{ path('app_readyproduct_index') }}">Products</a>
+		<a href="{{ path('app_readyproduct_no_user_index') }}">Products</a>
 		{% if app.session.get('user_id') %}
 			{% if app.session.get('user_role') == "client" %}
 				<a href="{{ path('app_customproduct_index') }}">Custom Products</a>
@@ -160,12 +185,33 @@
 		<div class="dot"></div>
 	</div>
 	<div class="userButtons">
-	{% if app.session.get('user_id') %}	
-		<p>Welcome {{ app.session.get('user_name') }}!</p>
-		<a	class="signIn_btn btns"	href="/logout"	style="--clr: #ffc0cb"><span>Logout</span><i></i></a>
-	{% else %}
-	<a	class="signIn_btn btns"	href="{{ path('app_login') }}"	style="--clr: #ffc0cb"><span>Sign In</span><i></i></a>
-	<a class="signUp_btn btns"	href="{{ path('app_user_new') }}" style="--clr: #ffc0cb"><span>Sign Up</span><i></i></a>
-	{% endif %}
+		{% if app.session.get('user_id') %}
+			<p>Welcome
+				{{ app.session.get('user_name') }}!</p>
+			<a class="signIn_btn btns" href="/logout" style="--clr: #ffc0cb">
+				<span>Logout</span>
+				<i></i>
+			</a>
+		{% else %}
+			<a class="signIn_btn btns" href="{{ path('app_login') }}" style="--clr: #ffc0cb">
+				<span>Sign In</span>
+				<i></i>
+			</a>
+			<a class="signUp_btn btns" href="{{ path('app_user_new') }}" style="--clr: #ffc0cb">
+				<span>Sign Up</span>
+				<i></i>
+			</a>
+		{% endif %}
 	</div>
+	<button class="menu-toggle">
+		<i class="fas fa-bars"></i>
+	</button>
 </nav>
+<script>
+	const menuToggle = document.querySelector(".menu-toggle");
+	const menuOptions = document.querySelector(".navMenu .options");
+
+	menuToggle.addEventListener("click", () => {
+		menuOptions.classList.toggle("expanded");
+	});
+</script>

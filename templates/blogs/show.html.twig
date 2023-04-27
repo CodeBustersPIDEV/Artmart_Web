@@ -1,6 +1,7 @@
 {% extends 'baseF.html.twig' %}{% import "base.html.twig" as base %} {% block
 content %}
 <link rel="stylesheet" href="{{ asset('assets/Blog/CSS/BlogPage.css') }}" />
+
 <style>
 	@import url("https://fonts.googleapis.com/css2?family=Aldrich&family=Raleway:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap");
 
@@ -245,7 +246,7 @@ content %}
 							{% if blog_media != null %}
 							<img
 								class="hero-image"
-								src="{{ blog_media.getFilePath() }}"
+								src="{{ getRemoteBlogsMedia(blog_media.getFilePath()) }}"
 								alt="Spinning glass cube"
 							/>
 							{% else %}
@@ -256,7 +257,7 @@ content %}
 							/>
 							{% endif %}
 							<div class="commentSection">
-								<h1>Comments index</h1>
+								<h1>Comments</h1>
 								<div class="commentCont">
 									{{ include("comments/_form.html.twig") }}
 								</div>
@@ -304,7 +305,7 @@ content %}
 								</div>
 							</div>
 							<br />
-							<p>{{ blog.content }}</p>
+							<p id="blogContent">{{ blog.content }}</p>
 							<div class="post__footer">
 								<div class="row">
 									<div class="col-md-6">
@@ -316,16 +317,40 @@ content %}
 											{% endfor %}
 										</div>
 									</div>
-									{#
 									<div class="col-md-6">
+										{# {% set qr_code = builder.getString() %}
+										<img src="{{ qr_code }}" alt="QR Code" /> #}
+										<img src="{{ qr_code_url(url) }}" />
+
 										<div class="post__share">
-											<a href="#"><i class="fa fa-facebook"></i></a>
-											<a href="#"><i class="fa fa-twitter"></i></a>
+											{#
+											<form action="shareOnFacebook">
+												#} {#
+												<button id="shareFB">
+													#} {#
+													<i class="fa fa-facebook" style="color: aqua"></i> #}
+													<div
+														class="fb-share-button"
+														data-href="{{ url }}"
+														data-layout="button_count"
+														data-size="large"
+													>
+														<a
+															target="_blank"
+															href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fdevelopers.facebook.com%2Fdocs%2Fplugins%2F&amp;src=sdkpreparse"
+															class="fb-xfbml-parse-ignore"
+															>Share</a
+														>
+													</div>
+													{#
+												</button>
+												#} {#
+											</form>
+											#} {# <a href="#"><i class="fa fa-twitter"></i></a>
 											<a href="#"><i class="fa fa-google"></i></a>
-											<a href="#"><i class="fa fa-pinterest"></i></a>
+											<a href="#"><i class="fa fa-pinterest"></i></a> #}
 										</div>
 									</div>
-									#}
 								</div>
 							</div>
 						</div>
@@ -337,6 +362,7 @@ content %}
 		</div>
 	</div>
 </div>
+{% if app.session.get('user_id') == blog.author.getUserID() %}
 
 <a href="{{ path('app_blogs_index') }}">back to list</a>
 <div class="d-flex flex-row mb-3">
@@ -347,5 +373,32 @@ content %}
 	>
 
 	{{ include("blogs/_delete_form.html.twig") }}
+	{% endif %}
 </div>
+<script
+	async
+	defer
+	crossorigin="anonymous"
+	src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v16.0&appId=889691142139779&autoLogAppEvents=1"
+	nonce="nox4HVEK"
+></script>
+<script>
+	// const blogContent = document.querySelector("#blogContent");
+	// async function translateText() {}
+
+	// translateText();
+
+	// document.getElementById("shareFB").addEventListener("click", () => {
+	// 	const xhr = new XMLHttpRequest();
+	// 	xhr.open("POST", "../../src/Controller/BlogsController.php");
+	// 	xhr.setRequestHeader("Content-Type", "application/json");
+	// 	xhr.send(JSON.stringify({ blog: blog }));
+
+	// 	xhr.onreadystatechange = function () {
+	// 		if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+	// 			console.log(xhr.responseText);
+	// 		}
+	// 	};
+	// });
+</script>
 {% endblock %}

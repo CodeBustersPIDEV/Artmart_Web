@@ -9,10 +9,29 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-
+use MercurySeries\FlashyBundle\FlashyNotifier;
+use App\Entity\User;
+use App\Repository\UserRepository;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 #[Route('/apply')]
 class ApplyController extends AbstractController
 {
+
+    private User $connectedUser; 
+    public function __construct(SessionInterface $session, UserRepository $userRepository)
+    {
+        if ($session != null) {
+            $connectedUserID = $session->get('user_id');
+            if (is_int($connectedUserID)) {
+                $this->connectedUser = $userRepository->find((int) $connectedUserID);
+                
+                // Debugging code
+                if (!$this->connectedUser instanceof User) {
+                    throw new \Exception('Connected user is not a User object');
+                }
+            }
+        }
+    }
     #[Route('/', name: 'app_apply_index', methods: ['GET'])]
     public function index(EntityManagerInterface $entityManager): Response
     {
@@ -30,7 +49,12 @@ class ApplyController extends AbstractController
     {
         $applies = $entityManager
             ->getRepository(Apply::class)
-            ->findAll();
+            ->createQueryBuilder('c')
+            ->andWhere('c.artist = :userId') // Filter by connected user's ID
+            ->setParameter('userId', $this->connectedUser->getUserId())
+            ->getQuery()
+            ->getResult();
+            
     
         return $this->render('apply/pending.html.twig', [
             'applies' => $applies,
@@ -40,9 +64,17 @@ class ApplyController extends AbstractController
     #[Route('/apply1', name: 'app_apply_accepted', methods: ['GET'])]
     public function accepted(EntityManagerInterface $entityManager): Response
     {
-        $applies = $entityManager
+      
+            $applies = $entityManager
             ->getRepository(Apply::class)
-            ->findBy(['status' => ['in progress']]);
+            ->createQueryBuilder('a')
+         
+            ->andWhere('a.artist = :client')
+            ->andWhere('a.status IN (:status)')
+            ->setParameter('client', $this->connectedUser)
+            ->setParameter('status', ['in progress'])
+            ->getQuery()
+            ->getResult();
     
         return $this->render('apply/accepted.html.twig', [
             'applies' => $applies,
@@ -51,12 +83,22 @@ class ApplyController extends AbstractController
 
 
     #[Route('/apply2', name: 'app_apply_clients', methods: ['GET'])]
-    public function clients(EntityManagerInterface $entityManager): Response
+    public function clients(FlashyNotifier $flashy,EntityManagerInterface $entityManager): Response
     {
         $applies = $entityManager
-            ->getRepository(Apply::class)
-            ->findBy(['status'=> ['Pending','refused']]);
+        ->getRepository(Apply::class)
+        ->createQueryBuilder('a')
+        ->leftJoin('a.customproduct', 'cp')
+        ->andWhere('cp.client = :client')
+        ->andWhere('a.status IN (:status)')
+        ->setParameter('client', $this->connectedUser)
+        ->setParameter('status', ['Pending', 'refused'])
+        ->getQuery()
+        ->getResult();
     
+       
+            
+       
         return $this->render('apply/clients.html.twig', [
             'applies' => $applies,
         ]);
@@ -66,9 +108,18 @@ class ApplyController extends AbstractController
     #[Route('/apply3', name: 'app_apply_clientdone', methods: ['GET'])]
     public function clientdone(EntityManagerInterface $entityManager): Response
     {
-        $applies = $entityManager
+ 
+            $applies = $entityManager
             ->getRepository(Apply::class)
-            ->findBy(['status' => ['done','in progress']]);
+            ->createQueryBuilder('a')
+            ->leftJoin('a.customproduct', 'cp')
+            ->andWhere('cp.client = :client')
+            ->andWhere('a.status IN (:status)')
+            ->setParameter('client', $this->connectedUser)
+            ->setParameter('status', ['done', 'in progress'])
+            ->getQuery()
+            ->getResult();
+            
     
         return $this->render('apply/clientdone.html.twig', [
             'applies' => $applies,
@@ -135,8 +186,9 @@ class ApplyController extends AbstractController
 
 
     #[Route('/apply/done', name: 'app_apply_mark_done', methods: ['POST'])]
-    public function markDone(Request $request, EntityManagerInterface $entityManager): Response
+    public function markDone(FlashyNotifier $flashy,Request $request, EntityManagerInterface $entityManager): Response
     {
+        $flashy->success('work done !');
         $applyId = $request->request->get('applyId');
         
         $apply = $entityManager
@@ -148,7 +200,7 @@ class ApplyController extends AbstractController
         }
  
         $sid    = "AC85fdc289caf6aa747109220798d39394";
-        $token  = "e60a48d76fb61816ddc6e512f8a91178";
+        $token  = "6e5451f36b8e32a567b9e67984f60a16";
         $twilio = new Client($sid, $token);
     
         $message = $twilio->messages
@@ -166,10 +218,11 @@ class ApplyController extends AbstractController
     
     
     #[Route('/apply/acc', name: 'app_apply_mark_accept', methods: ['POST'])]
-    public function markaccept(Request $request, EntityManagerInterface $entityManager): Response
+    public function markaccept(FlashyNotifier $flashy,Request $request, EntityManagerInterface $entityManager): Response
     {
+   
         $applyId = $request->request->get('applyId');
-        
+        $flashy->success('application accepted');
         $apply = $entityManager
             ->getRepository(Apply::class)
             ->find($applyId);
@@ -178,7 +231,7 @@ class ApplyController extends AbstractController
             throw $this->createNotFoundException('Apply not found');
         }
         $sid    = "AC85fdc289caf6aa747109220798d39394";
-        $token  = "e60a48d76fb61816ddc6e512f8a91178";
+        $token  = "6e5451f36b8e32a567b9e67984f60a16";
         $twilio = new Client($sid, $token);
     
         $message = $twilio->messages
@@ -196,8 +249,9 @@ class ApplyController extends AbstractController
     }
 
     #[Route('/apply/refused', name: 'app_apply_mark_refused', methods: ['POST'])]
-    public function markrefused(Request $request, EntityManagerInterface $entityManager): Response
+    public function markrefused(FlashyNotifier $flashy,Request $request, EntityManagerInterface $entityManager): Response
     {
+        $flashy->error('application rejected');
         $applyId = $request->request->get('applyId');
         
         $apply = $entityManager

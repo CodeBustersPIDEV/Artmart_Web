@@ -140,6 +140,79 @@
             "time": "2023-02-27T13:28:54+00:00"
         },
         {
+            "name": "composer/package-versions-deprecated",
+            "version": "1.11.99.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/composer/package-versions-deprecated.git",
+                "reference": "b4f54f74ef3453349c24a845d22392cd31e65f1d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/composer/package-versions-deprecated/zipball/b4f54f74ef3453349c24a845d22392cd31e65f1d",
+                "reference": "b4f54f74ef3453349c24a845d22392cd31e65f1d",
+                "shasum": ""
+            },
+            "require": {
+                "composer-plugin-api": "^1.1.0 || ^2.0",
+                "php": "^7 || ^8"
+            },
+            "replace": {
+                "ocramius/package-versions": "1.11.99"
+            },
+            "require-dev": {
+                "composer/composer": "^1.9.3 || ^2.0@dev",
+                "ext-zip": "^1.13",
+                "phpunit/phpunit": "^6.5 || ^7"
+            },
+            "type": "composer-plugin",
+            "extra": {
+                "class": "PackageVersions\\Installer",
+                "branch-alias": {
+                    "dev-master": "1.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "PackageVersions\\": "src/PackageVersions"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Marco Pivetta",
+                    "email": "ocramius@gmail.com"
+                },
+                {
+                    "name": "Jordi Boggiano",
+                    "email": "j.boggiano@seld.be"
+                }
+            ],
+            "description": "Composer plugin that provides efficient querying for installed package versions (no runtime IO)",
+            "support": {
+                "issues": "https://github.com/composer/package-versions-deprecated/issues",
+                "source": "https://github.com/composer/package-versions-deprecated/tree/1.11.99.5"
+            },
+            "funding": [
+                {
+                    "url": "https://packagist.com",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/composer",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/composer/composer",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2022-01-17T14:14:24+00:00"
+        },
+        {
             "name": "dasprid/enum",
             "version": "1.0.4",
             "source": {
@@ -1896,6 +1969,66 @@
             "time": "2017-07-23T21:35:13+00:00"
         },
         {
+            "name": "facebook/graph-sdk",
+            "version": "5.1.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/facebook/php-graph-sdk.git",
+                "reference": "38fd7187a6704d3ab14ded2f3a534ac4ee6f3481"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/facebook/php-graph-sdk/zipball/38fd7187a6704d3ab14ded2f3a534ac4ee6f3481",
+                "reference": "38fd7187a6704d3ab14ded2f3a534ac4ee6f3481",
+                "shasum": ""
+            },
+            "require": {
+                "ext-mbstring": "*",
+                "php": ">=5.4.0"
+            },
+            "require-dev": {
+                "guzzlehttp/guzzle": "~5.0",
+                "mockery/mockery": "~0.8",
+                "phpunit/phpunit": "~4.0"
+            },
+            "suggest": {
+                "guzzlehttp/guzzle": "Allows for implementation of the Guzzle HTTP client"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "5.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Facebook\\": "src/Facebook/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Facebook Platform"
+            ],
+            "authors": [
+                {
+                    "name": "Facebook",
+                    "homepage": "https://github.com/facebook/facebook-php-sdk-v4/contributors"
+                }
+            ],
+            "description": "Facebook SDK for PHP",
+            "homepage": "https://github.com/facebook/facebook-php-sdk-v4",
+            "keywords": [
+                "facebook",
+                "sdk"
+            ],
+            "support": {
+                "issues": "https://github.com/facebook/php-graph-sdk/issues",
+                "source": "https://github.com/facebook/php-graph-sdk/tree/5.1.4"
+            },
+            "abandoned": true,
+            "time": "2016-05-13T17:28:30+00:00"
+        },
+        {
             "name": "facebook/php-sdk-v4",
             "version": "5.1.4",
             "source": {
@@ -3204,6 +3337,52 @@
             "time": "2022-12-01T13:19:59+00:00"
         },
         {
+            "name": "mercuryseries/flashy-bundle",
+            "version": "v5.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mercuryseries/flashy-bundle.git",
+                "reference": "9d89512068c310eb1e3b2670a59197b6a2d67b63"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mercuryseries/flashy-bundle/zipball/9d89512068c310eb1e3b2670a59197b6a2d67b63",
+                "reference": "9d89512068c310eb1e3b2670a59197b6a2d67b63",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.3|^8.0",
+                "symfony/config": "^4.4 || ^5.3 || ^6.0",
+                "symfony/dependency-injection": "^4.4 || ^5.3 || ^6.0",
+                "symfony/http-kernel": "^4.4 || ^5.3 || ^6.0"
+            },
+            "require-dev": {
+                "symfony/phpunit-bridge": "^4.4 || ^5.3 || ^6.0"
+            },
+            "type": "symfony-bundle",
+            "autoload": {
+                "psr-4": {
+                    "MercurySeries\\FlashyBundle\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Honore Hounwanou",
+                    "email": "mercuryseries@gmail.com"
+                }
+            ],
+            "description": "Easy flash notifications in Symfony",
+            "support": {
+                "issues": "https://github.com/mercuryseries/flashy-bundle/issues",
+                "source": "https://github.com/mercuryseries/flashy-bundle/tree/v5.1.0"
+            },
+            "time": "2022-03-27T04:24:03+00:00"
+        },
+        {
             "name": "monolog/monolog",
             "version": "2.9.1",
             "source": {
@@ -3352,6 +3531,128 @@
                 "source": "https://github.com/mpociot/pipeline/tree/1.0.2"
             },
             "time": "2017-04-21T13:22:05+00:00"
+        },
+        {
+            "name": "nexmo/client",
+            "version": "2.4.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Nexmo/nexmo-php-complete.git",
+                "reference": "9d515f6592d466159f79dde460ce2b99b8128279"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Nexmo/nexmo-php-complete/zipball/9d515f6592d466159f79dde460ce2b99b8128279",
+                "reference": "9d515f6592d466159f79dde460ce2b99b8128279",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/guzzle": "^7.0",
+                "nexmo/client-core": "^2.0",
+                "php": ">=7.2"
+            },
+            "type": "library",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Tim Lytle",
+                    "email": "tim@nexmo.com",
+                    "homepage": "http://twitter.com/tjlytle",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Michael Heap",
+                    "email": "michael.heap@vonage.com",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Lorna Mitchell",
+                    "email": "lorna.mitchell@vonage.com",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Chris Tankersley",
+                    "email": "chris.tankersley@vonage.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "PHP Client for using Nexmo's API.",
+            "support": {
+                "email": "devrel@nexmo.com",
+                "source": "https://github.com/Nexmo/nexmo-php-complete/tree/2.4.0"
+            },
+            "time": "2020-09-10T18:41:31+00:00"
+        },
+        {
+            "name": "nexmo/client-core",
+            "version": "2.9.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Nexmo/nexmo-php.git",
+                "reference": "5feed4876c603423c52eb751d1b46de9d60d1ceb"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Nexmo/nexmo-php/zipball/5feed4876c603423c52eb751d1b46de9d60d1ceb",
+                "reference": "5feed4876c603423c52eb751d1b46de9d60d1ceb",
+                "shasum": ""
+            },
+            "require": {
+                "composer/package-versions-deprecated": "^1.11",
+                "ext-json": "*",
+                "ext-mbstring": "*",
+                "laminas/laminas-diactoros": "^2.4",
+                "lcobucci/jwt": "^3.4|^4.0",
+                "php": ">=7.2",
+                "psr/container": "^1.0",
+                "psr/http-client-implementation": "^1.0",
+                "psr/log": "^1.1",
+                "vonage/nexmo-bridge": "^0.1.0"
+            },
+            "require-dev": {
+                "guzzlehttp/guzzle": ">=6",
+                "helmich/phpunit-json-assert": "^3.3",
+                "php-http/mock-client": "^1.4",
+                "phpstan/phpstan": "^0.12",
+                "phpunit/phpunit": "^8.5|^9.4",
+                "roave/security-advisories": "dev-latest",
+                "softcreatr/jsonpath": "^0.6.4",
+                "squizlabs/php_codesniffer": "^3.5"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Vonage\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Chris Tankersley",
+                    "email": "chris.tankersley@vonage.com",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Lorna Mitchell",
+                    "email": "lorna.mitchell@vonage.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Deprecated PHP Client for using Vonage's API - please use vonage/client-core",
+            "homepage": "https://developer.nexmo.com",
+            "support": {
+                "docs": "https://developer.nexmo.com",
+                "email": "devrel@vonage.com",
+                "issues": "https://github.com/Vonage/vonage-php-sdk-core/issues",
+                "source": "https://github.com/Vonage/vonage-php-sdk-core"
+            },
+            "time": "2021-04-30T21:42:12+00:00"
         },
         {
             "name": "phpdocumentor/reflection-common",
@@ -3976,30 +4277,30 @@
         },
         {
             "name": "psr/log",
-            "version": "2.0.0",
+            "version": "1.1.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-fig/log.git",
-                "reference": "ef29f6d262798707a9edd554e2b82517ef3a9376"
+                "reference": "d49695b909c3b7628b6289db5479a1c204601f11"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-fig/log/zipball/ef29f6d262798707a9edd554e2b82517ef3a9376",
-                "reference": "ef29f6d262798707a9edd554e2b82517ef3a9376",
+                "url": "https://api.github.com/repos/php-fig/log/zipball/d49695b909c3b7628b6289db5479a1c204601f11",
+                "reference": "d49695b909c3b7628b6289db5479a1c204601f11",
                 "shasum": ""
             },
             "require": {
-                "php": ">=8.0.0"
+                "php": ">=5.3.0"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.0.x-dev"
+                    "dev-master": "1.1.x-dev"
                 }
             },
             "autoload": {
                 "psr-4": {
-                    "Psr\\Log\\": "src"
+                    "Psr\\Log\\": "Psr/Log/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -4020,9 +4321,9 @@
                 "psr-3"
             ],
             "support": {
-                "source": "https://github.com/php-fig/log/tree/2.0.0"
+                "source": "https://github.com/php-fig/log/tree/1.1.4"
             },
-            "time": "2021-07-14T16:41:46+00:00"
+            "time": "2021-05-03T11:20:27+00:00"
         },
         {
             "name": "ralouphie/getallheaders",

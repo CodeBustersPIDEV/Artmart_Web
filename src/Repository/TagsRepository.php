@@ -66,4 +66,12 @@ class TagsRepository extends ServiceEntityRepository
   //            ->getOneOrNullResult()
   //        ;
   //    }
+  public function findByTerm($searchTerm): array
+  {
+    return $this->createQueryBuilder('t')
+      ->where('t.name LIKE :searchTerm')
+      ->setParameter('searchTerm', '%' . $searchTerm . '%')
+      ->getQuery()
+      ->getResult();
+  }
 }

@@ -5,7 +5,6 @@
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
   destinationPath: "C:\\xampp\\htdocs\\PIDEV\\BlogUploads\\"
-  product_images_directory: '%kernel.project_dir%/public/imagescustom'
   file_base_url:
     host: "http://localhost"
     path: "PIDEV/BlogUploads"
