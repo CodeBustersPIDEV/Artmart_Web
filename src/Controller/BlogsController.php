@@ -227,7 +227,7 @@ class BlogsController extends AbstractController
         $blogs = $blogsRepository->findAllByUser($this->connectedUser);
         $searchTerm = $request->query->get('searchTerm');
         if ($searchTerm) {
-            $blogs = $blogsRepository->findByTerm($searchTerm);
+            $blogs = $blogsRepository->findMyBlogsByTerm($searchTerm, $this->connectedUser);
         }
 
         $pages = $paginator->paginate(
@@ -236,7 +236,7 @@ class BlogsController extends AbstractController
             3 // Nombre de résultats par page
         );
 
-        return $this->render('blogs/index.html.twig', [
+        return $this->render('blogs/myBlogs.html.twig', [
             'blogs' => $pages,
             'searchTerm' => $searchTerm
         ]);
@@ -404,11 +404,17 @@ class BlogsController extends AbstractController
     #[Route('/admin', name: 'app_blogs_admin', methods: ['GET'])]
     public function adminIndex(BlogsRepository $blogsRepository): Response
     {
+        $blogs = $blogsRepository->findAll();
+        $data = [];
+        foreach ($blogs as $blog) {
+            $data[] = $blog->getNbViews();
+        }
         if ($this->connectedUser->getRole() === "admin") {
             return $this->render('blogs/admin.html.twig', [
-                'blogs' => $blogsRepository->findAll(),
+                'blogs' => $blogs,
                 'blogCategories' => $this->blogCategoryRepository->findAll(),
                 'tags' => $this->tagsRepository->findAll(),
+                'data' => $this->json($data)
 
             ]);
         } else {
@@ -417,6 +423,20 @@ class BlogsController extends AbstractController
         }
     }
 
+
+    #[Route('/chart-data', name: 'chart_data')]
+
+    public function chartData(BlogsRepository $blogsRepository)
+    {
+        $blogs = $blogsRepository->findAll();
+
+        $data = [];
+        foreach ($blogs as $blog) {
+            $data[] = $blog->getNbViews();
+        }
+
+        return $this->json($data);
+    }
     //////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////CRUD Routes///////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -589,18 +609,18 @@ class BlogsController extends AbstractController
             return false; // return a value to indicate that access is not allowed
         }
     }
-     private function ClientAccess()
+    private function ClientAccess()
     {
         if ($this->connectedUser->getRole() === "client") {
             return true; // return a value to indicate that access is allowed
         } else {
             return false; // return a value to indicate that access is not allowed
         }
-    } 
+    }
     private function ArtistAccess()
     {
         if ($this->connectedUser->getRole() === "artist") {
-           return true; // return a value to indicate that access is allowed
+            return true; // return a value to indicate that access is allowed
         } else {
             return false; // return a value to indicate that access is not allowed
         }
