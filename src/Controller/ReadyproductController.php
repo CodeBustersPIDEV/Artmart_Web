@@ -1072,6 +1072,7 @@ class ReadyproductController extends AbstractController
         return $this->render('productreview/show_reviews.html.twig', [
             'readyproduct' => $readyProduct,
             'averageRating' => $averageRating,
+            'productreviews' => $productreviews,
         ]);
     }
 
