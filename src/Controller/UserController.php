@@ -28,18 +28,22 @@ use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Twig\Environment;
 use Vonage\Client;
+use Knp\Component\Pager\PaginatorInterface;
 use Vonage\Client\Credentials\Basic;
 use Vonage\Messages\Channel\SMS\SMSText;
 use DateTime;
+use Vonage\SMS\Message\SMS;
+
 #[Route('/user')]
 class UserController extends AbstractController
 
 {
     private Environment $twig;
     private User $connectedUser;
+    private $paginator;
 
 
-    public function __construct(SessionInterface $session, UserRepository $userRepository, Environment $twig)
+    public function __construct(SessionInterface $session, UserRepository $userRepository, Environment $twig,PaginatorInterface $paginator)
     {
         $this->twig = $twig;
         if ($session != null) {
@@ -48,6 +52,8 @@ class UserController extends AbstractController
                 $this->connectedUser = $userRepository->find((int) $connectedUserID);
             }
         }
+        $this->paginator = $paginator;
+
     }
 
     public function uploadImage(UploadedFile $file, User $user): void
@@ -77,7 +83,16 @@ class UserController extends AbstractController
         $hasAdminAccess = $this->AdminAccess();
         $searchTerm = $request->query->get('search');
         $userse = $request->query->get('userse');
+        $users = $this->getDoctrine()
+        ->getRepository(User::class)
+        ->findAll();
 
+    $pagination = $this->paginator->paginate(
+        $users,
+        $request->query->getInt('page', 1),
+        8
+    );
+    
         $queryBuilder = $entityManager
             ->getRepository(User::class)
             ->createQueryBuilder('u');
@@ -95,14 +110,9 @@ class UserController extends AbstractController
 
         $users = $queryBuilder->getQuery()->getResult();
 
-        /*   
-        $users = $entityManager
-            ->getRepository(User::class)
-            ->findAll();
-*/
         if ($hasAdminAccess) {
             return $this->render('user/index.html.twig', [
-                'users' => $users,
+                'users' => $pagination,
                 'searchTerm' => $searchTerm,
             ]);
         } else {
@@ -696,8 +706,13 @@ if($hasAccess){
         $entityManager->persist($user);
         $entityManager->flush();
         $vpn = "216" . $user->getPhonenumber();
-        $message = new SMSText($vpn, 'Vonage APIs', 'Hello this is your verification token' . $code);
-        $result = $client->messages()->send($message);
+        $message = [
+            'to' => $vpn,
+            'from' => 'ArtMart',
+            'text' => 'Hello this is your verification token' . $code
+        ];
+       
+        $client->message()->send($message);
 
 if($user->isEnabled()){
         return $this->redirectToRoute('app_user_TokenVerifPwd', ['userId' => $user->getUserId()], Response::HTTP_SEE_OTHER);
