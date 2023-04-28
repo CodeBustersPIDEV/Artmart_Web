@@ -107,7 +107,12 @@ class ActivityController extends AbstractController
     {
         $activities = $entityManager
             ->getRepository(Activity::class)
-            ->findAll();
+            ->createQueryBuilder('a')
+            ->join('a.event', 'e')
+            ->where('e.user = :userId')
+            ->setParameter('userId', $this->connectedUser->getUserId())
+            ->getQuery()
+            ->getResult();
 
         return $this->render('activity/artist/index.html.twig', [
             'activities' => $activities,

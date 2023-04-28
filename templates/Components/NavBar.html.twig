@@ -176,6 +176,7 @@
 			{% elseif app.session.get('user_role') == "artist" %}
 				<a href="{{ path('app_readyproduct_index') }}">Products</a>
 				<a href="{{ path('app_customproduct_artist') }}">Custom Products</a>
+				<a href="{{ path('app_event_index_artist') }}">Events</a>
 			{% elseif app.session.get('user_role') == "admin" %}
 				<a href="{{ path('app_admin') }}">Admin Panel</a>
 			{% endif %}

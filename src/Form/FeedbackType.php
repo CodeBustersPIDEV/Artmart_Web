@@ -18,16 +18,7 @@ class FeedbackType extends AbstractType
         $builder
             ->add('rating')
             ->add('comment')
-            ->add('event', EntityType::class, [
-                'class' => Event::class,
-                'choice_label' => 'name',
-                'placeholder' => 'Choose an option',
-            ])
-            ->add('user', EntityType::class, [
-                'class' => User::class,
-                'placeholder' => 'Choose an option',
-            ])            
-        ;
+            ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void

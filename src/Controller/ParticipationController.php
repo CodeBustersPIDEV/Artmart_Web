@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Event;
 use App\Entity\Participation;
 use App\Form\ParticipationType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -104,33 +105,47 @@ class ParticipationController extends AbstractController
     {
         $participations = $entityManager
             ->getRepository(Participation::class)
-            ->findAll();
+            ->createQueryBuilder('p')
+            ->join('p.event', 'e')
+            ->where('e.user = :userId')
+            ->setParameter('userId', $this->connectedUser->getUserId())
+            ->getQuery()
+            ->getResult();
+
 
         return $this->render('participation/artist/index.html.twig', [
             'participations' => $participations,
         ]);
     }
 
-    #[Route('/artist/new', name: 'app_participation_new_artist', methods: ['GET', 'POST'])]
-    public function neww(Request $request, EntityManagerInterface $entityManager): Response
+    #[Route('/artist/participate/{eventid}', name: 'app_participation_new_artist', methods: ['GET', 'POST'])]
+    public function neww(Request $request, EntityManagerInterface $entityManager, $eventid): Response
     {
-        $participation = new Participation();
-        $form = $this->createForm(ParticipationType::class, $participation);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($participation);
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_participation_index_artist', [], Response::HTTP_SEE_OTHER);
-        }
-
-        return $this->renderForm('participation/artist/new.html.twig', [
-            'participation' => $participation,
-            'form' => $form,
+        $connectedUserID = $this->connectedUser->getUserId();
+    
+        // Check if participation already exists
+        $existingParticipation = $entityManager->getRepository(Participation::class)->findOneBy([
+            'user' => $connectedUserID,
+            'event' => $eventid,
         ]);
+        
+        if ($existingParticipation) {
+            // Participation already exists, handle accordingly
+            return new Response('Participation already exists', Response::HTTP_CONFLICT);
+        }
+    
+        // Participation does not exist, create new participation
+        $participation = new Participation();
+        $participation->setUser($entityManager->getReference(User::class, $connectedUserID));
+        $participation->setEvent($entityManager->getReference(Event::class, $eventid));
+    
+        $entityManager->persist($participation);
+        $entityManager->flush();
+    
+        return $this->redirectToRoute('app_participation_index_artist', [], Response::HTTP_SEE_OTHER);
     }
-
+        
+    
     #[Route('/artist/{participationid}', name: 'app_participation_show_artist', methods: ['GET'])]
     public function showw(Participation $participation): Response
     {

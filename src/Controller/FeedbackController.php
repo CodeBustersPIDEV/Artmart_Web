@@ -102,16 +102,22 @@ class FeedbackController extends AbstractController
     #[Route('/artist', name: 'app_feedback_index_artist', methods: ['GET'])]
     public function indexx(EntityManagerInterface $entityManager): Response
     {
-        $feedback = $entityManager
+        $feedbacks = $entityManager
             ->getRepository(Feedback::class)
-            ->findAll();
+            ->createQueryBuilder('f')
+            ->join('f.event', 'e')
+            ->where('e.user = :userId')
+            ->setParameter('userId', $this->connectedUser->getUserId())
+            ->getQuery()
+            ->getResult();
+
 
         return $this->render('feedback/artist/index.html.twig', [
-            'feedback' => $feedback,
+            'feedback' => $feedbacks,
         ]);
     }
 
-    #[Route('/artist/new', name: 'app_feedback_new_artist', methods: ['GET', 'POST'])]
+    #[Route('/artist/rate/{eventid}', name: 'app_feedback_new_artist', methods: ['GET', 'POST'])]
     public function neww(Request $request, EntityManagerInterface $entityManager): Response
     {
         $feedback = new Feedback();
@@ -125,10 +131,35 @@ class FeedbackController extends AbstractController
             return $this->redirectToRoute('app_feedback_index_artist', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('feedback/admin/new.html.twig', [
+        return $this->renderForm('feedback/artist/new.html.twig', [
             'feedback' => $feedback,
             'form' => $form,
         ]);
+
+
+    
+        // // Check if participation already exists
+        // $existingParticipation = $entityManager->getRepository(Participation::class)->findOneBy([
+        //     'user' => $connectedUserID,
+        //     'event' => $eventid,
+        // ]);
+        
+        if ($existingParticipation) {
+            // Participation already exists, handle accordingly
+            return new Response('Participation already exists', Response::HTTP_CONFLICT);
+        }
+    
+        // Participation does not exist, create new participation
+        $participation = new Participation();
+        $participation->setUser($entityManager->getReference(User::class, $connectedUserID));
+        $participation->setEvent($entityManager->getReference(Event::class, $eventid));
+    
+        $entityManager->persist($participation);
+        $entityManager->flush();
+    
+        return $this->redirectToRoute('app_participation_index_artist', [], Response::HTTP_SEE_OTHER);
+
+
     }
 
     #[Route('/artist/{feedbackid}', name: 'app_feedback_show_artist', methods: ['GET'])]

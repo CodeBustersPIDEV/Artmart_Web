@@ -6,15 +6,9 @@
 {{ base.NavBar() }}
 {% include('event/artist/eventBar.html.twig') %}
 
-    <center>
-        {# <h1>Feedback List</h1> #}
-        <br>
-        <a href="{{ path('app_feedback_new_artist') }}" class="btn btn-success">Create New</a>
-    </center>
-
-    <div class="row" style="margin:20px">
+    <div class="row row-cols-1 row-cols-md-3 g-4" style="margin:20px">
         {% for feedback in feedback %}
-            <div class="col-md-4 mb-4">
+            <div class="col">
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">{{ feedback.rating }}</h5>
