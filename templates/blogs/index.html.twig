@@ -103,15 +103,16 @@ as base %}
 		color: white;
 	}
 </style>
-
+<center>
 <form
 	action="{{ path('app_blogs_index') }}"
 	method="GET"
-	class="d-flex justify-content-center"
+	class="d-flex justify-content-between col-4"
 >
-	<div class="form-group">
-		<label  for="criteria">Search by:</label>
-    <select id="criteria" name="criteria">
+	<div class="input-group ">
+		{# <label  for="criteria">Search by:</label> #}
+    <select id="criteria" name="criteria" class="form-select ">
+      <option disabled selected>Criteria</option>
       <option value="Title" {% if app.request.query.get('criteria') == 'Title' %}selected{% endif %}>Title</option>
       <option value="Category" {% if app.request.query.get('criteria') == 'Category' %}selected{% endif %}>Category</option>
       <option value="Tag" {% if app.request.query.get('criteria') == 'Tag' %}selected{% endif %}>Tag</option>
@@ -126,12 +127,11 @@ as base %}
 		/>
 	</div>
 	<a href="{{ path('app_blogs_index') }}" class="btn"
-		><i class="fa-solid fa-arrows-rotate" style="color: #8bacd9"></i
-	></a>
-</form>
-<button
+	><i class="fa-solid fa-arrows-rotate" style="color: #8bacd9"></i
+		></a>
+	<button
 	type="button"
-	class="btn btn-outline-light dropdown-toggle"
+	class="btn btn-outline-light dropdown-toggle ms-auto p-2"
 	data-bs-toggle="dropdown"
 	aria-expanded="false"
 >
@@ -184,6 +184,8 @@ as base %}
 		>
 	</li>
 </ul>
+</form></center>
+
 <section class="articles">
 	{% for blog in blogs %}
 	{{ base.card(blog, getBlogsMedia(blog.getBlogsId())) }}
