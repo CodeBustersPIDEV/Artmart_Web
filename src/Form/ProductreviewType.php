@@ -17,9 +17,7 @@ class ProductreviewType extends AbstractType
             ->add('title')
             ->add('text')
             ->add('rating')
-            ->add('date', DateType::class, [
-                'data' => new \DateTime(),
-            ]);
+            ->add('date');
     }
 
     public function configureOptions(OptionsResolver $resolver): void

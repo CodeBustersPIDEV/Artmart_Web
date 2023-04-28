@@ -13,6 +13,7 @@
         "doctrine/doctrine-bundle": "^2.8",
         "doctrine/doctrine-migrations-bundle": "^3.2",
         "doctrine/orm": "^2.14",
+        "dompdf/dompdf": "^2.0",
         "endroid/qr-code-bundle": "^4.3",
         "facebook/graph-sdk": "^5.1",
         "facebook/php-sdk-v4": "^5.1",

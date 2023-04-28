@@ -286,8 +286,6 @@ class ReadyproductController extends AbstractController
                 ->setParameter('categoryId', $category);
         }
 
-        $queryBuilder->setParameter('userId', $this->connectedUser->getUserId());
-
         $readyproducts = $queryBuilder->getQuery()->getResult();
 
         $pagination = $paginator->paginate(
@@ -539,7 +537,7 @@ class ReadyproductController extends AbstractController
             'categories' => $categories, // Add categories to the view
         ]);
     }
-    
+
     #[Route('/admin', name: 'app_readyproduct_admin', methods: ['GET'])]
     public function indexadmin(Request $request, EntityManagerInterface $entityManager): Response
     {
@@ -1025,14 +1023,11 @@ class ReadyproductController extends AbstractController
         ]);
     }
 
-    #[Route('/delete/{readyProductId}', name: 'app_readyproduct_delete', methods: ['POST'])]
+    #[Route('/delete/{readyProductId}', name: 'app_readyproduct_delete', methods: ['GET'])]
     public function delete(Request $request, Readyproduct $readyproduct, EntityManagerInterface $entityManager): Response
     {
-
-        if ($this->isCsrfTokenValid('delete' . $readyproduct->getReadyProductId(), $request->request->get('_token'))) {
-            $entityManager->remove($readyproduct);
-            $entityManager->flush();
-        }
+        $entityManager->remove($readyproduct);
+        $entityManager->flush();
 
         return $this->redirectToRoute('app_readyproduct_index', [], Response::HTTP_SEE_OTHER);
     }
@@ -1052,9 +1047,10 @@ class ReadyproductController extends AbstractController
         }
         $averageRating = $count > 0 ? $totalRating / $count : 0;
 
-        return $this->render('readyproduct/show.html.twig', [
+        return $this->render('productreview/show_reviews_artist.html.twig', [
             'readyproduct' => $readyProduct,
             'averageRating' => $averageRating,
+            'productreviews' => $productreviews,
         ]);
     }
 
@@ -1073,9 +1069,10 @@ class ReadyproductController extends AbstractController
         }
         $averageRating = $count > 0 ? $totalRating / $count : 0;
 
-        return $this->render('readyproduct/show.html.twig', [
+        return $this->render('productreview/show_reviews.html.twig', [
             'readyproduct' => $readyProduct,
             'averageRating' => $averageRating,
+            'productreviews' => $productreviews,
         ]);
     }
 
