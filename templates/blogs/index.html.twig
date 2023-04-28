@@ -190,7 +190,8 @@ as base %}
 	{% for blog in blogs %}
 	{{ base.card(blog, getBlogsMedia(blog.getBlogsId())) }}
 	{% else %}
-	<h2>no records found</h2>
+	<center>
+	<h2>no records found</h2></center>
 	{% endfor %}
 </section>
 <div class="d-flex justify-content-center">
