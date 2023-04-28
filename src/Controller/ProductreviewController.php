@@ -53,7 +53,7 @@ class ProductreviewController extends AbstractController
         ]);
     }
 
-    #[Route('/{reviewId}', name: 'app_productreview_delete', methods: ['POST'])]
+    #[Route('/{reviewId}', name: 'app_productreview_delete', methods: ['GET'])]
     public function delete(Request $request, Productreview $productreview, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$productreview->getReviewId(), $request->request->get('_token'))) {

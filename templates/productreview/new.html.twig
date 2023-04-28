@@ -90,13 +90,11 @@
 			{{ form_start(form,{ 'attr' :{ 'novalidate':'novalidate'}}) }}
 			<div class="row">
 				<div class="col-md-6">
-					{{ form_row(form.userId) }}
 					{{ form_row(form.title) }}
 					{{ form_row(form.rating) }}
 				</div>
 				<div class="col-md-6">
 					{{ form_row(form.text) }}
-					{{ form_row(form.date) }}
 				</div>
 			</div>
 			{{ include('productreview/_form.html.twig', {'button_label': 'add'}) }}

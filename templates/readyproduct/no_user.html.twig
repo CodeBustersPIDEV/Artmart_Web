@@ -6,6 +6,8 @@
 		<h4>
 			<em>Ready</em>
 			Products</h4>
+		<p style="color: white; font-size: 100%;">You will need to sign up or sign in to be able to order the product or see its reviews !</p>
+		<br>
 		<form action="{{ path('app_readyproduct_index') }}" method="GET">
 			<div class="form-group">
 				<button type="button" style="background-color: #43464B; align: left;" class="btn btn-dark dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
@@ -36,6 +38,7 @@
 					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-lg" viewbox="0 0 16 16">
 						<path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z"/>
 					</svg>
+					Cancel all
 				</a>
 			</div>
 
@@ -152,18 +155,31 @@
 			}
 			.orderby-link {
 				display: inline-block;
-				padding: 8px 16px;
-				background-color: #AA336A;
+				background-color: #43464B;
+				padding: 4px 5px 5px 9px;
 				color: white;
-				text-align: center;
 				text-decoration: none;
 				font-size: 16px;
 				border-radius: 4px;
+				border-color: #43464B;
 				transition: background-color 0.3s ease;
 			}
 
-			.orderby-link:hover {
-				background-color: #AA336A;
+
+			.orderby-option-link {
+				display: inline-block;
+				background-color: white;
+				padding: 4px 5px 5px 9px;
+				color: black;
+				text-decoration: none;
+				font-size: 16px;
+				border-radius: 4px;
+				border-color: #43464B;
+				transition: background-color 0.3s ease;
+			}
+
+			.orderby-option-link:hover {
+				background-color: #e9ecef;
 			}
 
 			/* Search Bar */
@@ -342,26 +358,24 @@
 						<p>
 							<strong>Made by:</strong>
 							{{ readyproduct.userId }}</p>
-						<div class="align-review">
-							<a id="review" href="{{ path('app_review_index', {'readyProductId': readyproduct.readyProductId}) }}">
-								<p>
-									<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bookmark-star-fill" viewbox="0 0 16 16">
-										<path fill-rule="evenodd" d="M2 15.5V2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.74.439L8 13.069l-5.26 2.87A.5.5 0 0 1 2 15.5zM8.16 4.1a.178.178 0 0 0-.32 0l-.634 1.285a.178.178 0 0 1-.134.098l-1.42.206a.178.178 0 0 0-.098.303L6.58 6.993c.042.041.061.1.051.158L6.39 8.565a.178.178 0 0 0 .258.187l1.27-.668a.178.178 0 0 1 .165 0l1.27.668a.178.178 0 0 0 .257-.187L9.368 7.15a.178.178 0 0 1 .05-.158l1.028-1.001a.178.178 0 0 0-.098-.303l-1.42-.206a.178.178 0 0 1-.134-.098L8.16 4.1z"/>
-									</svg>
-									check reviews
-								</p>
-							</a>
-						</div>
+						<p>
+							<strong>Weight:</strong>
+							{{ readyproduct.productId.weight }}
+							Kg</p>
+						<p>
+							<strong>Material:</strong>
+							{{ readyproduct.productId.material }}</p>
+						<p>
+							<strong>Dimensions:</strong>
+							{{ readyproduct.productId.dimensions }}</p>
+						<br>
+						<p>{{ readyproduct.productId.description }}</p>
 						<br>
 						<div class="align-price">
 							<p>{{ readyproduct.price }}
 								TND</p>
 						</div>
 
-
-						<div class="align">
-							<a href="{{ path('app_readyproduct_no_user_show', {'readyProductId': readyproduct.readyProductId}) }}">show</a>
-						</div>
 					</div>
 				</div>
 				{% set count = count + 1 %}
@@ -387,4 +401,14 @@ for (var i = 0; i < linkss.length; i++) {
 linkss[i].setAttribute("onclick", "playSound()");
 }
 	</script>
+	<script>
+		const categorySelect = document.getElementById('category-select');
+categorySelect.addEventListener('change', (event) => {
+const selectedValue = event.target.value;
+if (selectedValue) {
+window.location.href = "{{ path('app_readyproduct__desc_cat_index_no_user') }}?category=" + selectedValue;
+}
+});
+	</script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.3/umd/popper.min.js"></script>
 {% endblock %}{% endblock %}
