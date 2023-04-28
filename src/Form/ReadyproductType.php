@@ -13,7 +13,8 @@ class ReadyproductType extends AbstractType
     {
         $builder
             ->add('price')
-            ->add('productId', ProductType::class);
+            ->add('productId', ProductType::class)
+            ->add('userId');
     }
 
     public function configureOptions(OptionsResolver $resolver): void

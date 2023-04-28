@@ -4,20 +4,25 @@
 {% block body %}
 	{% include('event/admin/eventBar.html.twig') %}
 
-
   
   <div class="select-container">
- 
-    <form action="{{ path('app_event_index_admin') }}" method="GET">
+
+    {# <form action="{{ path('app_event_index_admin') }}" method="GET">
       <div class="form-group">
         <input type="text" id="search-term" name="q" class="form-control" value="{{ searchTerm }}"placeholder="Search..."> 
+      </div>
+    </form> #}
+
+    <form action="{{ path('app_event_index_admin') }}" method="GET">
+      <div class="form-group">
+        <input type="text" id="searchInput" class="form-control" placeholder="Search...">
       </div>
     </form>
 
     <form action="{{ path('app_event_index_admin') }}" method="get">
-      <p style="display:inline-block; margin-right: 10px;">Sort By User</p>
+      {# <p style="display:inline-block; margin-right: 10px;">Sort By User</p> #}
       <select name="userID" onchange="this.form.submit()">
-        <option value="" {% if app.request.query.get('userName') is empty %} selected {% endif %} disabled>Choose an option</option>
+        <option value="" {% if app.request.query.get('userName') is empty %} selected {% endif %} disabled>Sort By User</option>
         {% for user in users %}
           <option value="{{user.userId}}" {% if app.request.query.get('userID') == user.userId %} selected {% endif %}>{{user.name}}</option>
         {% endfor %}
@@ -25,9 +30,9 @@
     </form>
 
     <form action="{{ path('app_event_index_admin') }}" method="get">
-      <p style="display:inline-block; margin-right: 10px;">Sort by Name</p>
+      {# <p style="display:inline-block; margin-right: 10px;">Sort by Name</p> #}
       <select name="name" onchange="this.form.submit()">
-        <option value="" {% if app.request.query.get('name') is empty %} selected {% endif %} disabled>Choose an option</option>
+        <option value="" {% if app.request.query.get('name') is empty %} selected {% endif %} disabled>Sort by Name</option>
         <option value="asc" {% if app.request.query.get('name') == 'asc' %} selected {% endif %}>Ascending Name</option>
         <option value="desc" {% if app.request.query.get('name') == 'desc' %} selected {% endif %}>Descending Name</option>
       </select>
@@ -35,18 +40,18 @@
 
       
     <form action="{{ path('app_event_index_admin') }}" method="get">
-      <p style="display:inline-block; margin-right: 10px;">Sort by Price</p>
+      {# <p style="display:inline-block; margin-right: 10px;">Sort by Price</p> #}
       <select name="feeOrder" onchange="this.form.submit()">
-        <option value="" disabled {{ app.request.query.get('feeOrder') is empty ? 'selected' : '' }}>Choose an option</option>
+        <option value="" disabled {{ app.request.query.get('feeOrder') is empty ? 'selected' : '' }}>Sort by Price</option>
         <option value="asc" {{ app.request.query.get('feeOrder') == 'asc' ? 'selected' : '' }}>Ascending Price</option>
         <option value="desc" {{ app.request.query.get('feeOrder') == 'desc' ? 'selected' : '' }}>Descending Price</option>
       </select>
     </form>
 
     <form action="{{ path('app_event_index_admin') }}" method="get">
-      <p style="display:inline-block; margin-right: 10px;">Sort by Type</p>
+      {# <p style="display:inline-block; margin-right: 10px;">Sort by Type</p> #}
       <select name="type" onchange="this.form.submit()">
-        <option value="" disabled {{ app.request.query.get('type') is empty ? 'selected' : '' }}>Choose an option</option>
+        <option value="" disabled {{ app.request.query.get('type') is empty ? 'selected' : '' }}>Sort by Type</option>
         <option value="Auction" {{ app.request.query.get('type') == 'Auction' ? 'selected' : '' }}>Auction</option>
         <option value="Art Fair" {{ app.request.query.get('type') == 'Art Fair' ? 'selected' : '' }}>Art Fair</option>
         <option value="Exhibition" {{ app.request.query.get('type') == 'Exhibition' ? 'selected' : '' }}>Exhibition</option>
@@ -55,9 +60,9 @@
     </form>
 
     <form action="{{ path('app_event_index_admin') }}" method="get">
-      <p style="display:inline-block; margin-right: 10px;">Sort by Status</p>
+      {# <p style="display:inline-block; margin-right: 10px;">Sort by Status</p> #}
       <select name="status" onchange="this.form.submit()">
-        <option value="" disabled {{ app.request.query.get('status') is empty ? 'selected' : '' }}>Choose an option</option>
+        <option value="" disabled {{ app.request.query.get('status') is empty ? 'selected' : '' }}>Sort by Status</option>
         <option value="Scheduled" {{ app.request.query.get('status') == 'Scheduled' ? 'selected' : '' }}>Scheduled</option>
         <option value="Started" {{ app.request.query.get('status') == 'Started' ? 'selected' : '' }}>Started</option>
         <option value="Finished" {{ app.request.query.get('status') == 'Finished' ? 'selected' : '' }}>Finished</option>
@@ -82,6 +87,7 @@
     </div>
   </a>
 
+<div class="table-container">
 <table class="table">
   <thead>
     <tr>
@@ -116,7 +122,46 @@
     {% endfor %}
   </tbody>
 </table>
+</div>
+
   <br>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+  $('th').click(function() {
+    var table = $(this).parents('table').eq(0)
+    var rows = table.find('tr:gt(0)').toArray().sort(comparer($(this).index()))
+    this.asc = !this.asc
+    if (!this.asc) { rows = rows.reverse() }
+    for (var i = 0; i < rows.length; i++) { table.append(rows[i]) }
+  })
+})
+
+function comparer(index) {
+  return function(a, b) {
+    var valA = getCellValue(a, index), valB = getCellValue(b, index)
+    return $.isNumeric(valA) && $.isNumeric(valB) ? valA - valB : valA.toString().localeCompare(valB)
+  }
+}
+
+function getCellValue(row, index){ return $(row).children('td').eq(index).text() }
+</script>
+<script>
+$(document).ready(function() {
+  $('#searchInput').keyup(function() {
+    var searchText = $(this).val().toLowerCase();
+    $('table tbody tr').each(function() {
+      var rowText = $(this).text().toLowerCase();
+
+      if (rowText.includes(searchText)) {
+        $(this).show();
+      } else {
+        $(this).hide();
+      }
+    });
+  });
+});
+</script>
 {% endblock %}
 
 {% block stylesheets %}
