@@ -362,26 +362,34 @@ class EventController extends AbstractController
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $event = new Event();
+        $event->setImage('http://localhost/PIDEV/BlogUploads/imagec.png');
+        $event->setUser($this->connectedUser);
+
         $form = $this->createForm(EventType::class, $event);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $event = $form->getData();
+
 
             $imageFile = $form->get('image')->getData();
             if ($imageFile) {
                 $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
                 $newFilename = $originalFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
+                $destinationPath = $this->getParameter('destinationPath') . '/' . $newFilename;
+                $imageURL = $this->getParameter('file_base_url')['host'] . '/' . $this->getParameter('file_base_url')['path'] . '/' . $newFilename;
+                $imagePath = $this->getParameter('destinationPath') . '/' . $newFilename;
 
                 try {
                     $imageFile->move(
-                        $this->getParameter('product_images_directory'),
+                        $this->getParameter('destinationPath'),
                         $newFilename
                     );
                 } catch (FileException $e) {
                     // handle exception if something happens during file upload
                 }
 
-                $event->setImage($newFilename);
+                $event->setImage($imageURL);
             }
             $entityManager->persist($event);
             $entityManager->flush();
