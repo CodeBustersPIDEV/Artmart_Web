@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 #[ORM\Table(name: "comments", options: [
     'indexes' => [
@@ -20,6 +22,8 @@ class Comments
     private $commentsId;
 
     #[ORM\Column(name: "content", type: "text", length: 65535, nullable: false)]
+    #[Assert\NotBlank(message: "Please Enter A Comment For This Blog Post")]
+
     private $content;
 
     #[ORM\Column(name: "date", type: "datetime", nullable: true, options: ["default" => "current_timestamp()"])]
