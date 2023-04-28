@@ -18,6 +18,12 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Dompdf\Dompdf;
 use Symfony\Component\Routing\Annotation\Route;
+use PhpOffice\PhpSpreadsheet\Chart\ChartType;
+use PhpOffice\PhpSpreadsheet\Chart\DataSeries;
+use PhpOffice\PhpSpreadsheet\Chart\DataSeriesValues;
+use PhpOffice\PhpSpreadsheet\Chart\Legend;
+use PhpOffice\PhpSpreadsheet\Chart\PlotArea;
+use PhpOffice\PhpSpreadsheet\Chart\Title;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 
@@ -130,6 +136,7 @@ class OrderController extends AbstractController
         $sheet->setCellValue('J2', '=SUM(G2:G'.$row.')');
         $sheet->setCellValue('I3', 'Average Quantity');
         $sheet->setCellValue('J3', '=AVERAGE(F2:F'.$row.')');
+
         $writer = new Xlsx($spreadsheet);
         $filename = 'Orders_Statistics_Artmart_2023.xlsx';
         $writer->save($filename);
@@ -192,7 +199,6 @@ class OrderController extends AbstractController
             $orderStatus = $entityManager->getRepository(Orderstatus::class)->findOneBy(['orderid' => $order->getOrderId()]);
         
             $status = $orderStatus ? $orderStatus->getStatus() : null;
-            // Store $orderStatus somewhere for display later with the order details
             $order->status = $status;
         }
 
