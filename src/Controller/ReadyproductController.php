@@ -51,7 +51,7 @@ class ReadyproductController extends AbstractController
             ->createQueryBuilder('r')
             ->innerJoin('r.productId', 'p')
             ->innerJoin('p.category', 'c')
-            ->andWhere('r.userId = :userId') 
+            ->andWhere('r.userId = :userId')
             ->setParameter('userId', $this->connectedUser->getUserId())
             ->orderBy('r.price', 'ASC');
 
@@ -76,7 +76,7 @@ class ReadyproductController extends AbstractController
             9
         );
 
-        
+
         $categories = $entityManager
             ->getRepository(Categories::class)
             ->findAll();
@@ -84,7 +84,7 @@ class ReadyproductController extends AbstractController
         return $this->render('readyproduct/index.html.twig', [
             'readyproducts' => $pagination,
             'searchTerm' => $searchTerm,
-            'categories' => $categories, 
+            'categories' => $categories,
         ]);
     }
 
@@ -121,7 +121,7 @@ class ReadyproductController extends AbstractController
             9
         );
 
-        
+
         $categories = $entityManager
             ->getRepository(Categories::class)
             ->findAll();
@@ -170,7 +170,7 @@ class ReadyproductController extends AbstractController
             9
         );
 
-        
+
         $categories = $entityManager
             ->getRepository(Categories::class)
             ->findAll();
@@ -178,7 +178,7 @@ class ReadyproductController extends AbstractController
         return $this->render('readyproduct/index.html.twig', [
             'readyproducts' => $pagination,
             'searchTerm' => $searchTerm,
-            'categories' => $categories, 
+            'categories' => $categories,
         ]);
     }
 
@@ -213,7 +213,7 @@ class ReadyproductController extends AbstractController
             9
         );
 
-    
+
         $categories = $entityManager
             ->getRepository(Categories::class)
             ->findAll();
@@ -221,7 +221,7 @@ class ReadyproductController extends AbstractController
         return $this->render('readyproduct/client.html.twig', [
             'readyproducts' => $pagination,
             'searchTerm' => $searchTerm,
-            'categories' => $categories, 
+            'categories' => $categories,
         ]);
     }
 
@@ -256,7 +256,7 @@ class ReadyproductController extends AbstractController
             9
         );
 
-        
+
         $categories = $entityManager
             ->getRepository(Categories::class)
             ->findAll();
@@ -264,7 +264,7 @@ class ReadyproductController extends AbstractController
         return $this->render('readyproduct/client.html.twig', [
             'readyproducts' => $pagination,
             'searchTerm' => $searchTerm,
-            'categories' => $categories, 
+            'categories' => $categories,
         ]);
     }
 
@@ -299,7 +299,7 @@ class ReadyproductController extends AbstractController
             9
         );
 
-        
+
         $categories = $entityManager
             ->getRepository(Categories::class)
             ->findAll();
@@ -307,7 +307,7 @@ class ReadyproductController extends AbstractController
         return $this->render('readyproduct/client.html.twig', [
             'readyproducts' => $pagination,
             'searchTerm' => $searchTerm,
-            'categories' => $categories, 
+            'categories' => $categories,
         ]);
     }
 
@@ -342,7 +342,7 @@ class ReadyproductController extends AbstractController
             9
         );
 
-        
+
         $categories = $entityManager
             ->getRepository(Categories::class)
             ->findAll();
@@ -385,7 +385,7 @@ class ReadyproductController extends AbstractController
             9
         );
 
-        
+
         $categories = $entityManager
             ->getRepository(Categories::class)
             ->findAll();
@@ -395,7 +395,8 @@ class ReadyproductController extends AbstractController
             'searchTerm' => $searchTerm,
             'categories' => $categories,
         ]);
-    }#[Route('/DescCatNoUser', name: 'app_readyproduct__desc_cat_index_no_user', methods: ['GET'])]
+    }
+    #[Route('/DescCatNoUser', name: 'app_readyproduct__desc_cat_index_no_user', methods: ['GET'])]
     public function orderByCategoryDescNoUser(Request $request, EntityManagerInterface $entityManager, PaginatorInterface $paginator): Response
     {
         $searchTerm = $request->query->get('q');
@@ -426,7 +427,7 @@ class ReadyproductController extends AbstractController
             9
         );
 
-        
+
         $categories = $entityManager
             ->getRepository(Categories::class)
             ->findAll();
@@ -434,7 +435,7 @@ class ReadyproductController extends AbstractController
         return $this->render('readyproduct/client.html.twig', [
             'readyproducts' => $pagination,
             'searchTerm' => $searchTerm,
-            'categories' => $categories, 
+            'categories' => $categories,
         ]);
     }
 
@@ -446,7 +447,7 @@ class ReadyproductController extends AbstractController
             ->createQueryBuilder('r')
             ->innerJoin('r.productId', 'p')
             ->innerJoin('p.category', 'c')
-            ->andWhere('r.userId = :userId') 
+            ->andWhere('r.userId = :userId')
             ->setParameter('userId', $this->connectedUser->getUserId())
             ->orderBy('r.price', 'ASC');
 
@@ -469,7 +470,7 @@ class ReadyproductController extends AbstractController
             ->getRepository(Productreview::class)
             ->findAll();
 
-        
+
         $categories = $entityManager
             ->getRepository(Categories::class)
             ->findAll();
@@ -478,7 +479,7 @@ class ReadyproductController extends AbstractController
             'readyproducts' => $readyproducts,
             'productreviews' => $productreviews,
             'searchTerm' => $searchTerm,
-            'categories' => $categories, 
+            'categories' => $categories,
         ]);
     }
 
@@ -490,7 +491,7 @@ class ReadyproductController extends AbstractController
             ->createQueryBuilder('r')
             ->innerJoin('r.productId', 'p')
             ->innerJoin('p.category', 'c')
-            ->andWhere('r.userId = :userId') 
+            ->andWhere('r.userId = :userId')
             ->setParameter('userId', $this->connectedUser->getUserId())
             ->orderBy('r.price', 'DESC');
 
@@ -519,7 +520,7 @@ class ReadyproductController extends AbstractController
             ->getRepository(Productreview::class)
             ->findAll();
 
-        
+
         $categories = $entityManager
             ->getRepository(Categories::class)
             ->findAll();
@@ -528,7 +529,7 @@ class ReadyproductController extends AbstractController
             'readyproducts' => $readyproducts,
             'productreviews' => $productreviews,
             'searchTerm' => $searchTerm,
-            'categories' => $categories, 
+            'categories' => $categories,
         ]);
     }
 
@@ -567,7 +568,7 @@ class ReadyproductController extends AbstractController
             ->getRepository(Productreview::class)
             ->findAll();
 
-        
+
         $categories = $entityManager
             ->getRepository(Categories::class)
             ->findAll();
@@ -576,7 +577,7 @@ class ReadyproductController extends AbstractController
             'readyproducts' => $pagination,
             'productreviews' => $productreviews,
             'searchTerm' => $searchTerm,
-            'categories' => $categories, 
+            'categories' => $categories,
         ]);
     }
 
@@ -640,7 +641,7 @@ class ReadyproductController extends AbstractController
             ->createQueryBuilder('r')
             ->innerJoin('r.productId', 'p')
             ->innerJoin('p.category', 'c')
-            ->andWhere('r.userId = :userId') 
+            ->andWhere('r.userId = :userId')
             ->setParameter('userId', $this->connectedUser->getUserId());
 
         if ($order === 'name') {
@@ -671,7 +672,7 @@ class ReadyproductController extends AbstractController
             9
         );
 
-        
+
         $categories = $entityManager
             ->getRepository(Categories::class)
             ->findAll();
@@ -681,7 +682,7 @@ class ReadyproductController extends AbstractController
             'productreviews' => $productreviews,
             'searchTerm' => $searchTerm,
             'order' => $order,
-            'categories' => $categories, 
+            'categories' => $categories,
         ]);
     }
 
@@ -727,7 +728,7 @@ class ReadyproductController extends AbstractController
             9
         );
 
-        
+
         $categories = $entityManager
             ->getRepository(Categories::class)
             ->findAll();
@@ -737,12 +738,12 @@ class ReadyproductController extends AbstractController
             'productreviews' => $productreviews,
             'searchTerm' => $searchTerm,
             'order' => $order,
-            'categories' => $categories, 
+            'categories' => $categories,
         ]);
     }
 
     #[Route('/', name: 'app_readyproduct_no_user_index', methods: ['GET'])]
-    public function index_no_user(Request $request, EntityManagerInterface $entityManager): Response
+    public function index_no_user(Request $request, EntityManagerInterface $entityManager, PaginatorInterface $paginator): Response
     {
         $searchTerm = $request->query->get('q');
         $order = $request->query->get('order');
@@ -775,17 +776,22 @@ class ReadyproductController extends AbstractController
             ->getRepository(Productreview::class)
             ->findAll();
 
-        
+        $pagination = $paginator->paginate(
+            $queryBuilder->getQuery(),
+            $request->query->getInt('page', 1),
+            9
+        );
+
         $categories = $entityManager
             ->getRepository(Categories::class)
             ->findAll();
 
         return $this->render('readyproduct/no_user.html.twig', [
-            'readyproducts' => $readyproducts,
+            'readyproducts' => $pagination,
             'productreviews' => $productreviews,
             'searchTerm' => $searchTerm,
             'order' => $order,
-            'categories' => $categories, 
+            'categories' => $categories,
         ]);
     }
 
@@ -806,10 +812,10 @@ class ReadyproductController extends AbstractController
             $readyproduct->setPrice($form->get('price')->getData());
             $readyproduct->setProductId($product);
 
-           
+
             $readyproduct->setUserId($this->connectedUser);
 
-            
+
             $userId = $this->connectedUser->getUserId();
 
             $imageFile = $form->get('productId')->get('image')->getData();
@@ -826,7 +832,6 @@ class ReadyproductController extends AbstractController
                         $newFilename
                     );
                 } catch (FileException $e) {
-                    
                 }
 
                 $product->setImage($imageURL);
@@ -860,10 +865,10 @@ class ReadyproductController extends AbstractController
             $readyproduct->setPrice($form->get('price')->getData());
             $readyproduct->setProductId($product);
 
-            
+
             $readyproduct->setUserId($this->connectedUser);
 
-            
+
             $userId = $this->connectedUser->getUserId();
 
             $imageFile = $form->get('productId')->get('image')->getData();
@@ -880,7 +885,6 @@ class ReadyproductController extends AbstractController
                         $newFilename
                     );
                 } catch (FileException $e) {
-                    
                 }
 
                 $product->setImage($imageURL);
@@ -891,13 +895,13 @@ class ReadyproductController extends AbstractController
             $entityManager->flush();
 
             $id = $form->get('userId')->getData();
-            
+
             $user = $entityManager->getRepository(User::class)->find($id);
 
-            
+
             $userEmail = $user->getEmail();
 
-            
+
             $email = (new MimeTemplatedEmail())
                 ->from($this->connectedUser->getEmail())
                 ->to($userEmail)
@@ -926,7 +930,7 @@ class ReadyproductController extends AbstractController
         $productreviews = $this->managerRegistry->getRepository(Productreview::class)
             ->findBy(['readyProductId' => $readyproduct]);
 
-        
+
         $totalRating = 0;
         $count = count($productreviews);
         foreach ($productreviews as $productreview) {
@@ -946,7 +950,7 @@ class ReadyproductController extends AbstractController
         $productreviews = $this->managerRegistry->getRepository(Productreview::class)
             ->findBy(['readyProductId' => $readyproduct]);
 
-        
+
         $totalRating = 0;
         $count = count($productreviews);
         foreach ($productreviews as $productreview) {
@@ -966,7 +970,7 @@ class ReadyproductController extends AbstractController
         $productreviews = $this->managerRegistry->getRepository(Productreview::class)
             ->findBy(['readyProductId' => $readyproduct]);
 
-        
+
         $totalRating = 0;
         $count = count($productreviews);
         foreach ($productreviews as $productreview) {
@@ -986,7 +990,7 @@ class ReadyproductController extends AbstractController
         $productreviews = $this->managerRegistry->getRepository(Productreview::class)
             ->findBy(['readyProductId' => $readyproduct]);
 
-        
+
         $totalRating = 0;
         $count = count($productreviews);
         foreach ($productreviews as $productreview) {
@@ -1020,7 +1024,6 @@ class ReadyproductController extends AbstractController
                     $newFilename
                 );
             } catch (FileException $e) {
-                 
             }
 
             $product->setImage($imageURL);
@@ -1058,7 +1061,6 @@ class ReadyproductController extends AbstractController
                     $newFilename
                 );
             } catch (FileException $e) {
-                
             }
 
             $product->setImage($imageURL);
@@ -1101,7 +1103,7 @@ class ReadyproductController extends AbstractController
         $productreviews = $this->managerRegistry->getRepository(Productreview::class)
             ->findBy(['readyProductId' => $readyProductId]);
 
-        
+
         $totalRating = 0;
         $count = count($productreviews);
         foreach ($productreviews as $productreview) {
@@ -1123,7 +1125,7 @@ class ReadyproductController extends AbstractController
         $productreviews = $this->managerRegistry->getRepository(Productreview::class)
             ->findBy(['readyProductId' => $readyProductId]);
 
-        
+
         $totalRating = 0;
         $count = count($productreviews);
         foreach ($productreviews as $productreview) {
@@ -1145,7 +1147,7 @@ class ReadyproductController extends AbstractController
         $productreviews = $this->managerRegistry->getRepository(Productreview::class)
             ->findBy(['readyProductId' => $readyProductId]);
 
-        
+
         $totalRating = 0;
         $count = count($productreviews);
         foreach ($productreviews as $productreview) {
@@ -1184,33 +1186,33 @@ class ReadyproductController extends AbstractController
     private function AdminAccess()
     {
         if ($this->connectedUser->getRole() == "admin") {
-            return true; 
+            return true;
         } else {
-            return false; 
+            return false;
         }
     }
     private function ClientAccess()
     {
         if ($this->connectedUser->getRole() === "client") {
-            return true; 
+            return true;
         } else {
-            return false; 
+            return false;
         }
     }
     private function ArtistAccess()
     {
         if ($this->connectedUser->getRole() === "artist") {
-            return true; 
+            return true;
         } else {
-            return false; 
+            return false;
         }
     }
     private function ArtistClientAccess()
     {
         if ($this->connectedUser->getRole() == "artist" || $this->connectedUser->getRole() == "client") {
-            return true; 
+            return true;
         } else {
-            return false; 
+            return false;
         }
     }
 }
