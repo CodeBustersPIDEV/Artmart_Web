@@ -187,7 +187,24 @@
 }
 
 
+a.chat-button {
+  display: inline-block;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+  text-decoration: none;
+  color: white;
+  background-color: #4CAF50;
+  border-radius: 5px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+  transition: all 0.2s ease-in-out;
+}
 
+a.chat-button:hover {
+  background-color: #3e8e41;
+  cursor: pointer;
+}
 </style>
 
 <center>
@@ -238,7 +255,9 @@
          {{ knp_pagination_render(customproducts) }}
     </div>
 
-
+<center>
+<a class="chat-button" href="{{ path('chat') }}">Ask for Help</a>
+</center>
 
 
 <script>
