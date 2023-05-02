@@ -43,7 +43,15 @@ class CustomproductController extends AbstractController
             }
         }
     }
+    #[Route('chat/', name: 'chat', methods: ['GET'])]
+    public function chat(): Response
+    {
+        $customproduct = new Customproduct(); 
     
+        return $this->render('customproduct/chat.html.twig', [
+            'customproduct' => $customproduct,
+        ]);
+    }
     #[Route('/customproduct/searchCustomProduct', name: 'app_customproduct_admin_search', methods: ['GET'])]
     public function searchCustomProduct(Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
@@ -88,11 +96,20 @@ class CustomproductController extends AbstractController
             ->setParameter('userId', $this->connectedUser->getUserId());
 
          
-        if ($order === 'name') {
-            $queryBuilder->orderBy('p.name', 'ASC');
-        } elseif ($order === 'weight') {
-            $queryBuilder->orderBy('p.weight', 'ASC');
-        }
+            $order = $request->query->get('order', 'name');
+            $direction = $request->query->get('direction', 'asc');
+            
+            // Toggle the direction when the order is clicked
+            if ($order === $request->get('order')) {
+                $direction = ($direction === 'asc') ? 'desc' : 'asc';
+            }
+            
+            if ($order === 'name') {
+                $queryBuilder->orderBy('p.name', $direction);
+            } elseif ($order === 'weight') {
+                $queryBuilder->orderBy('p.weight', $direction);
+            }
+            
     
         if ($searchTerm) {
             $criteria = $request->query->get('criteria');
@@ -148,13 +165,20 @@ class CustomproductController extends AbstractController
             ->innerJoin('c.product', 'p');
 
 
+            $order = $request->query->get('order', 'name');
             $direction = $request->query->get('direction', 'asc');
-
+            
+            // Toggle the direction when the order is clicked
+            if ($order === $request->get('order')) {
+                $direction = ($direction === 'asc') ? 'desc' : 'asc';
+            }
+            
             if ($order === 'name') {
                 $queryBuilder->orderBy('p.name', $direction);
             } elseif ($order === 'weight') {
                 $queryBuilder->orderBy('p.weight', $direction);
             }
+            
             
 
         if ($searchTerm) {
@@ -410,6 +434,7 @@ class CustomproductController extends AbstractController
             'customproduct' => $customproduct,
         ]);
     }
+  
     #[Route('s/{customProductId}', name: 'app_customproduct_showartist', methods: ['GET'])]
     public function showartist(Customproduct $customproduct): Response
     {
@@ -419,38 +444,6 @@ class CustomproductController extends AbstractController
             'customproduct' => $customproduct,
             'product' => $product,
         ]);
-    }
-    private function AdminAccess()
-    {
-        if ($this->connectedUser->getRole() == "admin") {
-            return true; // return a value to indicate that access is allowed
-        } else {
-            return false; // return a value to indicate that access is not allowed
-        }
-    }
-     private function ClientAccess()
-    {
-        if ($this->connectedUser->getRole() === "client") {
-            return true; // return a value to indicate that access is allowed
-        } else {
-            return false; // return a value to indicate that access is not allowed
-        }
-    } 
-    private function ArtistAccess()
-    {
-        if ($this->connectedUser->getRole() === "artist") {
-           return true; // return a value to indicate that access is allowed
-        } else {
-            return false; // return a value to indicate that access is not allowed
-        }
-    }
-    private function ArtistClientAccess()
-    {
-        if ($this->connectedUser->getRole() == "artist" || $this->connectedUser->getRole() == "client") {
-            return true; // return a value to indicate that access is allowed
-        } else {
-            return false; // return a value to indicate that access is not allowed
-        }
     }
 
 
@@ -594,7 +587,7 @@ class CustomproductController extends AbstractController
         $entityManager->flush();
 
         $sid    = "AC85fdc289caf6aa747109220798d39394";
-        $token  = "6e5451f36b8e32a567b9e67984f60a16";
+        $token  = "8acba1bd4bfc10782d6dccac2023e541";
         $twilio = new Client($sid, $token);
     
         $message = $twilio->messages
@@ -609,8 +602,7 @@ class CustomproductController extends AbstractController
         // Redirect to the filtered list of applies with status 'pending', 'done', or 'refused'
         return $this->redirectToRoute('app_apply_pending');
     }
-    
-
+ 
  
     
 }
