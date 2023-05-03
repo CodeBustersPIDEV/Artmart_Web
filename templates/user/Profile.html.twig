@@ -278,8 +278,14 @@
 {% endif %}
             
 {% if artistAttributes is defined %}
+<center>
+<div class="col-md-6">
+<img src="{{ qr_code_url(url) }}" style="width: 100px; height: 100px;"/>
+</div>
+</center>
 <p><strong>Bio:</strong> {{ artistAttributes.bio }}</p>
 <p><strong>Number of Artwork:</strong> {{ artistAttributes.nbrArtwork }}</p>
+ 
 {% endif %}
 {% if adminAttributes is defined %}
 <p><strong>Department:</strong> {{ adminAttributes.department }}</p>
@@ -290,12 +296,13 @@
 <br><br><br><br>
   <div class="button justify-content-center">
   <div class="button d-flex align-items-center" >
-  
       <a class="btn btn-outline-primary mr-2" href="{{ path('app_user_editProfile', {'userId': user.userId}) }}">Edit Profile</a>
       {{ include('user/_delete_form.html.twig', {'button_label': 'Delete Account'}) }}
   </div>
   </div>
-
-    
+  <br><br>
+    <br><br>
+      <br><br>
+      <p><strong>Last Logged In:</strong> {{ lastloggedin}}</p>  
 
 {% endblock %}

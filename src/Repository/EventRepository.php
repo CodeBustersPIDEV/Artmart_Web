@@ -39,6 +39,124 @@ class EventRepository extends ServiceEntityRepository
         }
     }
 
+   public function findByUser($userID): array
+   {
+       return $this->createQueryBuilder('e')
+           ->andWhere('e.user = :val')
+           ->setParameter('val', $userID)
+           ->getQuery()
+           ->getResult()
+       ;
+   }
+
+   public function findAllSortedByName($name, $connectedUserId, $showOtherEvents): array
+   {
+       $queryBuilder = $this->createQueryBuilder('e')
+           ->join('e.user', 'u')
+           ->orderBy('e.name', $name);
+       
+       if ($showOtherEvents) {
+           $queryBuilder->where('u.userId != :connectedUserId')
+                        ->setParameter('connectedUserId', $connectedUserId);
+       } else {
+           $queryBuilder->where('u.userId = :connectedUserId')
+                        ->setParameter('connectedUserId', $connectedUserId);
+       }
+       
+       return $queryBuilder->getQuery()
+                           ->getResult();
+   }
+            
+
+   public function findAllSortedByPrice($sort, $connectedUserId, $showOtherEvents): array
+   {
+       $queryBuilder = $this->createQueryBuilder('e')
+           ->join('e.user', 'u')
+           ->orderBy('e.entryfee', $sort);
+       
+       if ($showOtherEvents) {
+           $queryBuilder->where('u.userId != :connectedUserId')
+                        ->setParameter('connectedUserId', $connectedUserId);
+       } else {
+           $queryBuilder->where('u.userId = :connectedUserId')
+                        ->setParameter('connectedUserId', $connectedUserId);
+       }
+       
+       return $queryBuilder->getQuery()
+                           ->getResult();
+   }
+   
+   public function findByType($type, $connectedUserId, $showOtherEvents): array
+   {
+       $queryBuilder = $this->createQueryBuilder('e')
+           ->join('e.user', 'u')
+           ->andWhere('e.type = :val')
+           ->setParameter('val', $type);
+       
+       if ($showOtherEvents) {
+           $queryBuilder->andWhere('u.userId != :connectedUserId')
+                        ->setParameter('connectedUserId', $connectedUserId);
+       } else {
+           $queryBuilder->andWhere('u.userId = :connectedUserId')
+                        ->setParameter('connectedUserId', $connectedUserId);
+       }
+       
+       return $queryBuilder->getQuery()
+                           ->getResult();
+   }
+   
+   public function findByStatus($status, $connectedUserId, $showOtherEvents): array
+   {
+       $queryBuilder = $this->createQueryBuilder('e')
+           ->join('e.user', 'u')
+           ->andWhere('e.status = :val')
+           ->setParameter('val', $status);
+       
+       if ($showOtherEvents) {
+           $queryBuilder->andWhere('u.userId != :connectedUserId')
+                        ->setParameter('connectedUserId', $connectedUserId);
+       } else {
+           $queryBuilder->andWhere('u.userId = :connectedUserId')
+                        ->setParameter('connectedUserId', $connectedUserId);
+       }
+       
+       return $queryBuilder->getQuery()
+                           ->getResult();
+   }
+   
+   public function findByTerm($searchTerm, $connectedUserId, $showOtherEvents): array
+   {
+       $queryBuilder = $this->createQueryBuilder('e')
+           ->join('e.user', 'u')
+           ->where('e.name LIKE :searchTerm')
+           ->setParameter('searchTerm', '%' . $searchTerm . '%');
+       
+       if ($showOtherEvents) {
+           $queryBuilder->andWhere('u.userId != :connectedUserId')
+                        ->setParameter('connectedUserId', $connectedUserId);
+       } else {
+           $queryBuilder->andWhere('u.userId = :connectedUserId')
+                        ->setParameter('connectedUserId', $connectedUserId);
+       }
+       
+       return $queryBuilder->getQuery()
+                           ->getResult();
+   }
+      
+
+    // public function findByTerm($searchTerm, $role): array
+    // {
+    //     return $this->createQueryBuilder('e')
+    //     ->join('e.user', 'u')
+    //     ->where('u.role = :role')
+    //     ->setParameter('role', $role)
+    //     ->andWhere('e.name LIKE :searchTerm')
+    //     ->setParameter('searchTerm', '%' . $searchTerm . '%')
+    //     ->getQuery()
+    //     ->getResult();
+    // }
+
+}
 //    /**
 //     * @return Event[] Returns an array of Event objects
 //     */
@@ -54,71 +172,15 @@ class EventRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-   public function findOtherEvents($value): array
-   {
-       return $this->createQueryBuilder('e')
-           ->andWhere('e.exampleField != :val')
-           ->setParameter('val', $value)
-           ->getQuery()
-           ->getResult()
-       ;
-   }
-
-   public function findByUser($userID): array
-   {
-       return $this->createQueryBuilder('e')
-           ->andWhere('e.user = :val')
-           ->setParameter('val', $userID)
-           ->getQuery()
-           ->getResult()
-       ;
-   }
-
-//    public function findOneBySomeField($value): ?Event
+//    public function findAllOtherEvents($userID): array
 //    {
 //        return $this->createQueryBuilder('e')
-//            ->andWhere('e.exampleField = :val')
-//            ->setParameter('val', $value)
+//            ->andWhere('e.user != :val')
+//            ->setParameter('val', $userID)
 //            ->getQuery()
-//            ->getOneOrNullResult()
+//            ->getResult()
 //        ;
 //    }
-    public function findAllSortedByName($name): array
-    {
-        return $this->createQueryBuilder('e')
-            ->orderBy('e.name', $name)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-
-    public function findAllSortedByPrice($sort): array
-    {
-        return $this->createQueryBuilder('e')
-            ->orderBy('e.entryfee', $sort)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-
-    public function findByType($type): array
-    {
-        return $this->createQueryBuilder('e')
-        ->andWhere('e.type = :val')
-        ->setParameter('val', $type)
-        ->getQuery()
-        ->getResult();
-    }
-    
-    public function findByStatus($status): array
-    {
-        return $this->createQueryBuilder('e')
-        ->andWhere('e.status = :val')
-        ->setParameter('val', $status)
-        ->getQuery()
-        ->getResult();
-    }
-
     // public function findByStatus($status, $userID): array
     // {
     //     return $this->createQueryBuilder('e')
@@ -129,14 +191,12 @@ class EventRepository extends ServiceEntityRepository
     //         ->getQuery()
     //         ->getResult();
     // }
-
-    public function findByTerm($searchTerm): array
-    {
-        return $this->createQueryBuilder('e')
-        ->where('e.name LIKE :searchTerm')
-        ->setParameter('searchTerm', '%' . $searchTerm . '%')
-        ->getQuery()
-        ->getResult();
-    }
-
-}
+//    public function findOneBySomeField($value): ?Event
+//    {
+//        return $this->createQueryBuilder('e')
+//            ->andWhere('e.exampleField = :val')
+//            ->setParameter('val', $value)
+//            ->getQuery()
+//            ->getOneOrNullResult()
+//        ;
+//    }

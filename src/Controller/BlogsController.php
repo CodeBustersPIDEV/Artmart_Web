@@ -39,6 +39,7 @@ use Facebook\Facebook;
 use Facebook\Exceptions\FacebookResponseException;
 use Facebook\Exceptions\FacebookSDKException;
 use Endroid\QrCode\Builder\BuilderInterface;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 #[Route('/blogs')]
 class BlogsController extends AbstractController
@@ -55,7 +56,7 @@ class BlogsController extends AbstractController
     private $result;
 
 
-    public function __construct(BuilderInterface $customQrCodeBuilder, Filesystem $filesystem, SessionInterface $session, UserRepository $userRepository, BlogsRepository $blogsRepository, MediaRepository $mediaRepository, BlogcategoriesRepository $blogCategoryRepository, HasBlogCategoryRepository $hasBlogCategoryRepository, TagsRepository $tagsRepository, HasTagRepository $hasTagRepository, CommentsRepository $commentsRepository)
+    public function __construct(Filesystem $filesystem, SessionInterface $session, UserRepository $userRepository, BlogsRepository $blogsRepository, MediaRepository $mediaRepository, BlogcategoriesRepository $blogCategoryRepository, HasBlogCategoryRepository $hasBlogCategoryRepository, TagsRepository $tagsRepository, HasTagRepository $hasTagRepository, CommentsRepository $commentsRepository)
     {
         $this->filesystem = $filesystem;
         $this->blogsRepository = $blogsRepository;
@@ -158,13 +159,21 @@ class BlogsController extends AbstractController
 
     // ************************************************************************************************************************************************
     // ************************************************************************************************************************************************
-
+    #[Route('/AllBlogs', name: "list")]
+    public function mobileIndex(BlogsRepository $blogsRepository, NormalizerInterface $normalize)
+    {
+        $blogs = $blogsRepository->findAll();
+        $blogNormalizes = $normalize->normalize($blogs, 'json', ['groups' => "blogs"]);
+        $json = json_encode($blogNormalizes);
+        return new Response($json);
+    }
 
 
     #[Route('/', name: 'app_blogs_index', methods: ['GET'])]
     public function index(BlogsRepository $blogsRepository, PaginatorInterface $paginator, Request $request): Response
     {
         $blogs = $blogsRepository->findAll();
+
         $searchTerm = $request->query->get('searchTerm');
         // $criteria = $request->query->get('criteria');
 
@@ -227,7 +236,7 @@ class BlogsController extends AbstractController
         $blogs = $blogsRepository->findAllByUser($this->connectedUser);
         $searchTerm = $request->query->get('searchTerm');
         if ($searchTerm) {
-            $blogs = $blogsRepository->findByTerm($searchTerm);
+            $blogs = $blogsRepository->findMyBlogsByTerm($searchTerm, $this->connectedUser);
         }
 
         $pages = $paginator->paginate(
@@ -236,7 +245,7 @@ class BlogsController extends AbstractController
             3 // Nombre de résultats par page
         );
 
-        return $this->render('blogs/index.html.twig', [
+        return $this->render('blogs/myBlogs.html.twig', [
             'blogs' => $pages,
             'searchTerm' => $searchTerm
         ]);
@@ -404,11 +413,17 @@ class BlogsController extends AbstractController
     #[Route('/admin', name: 'app_blogs_admin', methods: ['GET'])]
     public function adminIndex(BlogsRepository $blogsRepository): Response
     {
+        $blogs = $blogsRepository->findAll();
+        $data = [];
+        foreach ($blogs as $blog) {
+            $data[] = $blog->getNbViews();
+        }
         if ($this->connectedUser->getRole() === "admin") {
             return $this->render('blogs/admin.html.twig', [
-                'blogs' => $blogsRepository->findAll(),
+                'blogs' => $blogs,
                 'blogCategories' => $this->blogCategoryRepository->findAll(),
                 'tags' => $this->tagsRepository->findAll(),
+                'data' => $this->json($data)
 
             ]);
         } else {
@@ -417,6 +432,20 @@ class BlogsController extends AbstractController
         }
     }
 
+
+    #[Route('/chart-data', name: 'chart_data')]
+
+    public function chartData(BlogsRepository $blogsRepository)
+    {
+        $blogs = $blogsRepository->findAll();
+
+        $data = [];
+        foreach ($blogs as $blog) {
+            $data[] = $blog->getNbViews();
+        }
+
+        return $this->json($data);
+    }
     //////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////CRUD Routes///////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -580,5 +609,37 @@ class BlogsController extends AbstractController
         }
 
         return $this->redirectToRoute('app_blogs_index', [], Response::HTTP_SEE_OTHER);
+    }
+    private function AdminAccess()
+    {
+        if ($this->connectedUser->getRole() == "admin") {
+            return true; // return a value to indicate that access is allowed
+        } else {
+            return false; // return a value to indicate that access is not allowed
+        }
+    }
+    private function ClientAccess()
+    {
+        if ($this->connectedUser->getRole() === "client") {
+            return true; // return a value to indicate that access is allowed
+        } else {
+            return false; // return a value to indicate that access is not allowed
+        }
+    }
+    private function ArtistAccess()
+    {
+        if ($this->connectedUser->getRole() === "artist") {
+            return true; // return a value to indicate that access is allowed
+        } else {
+            return false; // return a value to indicate that access is not allowed
+        }
+    }
+    private function ArtistClientAccess()
+    {
+        if ($this->connectedUser->getRole() == "artist" || $this->connectedUser->getRole() == "client") {
+            return true; // return a value to indicate that access is allowed
+        } else {
+            return false; // return a value to indicate that access is not allowed
+        }
     }
 }

@@ -77,11 +77,16 @@ class User
     #[ORM\Column(name: 'dateOfCreation', type: 'datetime', options: ['default' => 'CURRENT_TIMESTAMP'])]
     private \DateTime $dateofcreation;
 
+    #[ORM\Column(name: 'LastLogin', type: 'datetime', options: ['default' => 'CURRENT_TIMESTAMP'])]
+    private \DateTime $LastLogin;
+
+
 
     public function __construct()
     {
         $this->dateofcreation = new \DateTime();
         $this->birthday = new \DateTime();
+        $this->LastLogin = new \DateTime();
 
     }
 
@@ -221,6 +226,17 @@ class User
     public function setDateofcreation(?\DateTimeInterface $dateofcreation): self
     {
         $this->dateofcreation = $dateofcreation;
+
+        return $this;
+    }
+    public function getLastLogin(): ?\DateTimeInterface
+    {
+        return $this->LastLogin;
+    }
+
+    public function setLastLogin(?\DateTimeInterface $LastLogin): self
+    {
+        $this->LastLogin = $LastLogin;
 
         return $this;
     }

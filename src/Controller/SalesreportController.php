@@ -9,12 +9,25 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Entity\User;
+use App\Repository\UserRepository;   
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 #[Route('/salesreport')]
 class SalesreportController extends AbstractController
 {
+    private User $connectedUser;
+    public function __construct(SessionInterface $session, UserRepository $userRepository)
+    {
+        if ($session != null) {
+            $connectedUserID = $session->get('user_id');
+            if (is_int($connectedUserID)) {
+                $this->connectedUser = $userRepository->find((int) $connectedUserID);
+            }
+        }
+    }
     #[Route('/', name: 'app_salesreport_index', methods: ['GET'])]
-    public function index(EntityManagerInterface $entityManager): Response
+    public function index(EntityManagerInterface $entityManager,UserRepository $userRepository,Request $request): Response
     {
         $salesreports = $entityManager
             ->getRepository(Salesreport::class)
@@ -23,6 +36,7 @@ class SalesreportController extends AbstractController
         return $this->render('salesreport/index.html.twig', [
             'salesreports' => $salesreports,
         ]);
+       
     }
 
     #[Route('/new', name: 'app_salesreport_new', methods: ['GET', 'POST'])]
@@ -80,5 +94,37 @@ class SalesreportController extends AbstractController
         }
 
         return $this->redirectToRoute('app_salesreport_index', [], Response::HTTP_SEE_OTHER);
+    }
+    private function AdminAccess()
+    {
+        if ($this->connectedUser->getRole() == "admin") {
+            return true; // return a value to indicate that access is allowed
+        } else {
+            return false; // return a value to indicate that access is not allowed
+        }
+    }
+     private function ClientAccess()
+    {
+        if ($this->connectedUser->getRole() === "client") {
+            return true; // return a value to indicate that access is allowed
+        } else {
+            return false; // return a value to indicate that access is not allowed
+        }
+    } 
+    private function ArtistAccess()
+    {
+        if ($this->connectedUser->getRole() === "artist") {
+           return true; // return a value to indicate that access is allowed
+        } else {
+            return false; // return a value to indicate that access is not allowed
+        }
+    }
+    private function ArtistClientAccess()
+    {
+        if ($this->connectedUser->getRole() == "artist" || $this->connectedUser->getRole() == "client") {
+            return true; // return a value to indicate that access is allowed
+        } else {
+            return false; // return a value to indicate that access is not allowed
+        }
     }
 }

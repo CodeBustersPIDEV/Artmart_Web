@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 
-#[ORM\Table(name: "product",options: [
+#[ORM\Table(name: "product", options: [
     'indexes' => [
         'category_ID' => ['columns' => ['category_ID']]
     ]
@@ -20,33 +20,38 @@ class Product
     #[ORM\GeneratedValue(strategy: "IDENTITY")]
     private $productId;
 
-    #[ORM\Column(name: "category_ID", type: "integer",nullable: false)]
+    #[ORM\Column(name: "category_ID", type: "integer", nullable: false)]
     private $categoryId;
 
 
-    #[ORM\Column(name: "name", type: "string",length:255, nullable: false)]
+    #[ORM\Column(name: "name", type: "string", length: 255, nullable: false)]
     #[Assert\NotBlank(message: "Please enter a product name")]
     private $name;
 
-  
-    #[ORM\Column(name: "description", type: "text", length:65535,nullable: false)]
+
+    #[ORM\Column(name: "description", type: "text", length: 65535, nullable: false)]
     #[Assert\NotBlank(message: "Please enter a product description")]
     private $description;
 
-   
-    #[ORM\Column(name: "dimensions", type: "string", length:255,nullable: false)]
+
+    #[ORM\Column(name: "dimensions", type: "string", length: 255, nullable: false)]
     #[Assert\NotBlank(message: "Please enter product dimensions")]
+    #[Assert\Regex(
+        pattern: '/^(?=.*[x])(?=.*[L])(?=.*[H])(?=.*[D])[xLHD0-9]+$/',
+        message: 'The value is not valid. Only x, L, H, D, and numbers are allowed. e.g: 72" L x 30" H x 36" D'
+    )]
     private $dimensions;
 
-    #[ORM\Column(name: "weight", type: "decimal", precision:10, scale:2,nullable: false)]
+    #[ORM\Column(name: "weight", type: "decimal", precision: 10, scale: 2, nullable: false)]
     #[Assert\NotBlank(message: "Please enter product weight")]
+    #[Assert\Positive]
     private $weight;
 
-    #[ORM\Column(name: "material", type: "string", length:255, nullable: false)]
+    #[ORM\Column(name: "material", type: "string", length: 255, nullable: false)]
     #[Assert\NotBlank(message: "Please enter product material")]
     private $material;
 
-    #[ORM\Column(name: "image", type: "string", length:255, nullable: false)]
+    #[ORM\Column(name: "image", type: "string", length: 255, nullable: false)]
     private $image = 'imagecustom/imagec.png';
 
     public function getProductId(): ?int
@@ -144,13 +149,12 @@ class Product
 
         return $this;
     }
-    
+
 
     public function __toString(): string
-        {
-            return $this->getName();
-        }
-        
+    {
+        return $this->getName();
+    }
 
 
 
@@ -164,20 +168,20 @@ class Product
 
 
 
-        #[ORM\ManyToOne(targetEntity: "App\Entity\Categories")]
-        #[ORM\JoinColumn(name: "category_ID", referencedColumnName: "categories_ID", nullable: false)]
-        private $category;
-   
-       public function getCategory(): ?Categories
-       {
-           return $this->category;
-       }
-   
-       public function setCategory(Categories $category): self
-       {
-           $this->category = $category;
-   
-           return $this;
-       }
-   
+
+    #[ORM\ManyToOne(targetEntity: "App\Entity\Categories")]
+    #[ORM\JoinColumn(name: "category_ID", referencedColumnName: "categories_ID", nullable: false)]
+    private $category;
+
+    public function getCategory(): ?Categories
+    {
+        return $this->category;
+    }
+
+    public function setCategory(Categories $category): self
+    {
+        $this->category = $category;
+
+        return $this;
+    }
 }

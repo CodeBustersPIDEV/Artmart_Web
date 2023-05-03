@@ -13,38 +13,6 @@
 		margin-bottom: 5px;
 		font-weight: bold;
 	}
-
-	.form-control {
-		width: 100%;
-		padding: 10px;
-		font-size: 16px;
-		border: 1px solid #ccc;
-		border-radius: 4px;
-	}
-
-	.star-rating {
-		display: inline-block;
-		font-size: 30px;
-	}
-
-	.star-rating .star {
-		display: inline-block;
-		margin-right: 5px;
-		color: #ccc;
-		cursor: pointer;
-	}
-
-	.star-rating[data-rating="1"] .star:nth-child(-n + 1),
-	.star-rating[data-rating="2"] .star:nth-child(-n + 2),
-	.star-rating[data-rating="3"] .star:nth-child(-n + 3),
-	.star-rating[data-rating="4"] .star:nth-child(-n + 4),
-	.star-rating[data-rating="5"] .star:nth-child(-n + 5) {
-		color: gold;
-	}
-
-	.rating-field {
-		display: none;
-	}
 	label {
 		color: whitesmoke;
 	}
@@ -56,9 +24,31 @@
 		background: transparent;
 		color: whitesmoke;
 	}
-</style>
+	.ratingInput {
+		border: none !important;
+		color: gold;
+		font-size: x-large;
+	}
 
-{{ form_start(form, { attr: { class: "comment-form" } }) }}
+	.ratingInput:focus {
+		border: none !important;
+		color: gold;
+		font-size: x-large;
+	}
+	.err {
+		color: #e75e8d;
+	}
+</style>
+<link
+	rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+/>
+
+{{
+	form_start(form, {
+		attr: { class: "comment-form", novalidate: "novalidate" }
+	})
+}}
 <div class="row">
 	<div class="col-md-6">
 		<div class="form-group">
@@ -68,6 +58,9 @@
 					attr: { class: "form-control inpt", placeholder: "Comment" }
 				})
 			}}
+			<div class="form-error err">
+				{{ form_errors(form.content) }}
+			</div>
 		</div>
 	</div>
 	<div class="col-md-4">
@@ -75,44 +68,13 @@
 			{{ form_label(form.rating, "Rating") }}
 			{{
 				form_widget(form.rating, {
-					attr: { class: "form-control inpt", placeholder: "Rating" }
+					attr: { class: "form-control inpt ratingInput" }
 				})
 			}}
 		</div>
 	</div>
 </div>
 
-{#
-<div class="form-group">
-	{#
-	{{ form_label(form.author, null, {'label_attr': {'class': 'form-label inputLabel'
-
-
-
-
-
-
-
-
-
-
-
-	}}) }}
-	{{ form_widget(form.author, {'attr': {'class': 'form-control select2 inputBg', 'id': 'author'
-
-
-
-
-
-
-
-
-
-
-
-	}}) }}
-</div>
-#}
 {{ form_widget(form._token) }}
 <button type="submit" class="btn btn-outline-light" id="submitBtn">
 	{{ button_label|default('submit') }}</button

@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Make a Payment</h1>
+    <form method="post" action="{{ payum_token.targetUrl }}">
+        <input type="hidden" name="_token" value="{{ csrf_token('payum_token') }}">
+        <label for="card_number">Card Number</label>
+        <input type="text" name="card_number" id="card_number">
+        <label for="exp_month">Expiration Month</label>
+        <input type="text" name="exp_month" id="exp_month">
+        <label for="exp_year">Expiration Year</label>
+        <input type="text" name="exp_year" id="exp_year">
+        <label for="cvc">CVC</label>
+        <input type="text" name="cvc" id="cvc">
+        <label for="amount">Amount</label>
+        <input type="text" name="amount" id="amount">
+        <button type="submit">Submit Payment</button>
+    </form>
+{% endblock %}
