@@ -24,6 +24,9 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use App\Entity\User;
 use Spatie\Emoji\Emoji;
 use App\Repository\UserRepository;
+use GuzzleHttp\Psr7\Response as Psr7Response;
+use Laminas\Diactoros\Response as DiactorosResponse;
+
 #[Route('/customproduct')]
 class CustomproductController extends AbstractController
 {
@@ -139,6 +142,8 @@ class CustomproductController extends AbstractController
    
     }
     
+ 
+ 
 
     #[Route('/admin', name: 'app_customproduct_admin', methods: ['GET'])]
     public function adminindex(PaginatorInterface $paginator,FlashyNotifier $flashy,Request $request, EntityManagerInterface $entityManager): Response
