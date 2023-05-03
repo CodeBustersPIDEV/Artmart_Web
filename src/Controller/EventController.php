@@ -2,7 +2,10 @@
 
 namespace App\Controller;
 
+use App\Entity\Activity;
 use App\Entity\Event;
+use App\Entity\Feedback;
+use App\Entity\Participation;
 use App\Entity\User;
 use App\Form\EventType;
 use App\Repository\EventRepository;
@@ -254,6 +257,8 @@ class EventController extends AbstractController
         $connectedUserRole = $this->connectedUser->getRole();
 
         $showOtherEvents = $request->query->get('showOtherEvents') == 1;
+        
+        
 
         if ($connectedUserRole=== "artist") {
 
@@ -406,7 +411,7 @@ class EventController extends AbstractController
     }
 
     #[Route('/artist/{eventid}', name: 'app_event_show_artist', methods: ['GET'])]
-    public function show(Event $event): Response
+    public function show(Event $event, EntityManagerInterface $entityManager, Request $request): Response
     {
         $connectedUserID = $this->connectedUser->getUserId();
         $connectedUserRole = $this->connectedUser->getRole();
@@ -414,9 +419,31 @@ class EventController extends AbstractController
         // check if the connected user is the owner of the event
         $isOwner = ($event->getUser()->getUserId() == $connectedUserID);
     
+        // 
+        $participation = $entityManager->getRepository(Participation::class)->findOneBy([
+            'user' => $connectedUserID,
+            'event' => $event->getEventid(),    
+        ]);
+    
+        $feedback = $entityManager->getRepository(Feedback::class)->findOneBy([
+            'user' => $connectedUserID,
+            'event' => $event->getEventid(),    
+        ]);
+    
+        $activities = $entityManager
+            ->getRepository(Activity::class)
+            ->createQueryBuilder('a')
+            ->andWhere('a.event = :val')
+            ->setParameter('val', $event)
+            ->getQuery()
+            ->getResult();
+
         return $this->render('event/artist/show.html.twig', [
             'event' => $event,
             'isOwner' => $isOwner,
+            'participation' => $participation,
+            'feedback' => $feedback,
+            'activities' => $activities
         ]);
     }
     

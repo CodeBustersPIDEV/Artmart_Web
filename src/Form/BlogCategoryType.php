@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Form\Type;
+namespace App\Form;
 
 use App\Entity\Blogcategories;
 use App\Repository\BlogcategoriesRepository;

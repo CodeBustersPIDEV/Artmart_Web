@@ -59,9 +59,19 @@ margin-bottom: 20px;
 
     {{ form_start(form,{'attr': {'novalidate': 'novalidate'}} ) }}
         {{ form_widget(form) }}
-        <button class="btn btn-primary">{{ button_label|default('Save') }}</button>
+        <button class="btn btn-outline-primary">{{ button_label|default('Save') }}</button>
     </div>
 </center>
 {{ form_end(form) }}
 {% endblock %}
 
+    {# <div style="display:flex;justify-content: space-between;margin-top:50px;">
+        <div style="margin-right:auto">
+            <a href="{{ path('app_activity_index_artist') }}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left"></i> Back to List
+            </a>
+        </div>
+        <div>
+            <a href="{{ path('app_activity_edit_artist', {'activityid': activity.activityid}) }}" class="btn btn-outline-success" style="margin-right : 200px; margin-left : 10px">Edit</a>
+            <a href="{{ path('app_activity_delete_artist', {'activityid': activity.activityid}) }}" class="btn btn-outline-danger" style="margin-right : 10px;">Delete</a>
+        </div> #}

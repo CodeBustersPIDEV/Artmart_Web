@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\User;
+use App\Repository\EventRepository;
 use App\Repository\UserRepository;   
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
@@ -101,8 +102,15 @@ class ParticipationController extends AbstractController
 // ****************************************************************************************
     
     #[Route('/artist', name: 'app_participation_index_artist', methods: ['GET'])]
-    public function indexx(EntityManagerInterface $entityManager): Response
+    public function indexx(EntityManagerInterface $entityManager, EventRepository $eventRepository, Request $request): Response
     {
+        $connectedUserID = $this->connectedUser->getUserId();
+        $connectedUserRole = $this->connectedUser->getRole();
+
+        $eventID = $request->query->get('eventID');
+
+        $events = $eventRepository->findByUser($connectedUserID);
+
         $participations = $entityManager
             ->getRepository(Participation::class)
             ->createQueryBuilder('p')
@@ -112,9 +120,19 @@ class ParticipationController extends AbstractController
             ->getQuery()
             ->getResult();
 
-
+        if ($eventID) {
+            $participations = $entityManager
+                ->getRepository(Participation::class)
+                ->createQueryBuilder('e')
+                ->andWhere('e.event = :val')
+                ->setParameter('val', $eventID)
+                ->getQuery()
+                ->getResult();
+        }
+    
         return $this->render('participation/artist/index.html.twig', [
             'participations' => $participations,
+            'events' => $events
         ]);
     }
 
@@ -123,17 +141,33 @@ class ParticipationController extends AbstractController
     {
         $connectedUserID = $this->connectedUser->getUserId();
     
+        
+        // Get the event
+        $event = $entityManager->getRepository(Event::class)->findOneBy([
+            'eventid' => $eventid,
+            'status' => ['Scheduled', 'Started'],
+        ]);
+
+        // Check if the event is scheduled or started
+
+
         // Check if participation already exists
         $existingParticipation = $entityManager->getRepository(Participation::class)->findOneBy([
             'user' => $connectedUserID,
-            'event' => $eventid,
+            'event' => $eventid,    
         ]);
-        
+    
         if ($existingParticipation) {
             // Participation already exists, handle accordingly
-            return new Response('Participation already exists', Response::HTTP_CONFLICT);
+            $errorMessage = '<div style="color: red; font-weight: bold;">You are already participating in this event.</div>';
+            return new Response($errorMessage, Response::HTTP_CONFLICT);
         }
     
+        if (!$event) {
+            $errorMessage = '<div style="color: red; font-weight: bold;">You cannot participate in this event at the moment.</div>';
+            return new Response($errorMessage, Response::HTTP_CONFLICT);
+        }
+        
         // Participation does not exist, create new participation
         $participation = new Participation();
         $participation->setUser($entityManager->getReference(User::class, $connectedUserID));
@@ -142,9 +176,11 @@ class ParticipationController extends AbstractController
         $entityManager->persist($participation);
         $entityManager->flush();
     
-        return $this->redirectToRoute('app_participation_index_artist', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_event_show_artist', ['eventid' => $participation->getEvent()->getEventid()], Response::HTTP_SEE_OTHER);
+
     }
-        
+    
+            
     
     #[Route('/artist/{participationid}', name: 'app_participation_show_artist', methods: ['GET'])]
     public function showw(Participation $participation): Response
@@ -175,12 +211,16 @@ class ParticipationController extends AbstractController
     #[Route('/artist/{participationid}', name: 'app_participation_delete_artist', methods: ['POST'])]
     public function deletee(Request $request, Participation $participation, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$participation->getParticipationid(), $request->request->get('_token'))) {
-            $entityManager->remove($participation);
-            $entityManager->flush();
+        if ($participation->getEvent()->getStatus() == 'Finished' || $participation->getEvent()->getStatus() == 'Started') {
+            $errorMessage = '<div style="color: red; font-weight: bold;">You cannot cancel your participation as this event has either started or finished.</div>';
+            return new Response($errorMessage, Response::HTTP_CONFLICT);
+        } else {
+             if ($this->isCsrfTokenValid('delete'.$participation->getParticipationid(), $request->request->get('_token'))) {
+                $entityManager->remove($participation);
+                $entityManager->flush();
+            }           
         }
-
-        return $this->redirectToRoute('app_participation_index_artist', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_event_show_artist', ['eventid' => $participation->getEvent()->getEventid()], Response::HTTP_SEE_OTHER);
     }
 
 // ****************************************************************************************

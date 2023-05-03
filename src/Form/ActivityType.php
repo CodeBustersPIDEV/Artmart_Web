@@ -38,7 +38,7 @@ class ActivityType extends AbstractType
             ->add('event', EntityType::class, [
                 'class' => Event::class,
                 'choice_label' => 'name',
-                'placeholder' => 'Choose an option',
+                'placeholder' => 'Choose an event',
                 'query_builder' => function (EntityRepository $er) {
                     return $er->createQueryBuilder('e')
                         ->where('e.user = :user')
