@@ -200,7 +200,7 @@ class ApplyController extends AbstractController
         }
  
         $sid    = "AC85fdc289caf6aa747109220798d39394";
-        $token  = "6e5451f36b8e32a567b9e67984f60a16";
+        $token  = "8acba1bd4bfc10782d6dccac2023e541";
         $twilio = new Client($sid, $token);
     
         $message = $twilio->messages
@@ -231,7 +231,7 @@ class ApplyController extends AbstractController
             throw $this->createNotFoundException('Apply not found');
         }
         $sid    = "AC85fdc289caf6aa747109220798d39394";
-        $token  = "6e5451f36b8e32a567b9e67984f60a16";
+        $token  = "8acba1bd4bfc10782d6dccac2023e541";
         $twilio = new Client($sid, $token);
     
         $message = $twilio->messages
@@ -266,37 +266,5 @@ class ApplyController extends AbstractController
         $entityManager->flush();
         
         return $this->redirectToRoute('app_apply_clients');
-    }
-    private function AdminAccess()
-    {
-        if ($this->connectedUser->getRole() == "admin") {
-            return true; // return a value to indicate that access is allowed
-        } else {
-            return false; // return a value to indicate that access is not allowed
-        }
-    }
-     private function ClientAccess()
-    {
-        if ($this->connectedUser->getRole() === "client") {
-            return true; // return a value to indicate that access is allowed
-        } else {
-            return false; // return a value to indicate that access is not allowed
-        }
-    } 
-    private function ArtistAccess()
-    {
-        if ($this->connectedUser->getRole() === "artist") {
-           return true; // return a value to indicate that access is allowed
-        } else {
-            return false; // return a value to indicate that access is not allowed
-        }
-    }
-    private function ArtistClientAccess()
-    {
-        if ($this->connectedUser->getRole() == "artist" || $this->connectedUser->getRole() == "client") {
-            return true; // return a value to indicate that access is allowed
-        } else {
-            return false; // return a value to indicate that access is not allowed
-        }
     }
 }
