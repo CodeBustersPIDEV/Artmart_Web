@@ -413,12 +413,13 @@ class BlogsController extends AbstractController
     #[Route('/admin', name: 'app_blogs_admin', methods: ['GET'])]
     public function adminIndex(BlogsRepository $blogsRepository): Response
     {
+        $hasAccess = $this->AdminAccess();
         $blogs = $blogsRepository->findAll();
         $data = [];
         foreach ($blogs as $blog) {
             $data[] = $blog->getNbViews();
         }
-        if ($this->connectedUser->getRole() === "admin") {
+        if ($hasAccess) {
             return $this->render('blogs/admin.html.twig', [
                 'blogs' => $blogs,
                 'blogCategories' => $this->blogCategoryRepository->findAll(),
@@ -428,7 +429,7 @@ class BlogsController extends AbstractController
             ]);
         } else {
             // return $this->render('Errors/errorPage.html.twig');
-            return $this->redirectToRoute('app_blogs_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_home', [], Response::HTTP_SEE_OTHER);
         }
     }
 
