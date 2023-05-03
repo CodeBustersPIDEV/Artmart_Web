@@ -77,6 +77,16 @@ class BlogsRepository extends ServiceEntityRepository
       ->getQuery()
       ->getResult();
   }
+
+  public function findTop3Rated(): array
+  {
+    return $this->createQueryBuilder('b')
+      ->orderBy('b.rating', 'DESC')
+      ->setMaxResults(3)
+      ->getQuery()
+      ->getResult();
+  }
+
   public function findAllDesc(): array
   {
     return $this->createQueryBuilder('b')
