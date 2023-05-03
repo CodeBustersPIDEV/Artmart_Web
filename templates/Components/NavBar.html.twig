@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="{{ asset('assets/Components/NavBar.css') }}"/>
+<link rel="stylesheet" href="{{ asset('assets/Components/NavBar.css') }}" />
 
 <style>
 	.logo {
@@ -129,7 +129,7 @@
 	}
 
 	/* media query for small screens */
-	@media(max-width: 1093px) {
+	@media (max-width: 1093px) {
 		.menu-toggle {
 			display: flex;
 		}
@@ -161,54 +161,87 @@
 <nav class="navMenu">
 	<div class="logo">
 		<a href="/">
-			<img src="{{ asset('assets/ArtMart_Logo.png') }}" class="logo_img" alt="ArtMart Logo"/>
+			<img
+				src="{{ asset('assets/ArtMart_Logo.png') }}"
+				class="logo_img"
+				alt="ArtMart Logo"
+			/>
 		</a>
 	</div>
 	<div class="options">
 		<a href="/">Home</a>
 		<a href="{{ path('app_blogs_index') }}">Blog</a>
 		{% if app.session.get('user_id') %}
-			<a href="{{ path('app_user_Profile', {'userId': app.session.get('user_id')}) }}">Profile</a>
-			{% if app.session.get('user_role') == "client" %}
-				<a href="{{ path('app_readyproduct_client_index') }}">Products</a>
-				<a href="{{ path('app_customproduct_index') }}">Custom Products</a>
-				<a href="{{ path('app_wishlist_index') }}">Shopping Cart</a>
-			{% elseif app.session.get('user_role') == "artist" %}
-				<a href="{{ path('app_readyproduct_index') }}">Products</a>
-				<a href="{{ path('app_customproduct_artist') }}">Custom Products</a>
-			{% elseif app.session.get('user_role') == "admin" %}
-				<a href="{{ path('app_admin') }}">Admin Panel</a>
-			{% endif %}
-		{% else %}
-			<a href="{{ path('app_readyproduct_no_user_index') }}">Products</a>
+		<a
+			href="{{
+				path('app_user_Profile', { userId: app.session.get('user_id') })
+			}}"
+			>Profile</a
+		>
+		{% if app.session.get('user_role') == "client" %}
+		<a href="{{ path('app_readyproduct_client_index') }}">Products</a>
+		<a href="{{ path('app_customproduct_index') }}">Custom Products</a>
+		<a
+			href="{{
+				path('app_blogsByUser_index', { User_ID: app.session.get('user_id') })
+			}}"
+			>My Blogs</a
+		>
+		<a href="{{ path('app_wishlist_index') }}">Shopping Cart</a>
+		{% elseif app.session.get('user_role') == "artist" %}
+		<a href="{{ path('app_readyproduct_index') }}">Products</a>
+		<a href="{{ path('app_customproduct_artist') }}">Custom Products</a>
+		<a
+			href="{{
+				path('app_blogsByUser_index', { User_ID: app.session.get('user_id') })
+			}}"
+			>My Blogs</a
+		>
+		{% elseif app.session.get('user_role') == "admin" %}
+		<a href="{{ path('app_admin') }}">Admin Panel</a>
+		<a
+			href="{{
+				path('app_blogsByUser_index', { User_ID: app.session.get('user_id') })
+			}}"
+			>My Blogs</a
+		>
+		{% endif %} {% else %}
+		<a href="{{ path('app_readyproduct_no_user_index') }}">Products</a>
 		{% endif %}
 		<div class="dot"></div>
 	</div>
 	<div class="userButtons">
 		{% if app.session.get('user_id') %}
-			<p>Welcome
-				{{ app.session.get('user_name') }}!</p>
-			<a class="signIn_btn btns" href="/logout" style="--clr: #ffc0cb">
-				<span>Logout</span>
-				<i></i>
-			</a>
+		<p>Welcome {{ app.session.get("user_name") }}!</p>
+		<a class="signIn_btn btns" href="/logout" style="--clr: #ffc0cb">
+			<span>Logout</span>
+			<i></i>
+		</a>
 		{% else %}
-			<a class="signIn_btn btns" href="{{ path('app_login') }}" style="--clr: #ffc0cb">
-				<span>Sign In</span>
-				<i></i>
-			</a>
-			<a class="signUp_btn btns" href="{{ path('app_user_new') }}" style="--clr: #ffc0cb">
-				<span>Sign Up</span>
-				<i></i>
-			</a>
+		<a
+			class="signIn_btn btns"
+			href="{{ path('app_login') }}"
+			style="--clr: #ffc0cb"
+		>
+			<span>Sign In</span>
+			<i></i>
+		</a>
+		<a
+			class="signUp_btn btns"
+			href="{{ path('app_user_new') }}"
+			style="--clr: #ffc0cb"
+		>
+			<span>Sign Up</span>
+			<i></i>
+		</a>
 		{% endif %}
 	</div>
 </nav>
 <script>
 	const menuToggle = document.querySelector(".menu-toggle");
-const menuOptions = document.querySelector(".navMenu .options");
+	const menuOptions = document.querySelector(".navMenu .options");
 
-menuToggle.addEventListener("click", () => {
-menuOptions.classList.toggle("expanded");
-});
+	menuToggle.addEventListener("click", () => {
+		menuOptions.classList.toggle("expanded");
+	});
 </script>

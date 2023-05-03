@@ -135,6 +135,17 @@ class BlogsRepository extends ServiceEntityRepository
       ->getResult();
   }
 
+  public function findMyBlogsByTerm($searchTerm, $user): array
+  {
+    return $this->createQueryBuilder('b')
+      ->where('b.title LIKE :searchTerm')
+      ->andWhere('b.author = :user')
+      ->setParameter('searchTerm', '%' . $searchTerm . '%')
+      ->setParameter('user', $user)
+      ->getQuery()
+      ->getResult();
+  }
+
   public function findAllByUser($author): array
   {
     return $this->createQueryBuilder('b')

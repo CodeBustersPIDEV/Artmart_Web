@@ -105,18 +105,18 @@ as base %}
 </style>
 <center>
 <form
-	action="{{ path('app_blogs_index') }}"
+	action="{{ path('app_blogsByUser_index', { User_ID: app.session.get('user_id') }) }}"
 	method="GET"
 	class="d-flex justify-content-between col-4"
 >
 	<div class="input-group ">
 		{# <label  for="criteria">Search by:</label> #}
-    <select id="criteria" name="criteria" class="form-select ">
+    {# <select id="criteria" name="criteria" class="form-select ">
       <option disabled selected>Criteria</option>
       <option value="Title" {% if app.request.query.get('criteria') == 'Title' %}selected{% endif %}>Title</option>
       <option value="Category" {% if app.request.query.get('criteria') == 'Category' %}selected{% endif %}>Category</option>
       <option value="Tag" {% if app.request.query.get('criteria') == 'Tag' %}selected{% endif %}>Tag</option>
-    </select>
+    </select> #}
 		<input
 			type="text"
 			id="search-term"
@@ -126,7 +126,7 @@ as base %}
 			placeholder="Search..."
 		/>
 	</div>
-	<a href="{{ path('app_blogs_index') }}" class="btn"
+	<a href="{{ path('app_blogsByUser_index', { User_ID: app.session.get('user_id') }) }}" class="btn"
 	><i class="fa-solid fa-arrows-rotate" style="color: #8bacd9"></i
 		></a>
 	<button
