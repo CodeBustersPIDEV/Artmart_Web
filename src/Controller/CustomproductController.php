@@ -143,7 +143,6 @@ class CustomproductController extends AbstractController
     }
     
  
- 
 
     #[Route('/admin', name: 'app_customproduct_admin', methods: ['GET'])]
     public function adminindex(PaginatorInterface $paginator,FlashyNotifier $flashy,Request $request, EntityManagerInterface $entityManager): Response
