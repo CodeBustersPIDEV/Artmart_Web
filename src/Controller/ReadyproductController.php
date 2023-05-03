@@ -6,9 +6,8 @@ use App\Entity\Categories;
 use App\Entity\Readyproduct;
 use App\Entity\Product;
 use App\Entity\User;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\RequestStack;
 use App\Entity\Productreview;
+use App\Form\CategoriesType;
 use App\Form\ReadyproductType;
 use App\Form\ProductreviewType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -742,6 +741,18 @@ class ReadyproductController extends AbstractController
         ]);
     }
 
+    #[Route('/categories', name: 'app_readyproduct_cat_index', methods: ['GET'])]
+    public function index_cat(Request $request, EntityManagerInterface $entityManager, PaginatorInterface $paginator): Response
+    {
+        $categories = $entityManager
+            ->getRepository(Categories::class)
+            ->findAll();
+
+        return $this->render('readyproduct/categories.html.twig', [
+            'categories' => $categories,
+        ]);
+    }
+
     #[Route('/', name: 'app_readyproduct_no_user_index', methods: ['GET'])]
     public function index_no_user(Request $request, EntityManagerInterface $entityManager, PaginatorInterface $paginator): Response
     {
@@ -846,6 +857,26 @@ class ReadyproductController extends AbstractController
 
         return $this->renderForm('readyproduct/new.html.twig', [
             'readyproduct' => $readyproduct,
+            'form' => $form,
+        ]);
+    }
+
+    #[Route('/newCat', name: 'app_readyproduct_new_cat', methods: ['GET', 'POST'])]
+    public function new_cat(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $category = new Categories();
+        $form = $this->createForm(CategoriesType::class, $category);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($category);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_readyproduct_cat_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->renderForm('readyproduct/new_cat.html.twig', [
+            'category' => $category,
             'form' => $form,
         ]);
     }
@@ -959,26 +990,6 @@ class ReadyproductController extends AbstractController
         $averageRating = $count > 0 ? $totalRating / $count : 0;
 
         return $this->render('readyproduct/show_artist.html.twig', [
-            'readyproduct' => $readyproduct,
-            'averageRating' => $averageRating,
-        ]);
-    }
-
-    #[Route('/nu/{readyProductId}', name: 'app_readyproduct_no_user_show', methods: ['GET'])]
-    public function no_user_show(Readyproduct $readyproduct): Response
-    {
-        $productreviews = $this->managerRegistry->getRepository(Productreview::class)
-            ->findBy(['readyProductId' => $readyproduct]);
-
-
-        $totalRating = 0;
-        $count = count($productreviews);
-        foreach ($productreviews as $productreview) {
-            $totalRating += $productreview->getRating();
-        }
-        $averageRating = $count > 0 ? $totalRating / $count : 0;
-
-        return $this->render('readyproduct/show.html.twig', [
             'readyproduct' => $readyproduct,
             'averageRating' => $averageRating,
         ]);

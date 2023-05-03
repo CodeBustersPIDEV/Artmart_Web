@@ -6,8 +6,33 @@
 		<h4>
 			<em>Ready</em>
 			Products</h4>
-		<p style="color: white; font-size: 100%;">You will need to sign up or sign in to be able to order the product or see its reviews !</p>
-		<br>
+		<div class="alert-slide">
+			<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle-fill" viewbox="0 0 16 16">
+				<path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/>
+			</svg>
+			<span>You can sign up or sign in to order products and see their reviews.</span>
+		</div>
+
+
+		<script>
+			// Show the alert when the page is loaded
+window.onload = function () {
+var alertElement = document.getElementById("alert");
+alertElement.classList.add("alert-slide");
+
+// Start slide-out animation after 5 seconds
+setTimeout(function () {
+alertElement.classList.add("alert-slide-out");
+}, 8000);
+
+// Remove the alert after slide-out animation ends
+alertElement.addEventListener("animationend", function () {
+alertElement.remove();
+});
+};
+		</script>
+
+
 		<form action="{{ path('app_readyproduct_index') }}" method="GET">
 			<div class="form-group">
 				<button type="button" style="background-color: #43464B; align: left;" class="btn btn-dark dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
@@ -49,6 +74,34 @@
 	{% block stylesheets %}
 
 		<style>
+			.alert-slide {
+				position: fixed;
+				top: 110px;
+				right: -400px;
+				width: 400px;
+				background-color: rgba(170, 51, 106, 0.8);
+				color: white;
+				padding: 10px;
+				text-align: center;
+				border-radius: 5px;
+				animation: slide-alert 5s ease-in-out 1s forwards;
+			}
+
+			@keyframes slide-alert {
+				0% {
+					right: -400px;
+				}
+				20% {
+					right: 20px;
+				}
+				80% {
+					right: 20px;
+				}
+				100% {
+					right: -400px;
+				}
+			}
+
 			.pagination {
 				display: flex;
 				justify-content: center;
@@ -98,17 +151,20 @@
 				color: #999;
 			}
 
-
 			.ready-card {
-				max-width: 500px;
+				width: 370px;
+				max-width: 100%;
 				border-radius: 10px;
 				box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 				margin: 10px;
 				padding: 20px;
-				display: inline-block;
+				display: flex;
+				flex-direction: column;
 				background-color: #232931;
 				transition: box-shadow 0.2s ease-in-out;
+				overflow: hidden;
 			}
+
 
 			.ready-card:hover {
 				box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
@@ -125,6 +181,9 @@
 			.ready-card p {
 				margin-top: 0;
 				color: #FFFFFF;
+				white-space: nowrap;
+				text-overflow: ellipsis;
+				overflow: hidden;
 			}
 
 			.ready-card a {
@@ -143,6 +202,7 @@
 			}
 
 			.ready-card img {
+
 				display: inline-block;
 				width: 100%;
 				height: 200px;
@@ -151,9 +211,33 @@
 				margin-bottom: 10px;
 			}
 
-			.ready-card:nth-child(4n + 1) {
-				clear: left;
+			.card-container {
+				display: flex;
+				flex-direction: column;
+				flex-wrap: wrap;
+				justify-content: space-between;
+				margin: 10px;
+				padding: 0;
+				list-style: none;
+				max-width: 100%;
 			}
+
+			.col-sm-4 {
+				flex-basis: 30%;
+			}
+
+			@media(max-width: 992px) {
+				.col-sm-4 {
+					flex-basis: 48%;
+				}
+			}
+
+			@media(max-width: 768px) {
+				.col-sm-4 {
+					flex-basis: 100%;
+				}
+			}
+
 			.orderby-link {
 				display: inline-block;
 				background-color: #43464B;
@@ -337,7 +421,7 @@
 			}
 
 			.desc {
-				max-width: 270px; /* adjust this value as needed */
+				max-width: 270px;
 				overflow: hidden;
 				text-overflow: ellipsis;
 				white-space: nowrap;
