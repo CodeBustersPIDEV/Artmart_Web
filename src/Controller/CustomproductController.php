@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Controller;
-
 use ReCaptcha\ReCaptcha;
 use App\Entity\Customproduct;
 use App\Entity\Product;
@@ -25,22 +24,18 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use App\Entity\User;
 use Spatie\Emoji\Emoji;
 use App\Repository\UserRepository;
-use GuzzleHttp\Psr7\Response as Psr7Response;
-use Laminas\Diactoros\Response as DiactorosResponse;
-
-
 #[Route('/customproduct')]
 class CustomproductController extends AbstractController
 {
-
-    private User $connectedUser;
+   
+    private User $connectedUser; 
     public function __construct(SessionInterface $session, UserRepository $userRepository)
     {
         if ($session != null) {
             $connectedUserID = $session->get('user_id');
             if (is_int($connectedUserID)) {
                 $this->connectedUser = $userRepository->find((int) $connectedUserID);
-
+                
                 // Debugging code
                 if (!$this->connectedUser instanceof User) {
                     throw new \Exception('Connected user is not a User object');
@@ -61,16 +56,16 @@ class CustomproductController extends AbstractController
     public function searchCustomProduct(Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
         $searchValue = $request->query->get('searchValue');
-
+        
         $queryBuilder = $entityManager
             ->getRepository(Customproduct::class)
             ->createQueryBuilder('c')
             ->innerJoin('c.product', 'p')
             ->where('p.name LIKE :searchTerm')
             ->setParameter('searchTerm', '%' . $searchValue . '%');
-
+        
         $customProducts = $queryBuilder->getQuery()->getResult();
-
+        
         $result = [];
         foreach ($customProducts as $customProduct) {
             $result[] = [
@@ -81,18 +76,18 @@ class CustomproductController extends AbstractController
                 'productWeight' => $customProduct->getProduct()->getWeight(),
             ];
         }
-
+        
         return new JsonResponse($result);
     }
-
-
+    
+    
     #[Route('/', name: 'app_customproduct_index', methods: ['GET'])]
-    public function index(UserRepository $userRepository, FlashyNotifier $flashy, Request $request, EntityManagerInterface $entityManager, PaginatorInterface $paginator): Response
+    public function index( UserRepository $userRepository,FlashyNotifier $flashy,Request $request, EntityManagerInterface $entityManager, PaginatorInterface $paginator): Response
     {
-
+        
         $searchTerm = $request->query->get('q');
         $order = $request->query->get('order');
-
+    
         $queryBuilder = $entityManager
             ->getRepository(Customproduct::class)
             ->createQueryBuilder('c')
@@ -100,23 +95,22 @@ class CustomproductController extends AbstractController
             ->andWhere('c.client = :userId') // Filter by connected user's ID
             ->setParameter('userId', $this->connectedUser->getUserId());
 
-
-
-        $order = $request->query->get('order', 'name');
-        $direction = $request->query->get('direction', 'asc');
-
-        // Toggle the direction when the order is clicked
-        if ($order === $request->get('order')) {
-            $direction = ($direction === 'asc') ? 'desc' : 'asc';
-        }
-
-        if ($order === 'name') {
-            $queryBuilder->orderBy('p.name', $direction);
-        } elseif ($order === 'weight') {
-            $queryBuilder->orderBy('p.weight', $direction);
-        }
-
-
+         
+            $order = $request->query->get('order', 'name');
+            $direction = $request->query->get('direction', 'asc');
+            
+            // Toggle the direction when the order is clicked
+            if ($order === $request->get('order')) {
+                $direction = ($direction === 'asc') ? 'desc' : 'asc';
+            }
+            
+            if ($order === 'name') {
+                $queryBuilder->orderBy('p.name', $direction);
+            } elseif ($order === 'weight') {
+                $queryBuilder->orderBy('p.weight', $direction);
+            }
+            
+    
         if ($searchTerm) {
             $criteria = $request->query->get('criteria');
             if ($criteria === 'name') {
@@ -127,7 +121,7 @@ class CustomproductController extends AbstractController
                     ->setParameter('searchTerm', '%' . $searchTerm . '%');
             } elseif ($criteria === 'material') {
                 $queryBuilder->andWhere('p.material LIKE :searchTerm')
-                    ->setParameter('searchTerm', '%' . $searchTerm . '%');
+                ->setParameter('searchTerm', '%' . $searchTerm . '%');
             }
         }
         $flashy->info('Welcome To Your Custom Products List');
@@ -136,15 +130,18 @@ class CustomproductController extends AbstractController
             $request->query->getInt('page', 1),
             8
         );
-
+   
         return $this->render('customproduct/index.html.twig', [
             'customproducts' => $pagination,
             'searchTerm' => $searchTerm,
             'order' => $order,
         ]);
+   
     }
+    
+
     #[Route('/admin', name: 'app_customproduct_admin', methods: ['GET'])]
-    public function adminindex(PaginatorInterface $paginator, FlashyNotifier $flashy, Request $request, EntityManagerInterface $entityManager): Response
+    public function adminindex(PaginatorInterface $paginator,FlashyNotifier $flashy,Request $request, EntityManagerInterface $entityManager): Response
     {
         $flashy->info('Welcome to Custom Products Admin Panel');
         $searchTerm = $request->query->get('q');
@@ -153,11 +150,11 @@ class CustomproductController extends AbstractController
             ->getRepository(Categories::class)
             ->createQueryBuilder('e');
 
-        $pagination = $paginator->paginate(
-            $categories->getQuery(),
-            $request->query->getInt('page', 1),
-            4
-        );
+            $pagination = $paginator->paginate(
+                $categories->getQuery(),
+                $request->query->getInt('page', 1),
+                4
+            );
 
         $applies = $entityManager
             ->getRepository(Apply::class)
@@ -168,22 +165,21 @@ class CustomproductController extends AbstractController
             ->innerJoin('c.product', 'p');
 
 
-
-        $order = $request->query->get('order', 'name');
-        $direction = $request->query->get('direction', 'asc');
-
-        // Toggle the direction when the order is clicked
-        if ($order === $request->get('order')) {
-            $direction = ($direction === 'asc') ? 'desc' : 'asc';
-        }
-
-        if ($order === 'name') {
-            $queryBuilder->orderBy('p.name', $direction);
-        } elseif ($order === 'weight') {
-            $queryBuilder->orderBy('p.weight', $direction);
-        }
-
-
+            $order = $request->query->get('order', 'name');
+            $direction = $request->query->get('direction', 'asc');
+            
+            // Toggle the direction when the order is clicked
+            if ($order === $request->get('order')) {
+                $direction = ($direction === 'asc') ? 'desc' : 'asc';
+            }
+            
+            if ($order === 'name') {
+                $queryBuilder->orderBy('p.name', $direction);
+            } elseif ($order === 'weight') {
+                $queryBuilder->orderBy('p.weight', $direction);
+            }
+            
+            
 
         if ($searchTerm) {
             $queryBuilder->where('p.name LIKE :searchTerm')
@@ -192,35 +188,35 @@ class CustomproductController extends AbstractController
 
         $customproducts = $queryBuilder->getQuery()->getResult();
 
-
+      
         $sumQueryBuilder = $entityManager
-            ->createQueryBuilder()
-            ->select('p.material as material, SUM(p.weight) as weight_sum')
-            ->from(Product::class, 'p')
-            ->innerJoin(CustomProduct::class, 'cp', 'WITH', 'p.productId = cp.product')
-            ->groupBy('p.material');
+        ->createQueryBuilder()
+        ->select('p.material as material, SUM(p.weight) as weight_sum')
+        ->from(Product::class, 'p')
+        ->innerJoin(CustomProduct::class, 'cp', 'WITH', 'p.productId = cp.product')
+        ->groupBy('p.material');
+    
+    $weightSums = $sumQueryBuilder->getQuery()->getResult();
 
-        $weightSums = $sumQueryBuilder->getQuery()->getResult();
-
-        // Transform the results into a format that Chart.js can use
-        $weightData = [
-            'labels' => [],
-            'datasets' => [
-                [
-                    'label' => 'Product Weights',
-                    'data' => [],
-                    'backgroundColor' => 'rgba(54, 162, 235, 0.2)',
-                    'borderColor' => 'rgba(54, 162, 235, 1)',
-                    'borderWidth' => 1
-                ]
+    // Transform the results into a format that Chart.js can use
+    $weightData = [
+        'labels' => [],
+        'datasets' => [
+            [
+                'label' => 'Product Weights',
+                'data' => [],
+                'backgroundColor' => 'rgba(54, 162, 235, 0.2)',
+                'borderColor' => 'rgba(54, 162, 235, 1)',
+                'borderWidth' => 1
             ]
-        ];
-
-        foreach ($weightSums as $weightSum) {
-            $weightData['labels'][] = $weightSum['material'];
-            $weightData['datasets'][0]['data'][] = $weightSum['weight_sum'];
-        }
-
+        ]
+    ];
+    
+    foreach ($weightSums as $weightSum) {
+        $weightData['labels'][] = $weightSum['material'];
+        $weightData['datasets'][0]['data'][] = $weightSum['weight_sum'];
+    }
+    
 
         return $this->render('customproduct/admin.html.twig', [
             'customproducts' => $customproducts,
@@ -234,18 +230,18 @@ class CustomproductController extends AbstractController
 
 
     #[Route('/stat', name: 'app_customproduct_stat', methods: ['GET'])]
-    public function statindex(Request $request, EntityManagerInterface $entityManager): Response
+    public function statindex(Request $request,EntityManagerInterface $entityManager): Response
     {
-
+     
         $sumQueryBuilder = $entityManager
-            ->createQueryBuilder()
-            ->select('p.material as material, SUM(p.weight) as weight_sum')
-            ->from(Product::class, 'p')
-            ->innerJoin(CustomProduct::class, 'cp', 'WITH', 'p.productId = cp.product')
-            ->groupBy('p.material');
-
+        ->createQueryBuilder()
+        ->select('p.material as material, SUM(p.weight) as weight_sum')
+        ->from(Product::class, 'p')
+        ->innerJoin(CustomProduct::class, 'cp', 'WITH', 'p.productId = cp.product')
+        ->groupBy('p.material');
+    
         $weightSums = $sumQueryBuilder->getQuery()->getResult();
-
+    
         // Transform the results into a format that Chart.js can use
         $weightData = [
             'labels' => [],
@@ -259,25 +255,26 @@ class CustomproductController extends AbstractController
                 ]
             ]
         ];
-
+    
         foreach ($weightSums as $weightSum) {
             $weightData['labels'][] = $weightSum['material'];
             $weightData['datasets'][0]['data'][] = $weightSum['weight_sum'];
         }
-
+    
         return $this->render('customproduct/stat.html.twig', [
             'weightData' => $weightData,
             'weightSums' => $weightSums,
         ]);
+      
     }
-
+    
 
 
 
     #[Route('/customproduct', name: 'app_customproduct_artist', methods: ['GET'])]
-    public function artist(FlashyNotifier $flashy, Request $request, EntityManagerInterface $entityManager, PaginatorInterface $paginator): Response
+    public function artist(FlashyNotifier $flashy,Request $request, EntityManagerInterface $entityManager, PaginatorInterface $paginator): Response
     {
-
+      
         $searchTerm = $request->query->get('q');
         $queryBuilder = $entityManager
             ->getRepository(Customproduct::class)
@@ -291,19 +288,19 @@ class CustomproductController extends AbstractController
             ->findAll();
 
 
-        if ($searchTerm) {
-            $criteria = $request->query->get('criteria');
-            if ($criteria === 'name') {
-                $queryBuilder->andWhere('p.name LIKE :searchTerm')
+            if ($searchTerm) {
+                $criteria = $request->query->get('criteria');
+                if ($criteria === 'name') {
+                    $queryBuilder->andWhere('p.name LIKE :searchTerm')
+                        ->setParameter('searchTerm', '%' . $searchTerm . '%');
+                } elseif ($criteria === 'weight') {
+                    $queryBuilder->andWhere('p.weight LIKE :searchTerm')
+                        ->setParameter('searchTerm', '%' . $searchTerm . '%');
+                } elseif ($criteria === 'material') {
+                    $queryBuilder->andWhere('p.material LIKE :searchTerm')
                     ->setParameter('searchTerm', '%' . $searchTerm . '%');
-            } elseif ($criteria === 'weight') {
-                $queryBuilder->andWhere('p.weight LIKE :searchTerm')
-                    ->setParameter('searchTerm', '%' . $searchTerm . '%');
-            } elseif ($criteria === 'material') {
-                $queryBuilder->andWhere('p.material LIKE :searchTerm')
-                    ->setParameter('searchTerm', '%' . $searchTerm . '%');
+                }
             }
-        }
         $pagination = $paginator->paginate(
             $queryBuilder->getQuery(),
             $request->query->getInt('page', 1),
@@ -331,7 +328,7 @@ class CustomproductController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $product = $form->get('product')->getData();
             $customproduct->setProduct($product);
-
+        
 
             $imageFile = $form->get('product')->get('image')->getData();
             if ($imageFile) {
@@ -340,7 +337,7 @@ class CustomproductController extends AbstractController
                 $destinationPath = $this->getParameter('destinationPath') . '/' . $newFilename;
                 $imageURL = $this->getParameter('file_base_url')['host'] . '/' . $this->getParameter('file_base_url')['path'] . '/' . $newFilename;
                 $imagePath = $this->getParameter('destinationPath') . '/' . $newFilename;
-
+            
                 try {
                     $imageFile->move(
                         $this->getParameter('destinationPath'),
@@ -349,7 +346,7 @@ class CustomproductController extends AbstractController
                 } catch (FileException $e) {
                     // handle exception if something happens during file upload
                 }
-
+            
                 $product->setImage($imageURL);
             }
 
@@ -382,7 +379,7 @@ class CustomproductController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $product = $form->get('product')->getData();
             $customproduct->setProduct($product);
-
+      
             $imageFile = $form->get('product')->get('image')->getData();
             if ($imageFile) {
                 $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
@@ -390,7 +387,7 @@ class CustomproductController extends AbstractController
                 $destinationPath = $this->getParameter('destinationPath') . '/' . $newFilename;
                 $imageURL = $this->getParameter('file_base_url')['host'] . '/' . $this->getParameter('file_base_url')['path'] . '/' . $newFilename;
                 $imagePath = $this->getParameter('destinationPath') . '/' . $newFilename;
-
+            
                 try {
                     $imageFile->move(
                         $this->getParameter('destinationPath'),
@@ -399,11 +396,11 @@ class CustomproductController extends AbstractController
                 } catch (FileException $e) {
                     // handle exception if something happens during file upload
                 }
-
+            
                 $product->setImage($imageURL);
             }
-
-
+            
+            
             $entityManager->persist($product);
             $entityManager->persist($customproduct);
             $entityManager->flush();
@@ -416,7 +413,7 @@ class CustomproductController extends AbstractController
             'form' => $form,
         ]);
     }
-
+    
 
     #[Route('/{customProductId}', name: 'app_customproduct_show', methods: ['GET'])]
     public function show(Customproduct $customproduct): Response
@@ -431,8 +428,8 @@ class CustomproductController extends AbstractController
     #[Route('draw/', name: 'draw', methods: ['GET'])]
     public function draw(): Response
     {
-        $customproduct = new Customproduct();
-
+        $customproduct = new Customproduct(); 
+    
         return $this->render('customproduct/draw.html.twig', [
             'customproduct' => $customproduct,
         ]);
@@ -448,40 +445,6 @@ class CustomproductController extends AbstractController
             'product' => $product,
         ]);
     }
-
-    private function AdminAccess()
-    {
-        if ($this->connectedUser->getRole() == "admin") {
-            return true; // return a value to indicate that access is allowed
-        } else {
-            return false; // return a value to indicate that access is not allowed
-        }
-    }
-    private function ClientAccess()
-    {
-        if ($this->connectedUser->getRole() === "client") {
-            return true; // return a value to indicate that access is allowed
-        } else {
-            return false; // return a value to indicate that access is not allowed
-        }
-    }
-    private function ArtistAccess()
-    {
-        if ($this->connectedUser->getRole() === "artist") {
-            return true; // return a value to indicate that access is allowed
-        } else {
-            return false; // return a value to indicate that access is not allowed
-        }
-    }
-    private function ArtistClientAccess()
-    {
-        if ($this->connectedUser->getRole() == "artist" || $this->connectedUser->getRole() == "client") {
-            return true; // return a value to indicate that access is allowed
-        } else {
-            return false; // return a value to indicate that access is not allowed
-        }
-    }
-
 
 
 
@@ -500,7 +463,7 @@ class CustomproductController extends AbstractController
             $destinationPath = $this->getParameter('destinationPath') . '/' . $newFilename;
             $imageURL = $this->getParameter('file_base_url')['host'] . '/' . $this->getParameter('file_base_url')['path'] . '/' . $newFilename;
             $imagePath = $this->getParameter('destinationPath') . '/' . $newFilename;
-
+        
             try {
                 $imageFile->move(
                     $this->getParameter('destinationPath'),
@@ -509,7 +472,7 @@ class CustomproductController extends AbstractController
             } catch (FileException $e) {
                 // handle exception if something happens during file upload
             }
-
+        
             $product->setImage($imageURL);
         }
 
@@ -540,7 +503,7 @@ class CustomproductController extends AbstractController
             $destinationPath = $this->getParameter('destinationPath') . '/' . $newFilename;
             $imageURL = $this->getParameter('file_base_url')['host'] . '/' . $this->getParameter('file_base_url')['path'] . '/' . $newFilename;
             $imagePath = $this->getParameter('destinationPath') . '/' . $newFilename;
-
+        
             try {
                 $imageFile->move(
                     $this->getParameter('destinationPath'),
@@ -549,7 +512,7 @@ class CustomproductController extends AbstractController
             } catch (FileException $e) {
                 // handle exception if something happens during file upload
             }
-
+        
             $product->setImage($imageURL);
         }
 
@@ -595,7 +558,7 @@ class CustomproductController extends AbstractController
 
 
     #[Route('/customproduct/{customProductId}/apply', name: 'app_customproduct_apply', methods: ['GET', 'POST'])]
-    public function apply(FlashyNotifier $flashy, int $customProductId, RouterInterface $router): Response
+    public function apply(FlashyNotifier $flashy,int $customProductId, RouterInterface $router): Response
 
     {
         $flashy->success('application sent successfully');
@@ -626,16 +589,15 @@ class CustomproductController extends AbstractController
         $sid    = "AC85fdc289caf6aa747109220798d39394";
         $token  = "8acba1bd4bfc10782d6dccac2023e541";
         $twilio = new Client($sid, $token);
-
+    
         $message = $twilio->messages
-            ->create(
-                "whatsapp:+21698238240",
-                array(
-                    "from" => "whatsapp:+14155238886",
-                    "body" => "you have a Custom Product apply"
-                )
+          ->create("whatsapp:+21698238240", 
+            array(
+              "from" => "whatsapp:+14155238886",
+              "body" => "you have a Custom Product apply"
+            )
             );
-
+          
 
         // Redirect to the filtered list of applies with status 'pending', 'done', or 'refused'
         return $this->redirectToRoute('app_apply_pending');
