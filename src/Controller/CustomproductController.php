@@ -139,6 +139,18 @@ class CustomproductController extends AbstractController
    
     }
     
+    #[Route('/Customindexmobile', name: 'Customindexmobile')]
+    public function indexmobile(EntityManagerInterface $entityManager,NormalizerInterface $normalizer): Response
+    {
+        $customProduct = $entityManager
+            ->getRepository(Customproduct::class)
+            ->findAll();
+$Customnormalizer = $normalizer->normalize($customProduct,'json', ['groups'=> "custom_product"]);
+
+      $json = json_encode($Customnormalizer);
+      return new Response($json);
+    }
+
 
     #[Route('/admin', name: 'app_customproduct_admin', methods: ['GET'])]
     public function adminindex(PaginatorInterface $paginator,FlashyNotifier $flashy,Request $request, EntityManagerInterface $entityManager): Response

@@ -1,11 +1,10 @@
 <?php
 
 namespace App\Entity;
-
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
-
 #[ORM\Table(name: "customproduct", options: [
     'indexes' => [
         'client_ID' => ['columns' => ['client_ID']],
@@ -13,21 +12,24 @@ use Symfony\Component\Validator\Constraints as Assert;
     ]
 ])]
 #[ORM\Entity]
-class Customproduct
+class Customproduct 
 {
     #[ORM\Column(name: "custom_product_ID", type: "integer", nullable: false)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: "IDENTITY")]
+    #[Groups("custom_product")]
     private $customProductId;
 
     #[ORM\ManyToOne(targetEntity: "User")]
     #[ORM\JoinColumn(name: "client_ID", referencedColumnName: "user_ID")]
+    #[Groups("custom_product")]
     private $client;
 
     #[ORM\ManyToOne(targetEntity: "Product", cascade: ["remove"])]
     #[ORM\JoinColumn(name: "product_ID", referencedColumnName: "product_ID")]
+    #[Groups("custom_product")]
     private $product;
-
+    
     public function getCustomProductId(): ?int
     {
         return $this->customProductId;
@@ -44,12 +46,12 @@ class Customproduct
 
         return $this;
     }
-
+   
     public function getProduct(): ?Product
     {
         return $this->product;
     }
-
+ 
 
     public function setProduct(?Product $product): self
     {
@@ -70,4 +72,5 @@ class Customproduct
 
         return $this;
     }
+
 }
