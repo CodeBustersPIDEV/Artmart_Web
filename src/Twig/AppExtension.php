@@ -4,6 +4,7 @@ namespace App\Twig;
 
 use App\Entity\Media;
 use App\Entity\User;
+use App\Repository\BlogsRepository;
 use App\Repository\HasBlogCategoryRepository;
 use App\Repository\HasTagRepository;
 use App\Repository\MediaRepository;
@@ -17,11 +18,13 @@ class AppExtension extends AbstractExtension
   private MediaRepository $MediaRepository;
   private HasTagRepository $hasTagRepository;
   private HasBlogCategoryRepository $hasBlogCategoryRepository;
+  private BlogsRepository $blogsRepository;
   private User $connectedUser;
 
-  public function __construct(SessionInterface $session, UserRepository $userRepository, MediaRepository $MediaRepository, HasTagRepository $hasTagRepository, HasBlogCategoryRepository $hasBlogCategoryRepository)
+  public function __construct(SessionInterface $session, BlogsRepository $blogsRepository, UserRepository $userRepository, MediaRepository $MediaRepository, HasTagRepository $hasTagRepository, HasBlogCategoryRepository $hasBlogCategoryRepository)
   {
     $this->MediaRepository = $MediaRepository;
+    $this->blogsRepository = $blogsRepository;
     $this->hasTagRepository = $hasTagRepository;
     $this->hasBlogCategoryRepository = $hasBlogCategoryRepository;
     if ($session != null) {
@@ -39,6 +42,7 @@ class AppExtension extends AbstractExtension
       new TwigFunction('getRemoteBlogsMedia', [$this, 'getRemoteBlogsMedia']),
       new TwigFunction('getNbBlogsPerTag', [$this, 'getNbBlogsPerTag']),
       new TwigFunction('getNbBlogsPerCat', [$this, 'getNbBlogsPerCat']),
+      new TwigFunction('getTop3Rated', [$this, 'getTop3Rated']),
       new TwigFunction('returnConnectedUser', [$this, 'returnConnectedUser']),
     ];
   }
@@ -63,6 +67,12 @@ class AppExtension extends AbstractExtension
   {
     $res = $this->hasBlogCategoryRepository->findAllBlogsByCatID($cat_id);
     return  count($res);
+  }
+
+  public function getTop3Rated()
+  {
+    $res = $this->blogsRepository->findTop3Rated();
+    return  $res;
   }
 
   public function returnConnectedUser()

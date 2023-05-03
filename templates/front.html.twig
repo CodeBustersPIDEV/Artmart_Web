@@ -115,20 +115,97 @@
 								<em>We Are Code Busters a dynamic group of six highly skilled engineers who are dedicated to developing cutting-edge technology projects. Our team has a wealth of experience and expertise in various fields, including software development, hardware engineering, data science, and artificial intelligence. We are passionate about pushing the boundaries of what is possible and believe that technology can transform the world for the better.</em>
 							</h6>
 
-						</div>
-					</div>
+          <!-- ***** Most Popular Start ***** -->
+          <div class="most-popular">
+            <div class="row">
+              <div class="col-lg-12">
+                <div class="heading-section">
+                  <h4>A selection of <em>our best products</em></h4>
+                </div>
+                   {% block content %}
+  
+    {% endblock %}
+    <div class="col-lg-12">
+                    <div class="main-button">
+                      <a href="{{ path('app_readyproduct_index') }}" >Discover More Products</a>
+                    
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
 
-				</div>
-				<!-- ***** Gaming Library End ***** -->
-			</div>
-		</div>
-	</body>
-</html></div></div><footer><div class="container">
-<div class="row">
-	<div class="col-lg-12">
-		<p>Copyright © 2023
-			<a href="#">Code Busters</a>. All rights reserved.
-			<img src="{{ asset('logo.PNG') }}" alt="logo" style="width: 50px; height: 50px;">
-		</p>
-	</div>
-</div></div></footer><!-- Scripts --><!-- Bootstrap core JavaScript --><script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script><script src="{{ asset('vendor/bootstrap/js/bootstrap.min.js') }}"></script><script src="{{ asset('assets/js/isotope.min.js') }}"></script><script src="{{ asset('assets/js/owl-carousel.js') }}"></script><script src="{{ asset('assets/js/tabs.js') }}"></script><script src="{{ asset('assets/js/popup.js') }}"></script><script src="{{ asset('assets/js/custom.js') }}"></script></body></html>
+                                <!-- ***** Most Popular Start ***** -->
+          <div class="most-popular">
+            <div class="row">
+              <div class="col-lg-12">
+    <div class="heading-section">
+                  <h4>Top Rated <em>Blogs</em></h4>
+                  {% block content2 %}
+  
+    {% endblock %}
+                </div>
+                  <div class="col-lg-12">
+                    <div class="main-button">
+                      <a href="{{ path('app_blogs_index') }}" >Discover More Blogs</a>
+                    
+                    </div>
+                  </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          {# </div> #}
+          <!-- ***** Most Popular End ***** -->
+          </div>
+          <!-- ***** Most Popular End ***** -->
+
+
+
+
+          <!-- ***** Gaming Library Start ***** -->
+          <div class="gaming-library">
+            <div class="col-lg-12">
+              <div class="heading-section">
+                <h4><em>About</em> CodeBusters<img src="{{ asset('logo.PNG') }}" alt="logo" style="width: 70px; height: 70px;"></h4>
+              </div>
+              <h6><em>We Are Code Busters a dynamic group of six highly skilled engineers who are dedicated to developing cutting-edge technology projects. Our team has a wealth of experience and expertise in various fields, including software development, hardware engineering, data science, and artificial intelligence. We are passionate about pushing the boundaries of what is possible and believe that technology can transform the world for the better.</em></h6>
+             
+              </div>
+            </div>
+            
+          </div>
+          <!-- ***** Gaming Library End ***** -->
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12">
+          <p>Copyright © 2023 <a href="#">Code Busters</a>. All rights reserved. 
+<img src="{{ asset('logo.PNG') }}" alt="logo" style="width: 50px; height: 50px;">
+        </div>
+      </div>
+    </div>
+  </footer>
+
+
+  <!-- Scripts -->
+  <!-- Bootstrap core JavaScript -->
+  <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
+  <script src="{{ asset('vendor/bootstrap/js/bootstrap.min.js') }}"></script>
+  
+  <script src="{{ asset('assets/js/isotope.min.js') }}"></script>
+  <script src="{{ asset('assets/js/owl-carousel.js') }}"></script>
+  <script src="{{ asset('assets/js/tabs.js') }}"></script>
+  <script src="{{ asset('assets/js/popup.js') }}"></script>
+  <script src="{{ asset('assets/js/custom.js') }}"></script>
+  
+
+
+  </body>
+
+</html>
