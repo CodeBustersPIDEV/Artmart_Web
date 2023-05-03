@@ -199,7 +199,7 @@ class UserController extends AbstractController
     }
 
     #[Route('/newAdmin', name: 'app_user_newAd', methods: ['GET', 'POST'])]
-    public function newAdmin(Request $request, EntityManagerInterface $entityManager, MailerInterface $mailer, UserRepository $userRepository, ArtistRepository $artistRepository, ClientRepository $clientRepository, AdminRepository $adminRepository): Response
+    public function newAdmin(Request $request, EntityManagerInterface $entityManager, UserRepository $userRepository , AdminRepository $adminRepository): Response
     {
         $user = new User();
         $addedUser = new User();
@@ -208,7 +208,7 @@ class UserController extends AbstractController
             'is_edit' => false,
         ]);
         $form->handleRequest($request);
-
+echo ('test');
         if ($form->isSubmitted() && $form->isValid()) {
 
             $role = 'admin';
@@ -218,6 +218,7 @@ class UserController extends AbstractController
             $token = bin2hex(random_bytes(16));
             $user->setToken($token);
             $user->setRole($role);
+            $user->setEnabled(1);
             $user->setPassword($hashedPassword);
             $file = $form->get('file')->getData();
             $entityManager->persist($user);
@@ -235,12 +236,12 @@ class UserController extends AbstractController
                 $admin->setUser($user);
                 $entityManager->persist($admin);
                 $entityManager->flush();
+                return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
+
             }
-            $this->SendEmail($mailer, $user, $token, 'Verification Token');
-            return $this->redirectToRoute('app_user_EnableAccount', ['userId' => $user->getUserId()], Response::HTTP_SEE_OTHER);
         
 
-        return $this->renderForm('user/new.html.twig', [
+        return $this->renderForm('user/newAdmin.html.twig', [
             'user' => $user,
             'form' => $form,
             'is_edit' => false,
