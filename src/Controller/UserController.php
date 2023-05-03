@@ -198,6 +198,54 @@ class UserController extends AbstractController
         ]);
     }
 
+    #[Route('/newAdmin', name: 'app_user_newAd', methods: ['GET', 'POST'])]
+    public function newAdmin(Request $request, EntityManagerInterface $entityManager, MailerInterface $mailer, UserRepository $userRepository, ArtistRepository $artistRepository, ClientRepository $clientRepository, AdminRepository $adminRepository): Response
+    {
+        $user = new User();
+        $addedUser = new User();
+        $admin = new Admin();
+        $form = $this->createForm(UserType::class, $user, [
+            'is_edit' => false,
+        ]);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $role = 'admin';
+            $password = $form->get('password')->getData();
+            $hashedPassword = hash('sha256', $password);
+            $user = $form->getData();
+            $token = bin2hex(random_bytes(16));
+            $user->setToken($token);
+            $user->setRole($role);
+            $user->setPassword($hashedPassword);
+            $file = $form->get('file')->getData();
+            $entityManager->persist($user);
+            $entityManager->flush();
+            $email = $form->get('email')->getData();
+            $this->uploadImage($file, $user);
+
+            // $user->setRole($role);
+            $userRepository->save($user, true);
+
+                $addedUser = $userRepository->findOneUserByEmail($email);
+                $admin->setUser($addedUser);
+                $adminRepository->save($admin, true);
+           
+                $admin->setUser($user);
+                $entityManager->persist($admin);
+                $entityManager->flush();
+            }
+            $this->SendEmail($mailer, $user, $token, 'Verification Token');
+            return $this->redirectToRoute('app_user_EnableAccount', ['userId' => $user->getUserId()], Response::HTTP_SEE_OTHER);
+        
+
+        return $this->renderForm('user/new.html.twig', [
+            'user' => $user,
+            'form' => $form,
+            'is_edit' => false,
+        ]);
+    }
     public function SendEmail(Mailer $mailer, User $user, String $token, String $subject)
     {
 
@@ -729,22 +777,7 @@ if($user->isEnabled()){
             return false; // return a value to indicate that access is not allowed
         }
     }
-     private function ClientAccess()
-    {
-        if ($this->connectedUser->getRole() === "client") {
-            return true; // return a value to indicate that access is allowed
-        } else {
-            return false; // return a value to indicate that access is not allowed
-        }
-    } 
-    private function ArtistAccess()
-    {
-        if ($this->connectedUser->getRole() === "artist") {
-           return true; // return a value to indicate that access is allowed
-        } else {
-            return false; // return a value to indicate that access is not allowed
-        }
-    }
+   
     private function ArtistClientAccess()
     {
         if ($this->connectedUser->getRole() == "artist" || $this->connectedUser->getRole() == "client") {
