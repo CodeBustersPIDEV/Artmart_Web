@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 
@@ -19,25 +20,30 @@ class Comments
     #[ORM\Column(name: "comments_ID", type: "integer", nullable: false)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: "IDENTITY")]
+    #[Groups("comments")]
     private $commentsId;
 
     #[ORM\Column(name: "content", type: "text", length: 65535, nullable: false)]
     #[Assert\NotBlank(message: "Please Enter A Comment For This Blog Post")]
-
+    #[Groups("comments")]
     private $content;
 
     #[ORM\Column(name: "date", type: "datetime", nullable: true, options: ["default" => "current_timestamp()"])]
+    #[Groups("comments")]
     private $date;
 
     #[ORM\Column(name: "rating", type: "integer", nullable: true, options: ["default" => "NULL"])]
+    #[Groups("comments")]
     private $rating = NULL;
 
     #[ORM\ManyToOne(targetEntity: "User")]
     #[ORM\JoinColumn(name: "author", referencedColumnName: "user_ID")]
+    #[Groups("comments")]
     private $author;
 
     #[ORM\ManyToOne(targetEntity: "Blogs")]
     #[ORM\JoinColumn(name: "blog_ID", referencedColumnName: "blogs_ID")]
+    #[Groups("comments")]
     private $blog_ID;
 
     public function getCommentsId(): ?int

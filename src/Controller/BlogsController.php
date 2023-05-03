@@ -39,6 +39,7 @@ use Facebook\Facebook;
 use Facebook\Exceptions\FacebookResponseException;
 use Facebook\Exceptions\FacebookSDKException;
 use Endroid\QrCode\Builder\BuilderInterface;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 #[Route('/blogs')]
 class BlogsController extends AbstractController
@@ -55,7 +56,7 @@ class BlogsController extends AbstractController
     private $result;
 
 
-    public function __construct(BuilderInterface $customQrCodeBuilder, Filesystem $filesystem, SessionInterface $session, UserRepository $userRepository, BlogsRepository $blogsRepository, MediaRepository $mediaRepository, BlogcategoriesRepository $blogCategoryRepository, HasBlogCategoryRepository $hasBlogCategoryRepository, TagsRepository $tagsRepository, HasTagRepository $hasTagRepository, CommentsRepository $commentsRepository)
+    public function __construct(Filesystem $filesystem, SessionInterface $session, UserRepository $userRepository, BlogsRepository $blogsRepository, MediaRepository $mediaRepository, BlogcategoriesRepository $blogCategoryRepository, HasBlogCategoryRepository $hasBlogCategoryRepository, TagsRepository $tagsRepository, HasTagRepository $hasTagRepository, CommentsRepository $commentsRepository)
     {
         $this->filesystem = $filesystem;
         $this->blogsRepository = $blogsRepository;
@@ -158,13 +159,21 @@ class BlogsController extends AbstractController
 
     // ************************************************************************************************************************************************
     // ************************************************************************************************************************************************
-
+    #[Route('/AllBlogs', name: "list")]
+    public function mobileIndex(BlogsRepository $blogsRepository, NormalizerInterface $normalize)
+    {
+        $blogs = $blogsRepository->findAll();
+        $blogNormalizes = $normalize->normalize($blogs, 'json', ['groups' => "blogs"]);
+        $json = json_encode($blogNormalizes);
+        return new Response($json);
+    }
 
 
     #[Route('/', name: 'app_blogs_index', methods: ['GET'])]
     public function index(BlogsRepository $blogsRepository, PaginatorInterface $paginator, Request $request): Response
     {
         $blogs = $blogsRepository->findAll();
+
         $searchTerm = $request->query->get('searchTerm');
         // $criteria = $request->query->get('criteria');
 
