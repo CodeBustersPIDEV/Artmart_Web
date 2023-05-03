@@ -31,11 +31,12 @@
 						<option class="orderby-option-link" value="{{ category.categoriesId }}">{{ category.name }}</option>
 					{% endfor %}
 				</select>
-				<input type="text" id="search-term" name="q" class="form-control" value="{{ searchTerm }}" placeholder="Search by name...">
+				<input type="text" id="searchInput" placeholder="Search..."/>
 				<a href="{{ path('app_readyproduct_client_index') }}" class="link-style-cancel">
 					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-lg" viewbox="0 0 16 16">
 						<path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z"/>
 					</svg>
+					Cancel all
 				</a>
 			</div>
 
@@ -95,17 +96,20 @@
 				color: #999;
 			}
 
-
 			.ready-card {
+				width: 370px;
+				max-width: 100%;
 				border-radius: 10px;
 				box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 				margin: 10px;
 				padding: 20px;
-				display: inline-block;
-				width: 100%;
+				display: flex;
+				flex-direction: column;
 				background-color: #232931;
 				transition: box-shadow 0.2s ease-in-out;
+				overflow: hidden;
 			}
+
 
 			.ready-card:hover {
 				box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
@@ -122,6 +126,9 @@
 			.ready-card p {
 				margin-top: 0;
 				color: #FFFFFF;
+				white-space: nowrap;
+				text-overflow: ellipsis;
+				overflow: hidden;
 			}
 
 			.ready-card a {
@@ -140,6 +147,8 @@
 			}
 
 			.ready-card img {
+
+				display: inline-block;
 				width: 100%;
 				height: 200px;
 				object-fit: cover;
@@ -147,9 +156,33 @@
 				margin-bottom: 10px;
 			}
 
-			.ready-card:nth-child(4n + 1) {
-				clear: left;
+			.card-container {
+				display: flex;
+				flex-direction: column;
+				flex-wrap: wrap;
+				justify-content: space-between;
+				margin: 10px;
+				padding: 0;
+				list-style: none;
+				max-width: 100%;
 			}
+
+			.col-sm-4 {
+				flex-basis: 30%;
+			}
+
+			@media(max-width: 992px) {
+				.col-sm-4 {
+					flex-basis: 48%;
+				}
+			}
+
+			@media(max-width: 768px) {
+				.col-sm-4 {
+					flex-basis: 100%;
+				}
+			}
+
 			.orderby-link {
 				display: inline-block;
 				background-color: #43464B;
@@ -331,6 +364,13 @@
 			#review:hover {
 				color: #0D6E72;
 			}
+
+			.desc {
+				max-width: 270px;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+			}
 		</style>
 
 
@@ -338,76 +378,124 @@
 
 	{% block body %}
 
+		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+		<script>
+			function comparer(index) {
+return function (a, b) {
+var valA = $(a).find('.sort-value').eq(index).text(),
+valB = $(b).find('.sort-value').eq(index).text();
+if (index === 0) {
+return valA.localeCompare(valB);
+} else {
+return $.isNumeric(valA) && $.isNumeric(valB) ? valA - valB : valA.localeCompare(valB);
+}
+}
+}
 
-		{% set count = 0 %}
-		{% for readyproduct in readyproducts %}
-			{% if count % 3 == 0 %}
-				<div class="row">
-				{% endif %}
+$('.sort-btn').click(function () {
+var container = $(this).closest('.ready-card'),
+items = container.find('.sort-item').toArray().sort(comparer($(this).index())),
+asc = $(this).hasClass('asc');
 
-				<div class="col-sm-4">
-					<div class="ready-card">
-						<img src="{{ asset(readyproduct.productId.image) }}" alt="{{ readyproduct.productId.name }} image"/>
-						<div>
-							<p class="pill">{{ readyproduct.productId.category }}</p>
-						</div>
-						<h2>{{ readyproduct.productId.name }}</h2>
-						<p>
-							<strong>Made by:</strong>
-							{{ readyproduct.userId }}</p>
-						<div class="align-review">
-							<a id="review" href="{{ path('app_review_index_client', {'readyProductId': readyproduct.readyProductId}) }}">
-								<p>
-									<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bookmark-star-fill" viewbox="0 0 16 16">
-										<path fill-rule="evenodd" d="M2 15.5V2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.74.439L8 13.069l-5.26 2.87A.5.5 0 0 1 2 15.5zM8.16 4.1a.178.178 0 0 0-.32 0l-.634 1.285a.178.178 0 0 1-.134.098l-1.42.206a.178.178 0 0 0-.098.303L6.58 6.993c.042.041.061.1.051.158L6.39 8.565a.178.178 0 0 0 .258.187l1.27-.668a.178.178 0 0 1 .165 0l1.27.668a.178.178 0 0 0 .257-.187L9.368 7.15a.178.178 0 0 1 .05-.158l1.028-1.001a.178.178 0 0 0-.098-.303l-1.42-.206a.178.178 0 0 1-.134-.098L8.16 4.1z"/>
-									</svg>
-									check reviews
-								</p>
-							</a>
-						</div>
-						<br>
-						<div class="align-price">
-							<p>{{ readyproduct.price }}
-								TND</p>
-						</div>
+if (! asc) {
+items = items.reverse();
+}
 
+container.find('.sort-item-container').empty().append(items);
+container.find('.sort-btn').removeClass('asc desc');
+$(this).toggleClass('asc desc');
+});
 
-						<div class="align">
-							<a href="{{ path('app_readyproduct_show', {'readyProductId': readyproduct.readyProductId}) }}">show</a>
+$('#searchInput').keyup(function () {
+var searchText = $(this).val().toLowerCase();
+$('.ready-card').each(function () {
+var matches = $(this).find('.search-value').filter(function () {
+var text = $(this).text().toLowerCase();
+return searchText === '' || searchText.length < 2 || text.includes(searchText);
+});
+
+if (matches.length > 0) {
+$(this).closest('.col-sm-4').show();
+} else {
+$(this).closest('.col-sm-4').hide();
+}
+});
+});
+		</script>
+
+		<ul class="card-container">
+			{% set count = 0 %}
+			{% for readyproduct in readyproducts %}
+				{% if count % 3 == 0 %}
+					<div class="row">
+					{% endif %}
+
+					<div class="col-sm-4">
+						<div class="ready-card sort-item">
+							<div id="sort-item-container">
+								<img class="search-value" src="{{ asset(readyproduct.productId.image) }}" alt="{{ readyproduct.productId.name }} image"/>
+								<div>
+									<p class="pill">{{ readyproduct.productId.category }}</p>
+								</div>
+								<h2 class="sort-value search-value">{{ readyproduct.productId.name }}</h2>
+								<p class="search-value">
+									<strong>Made by:</strong>
+									{{ readyproduct.userId }}</p>
+								<p class="search-value">
+									<strong>Weight:</strong>
+									{{ readyproduct.productId.weight }}
+									Kg</p>
+								<p class="search-value">
+									<strong>Material:</strong>
+									{{ readyproduct.productId.material }}</p>
+								<p class="search-value">
+									<strong>Dimensions:</strong>
+									{{ readyproduct.productId.dimensions }}</p>
+								<br>
+								<p class="desc search-value">{{ readyproduct.productId.description }}</p>
+								<br>
+								<div class="align-review">
+									<a id="review" href="{{ path('app_review_index_client', {'readyProductId': readyproduct.readyProductId})}}">
+										
+											<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bookmark-star-fill" viewbox="0 0 16 16">
+												<path fill-rule="evenodd" d="M2 15.5V2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.74.439L8 13.069l-5.26 2.87A.5.5 0 0 1 2 15.5zM8.16 4.1a.178.178 0 0 0-.32 0l-.634 1.285a.178.178 0 0 1-.134.098l-1.42.206a.178.178 0 0 0-.098.303L6.58 6.993c.042.041.061.1.051.158L6.39 8.565a.178.178 0 0 0 .258.187l1.27-.668a.178.178 0 0 1 .165 0l1.27.668a.178.178 0 0 0 .257-.187L9.368 7.15a.178.178 0 0 1 .05-.158l1.028-1.001a.178.178 0 0 0-.098-.303l-1.42-.206a.178.178 0 0 1-.134-.098L8.16 4.1z"/>
+											</svg>
+											Check reviews
+									</a>
+								</div>
+								<br>
+								<div class="align-price">
+									<p class="search-value">{{ readyproduct.price }}
+										TND</p>
+								</div>
+								<div class="align">
+									<a href="{{ path('app_readyproduct_show', {'readyProductId': readyproduct.readyProductId}) }}">show</a>
+								</div>
+							</div>
 						</div>
 					</div>
-				</div>
-				{% set count = count + 1 %}
 
-				{% if count % 3 == 0 %}
-				</div>
-			{% endif %}
+					{% set count = count + 1 %}
 
-		{% else %}
-			<p>no ready products found</p>
-		{% endfor %}
-	</ul>
+					{% if count % 3 == 0 %}
+					</div>
+				{% endif %}
+			{% else %}
+				<p>no ready products found</p>
+			{% endfor %}
+		</ul>
+		{{ knp_pagination_render(readyproducts) }}
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.bundle.min.js" integrity="sha384-qKXV1j0HvMUeCBQ+QVp7JcfGl760yU08IQ+GpUo5hlbpg51QRiuqHAJz8+BrxE/N" crossorigin="anonymous"></script>
 
-	{{ knp_pagination_render(readyproducts) }}
-	<script>
-		// Add onclick event to all hyperlinks
-var links = document.getElementsByTagName("a");
-for (var i = 0; i < links.length; i++) {
-links[i].setAttribute("onclick", "playSound()");
-}
-var linkss = document.getElementsByTagName("button");
-for (var i = 0; i < linkss.length; i++) {
-linkss[i].setAttribute("onclick", "playSound()");
-}
-	</script>
-	<script>
-		const categorySelect = document.getElementById('category-select');
+		<script>
+			const categorySelect = document.getElementById('category-select');
 categorySelect.addEventListener('change', (event) => {
 const selectedValue = event.target.value;
 if (selectedValue) {
 window.location.href = "{{ path('app_readyproduct__desc_cat_index_client') }}?category=" + selectedValue;
 }
 });
-	</script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.3/umd/popper.min.js"></script>
-{% endblock %}{% endblock %}
+		</script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.3/umd/popper.min.js"></script>
+	{% endblock %}
+{% endblock %}

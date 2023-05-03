@@ -12,12 +12,9 @@ class ProductreviewType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('readyProductId')
-            ->add('userId')
             ->add('title')
             ->add('text')
-            ->add('rating')
-            ->add('date');
+            ->add('rating');
     }
 
     public function configureOptions(OptionsResolver $resolver): void
