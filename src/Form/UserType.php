@@ -9,7 +9,6 @@ use App\Entity\Clients;
 use App\Form\ClientType;
 use App\Validator\NotFutureDate;
 use Symfony\Component\Form\AbstractType;
-use Karser\Recaptcha3Bundle\Form\Recaptcha3Type;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -19,7 +18,6 @@ use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
-use Karser\Recaptcha3Bundle\Validator\Constraints\Recaptcha3;
 
 
 class UserType extends AbstractType
@@ -70,6 +68,7 @@ class UserType extends AbstractType
             ])
             ->add('role', ChoiceType::class, [
                 'choices' => [
+                    'Admin' => 'admin',
                     'Artist' => 'artist',
                     'Client' => 'client',
                 ],
