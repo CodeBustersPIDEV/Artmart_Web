@@ -39,6 +39,7 @@ use Facebook\Facebook;
 use Facebook\Exceptions\FacebookResponseException;
 use Facebook\Exceptions\FacebookSDKException;
 use Endroid\QrCode\Builder\BuilderInterface;
+use stdClass;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 #[Route('/blogs')]
@@ -438,11 +439,14 @@ class BlogsController extends AbstractController
 
     public function chartData(BlogsRepository $blogsRepository)
     {
-        $blogs = $blogsRepository->findAll();
+        $blogs = $blogsRepository->findAllTop4();
 
         $data = [];
         foreach ($blogs as $blog) {
-            $data[] = $blog->getNbViews();
+            $blogData = new stdClass();
+            $blogData->title = $blog->getTitle();
+            $blogData->nbviews = $blog->getNbViews();
+            $data[] = $blogData;
         }
 
         return $this->json($data);
