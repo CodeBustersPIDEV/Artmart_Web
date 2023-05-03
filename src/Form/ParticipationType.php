@@ -23,6 +23,7 @@ class ParticipationType extends AbstractType
             ])
             ->add('user', EntityType::class, [
                 'class' => User::class,
+                'choice_label' => 'name',
                 'placeholder' => 'Choose an option',
             ])            
         ;
