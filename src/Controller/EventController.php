@@ -34,195 +34,212 @@ class EventController extends AbstractController
             }
         }
     }
-    // public function uploadImage(UploadedFile $file, Event $event): void
-    // {
-    //     $destinationFilePath = $this->getParameter ('destinationPath');
-    //     $newdestinationFilePath=$this->getParameter ('file_base_url');
-    //     $filePath = sprintf('%s/%s', $newdestinationFilePath['host'], $newdestinationFilePath['path']);
-    //     // Get the original filename of the uploaded file
-    //     $filename = $file->getClientOriginalName();
-    //     if (!is_uploaded_file($file->getPathname())) {
-    //         throw new FileException('File was not uploaded via HTTP POST.');
-    //     }
 
-    //     if (!is_dir($destinationFilePath)) {
-    //         // Create the directory
-    //         mkdir($destinationFilePath, 0777, true);
-    //     }
-    //     // Move the uploaded file to the destination
-    //     $file->move($destinationFilePath, $filename);
-    //     $event->setImage($filePath.'/'. $filename);
-    // }
+       ///////////////////////////////////////////////         /////////////////////////////////////////////////
+      ///////////////////////////////////////////////         /////////////////////////////////////////////////
+     /////////////////////////////////////////////// VISITOR /////////////////////////////////////////////////
+    ///////////////////////////////////////////////         /////////////////////////////////////////////////
+   ///////////////////////////////////////////////         /////////////////////////////////////////////////
 
     #[Route('/', name: 'app_event_index', methods: ['GET'])]
     public function indexVisitor(EntityManagerInterface $entityManager, EventRepository $eventRepository, PaginatorInterface $paginator, Request $request): Response
     {
+        $connectedUserID = -1;
+
+        $showOtherEvents = 1;
+
         $searchTerm = $request->query->get('q');
         $name = $request->query->get('name');
         $feeOrder = $request->query->get('feeOrder');
         $status = $request->query->get('status');
         $type = $request->query->get('type');
-        
-        $events = $eventRepository->findAll();
-
-        // if ($name) {
-        //     $events = $eventRepository->findAllSortedByName($name);
-        // }
-        // elseif ($feeOrder) {
-        //     $events = $eventRepository->findAllSortedByPrice($feeOrder);
-        // }
-        // elseif ($status) {
-        //     $events = $eventRepository->findByStatus($status);
-        // }
-        // elseif ($type) {
-        //     $events = $eventRepository->findByType($type);
-        // }
-        // else if ($searchTerm) {
-        //     $events = $eventRepository->findByTerm($searchTerm);
-        // }
+    
+         $events = $entityManager
+             ->getRepository(Event::class)
+             ->createQueryBuilder('e')
+             ->andWhere('e.user != :val')
+             ->setParameter('val', $connectedUserID)
+             ->getQuery()
+             ->getResult();
+    
+        if ($name) {
+            $events = $eventRepository->findAllSortedByName($name, $connectedUserID, $showOtherEvents);
+        } elseif ($feeOrder) {
+            $events = $eventRepository->findAllSortedByPrice($feeOrder, $connectedUserID, $showOtherEvents);
+        } elseif ($status) {
+            $events = $eventRepository->findByStatus($status, $connectedUserID,$showOtherEvents);
+        } elseif ($type) {
+            $events = $eventRepository->findByType($type, $connectedUserID,$showOtherEvents);
+        } elseif ($searchTerm) {
+            $events = $eventRepository->findByTerm($searchTerm, $connectedUserID,$showOtherEvents);
+        }
 
         $pages = $paginator->paginate(
-            $events, // Requête contenant les données à paginer (ici nos articles)
-            $request->query->getInt('page', 1), // Numéro de la page en cours, passé dans l'URL, 1 si aucune page
-            9 // Nombre de résultats par page
+            $events,
+            $request->query->getInt('page', 1),
+            9
         );
-
-        return $this->render('event/artist/index.html.twig', [
+    
+        return $this->render('event/client/index.html.twig', [
             'events' => $pages,
             'searchTerm' => $searchTerm,
+            'showOtherEvents' => $showOtherEvents,
         ]);
-    }
+ }
 
-      ////////////////////////////////////////////////////////////////////////////////////////////////////////
-     /////////////////////////////////////////////// ADMIN //////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+       ///////////////////////////////////////////////       /////////////////////////////////////////////////
+      ///////////////////////////////////////////////       /////////////////////////////////////////////////
+     /////////////////////////////////////////////// ADMIN /////////////////////////////////////////////////
+    ///////////////////////////////////////////////       /////////////////////////////////////////////////
+   ///////////////////////////////////////////////       /////////////////////////////////////////////////
 
     #[Route('/admin', name: 'app_event_index_admin', methods: ['GET'])]
     public function indexAdmin(EntityManagerInterface $entityManager, EventRepository $eventRepository, PaginatorInterface $paginator, Request $request): Response
     {
-        $userID = $request->query->get('userID');
+        $hasAccess = $this->AdminAccess();
+        if ($hasAccess) {
 
-        $searchTerm = $request->query->get('q');
-        $name = $request->query->get('name');
-        $feeOrder = $request->query->get('feeOrder');
-        $status = $request->query->get('status');
-        $type = $request->query->get('type');
+            $connectedUserID = -1;
 
-        $users = $entityManager
-            ->getRepository(User::class)
-            ->findAll();
-        $events = $eventRepository->findAll();
+            $showOtherEvents = 1;
+    
+            $userID = $request->query->get('userID');
 
-        if ($userID) {
-            $events = $eventRepository->findByUser($userID);
+            $searchTerm = $request->query->get('q');
+            $name = $request->query->get('name');
+            $feeOrder = $request->query->get('feeOrder');
+            $status = $request->query->get('status');
+            $type = $request->query->get('type');
+
+            $users = $entityManager
+                ->getRepository(User::class)
+                ->findAll();
+            $events = $eventRepository->findAll();
+
+            if ($userID) {
+                $events = $eventRepository->findByUser($userID);
+            }
+            if ($name) {
+                $events = $eventRepository->findAllSortedByName($name, $connectedUserID, $showOtherEvents);
+            } elseif ($feeOrder) {
+                $events = $eventRepository->findAllSortedByPrice($feeOrder, $connectedUserID, $showOtherEvents);
+            } elseif ($status) {
+                $events = $eventRepository->findByStatus($status, $connectedUserID,$showOtherEvents);
+            } elseif ($type) {
+                $events = $eventRepository->findByType($type, $connectedUserID,$showOtherEvents);
+            } elseif ($searchTerm) {
+                $events = $eventRepository->findByTerm($searchTerm, $connectedUserID,$showOtherEvents);
+            }
+    
+            $pages = $paginator->paginate(
+                $events, // Requête contenant les données à paginer (ici nos articles)
+                $request->query->getInt('page', 1), // Numéro de la page en cours, passé dans l'URL, 1 si aucune page
+                9 // Nombre de résultats par page
+            );
+
+            return $this->render('event/admin/index.html.twig', [
+                'events' => $events,
+                'users' => $users,
+                // 'userID' => $userID,
+                'searchTerm' => $searchTerm,
+            ]);
+        } else {
+            return $this->redirectToRoute('app_home', [], Response::HTTP_SEE_OTHER);
         }
-        // if ($name) {
-        //     $events = $eventRepository->findAllSortedByName($name);
-        // }
-        // elseif ($feeOrder) {
-        //     $events = $eventRepository->findAllSortedByPrice($feeOrder);
-        // }
-        // elseif ($status) {
-        //     $events = $eventRepository->findByStatus($status);
-        // }
-        // elseif ($type) {
-        //     $events = $eventRepository->findByType($type);
-        // }
-        // else if ($searchTerm) {
-        //     $events = $eventRepository->findByTerm($searchTerm);
-        // }
-
-        $pages = $paginator->paginate(
-            $events, // Requête contenant les données à paginer (ici nos articles)
-            $request->query->getInt('page', 1), // Numéro de la page en cours, passé dans l'URL, 1 si aucune page
-            9 // Nombre de résultats par page
-        );
-
-        return $this->render('event/admin/index.html.twig', [
-            'events' => $events,
-            'users' => $users,
-            // 'userID' => $userID,
-            'searchTerm' => $searchTerm,
-        ]);
     }  
 
     #[Route('/newAdmin', name: 'app_event_new_admin', methods: ['GET', 'POST'])]
     public function newAdmin(Request $request, EntityManagerInterface $entityManager): Response
     {
-        $event = new Event();
-        $form = $this->createForm(EventType::class, $event);
-        $form->handleRequest($request);
+        $hasAccess = $this->AdminAccess();
+        if ($hasAccess) {
 
-        if ($form->isSubmitted() && $form->isValid()) {
+            $event = new Event();
+            $event->setImage('http://localhost/PIDEV/BlogUploads/imagec.png');
+            $event->setUser($this->connectedUser);
 
-            $imageFile = $form->get('image')->getData();
-            if ($imageFile) {
-                $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
-                $newFilename = $originalFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
-                $destinationPath = $this->getParameter('destinationPath') . '/' . $newFilename;
-                $imageURL = $this->getParameter('file_base_url')['host'] . '/' . $this->getParameter('file_base_url')['path'] . '/' . $newFilename;
-                $imagePath = $this->getParameter('destinationPath') . '/' . $newFilename;
-            
-                try {
-                    $imageFile->move(
-                        $this->getParameter('destinationPath'),
-                        $newFilename
-                    );
-                } catch (FileException $e) {
-                    // handle exception if something happens during file upload
+            $form = $this->createForm(EventType::class, $event);
+            $form->handleRequest($request);
+
+            if ($form->isSubmitted() && $form->isValid()) {
+
+                $imageFile = $form->get('image')->getData();
+                if ($imageFile) {
+                    $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+                    $newFilename = $originalFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
+                    $destinationPath = $this->getParameter('destinationPath') . '/' . $newFilename;
+                    $imageURL = $this->getParameter('file_base_url')['host'] . '/' . $this->getParameter('file_base_url')['path'] . '/' . $newFilename;
+                    $imagePath = $this->getParameter('destinationPath') . '/' . $newFilename;
+                
+                    try {
+                        $imageFile->move(
+                            $this->getParameter('destinationPath'),
+                            $newFilename
+                        );
+                    } catch (FileException $e) {
+                        // handle exception if something happens during file upload
+                    }
+                
+                    $event->setImage($imageURL);
                 }
-            
-                $event->setImage($imageURL);
+                $entityManager->persist($event);
+                $entityManager->flush();
+
+                return $this->redirectToRoute('app_event_index_admin', [], Response::HTTP_SEE_OTHER);
             }
-            $entityManager->persist($event);
-            $entityManager->flush();
 
-            return $this->redirectToRoute('app_event_index_admin', [], Response::HTTP_SEE_OTHER);
+            return $this->renderForm('event/admin/new.html.twig', [
+                'event' => $event,
+                'form' => $form,
+            ]);
+        } else {
+            return $this->redirectToRoute('app_home', [], Response::HTTP_SEE_OTHER);
         }
-
-        return $this->renderForm('event/admin/new.html.twig', [
-            'event' => $event,
-            'form' => $form,
-        ]);
     }
 
 
     #[Route('/admin/{eventid}/edit', name: 'app_event_edit_admin', methods: ['GET', 'POST'])]
     public function editAdmin(Request $request, Event $event, EntityManagerInterface $entityManager): Response
     {
-        $form = $this->createForm(EventType::class, $event);
-        $form->handleRequest($request);
+        $hasAccess = $this->AdminAccess();
+        if ($hasAccess) {
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $imageFile = $form->get('image')->getData();
-            if ($imageFile) {
-                $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
-                $newFilename = $originalFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
-                $destinationPath = $this->getParameter('destinationPath') . '/' . $newFilename;
-                $imageURL = $this->getParameter('file_base_url')['host'] . '/' . $this->getParameter('file_base_url')['path'] . '/' . $newFilename;
-                $imagePath = $this->getParameter('destinationPath') . '/' . $newFilename;
-            
-                try {
-                    $imageFile->move(
-                        $this->getParameter('destinationPath'),
-                        $newFilename
-                    );
-                } catch (FileException $e) {
-                    // handle exception if something happens during file upload
+            $form = $this->createForm(EventType::class, $event);
+            $form->handleRequest($request);
+
+            if ($form->isSubmitted() && $form->isValid()) {
+                $imageFile = $form->get('image')->getData();
+                if ($imageFile) {
+                    $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+                    $newFilename = $originalFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
+                    $destinationPath = $this->getParameter('destinationPath') . '/' . $newFilename;
+                    $imageURL = $this->getParameter('file_base_url')['host'] . '/' . $this->getParameter('file_base_url')['path'] . '/' . $newFilename;
+                    $imagePath = $this->getParameter('destinationPath') . '/' . $newFilename;
+                
+                    try {
+                        $imageFile->move(
+                            $this->getParameter('destinationPath'),
+                            $newFilename
+                        );
+                    } catch (FileException $e) {
+                        // handle exception if something happens during file upload
+                    }
+                
+                    $event->setImage($imageURL);
                 }
             
-                $event->setImage($imageURL);
+                $entityManager->flush();
+
+                return $this->redirectToRoute('app_event_index_admin', [], Response::HTTP_SEE_OTHER);
             }
-           
-            $entityManager->flush();
 
-            return $this->redirectToRoute('app_event_index_admin', [], Response::HTTP_SEE_OTHER);
+            return $this->renderForm('event/admin/edit.html.twig', [
+                'event' => $event,
+                'form' => $form,
+            ]);
+        } else {
+            return $this->redirectToRoute('app_home', [], Response::HTTP_SEE_OTHER);
         }
-
-        return $this->renderForm('event/admin/edit.html.twig', [
-            'event' => $event,
-            'form' => $form,
-        ]);
     }
 
     #[Route('/admin/{eventid}', name: 'app_event_show_admin', methods: ['GET'])]
@@ -236,12 +253,18 @@ class EventController extends AbstractController
     #[Route('/admin/{eventid}', name: 'app_event_delete_admin', methods: ['POST'])]
     public function deleteAdmin(Request $request, Event $event, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$event->getEventid(), $request->request->get('_token'))) {
-            $entityManager->remove($event);
-            $entityManager->flush();
-        }
+        $hasAccess = $this->AdminAccess();
+        if ($hasAccess) {
 
-        return $this->redirectToRoute('app_event_index_admin', [], Response::HTTP_SEE_OTHER);
+            if ($this->isCsrfTokenValid('delete'.$event->getEventid(), $request->request->get('_token'))) {
+                $entityManager->remove($event);
+                $entityManager->flush();
+            }
+
+            return $this->redirectToRoute('app_event_index_admin', [], Response::HTTP_SEE_OTHER);
+        } else {
+            return $this->redirectToRoute('app_home', [], Response::HTTP_SEE_OTHER);
+        }
     }
     
        ///////////////////////////////////////////////        /////////////////////////////////////////////////
@@ -253,14 +276,15 @@ class EventController extends AbstractController
     #[Route('/artist', name: 'app_event_index_artist', methods: ['GET'])]
     public function index(EntityManagerInterface $entityManager, EventRepository $eventRepository, PaginatorInterface $paginator, Request $request): Response
     {
-        $connectedUserID = $this->connectedUser->getUserId();
-        $connectedUserRole = $this->connectedUser->getRole();
+        $hasAccess = $this->ArtistAccess();
+        if ($hasAccess) {
 
-        $showOtherEvents = $request->query->get('showOtherEvents') == 1;
-        
-        
+            $connectedUserID = $this->connectedUser->getUserId();
+            $connectedUserRole = $this->connectedUser->getRole();
 
-        if ($connectedUserRole=== "artist") {
+            $showOtherEvents = $request->query->get('showOtherEvents') == 1;
+
+            // if ($connectedUserRole=== "artist") {
 
             $searchTerm = $request->query->get('q');
             $name = $request->query->get('name');
@@ -307,195 +331,227 @@ class EventController extends AbstractController
                 'searchTerm' => $searchTerm,
                 'showOtherEvents' => $showOtherEvents,
             ]);
-        // } else {
-        //     return $this->redirectToRoute('app_event_index', [], Response::HTTP_SEE_OTHER);
+            // }
+        } else {
+            return $this->redirectToRoute('app_home', [], Response::HTTP_SEE_OTHER);
         }
-    }
-    
-
-    // #[Route('/artist/otherEvents', name: 'app_event_other_events_artist', methods: ['GET'])]
-    // public function findOtherEvents(EntityManagerInterface $entityManager, EventRepository $eventRepository, PaginatorInterface $paginator, Request $request): Response
-    // {
-    //     $connectedUserID = $this->connectedUser->getUserId();
-    //     $connectedUserRole = $this->connectedUser->getRole();
-
-    //     $showOtherEvents = true;
-
-    //     if ($connectedUserRole=== "artist") {
-            
-    //         $searchTerm = $request->query->get('q');
-    //         $name = $request->query->get('name');
-    //         $feeOrder = $request->query->get('feeOrder');
-    //         $status = $request->query->get('status');
-    //         $type = $request->query->get('type');
-
-    //         $events = $entityManager
-    //             ->getRepository(Event::class)
-    //             ->createQueryBuilder('e')
-    //             ->andWhere('e.user != :val')
-    //             ->setParameter('val', $this->connectedUser->getUserId())
-    //             ->getQuery()
-    //             ->getResult();
-
-    //         if ($name) {
-    //             $events = $eventRepository->findAllSortedByName($name, $connectedUserID, $showOtherEvents);
-    //         } elseif ($feeOrder) {
-    //             $events = $eventRepository->findAllSortedByPrice($feeOrder, $connectedUserID, $showOtherEvents);
-    //         } elseif ($status) {
-    //             $events = $eventRepository->findByStatus($status, $connectedUserID,$showOtherEvents);
-    //         } elseif ($type) {
-    //             $events = $eventRepository->findByType($type, $connectedUserID,$showOtherEvents);
-    //         } elseif ($searchTerm) {
-    //             $events = $eventRepository->findByTerm($searchTerm, $connectedUserID,$showOtherEvents);
-    //         }
-        
-    //         $pages = $paginator->paginate(
-    //             $events,
-    //             $request->query->getInt('page', 1),
-    //             9
-    //         );
-        
-    //         return $this->render('event/artist/otherEvents.html.twig', [
-    //             'events' => $pages,
-    //             'searchTerm' => $searchTerm,
-    //             'showOtherEvents' => $showOtherEvents,
-    //         ]);
-    //     } else {
-    //         return $this->redirectToRoute('app_event_index', [], Response::HTTP_SEE_OTHER);
-    //     }
-    // }
+    }   
     
     #[Route('/artist/new', name: 'app_event_new_artist', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
-        $event = new Event();
-        $event->setImage('http://localhost/PIDEV/BlogUploads/imagec.png');
-        $event->setUser($this->connectedUser);
+        $hasAccess = $this->ArtistAccess();
+        if ($hasAccess) {
 
-        $form = $this->createForm(EventType::class, $event);
-        $form->handleRequest($request);
+            $event = new Event();
+            $event->setImage('http://localhost/PIDEV/BlogUploads/imagec.png');
+            $event->setUser($this->connectedUser);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $event = $form->getData();
+            $form = $this->createForm(EventType::class, $event);
+            $form->handleRequest($request);
+
+            if ($form->isSubmitted() && $form->isValid()) {
+                $event = $form->getData();
 
 
-            $imageFile = $form->get('image')->getData();
-            if ($imageFile) {
-                $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
-                $newFilename = $originalFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
-                $destinationPath = $this->getParameter('destinationPath') . '/' . $newFilename;
-                $imageURL = $this->getParameter('file_base_url')['host'] . '/' . $this->getParameter('file_base_url')['path'] . '/' . $newFilename;
-                $imagePath = $this->getParameter('destinationPath') . '/' . $newFilename;
-            
-                try {
-                    $imageFile->move(
-                        $this->getParameter('destinationPath'),
-                        $newFilename
-                    );
-                } catch (FileException $e) {
-                    // handle exception if something happens during file upload
+                $imageFile = $form->get('image')->getData();
+                if ($imageFile) {
+                    $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+                    $newFilename = $originalFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
+                    $destinationPath = $this->getParameter('destinationPath') . '/' . $newFilename;
+                    $imageURL = $this->getParameter('file_base_url')['host'] . '/' . $this->getParameter('file_base_url')['path'] . '/' . $newFilename;
+                    $imagePath = $this->getParameter('destinationPath') . '/' . $newFilename;
+                
+                    try {
+                        $imageFile->move(
+                            $this->getParameter('destinationPath'),
+                            $newFilename
+                        );
+                    } catch (FileException $e) {
+                        // handle exception if something happens during file upload
+                    }
+                
+                    $event->setImage($imageURL);
                 }
-            
-                $event->setImage($imageURL);
+                $entityManager->persist($event);
+                $entityManager->flush();
+
+                return $this->redirectToRoute('app_event_index_artist', [], Response::HTTP_SEE_OTHER);
             }
-            $entityManager->persist($event);
-            $entityManager->flush();
 
-            return $this->redirectToRoute('app_event_index_artist', [], Response::HTTP_SEE_OTHER);
+            return $this->renderForm('event/artist/new.html.twig', [
+                'event' => $event,
+                'form' => $form,
+            ]);
+        } else {
+            return $this->redirectToRoute('app_home', [], Response::HTTP_SEE_OTHER);
         }
-
-        return $this->renderForm('event/artist/new.html.twig', [
-            'event' => $event,
-            'form' => $form,
-        ]);
     }
 
     #[Route('/artist/{eventid}', name: 'app_event_show_artist', methods: ['GET'])]
     public function show(Event $event, EntityManagerInterface $entityManager, Request $request): Response
     {
-        $connectedUserID = $this->connectedUser->getUserId();
-        $connectedUserRole = $this->connectedUser->getRole();
-        
-        // check if the connected user is the owner of the event
-        $isOwner = ($event->getUser()->getUserId() == $connectedUserID);
-    
-        // 
-        $participation = $entityManager->getRepository(Participation::class)->findOneBy([
-            'user' => $connectedUserID,
-            'event' => $event->getEventid(),    
-        ]);
-    
-        $feedback = $entityManager->getRepository(Feedback::class)->findOneBy([
-            'user' => $connectedUserID,
-            'event' => $event->getEventid(),    
-        ]);
-    
-        $activities = $entityManager
-            ->getRepository(Activity::class)
-            ->createQueryBuilder('a')
-            ->andWhere('a.event = :val')
-            ->setParameter('val', $event)
-            ->getQuery()
-            ->getResult();
+        $hasAccess = $this->ArtistClientAccess();
+        if ($hasAccess) {
 
-        return $this->render('event/artist/show.html.twig', [
-            'event' => $event,
-            'isOwner' => $isOwner,
-            'participation' => $participation,
-            'feedback' => $feedback,
-            'activities' => $activities
-        ]);
+            $connectedUserID = $this->connectedUser->getUserId();
+            $connectedUserRole = $this->connectedUser->getRole();
+            
+            // check if the connected user is the owner of the event
+            $isOwner = ($event->getUser()->getUserId() == $connectedUserID);
+        
+            // 
+            $participation = $entityManager->getRepository(Participation::class)->findOneBy([
+                'user' => $connectedUserID,
+                'event' => $event->getEventid(),    
+            ]);
+        
+            $feedback = $entityManager->getRepository(Feedback::class)->findOneBy([
+                'user' => $connectedUserID,
+                'event' => $event->getEventid(),    
+            ]);
+        
+            $activities = $entityManager
+                ->getRepository(Activity::class)
+                ->createQueryBuilder('a')
+                ->andWhere('a.event = :val')
+                ->setParameter('val', $event)
+                ->getQuery()
+                ->getResult();
+
+            return $this->render('event/artist/show.html.twig', [
+                'event' => $event,
+                'isOwner' => $isOwner,
+                'participation' => $participation,
+                'feedback' => $feedback,
+                'activities' => $activities
+            ]);
+        } else {
+            return $this->redirectToRoute('app_home', [], Response::HTTP_SEE_OTHER);
+        }
     }
     
 
     #[Route('/artist/{eventid}/edit', name: 'app_event_edit_artist', methods: ['GET', 'POST'])]
     public function edit(Request $request, Event $event, EntityManagerInterface $entityManager): Response
     {
-        $form = $this->createForm(EventType::class, $event);
-        $form->handleRequest($request);
+        $hasAccess = $this->ArtistAccess();
+        if ($hasAccess) {
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $imageFile = $form->get('image')->getData();
-            if ($imageFile) {
-                $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
-                $newFilename = $originalFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
-                $destinationPath = $this->getParameter('destinationPath') . '/' . $newFilename;
-                $imageURL = $this->getParameter('file_base_url')['host'] . '/' . $this->getParameter('file_base_url')['path'] . '/' . $newFilename;
-                $imagePath = $this->getParameter('destinationPath') . '/' . $newFilename;
-            
-                try {
-                    $imageFile->move(
-                        $this->getParameter('destinationPath'),
-                        $newFilename
-                    );
-                } catch (FileException $e) {
-                    // handle exception if something happens during file upload
+            $form = $this->createForm(EventType::class, $event);
+            $form->handleRequest($request);
+
+            if ($form->isSubmitted() && $form->isValid()) {
+                $imageFile = $form->get('image')->getData();
+                if ($imageFile) {
+                    $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+                    $newFilename = $originalFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
+                    $destinationPath = $this->getParameter('destinationPath') . '/' . $newFilename;
+                    $imageURL = $this->getParameter('file_base_url')['host'] . '/' . $this->getParameter('file_base_url')['path'] . '/' . $newFilename;
+                    $imagePath = $this->getParameter('destinationPath') . '/' . $newFilename;
+                
+                    try {
+                        $imageFile->move(
+                            $this->getParameter('destinationPath'),
+                            $newFilename
+                        );
+                    } catch (FileException $e) {
+                        // handle exception if something happens during file upload
+                    }
+                
+                    $event->setImage($imageURL);
                 }
             
-                $event->setImage($imageURL);
+                $entityManager->flush();
+
+                return $this->redirectToRoute('app_event_index_artist', [], Response::HTTP_SEE_OTHER);
             }
-           
-            $entityManager->flush();
 
-            return $this->redirectToRoute('app_event_index_artist', [], Response::HTTP_SEE_OTHER);
+            return $this->renderForm('event/artist/edit.html.twig', [
+                'event' => $event,
+                'form' => $form,
+            ]);
+        
+        } else {
+            return $this->redirectToRoute('app_home', [], Response::HTTP_SEE_OTHER);
         }
-
-        return $this->renderForm('event/artist/edit.html.twig', [
-            'event' => $event,
-            'form' => $form,
-        ]);
     }
 
     #[Route('/artist/{eventid}', name: 'app_event_delete_artist', methods: ['POST'])]
     public function delete(Request $request, Event $event, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$event->getEventid(), $request->request->get('_token'))) {
-            $entityManager->remove($event);
-            $entityManager->flush();
-        }
+        $hasAccess = $this->ArtistAccess();
+        if ($hasAccess) {
 
-        return $this->redirectToRoute('app_event_index_artist', [], Response::HTTP_SEE_OTHER);
+            if ($this->isCsrfTokenValid('delete'.$event->getEventid(), $request->request->get('_token'))) {
+                $entityManager->remove($event);
+                $entityManager->flush();
+            }
+
+            return $this->redirectToRoute('app_event_index_artist', [], Response::HTTP_SEE_OTHER);
+        } else {
+            return $this->redirectToRoute('app_home', [], Response::HTTP_SEE_OTHER);
+        }
     }
+
+       ///////////////////////////////////////////////        /////////////////////////////////////////////////
+      ///////////////////////////////////////////////        /////////////////////////////////////////////////
+     /////////////////////////////////////////////// CLIENT /////////////////////////////////////////////////
+    ///////////////////////////////////////////////        /////////////////////////////////////////////////
+   ///////////////////////////////////////////////        /////////////////////////////////////////////////
+
+   #[Route('/client', name: 'app_event_index_client', methods: ['GET'])]
+   public function indexx(EntityManagerInterface $entityManager, EventRepository $eventRepository, PaginatorInterface $paginator, Request $request): Response
+   {
+       $hasAccess = $this->ClientAccess();
+       if ($hasAccess) {
+           $connectedUserID = $this->connectedUser->getUserId();
+
+           $showOtherEvents = 1;
+
+           $searchTerm = $request->query->get('q');
+           $name = $request->query->get('name');
+           $feeOrder = $request->query->get('feeOrder');
+           $status = $request->query->get('status');
+           $type = $request->query->get('type');
+       
+            $events = $entityManager
+                ->getRepository(Event::class)
+                ->createQueryBuilder('e')
+                ->andWhere('e.user != :val')
+                ->setParameter('val', $this->connectedUser->getUserId())
+                ->getQuery()
+                ->getResult();
+       
+           if ($name) {
+               $events = $eventRepository->findAllSortedByName($name, $connectedUserID, $showOtherEvents);
+           } elseif ($feeOrder) {
+               $events = $eventRepository->findAllSortedByPrice($feeOrder, $connectedUserID, $showOtherEvents);
+           } elseif ($status) {
+               $events = $eventRepository->findByStatus($status, $connectedUserID,$showOtherEvents);
+           } elseif ($type) {
+               $events = $eventRepository->findByType($type, $connectedUserID,$showOtherEvents);
+           } elseif ($searchTerm) {
+               $events = $eventRepository->findByTerm($searchTerm, $connectedUserID,$showOtherEvents);
+           }
+
+           $pages = $paginator->paginate(
+               $events,
+               $request->query->getInt('page', 1),
+               9
+           );
+       
+           return $this->render('event/client/index.html.twig', [
+               'events' => $pages,
+               'searchTerm' => $searchTerm,
+               'showOtherEvents' => $showOtherEvents,
+           ]);
+           // }
+        } else {
+           return $this->redirectToRoute('app_home', [], Response::HTTP_SEE_OTHER);
+       }
+   }   
+
     private function AdminAccess()
     {
         if ($this->connectedUser->getRole() == "admin") {

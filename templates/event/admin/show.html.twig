@@ -1,105 +1,130 @@
 {% extends 'baseE.html.twig' %}
 {% block content %}
 
+    {% set connectedUser = returnConnectedUser() %}
 
-{% block body %}
-	{% include('event/admin/eventBar.html.twig') %}
+    {% block body %}
+        {% include('event/admin/eventBar.html.twig') %}
 
-    <h1 style="margin:20px; color: deeppink;"><u>{{ event.name }}</u></h1>
-    <br>
+        <h1 style="margin:20px; color: #007bff;"><u>Event details</u></h1>
+        <br>
 
-    <table>
-        <tbody>
-            <tr>
-                <th>Artist</th>
-                <td>{{ event.user.name }}</td>
-            </tr>
-            <tr>
-                <th>Location</th>
-                <td>{{ event.location }}</td>
-            </tr>
-            <tr>
-                <th>Type</th>
-                <td>{{ event.type }}</td>
-            </tr>
-            <tr>
-                <th>Description</th>
-                <td>{{ event.description }}</td>
-            </tr>
-            <tr>
-                <th>Entryfee</th>
-                <td>{{ event.entryfee }}</td>
-            </tr>
-            <tr>
-                <th>Capacity</th>
-                <td>{{ event.capacity }}</td>
-            </tr>
-            <tr>
-                <th>Startdate</th>
-                <td>{{ event.startdate ? event.startdate|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-            <tr>
-                <th>Enddate</th>
-                <td>{{ event.enddate ? event.enddate|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
+        <table>
+            <tbody>
+                <tr>
+                    <th>Title</th>
+                    <td>{{ event.name }}</td>
+                </tr>
 
-            <tr>
-                <th>Status</th>
-                <td>{{ event.status }}</td>
-            </tr>
+                <tr>
+                    <th>Artist</th>
+                    <td>{{ event.user.username }}</td>
+                </tr>
 
-            <tr>
-                <th><i class="fa fa-file-image-o category-icon" aria-hidden="true"></i> Image:</th>
-                <td><img src="{{ asset('imagescustom/' ~ event.image) }}" alt="Ev Image" onclick="showImage(this)"></td>
-            </tr>
-        <tr>
-            <td colspan="2">
+                <tr>
+                    <th>Type</th>
+                    <td>{{ event.type }}</td>
+                </tr>
+
+                <tr>
+                    <th>Status</th>
+                    <td>{{ event.status }}</td>
+                </tr>
+
+                <tr>
+                    <th>Location</th>
+                    <td>{{ event.location }}</td>
+                </tr>
+
+                <tr>
+                    <th>Start Date</th>
+                    <td>{{ event.startdate ? event.startdate|date('d-m-Y ~ H:i') : '' }}</td>
+                </tr>
+                
+                <tr>
+                    <th>End Date</th>
+                    <td>{{ event.enddate ? event.enddate|date('d-m-Y ~ H:i') : '' }}</td>
+                </tr>
+                
+                <tr>
+                    <th>Description</th>
+                    <td>{{ event.description }}</td>
+                </tr>
+                             
+                <tr>
+                    <th>Capacity</th>
+                    <td>{{ event.capacity }}</td>
+                </tr>
+              
+                <tr>
+                    <th>Entry Fee</th>
+                    <td>{{ event.entryfee }}</td>
+                </tr>
+
+                <tr>
+                    <th>Image</th>
+                    <td><img src="{{ asset(event.image) }}" alt="Ev Image" onclick="showImage(this)"></td>
+                </tr>
+
+            </tbody>
+
+        </table>
+
+        <div style="display: flex; flex-direction: column; align-items: center; margin-top: 20px;">
+            <iframe style="border:0; width: 70%; height: 350px; display: block; margin: 0 auto;" class="img-fluid" src="https://maps.google.com/maps?q=+{{event.location}}+&hl=fr&z=14&amp;output=embed" frameborder="0" allowfullscreen></iframe>
+            <div class="map-wrapper-300 mb-3"></div>
+        </div>
+
+        <div style="margin-top: 20px; margin-left: 190px;">
+            {% if app.session.get('user_role') == "artist" %}
+                <a href="{{ path('app_event_index_artist') }}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left"></i> Back to List
+                </a>
+            {% elseif app.session.get('user_role') == "client" %}
+                <a href="{{ path('app_event_index_client') }}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left"></i> Back to List
+                </a>
+            {% elseif app.session.get('user_role') == "admin" %}
                 <a href="{{ path('app_event_index_admin') }}" class="btn btn-outline-secondary">
                     <i class="fas fa-arrow-left"></i> Back to List
                 </a>
+            {% endif %}
+            <div style="display: inline-block;">
+                <a href="{{ path('app_event_edit_admin', {'eventid': event.eventid}) }}" class="btn btn-outline-success" style="margin-right: 15px; margin-left: 10px;">Edit</a>
                 <div style="float: right;">
-                    <a href="{{ path('app_event_edit_admin', {'eventid': event.eventid}) }}" class="btn btn-outline-success" style="margin-right : 10px;">Edit</a>
-                    <a href="{{ path('app_event_delete_admin', {'eventid': event.eventid}) }}" class="btn btn-outline-danger" style="margin-right : 10px;">Delete</a>
+                    {{ include('event/admin/_delete_form.html.twig') }}
                 </div>
-            </td>
-        </tr>
-            <script>
-                function showImage(img) {
-                    img.classList.toggle("enlarge");
-                }
-            </script>
-
-            <style>
-                .enlarge {
-                    max-width: 100%;
-                    max-height: 100%;
-                    position: fixed;
-                    top: 0;
-                    left: 0;
-                    right: 0;
-                    bottom: 0;
-                    margin: auto;
-                    z-index: 9999;
-                    cursor: zoom-out;
-                }
-            </style>
-        </tbody>
-
-    </table>
-    <iframe style="border:0; width: 70%; height: 350px; display: block; margin: 0 auto;" class="img-fluid" src="https://maps.google.com/maps?q=+{{event.location}}+&hl=fr&z=14&amp;output=embed" frameborder="0" allowfullscreen></iframe>
-    <div class="map-wrapper-300 mb-3">
-        <br>
+            </div>
+        </div>
+        </br>
+        <script>
+            function showImage(img) {
+                img.classList.toggle("enlarge");
+            }
+        </script>
     {% endblock %}
 
     {% block stylesheets %}
         <style>
+            .enlarge {
+                max-width: 100%;
+                max-height: 100%;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                margin: auto;
+                z-index: 9999;
+                cursor: zoom-out;
+            }
             table {
-            border-collapse: collapse;
-            width: 70%;
-            font-family: 'Open Sans', sans-serif;
-            background-color: #fff;
-            border: 1px solid #ddd;
-            margin: 0 auto; /* Add this line */
+                border-collapse: collapse;
+                width: 70%;
+                font-family: 'Open Sans', sans-serif;
+                background-color: #fff;
+                border: 1px solid #ddd;
+                margin: 0 auto; /* Add this line */
             }
 
 
@@ -125,6 +150,13 @@
             img {
                 max-width: 200px;
                 max-height: 200px;
+            }
+
+            hr {
+                border: none;
+                height: 2px;
+                background-color: #ddd;
+                margin: 16px 0;
             }
 
             .button-group {

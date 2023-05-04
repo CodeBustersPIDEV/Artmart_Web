@@ -3,7 +3,7 @@
 {% block body %}
 	{% include('event/artist/eventBar.html.twig') %}
 
-    <h1 style="margin:20px; color: deeppink;"><u>Create new Report</u></h1>
+    <h1 style="margin:20px; color: deeppink;"><u>Create new report</u></h1>
     <br>
 
     <div class="form-container">
@@ -17,7 +17,7 @@
 
         {{ include('eventreport/_form.html.twig', {'button_label': 'Add'}) }}
         {{ form_end(form) }}
-        <a href="{{ path('app_eventreport_index_admin') }}">
+        <a href="{{ path('app_eventreport_index_artist') }}">
             <i class="fas fa-arrow-left"></i> Back to List
         </a>
     </div>
