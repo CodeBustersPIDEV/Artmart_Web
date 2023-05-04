@@ -32,6 +32,7 @@ use Knp\Component\Pager\PaginatorInterface;
 use Vonage\Client\Credentials\Basic;
 use Vonage\Messages\Channel\SMS\SMSText;
 use DateTime;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Vonage\SMS\Message\SMS;
 
 #[Route('/user')]
@@ -43,7 +44,7 @@ class UserController extends AbstractController
     private $paginator;
 
 
-    public function __construct(SessionInterface $session, UserRepository $userRepository, Environment $twig,PaginatorInterface $paginator)
+    public function __construct(SessionInterface $session, UserRepository $userRepository, Environment $twig, PaginatorInterface $paginator)
     {
         $this->twig = $twig;
         if ($session != null) {
@@ -53,7 +54,6 @@ class UserController extends AbstractController
             }
         }
         $this->paginator = $paginator;
-
     }
 
     public function uploadImage(UploadedFile $file, User $user): void
@@ -75,6 +75,20 @@ class UserController extends AbstractController
         $file->move($destinationFilePath, $filename);
         $user->setPicture($filePath . '/' . $filename);
     }
+    #[Route('/chart-data', name: 'chart_data')]
+    public function userRolesChart(UserRepository $userRepository): Response
+    {
+        $adminCount = $userRepository->countUsersByRole('admin');
+        $clientCount = $userRepository->countUsersByRole('client');
+        $artistCount = $userRepository->countUsersByRole('artist');
+
+        $data = [
+            'labels' => ['Admin', 'Client', 'Artist'],
+            'data' => [$adminCount, $clientCount, $artistCount],
+        ];
+
+        return new JsonResponse($data);
+    }
 
 
     #[Route('/', name: 'app_user_index', methods: ['GET'])]
@@ -84,15 +98,15 @@ class UserController extends AbstractController
         $searchTerm = $request->query->get('search');
         $userse = $request->query->get('userse');
         $users = $this->getDoctrine()
-        ->getRepository(User::class)
-        ->findAll();
+            ->getRepository(User::class)
+            ->findAll();
 
-    $pagination = $this->paginator->paginate(
-        $users,
-        $request->query->getInt('page', 1),
-        8
-    );
-    
+        $pagination = $this->paginator->paginate(
+            $users,
+            $request->query->getInt('page', 1),
+            8
+        );
+
         $queryBuilder = $entityManager
             ->getRepository(User::class)
             ->createQueryBuilder('u');
@@ -199,7 +213,7 @@ class UserController extends AbstractController
     }
 
     #[Route('/newAdmin', name: 'app_user_newAd', methods: ['GET', 'POST'])]
-    public function newAdmin(Request $request, EntityManagerInterface $entityManager, UserRepository $userRepository , AdminRepository $adminRepository): Response
+    public function newAdmin(Request $request, EntityManagerInterface $entityManager, UserRepository $userRepository, AdminRepository $adminRepository): Response
     {
         $user = new User();
         $addedUser = new User();
@@ -208,7 +222,7 @@ class UserController extends AbstractController
             'is_edit' => false,
         ]);
         $form->handleRequest($request);
-echo ('test');
+        echo ('test');
         if ($form->isSubmitted() && $form->isValid()) {
 
             $role = 'admin';
@@ -229,17 +243,16 @@ echo ('test');
             // $user->setRole($role);
             $userRepository->save($user, true);
 
-                $addedUser = $userRepository->findOneUserByEmail($email);
-                $admin->setUser($addedUser);
-                $adminRepository->save($admin, true);
-           
-                $admin->setUser($user);
-                $entityManager->persist($admin);
-                $entityManager->flush();
-                return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
+            $addedUser = $userRepository->findOneUserByEmail($email);
+            $admin->setUser($addedUser);
+            $adminRepository->save($admin, true);
 
-            }
-        
+            $admin->setUser($user);
+            $entityManager->persist($admin);
+            $entityManager->flush();
+            return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
+        }
+
 
         return $this->renderForm('user/newAdmin.html.twig', [
             'user' => $user,
@@ -316,7 +329,7 @@ echo ('test');
         }
     }
     #[Route('/{userId}/Profile', name: 'app_user_Profile', methods: ['GET'])]
-    public function Profile(User $user,RequestStack $requestStack, ClientRepository $clientRepository, ArtistRepository $artistRepository, AdminRepository $adminRepository): Response
+    public function Profile(User $user, RequestStack $requestStack, ClientRepository $clientRepository, ArtistRepository $artistRepository, AdminRepository $adminRepository): Response
     {
         $date = new DateTime();
 
@@ -324,8 +337,8 @@ echo ('test');
         $currentUrl = $requestStack->getCurrentRequest()->getUri();
         $serverIpAddress = '127.0.0.1'; // replace with your server's IP address
         $pcIpAddress = getHostByName(getHostName());
-        
-        
+
+
         $newUrl = str_replace($serverIpAddress, $pcIpAddress, $currentUrl);
         $client = $clientRepository->findOneBy(['user' => $user]);
         $artist = $artistRepository->findOneBy(['user' => $user]);
@@ -355,7 +368,7 @@ echo ('test');
                 return $this->render('user/Profile.html.twig', [
                     'user' => $user,
                     'clientAttributes' => $clientAttributes ?? null,
-                    'lastloggedin' =>$formatted_date,
+                    'lastloggedin' => $formatted_date,
 
                 ]);
             } elseif ($role === 'artist') {
@@ -363,7 +376,7 @@ echo ('test');
                     'user' => $user,
                     'artistAttributes' => $artistAttributes ?? null,
                     'url' => $newUrl,
-                    'lastloggedin' =>$formatted_date,
+                    'lastloggedin' => $formatted_date,
 
 
                 ]);
@@ -371,7 +384,7 @@ echo ('test');
                 return $this->render('user/Profile.html.twig', [
                     'user' => $user,
                     'adminAttributes' => $adminAttributes ?? null,
-                    'lastloggedin' =>$formatted_date,
+                    'lastloggedin' => $formatted_date,
 
                 ]);
             }
@@ -383,7 +396,7 @@ echo ('test');
     #[Route('/{userId}/edit', name: 'app_user_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, User $user, EntityManagerInterface $entityManager, ClientRepository $clientRepository, ArtistRepository $artistRepository, AdminRepository $adminRepository): Response
     {
-        $hasAccess=$this->AdminAccess();
+        $hasAccess = $this->AdminAccess();
         $client = $clientRepository->findOneBy(['user' => $user]);
         $artist = $artistRepository->findOneBy(['user' => $user]);
         $admin = $adminRepository->findOneBy(['user' => $user]);
@@ -452,17 +465,17 @@ echo ('test');
             $entityManager->flush();
             return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
         }
-if($hasAccess){
-        return $this->renderForm('user/edit.html.twig', [
-            'user' => $user,
-            'form' => $form,
-            'is_edit' => true,
-            'Pic' => $ProfilePic,
-            'client_attributes' => $clientAttributes,
-            'artist_attributes' => $artistAttributes,
-            'admin_attributes' => $adminAttributes,
-        ]);}
-        else{
+        if ($hasAccess) {
+            return $this->renderForm('user/edit.html.twig', [
+                'user' => $user,
+                'form' => $form,
+                'is_edit' => true,
+                'Pic' => $ProfilePic,
+                'client_attributes' => $clientAttributes,
+                'artist_attributes' => $artistAttributes,
+                'admin_attributes' => $adminAttributes,
+            ]);
+        } else {
             return $this->redirectToRoute('app_home', [], Response::HTTP_SEE_OTHER);
         }
     }
@@ -470,7 +483,7 @@ if($hasAccess){
     #[Route('/{userId}/editProfile', name: 'app_user_editProfile', methods: ['GET', 'POST'])]
     public function editProfile(Request $request, User $user, EntityManagerInterface $entityManager, ClientRepository $clientRepository, ArtistRepository $artistRepository, AdminRepository $adminRepository): Response
     {
-        $hasAccess=$this->ArtistClientAccess();
+        $hasAccess = $this->ArtistClientAccess();
         $client = $clientRepository->findOneBy(['user' => $user]);
         $artist = $artistRepository->findOneBy(['user' => $user]);
         $admin = $adminRepository->findOneBy(['user' => $user]);
@@ -538,19 +551,19 @@ if($hasAccess){
             $entityManager->flush();
             return $this->redirectToRoute('app_user_Profile', ['userId' => $user->getUserId()], Response::HTTP_SEE_OTHER);
         }
-if($hasAccess){
-        return $this->renderForm('user/editF.html.twig', [
-            'user' => $user,
-            'form' => $form,
-            'is_edit' => true,
-            'Pic' => $ProfilePic,
-            'client_attributes' => $clientAttributes,
-            'artist_attributes' => $artistAttributes,
-            'admin_attributes' => $adminAttributes,
-        ]);
-    }else{
-        return $this->redirectToRoute('app_admin', ['userId' => $user->getUserId()], Response::HTTP_SEE_OTHER);
-    }
+        if ($hasAccess) {
+            return $this->renderForm('user/editF.html.twig', [
+                'user' => $user,
+                'form' => $form,
+                'is_edit' => true,
+                'Pic' => $ProfilePic,
+                'client_attributes' => $clientAttributes,
+                'artist_attributes' => $artistAttributes,
+                'admin_attributes' => $adminAttributes,
+            ]);
+        } else {
+            return $this->redirectToRoute('app_admin', ['userId' => $user->getUserId()], Response::HTTP_SEE_OTHER);
+        }
     }
 
 
@@ -674,8 +687,8 @@ if($hasAccess){
             'user' => $U,
             'userId' => $user->getUserId(),
             'form' => $form,
-            'userId'=>$user->getUserId(),
-            'enabled'=>$user->isEnabled(),
+            'userId' => $user->getUserId(),
+            'enabled' => $user->isEnabled(),
         ]);
     }
 
@@ -704,7 +717,7 @@ if($hasAccess){
             'user' => $U,
             'userId' => $user->getUserId(),
             'form' => $form,
-            'userId'=>$user->getUserId(),
+            'userId' => $user->getUserId(),
 
         ]);
     }
@@ -760,15 +773,14 @@ if($hasAccess){
             'from' => 'ArtMart',
             'text' => 'Hello this is your verification token' . $code
         ];
-       
+
         $client->message()->send($message);
 
-if($user->isEnabled()){
-        return $this->redirectToRoute('app_user_TokenVerifPwd', ['userId' => $user->getUserId()], Response::HTTP_SEE_OTHER);
-}else{
-    return $this->redirectToRoute('app_user_TokenVerif', ['userId' => $user->getUserId()], Response::HTTP_SEE_OTHER);
-   
-}
+        if ($user->isEnabled()) {
+            return $this->redirectToRoute('app_user_TokenVerifPwd', ['userId' => $user->getUserId()], Response::HTTP_SEE_OTHER);
+        } else {
+            return $this->redirectToRoute('app_user_TokenVerif', ['userId' => $user->getUserId()], Response::HTTP_SEE_OTHER);
+        }
     }
     private function AdminAccess()
     {
@@ -778,7 +790,7 @@ if($user->isEnabled()){
             return false; // return a value to indicate that access is not allowed
         }
     }
-   
+
     private function ArtistClientAccess()
     {
         if ($this->connectedUser->getRole() == "artist" || $this->connectedUser->getRole() == "client") {
