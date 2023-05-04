@@ -42,8 +42,91 @@
 	}
 </style>
 */ #}
+{% set connectedUser = returnConnectedUser() %}
+	{% if connectedUser.role == "admin" %}
+	<style>
+			.chip-select {
+	  display: flex;
+	  flex-wrap: wrap;
+	  align-items: center;
+	  border: 1px solid #ccc;
+	  padding: 5px;
+	  border-radius: 5px;
+	}
 
+	.selected-chips {
+	  display: flex;
+	  flex-wrap: wrap;
+	  gap: 5px;
+	}
+
+	.selected-chips .chip {
+	  display: flex;
+	  align-items: center;
+	  background-color: #ccc;
+	  color: #333;
+	  border-radius: 20px;
+	  padding: 5px 10px;
+	  margin-right: 5px;
+	}
+
+	.selected-chips .chip .close {
+	  margin-left: 5px;
+	  cursor: pointer;
+	}
+  .blogImg{
+    margin-top: 7px;
+  }
+  	.addTagsInput {
+		 background: transparent !important; 
+		 		color: black !important;
+		border-color: black !important;
+	}
+	.inputBg {
+		 background: transparent !important; 
+		 		color: black !important;
+		border-color: black !important;
+	}
+	.err {
+		color: #e75e8d;
+	}
+</style>
+{% else %}
 <style>
+		.chip-select {
+	  display: flex;
+	  flex-wrap: wrap;
+	  align-items: center;
+	  border: 1px solid #ccc;
+	  padding: 5px;
+	  border-radius: 5px;
+	}
+
+	.selected-chips {
+	  display: flex;
+	  flex-wrap: wrap;
+	  gap: 5px;
+	}
+
+	.selected-chips .chip {
+	  display: flex;
+	  align-items: center;
+	  background-color: #ccc;
+	  color: #333;
+	  border-radius: 20px;
+	  padding: 5px 10px;
+	  margin-right: 5px;
+	}
+
+	.selected-chips .chip .close {
+	  margin-left: 5px;
+	  cursor: pointer;
+	}
+
+  .blogImg{
+    margin-top: 7px;
+  }
+		
 	.addTagsInput {
 		background: transparent !important;
 		color: white !important;
@@ -62,12 +145,13 @@
 		color: #e75e8d;
 	}
 </style>
+{% endif %}
 
-<link rel="stylesheet" href="{{ asset('assets/Blog/CSS/FormCss.css') }}" />
+{# <link rel="stylesheet" href="{{ asset('assets/Blog/CSS/FormCss.css') }}" /> #}
 
 <div class="container">
 	<div class="row">
-		<div class="col">
+		<div class="col-5">
 			{% if blog_media != null %}
 			<img
 				src="{{ blog_media.getFilePath() }}"
@@ -82,101 +166,38 @@
 			/>
 			{% endif %}
 		</div>
-		<div class="col">
+		<div class="col-7">
 			<div class="col-sm-12">
-				{{ form_start(form, {'attr': {'class': 'form-floating','novalidate': 'novalidate'
-
-
-
-
-
-
-				}}) }}
+				{{ form_start(form, {'attr': {'class': 'form-floating','novalidate': 'novalidate'}}) }}
 				<div class="form-group">
-					{{ form_label(form.title, null, {'label_attr': {'class': 'form-label inputLabel'
-
-
-
-
-
-
-					}})}}
-					{{ form_widget(form.title, {'attr': {'class': 'form-control inputBg', 'placeholder': 'Title', 'id': 'title'
-
-
-
-
-
-
-					}}) }}
+					{{ form_label(form.title, null, {'label_attr': {'class': 'form-label inputLabel'}})}}
+					{{ form_widget(form.title, {'attr': {'class': 'form-control inputBg', 'placeholder': 'Title', 'id': 'title'}}) }}
 					<div class="form-error err">
 						{{ form_errors(form.title) }}
 					</div>
 				</div>
 
 				<div class="form-group">
-					{{ form_label(form.content, null, {'label_attr': {'class': 'form-label inputLabel'
-
-
-
-
-
-
-					}}) }}
-					{{ form_widget(form.content, {'attr': {'class': 'form-control inputBg', 'placeholder': 'Content', 'id': 'content'
-
-
-
-
-
-
-					}}) }}
+					{{ form_label(form.content, null, {'label_attr': {'class': 'form-label inputLabel'}}) }}
+					{{ form_widget(form.content, {'attr': {'class': 'form-control inputBg', 'placeholder': 'Content', 'id': 'content'}}) }}
 					<div class="form-error err">
 						{{ form_errors(form.content) }}
 					</div>
 				</div>
 
 				<div class="form-group">
-					{{ form_label(form.category, null, {'label_attr': {'class': 'form-label inputLabel'
-
-
-
-
-
-
-					}}) }}
-					{{ form_widget(form.category, {'attr': {'class': 'form-control select2 inputBg', 'id': 'category'
-
-
-
-
-
-
-					}}) }}
+					{{ form_label(form.category, null, {'label_attr': {'class': 'form-label inputLabel'}}) }}
+					{{ form_widget(form.category, {'attr': {'class': 'form-control select2 inputBg', 'id': 'category'}}) }}
 					<div class="form-error err">
 						{{ form_errors(form.category) }}
 					</div>
 				</div>
 
 				<div class="form-group">
-					{{ form_label(form.tags, null, {'label_attr': {'class': 'form-label inputLabel'
-
-
-
-
-
-
-					}})}}
+					{{ form_label(form.tags, null, {'label_attr': {'class': 'form-label inputLabel'}})}}
 					<div class="row g-3">
-						<div class="col-auto">
-							{{ form_widget(form.tags, {'attr': {'class': 'form-select inputBg' ,'id': 'tags','size':'3'
-
-
-
-
-
-
-							}}) }}
+						<div class="col-auto " >
+							{{ form_widget(form.tags, {'attr': {'class': 'form-select inputBg ' ,'id': 'tags','size':'3'}}) }}
 							<div class="form-error err">
 								{{ form_errors(form.tags) }}
 							</div>
@@ -184,14 +205,7 @@
 						<div class="col-auto">
 							<div id="input-container" style="display: none">
 								<div class="chip-select">
-									{{ form_widget(form.addTags,{'attr': {'id': 'input-container','class': 'form-control addTagsInput inputBg','list':'chip-options'
-
-
-
-
-
-
-									}}) }}
+									{{ form_widget(form.addTags,{'attr': {'id': 'input-container','class': 'form-control addTagsInput inputBg','list':'chip-options'}}) }}
 								</div>
 							</div>
 						</div>
@@ -203,50 +217,20 @@
 					<input type="checkbox" name="addOther" id="tagsChoice" />
 					<input type="hidden" name="addedTags" id="addedTags" />
 				</div>
-
-				{#
 				<div class="form-group">
-					{{ form_label(form.author, null, {'label_attr': {'class': 'form-label inputLabel'
-
-
-
-
-
-
-					}}) }}
-					{{ form_widget(form.author, {'attr': {'class': 'form-control select2 inputBg', 'id': 'author'
-
-
-
-
-
-
-					}}) }}
-				</div>
-				#}
-
-				<div class="form-group">
-					{{ form_label(form.file, null, {'label_attr': {'class': 'form-label inputLabel'
-
-
-
-
-
-
-					}})}}
-					{{ form_widget(form.file, {'attr': {'class': 'form-control blogImageFile inputBg ', 'id': 'formFile'
-
-
-
-
-
-
-					}}) }}
+					{{ form_label(form.file, null, {'label_attr': {'class': 'form-label inputLabel'}})}}
+					{{ form_widget(form.file, {'attr': {'class': 'form-control blogImageFile inputBg ', 'id': 'formFile'}}) }}
 				</div>
 				<div class="d-flex justify-content-center" style="margin-top: 5px">
+					{% if connectedUser.role == "admin" %}
+					<button type="submit" class="btn btn-outline-dark" id="submitBtn">
+						{{ button_label|default('Post') }}
+					</button>
+					{% else %}
 					<button type="submit" class="btn btn-outline-light" id="submitBtn">
 						{{ button_label|default('Post') }}
 					</button>
+					{% endif %}
 				</div>
 				{{ form_end(form) }}
 			</div>

@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\User;
-use App\Repository\UserRepository;   
+use App\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 #[Route('/blogcategories')]
@@ -19,7 +19,7 @@ class BlogcategoriesController extends AbstractController
 {
     private User $connectedUser;
 
-   
+
     public function __construct(SessionInterface $session, UserRepository $userRepository)
     {
         if ($session != null) {
@@ -48,7 +48,7 @@ class BlogcategoriesController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $blogCategoryRepository->save($blogcategory, true);
 
-            return $this->redirectToRoute('app_blogcategories_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_blogs_admin', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('blogcategories/new.html.twig', [
@@ -74,7 +74,7 @@ class BlogcategoriesController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $blogCategoryRepository->save($blogcategory, true);
 
-            return $this->redirectToRoute('app_blogcategories_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_blogs_admin', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('blogcategories/edit.html.twig', [
@@ -100,18 +100,18 @@ class BlogcategoriesController extends AbstractController
             return false; // return a value to indicate that access is not allowed
         }
     }
-     private function ClientAccess()
+    private function ClientAccess()
     {
         if ($this->connectedUser->getRole() === "client") {
             return true; // return a value to indicate that access is allowed
         } else {
             return false; // return a value to indicate that access is not allowed
         }
-    } 
+    }
     private function ArtistAccess()
     {
         if ($this->connectedUser->getRole() === "artist") {
-           return true; // return a value to indicate that access is allowed
+            return true; // return a value to indicate that access is allowed
         } else {
             return false; // return a value to indicate that access is not allowed
         }

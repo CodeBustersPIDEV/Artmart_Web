@@ -451,6 +451,54 @@ class BlogsController extends AbstractController
 
         return $this->json($data);
     }
+
+    #[Route('/admin/new', name: 'app_blogs_newAdmin', methods: ['GET', 'POST'])]
+    public function newAdmin(Request $request, BlogsRepository $blogsRepository): Response
+    {
+
+        $blog = new Blogs();
+        $addedBlog = new Blogs();
+        $cat = new Blogcategories();
+        $hasCategory = new HasBlogCategory();
+        $media = new Media();
+        $strTags = "";
+        $tt = "";
+
+        $edit = false;
+        $form = $this->createForm(BlogsType::class, $blog);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $cat = $form->get('category')->getData();
+            $tags = $form->get('tags')->getData();
+            $title = $form->get('title')->getData();
+            $addedTags = $_POST['addedTags'];
+            $file = $form->get('file')->getData();
+            $blog->setAuthor($this->connectedUser);
+            foreach ($tags as $tag) {
+
+                $strTags = $strTags . "#" . $tag->getName();
+            }
+            $tt = $strTags . $addedTags;
+            $blogsRepository->save($blog, true);
+
+            $addedBlog = $blogsRepository->findOneByTitle($title);
+            $hasCategory->setBlog($addedBlog);
+            $hasCategory->setCategory($cat);
+
+            $this->hasBlogCategoryRepository->save($hasCategory, true);
+            $this->addTagsToBlog($addedBlog, $tt);
+            if ($file != null) {
+                $this->uploadImage($file, $media, $addedBlog, $edit);
+            }
+
+            return $this->redirectToRoute('app_blogs_admin', [], Response::HTTP_SEE_OTHER);
+        }
+        return $this->renderForm('blogs/adminNew.html.twig', [
+            'blog' => $blog,
+            'form' => $form,
+            'blog_media' => null
+        ]);
+    }
     //////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////CRUD Routes///////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -600,7 +648,7 @@ class BlogsController extends AbstractController
         ]);
     }
 
-    #[Route('/{blogs_ID}', name: 'app_blogs_delete', methods: ['POST'])]
+    #[Route('/{blogs_ID}', name: 'app_blogs_delete', methods: ['GET', 'POST'])]
     public function delete(Request $request, Blogs $blog, BlogsRepository $blogsRepository, MediaRepository $mediaRepository, $blogs_ID): Response
     {
         $media = new Media();
@@ -612,8 +660,11 @@ class BlogsController extends AbstractController
             $blogsRepository->remove($blog, true);
             $this->hasBlogCategoryRepository->remove($hasCat, true);
         }
-
-        return $this->redirectToRoute('app_blogs_index', [], Response::HTTP_SEE_OTHER);
+        if ($this->connectedUser->getRole() == "admin") {
+            return $this->redirectToRoute('app_blogs_admin', [], Response::HTTP_SEE_OTHER);
+        } else {
+            return $this->redirectToRoute('app_blogs_index', [], Response::HTTP_SEE_OTHER);
+        }
     }
     private function AdminAccess()
     {
