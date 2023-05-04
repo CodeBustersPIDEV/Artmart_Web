@@ -1,107 +1,107 @@
 {% extends 'baseE.html.twig' %} 
 {% block content %}
-    {% block body %}
-        {% include('event/admin/eventBar.html.twig') %}
+{% block body %}
+	{% include('event/admin/eventBar.html.twig') %}
 
-        <center><h1>Create new Event</h1>
-            <div class="form-container">
-
-                {{ form_start(form,{ 'attr' :{ 'novalidate':'novalidate'}}) }}
-
-                {{ form_row(form.name) }}
-                {{ form_row(form.location) }}
-                {{ form_row(form.type) }}
-                {{ form_row(form.description) }}
-                {{ form_row(form.entryfee) }}
-                {{ form_row(form.capacity) }}
-                {{ form_row(form.startdate) }}
-                {{ form_row(form.enddate) }}
-                {{ form_row(form.status) }}
-                {{ form_label(form.image, 'Event Image') }}
-                {{ form_widget(form.image, {'attr': {'style': 'display:none;'}}) }}
-                {% if event.image is defined %}
-                <img id="preview-image" style="max-width: 128px" src="{{ asset('Event/images/' ~ event.image) }}" alt="Click here to add image" onclick="document.getElementById('event_image').click()">
-                <span id="image-name"></span>
-                {% else %}
-                <img id="preview-image" style="max-width: 128px" src="{{ asset('Blog/img/default-product.png') }}" alt="Default event image" onclick="document.getElementById('event_image').click()">
-                {% endif %}
-
-
-                <script>
-                    document.getElementById('event_image').addEventListener('change', function(e) {
-                        var fileName = e.target.files[0].name;
-                        document.getElementById('image-name').innerHTML = fileName;
-                        var reader = new FileReader();
-                        reader.onload = function (e) {
-                            document.getElementById('preview-image').setAttribute('src', e.target.result);
-                        }
-                        reader.readAsDataURL(e.target.files[0]);
-                    });
-                </script>
-
-
-
-                {{ include('event/_form.html.twig', {'button_label': 'add'}) }}
-                {{ form_end(form) }}
-                <a href="{{ path('app_event_index_admin') }}">
-                    <i class="fas fa-arrow-left"></i> Back to List
-                </a>
-            </div>
-        </center>
-    {% endblock %}
+    <h1 style="margin:20px; color: #007bff;"><u>Create new event</u></h1>
     <br>
-    {% block stylesheets %}
-        <style>
-            /* Add your styles here */
-            label {
-            display: block;
-            margin-bottom: 10px;
-            font-weight: bold;
-            }
-            input[type="text"],
-            textarea {
-            display: block;
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 20px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            }
-            select {
-            display: block;
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 20px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            background-color: #fff;
-            }
-            input[type="submit"] {
-            background-color: #4CAF50;
-            color: #fff;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            }
-            input[type="submit"]:hover {
-            background-color: #3e8e41;
-            }
-            .error {
-            color: #f00;
-            font-weight: bold;
-            }
-            .form-container {
-            width: 50%;
-            margin: auto;
-            background-color: #f2f2f2;
-            padding: 20px;
-            border-radius: 10px;
-            }
-            .form-container h1 {
-            text-align: center;
-            margin-bottom: 20px;
-            }
-        </style>
-    {% endblock %}
+
+    <div class="form-container">
+
+    {{ form_start(form,{ 'attr' :{ 'novalidate':'novalidate'}}) }}
+
+        {{ form_row(form.name) }}
+        {{ form_row(form.location) }}
+        {{ form_row(form.type) }}
+        {{ form_row(form.description) }}
+        {{ form_row(form.entryfee) }}
+        {{ form_row(form.capacity) }}
+        {{ form_row(form.startdate) }}
+        {{ form_row(form.enddate) }}
+        {{ form_row(form.status) }}
+        {{ form_row(form.user) }}        
+        {{ form_label(form.image, 'Event Image') }}
+        {{ form_widget(form.image, {'attr': {'style': 'display:none;'}}) }}
+        {% if event.image is defined %}
+            <img id="preview-image" style="max-width: 128px" src="{{ asset(event.image) }}" alt="Event image" onclick="document.getElementById('event_image').click()">
+            <span id="image-name"></span>
+        {% else %}
+            <img id="preview-image" style="max-width: 128px" src="{{ 'http://localhost/PIDEV/BlogUploads/imagec.png' }}" alt="Default event image" onclick="document.getElementById('event_image').click()">
+        {% endif %}
+        <script>
+            document.getElementById('product_image').addEventListener('change', function(e) {
+                var fileName = e.target.files[0].name;
+                document.getElementById('image-name').innerHTML = fileName;
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    document.getElementById('preview-image').setAttribute('src', e.target.result);
+                }
+                reader.readAsDataURL(e.target.files[0]);
+            });
+        </script>
+
+
+        {{ include('event/_form.html.twig', {'button_label': 'add'}) }}
+        {{ form_end(form) }}
+        <a href="{{ path('app_event_index_admin') }}">
+            <i class="fas fa-arrow-left"></i> Back to List
+        </a>
+    </div>
+    </br>   
+{% endblock %}
+
+{% block stylesheets %}
+<style>
+/* Add your styles here */
+label {
+display: block;
+margin-bottom: 10px;
+font-weight: bold;
+}
+input[type="text"],
+textarea {
+display: block;
+width: 100%;
+padding: 10px;
+margin-bottom: 20px;
+border-radius: 5px;
+border: 1px solid #ccc;
+}
+select {
+display: block;
+width: 100%;
+padding: 10px;
+margin-bottom: 20px;
+border-radius: 5px;
+border: 1px solid #ccc;
+background-color: #fff;
+}
+input[type="submit"] {
+background-color: #4CAF50;
+color: #fff;
+padding: 10px 20px;
+border: none;
+border-radius: 5px;
+cursor: pointer;
+}
+input[type="submit"]:hover {
+background-color: #3e8e41;
+}
+.error {
+color: #f00;
+font-weight: bold;
+}
+.form-container {
+width: 50%;
+margin: auto;
+background-color: #f2f2f2;
+padding: 20px;
+border-radius: 10px;
+}
+.form-container h1 {
+text-align: center;
+margin-bottom: 20px;
+}
+</style>
+{% endblock %}
 {% endblock %}
