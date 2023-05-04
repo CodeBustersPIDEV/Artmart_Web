@@ -3,10 +3,12 @@
 {% block body %}
 	{% include('event/artist/eventBar.html.twig') %}
 
-<h1>Create new Event</h1>
+    <h1 style="margin:20px; color: deeppink;"><u>Create new Event</u></h1>
+    <br>
+
     <div class="form-container">
 
-  {{ form_start(form,{ 'attr' :{ 'novalidate':'novalidate'}}) }}
+    {{ form_start(form,{ 'attr' :{ 'novalidate':'novalidate'}}) }}
 
         {{ form_row(form.name) }}
         {{ form_row(form.location) }}
@@ -17,7 +19,6 @@
         {{ form_row(form.startdate) }}
         {{ form_row(form.enddate) }}
         {{ form_row(form.status) }}
-        {{ form_row(form.user) }}        
         {{ form_label(form.image, 'Event Image') }}
         {{ form_widget(form.image, {'attr': {'style': 'display:none;'}}) }}
         {% if event.image is defined %}

@@ -43,7 +43,7 @@ class EventType extends AbstractType
                 
             ])
             ->add('status', ChoiceType::class, [
-                'choices' => [
+                'choices' => [  
                     'Scheduled' => 'Scheduled',
                     'Started' => 'Started',
                     'Finished' => 'Finished',
@@ -51,10 +51,6 @@ class EventType extends AbstractType
                     'Cancelled' => 'Cancelled',
                 ],
             ])
-            ->add('user', EntityType::class, [
-                'class' => User::class,
-                'placeholder' => 'Choose an option',
-            ])            
         ;
     }
 

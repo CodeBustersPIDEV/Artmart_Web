@@ -49,7 +49,7 @@ class Productreview
         return $this->readyProductId;
     }
 
-    public function setReadyProductId(int $readyProductId): self
+    public function setReadyProductId(Readyproduct $readyProductId): self
     {
         $this->readyProductId = $readyProductId;
 
@@ -61,7 +61,7 @@ class Productreview
         return $this->userId;
     }
 
-    public function setUserId(int $userId): self
+    public function setUserId(User $userId): self
     {
         $this->userId = $userId;
 
@@ -104,9 +104,9 @@ class Productreview
         return $this;
     }
 
-    public function getDate(): ?\DateTimeInterface
+    public function getDate(): ?string
     {
-        return $this->date;
+        return $this->date instanceof \DateTimeInterface ? $this->date->format('Y-m-d H:i:s') : null;;
     }
 
     public function setDate(?\DateTimeInterface $date): self

@@ -2,7 +2,10 @@
 
 namespace App\Controller;
 
+use App\Entity\Activity;
 use App\Entity\Event;
+use App\Entity\Feedback;
+use App\Entity\Participation;
 use App\Entity\User;
 use App\Form\EventType;
 use App\Repository\EventRepository;
@@ -31,25 +34,25 @@ class EventController extends AbstractController
             }
         }
     }
-    public function uploadImage(UploadedFile $file, Event $event): void
-    {
-        $destinationFilePath = $this->getParameter ('destinationPath');
-        $newdestinationFilePath=$this->getParameter ('file_base_url');
-        $filePath = sprintf('%s/%s', $newdestinationFilePath['host'], $newdestinationFilePath['path']);
-        // Get the original filename of the uploaded file
-        $filename = $file->getClientOriginalName();
-        if (!is_uploaded_file($file->getPathname())) {
-            throw new FileException('File was not uploaded via HTTP POST.');
-        }
+    // public function uploadImage(UploadedFile $file, Event $event): void
+    // {
+    //     $destinationFilePath = $this->getParameter ('destinationPath');
+    //     $newdestinationFilePath=$this->getParameter ('file_base_url');
+    //     $filePath = sprintf('%s/%s', $newdestinationFilePath['host'], $newdestinationFilePath['path']);
+    //     // Get the original filename of the uploaded file
+    //     $filename = $file->getClientOriginalName();
+    //     if (!is_uploaded_file($file->getPathname())) {
+    //         throw new FileException('File was not uploaded via HTTP POST.');
+    //     }
 
-        if (!is_dir($destinationFilePath)) {
-            // Create the directory
-            mkdir($destinationFilePath, 0777, true);
-        }
-        // Move the uploaded file to the destination
-        $file->move($destinationFilePath, $filename);
-        $event->setImage($filePath.'/'. $filename);
-    }
+    //     if (!is_dir($destinationFilePath)) {
+    //         // Create the directory
+    //         mkdir($destinationFilePath, 0777, true);
+    //     }
+    //     // Move the uploaded file to the destination
+    //     $file->move($destinationFilePath, $filename);
+    //     $event->setImage($filePath.'/'. $filename);
+    // }
 
     #[Route('/', name: 'app_event_index', methods: ['GET'])]
     public function indexVisitor(EntityManagerInterface $entityManager, EventRepository $eventRepository, PaginatorInterface $paginator, Request $request): Response
@@ -152,26 +155,25 @@ class EventController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $file = $form->get('file')->getData();
-            $event = $form->getData();
-            $this->uploadImage($file, $event);
-
-            // $imageFile = $form->get('image')->getData();
-            // if ($imageFile) {
-            //     $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
-            //     $newFilename = $originalFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
-
-            //     try {
-            //         $imageFile->move(
-            //             $this->getParameter('product_images_directory'),
-            //             $newFilename
-            //         );
-            //     } catch (FileException $e) {
-            //         // handle exception if something happens during file upload
-            //     }
-
-            //     $event->setImage($newFilename);
-            // }
+            $imageFile = $form->get('image')->getData();
+            if ($imageFile) {
+                $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+                $newFilename = $originalFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
+                $destinationPath = $this->getParameter('destinationPath') . '/' . $newFilename;
+                $imageURL = $this->getParameter('file_base_url')['host'] . '/' . $this->getParameter('file_base_url')['path'] . '/' . $newFilename;
+                $imagePath = $this->getParameter('destinationPath') . '/' . $newFilename;
+            
+                try {
+                    $imageFile->move(
+                        $this->getParameter('destinationPath'),
+                        $newFilename
+                    );
+                } catch (FileException $e) {
+                    // handle exception if something happens during file upload
+                }
+            
+                $event->setImage($imageURL);
+            }
             $entityManager->persist($event);
             $entityManager->flush();
 
@@ -196,17 +198,20 @@ class EventController extends AbstractController
             if ($imageFile) {
                 $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
                 $newFilename = $originalFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
-
+                $destinationPath = $this->getParameter('destinationPath') . '/' . $newFilename;
+                $imageURL = $this->getParameter('file_base_url')['host'] . '/' . $this->getParameter('file_base_url')['path'] . '/' . $newFilename;
+                $imagePath = $this->getParameter('destinationPath') . '/' . $newFilename;
+            
                 try {
                     $imageFile->move(
-                        $this->getParameter('product_images_directory'),
+                        $this->getParameter('destinationPath'),
                         $newFilename
                     );
                 } catch (FileException $e) {
                     // handle exception if something happens during file upload
                 }
-
-                $event->setImage($newFilename);
+            
+                $event->setImage($imageURL);
             }
            
             $entityManager->flush();
@@ -252,6 +257,8 @@ class EventController extends AbstractController
         $connectedUserRole = $this->connectedUser->getRole();
 
         $showOtherEvents = $request->query->get('showOtherEvents') == 1;
+        
+        
 
         if ($connectedUserRole=== "artist") {
 
@@ -379,7 +386,7 @@ class EventController extends AbstractController
                 $destinationPath = $this->getParameter('destinationPath') . '/' . $newFilename;
                 $imageURL = $this->getParameter('file_base_url')['host'] . '/' . $this->getParameter('file_base_url')['path'] . '/' . $newFilename;
                 $imagePath = $this->getParameter('destinationPath') . '/' . $newFilename;
-
+            
                 try {
                     $imageFile->move(
                         $this->getParameter('destinationPath'),
@@ -388,7 +395,7 @@ class EventController extends AbstractController
                 } catch (FileException $e) {
                     // handle exception if something happens during file upload
                 }
-
+            
                 $event->setImage($imageURL);
             }
             $entityManager->persist($event);
@@ -404,12 +411,42 @@ class EventController extends AbstractController
     }
 
     #[Route('/artist/{eventid}', name: 'app_event_show_artist', methods: ['GET'])]
-    public function show(Event $event): Response
+    public function show(Event $event, EntityManagerInterface $entityManager, Request $request): Response
     {
+        $connectedUserID = $this->connectedUser->getUserId();
+        $connectedUserRole = $this->connectedUser->getRole();
+        
+        // check if the connected user is the owner of the event
+        $isOwner = ($event->getUser()->getUserId() == $connectedUserID);
+    
+        // 
+        $participation = $entityManager->getRepository(Participation::class)->findOneBy([
+            'user' => $connectedUserID,
+            'event' => $event->getEventid(),    
+        ]);
+    
+        $feedback = $entityManager->getRepository(Feedback::class)->findOneBy([
+            'user' => $connectedUserID,
+            'event' => $event->getEventid(),    
+        ]);
+    
+        $activities = $entityManager
+            ->getRepository(Activity::class)
+            ->createQueryBuilder('a')
+            ->andWhere('a.event = :val')
+            ->setParameter('val', $event)
+            ->getQuery()
+            ->getResult();
+
         return $this->render('event/artist/show.html.twig', [
             'event' => $event,
+            'isOwner' => $isOwner,
+            'participation' => $participation,
+            'feedback' => $feedback,
+            'activities' => $activities
         ]);
     }
+    
 
     #[Route('/artist/{eventid}/edit', name: 'app_event_edit_artist', methods: ['GET', 'POST'])]
     public function edit(Request $request, Event $event, EntityManagerInterface $entityManager): Response
@@ -422,17 +459,20 @@ class EventController extends AbstractController
             if ($imageFile) {
                 $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
                 $newFilename = $originalFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
-
+                $destinationPath = $this->getParameter('destinationPath') . '/' . $newFilename;
+                $imageURL = $this->getParameter('file_base_url')['host'] . '/' . $this->getParameter('file_base_url')['path'] . '/' . $newFilename;
+                $imagePath = $this->getParameter('destinationPath') . '/' . $newFilename;
+            
                 try {
                     $imageFile->move(
-                        $this->getParameter('product_images_directory'),
+                        $this->getParameter('destinationPath'),
                         $newFilename
                     );
                 } catch (FileException $e) {
                     // handle exception if something happens during file upload
                 }
-
-                $event->setImage($newFilename);
+            
+                $event->setImage($imageURL);
             }
            
             $entityManager->flush();

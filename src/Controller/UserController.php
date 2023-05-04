@@ -28,18 +28,22 @@ use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Twig\Environment;
 use Vonage\Client;
+use Knp\Component\Pager\PaginatorInterface;
 use Vonage\Client\Credentials\Basic;
 use Vonage\Messages\Channel\SMS\SMSText;
 use DateTime;
+use Vonage\SMS\Message\SMS;
+
 #[Route('/user')]
 class UserController extends AbstractController
 
 {
     private Environment $twig;
     private User $connectedUser;
+    private $paginator;
 
 
-    public function __construct(SessionInterface $session, UserRepository $userRepository, Environment $twig)
+    public function __construct(SessionInterface $session, UserRepository $userRepository, Environment $twig,PaginatorInterface $paginator)
     {
         $this->twig = $twig;
         if ($session != null) {
@@ -48,6 +52,8 @@ class UserController extends AbstractController
                 $this->connectedUser = $userRepository->find((int) $connectedUserID);
             }
         }
+        $this->paginator = $paginator;
+
     }
 
     public function uploadImage(UploadedFile $file, User $user): void
@@ -77,7 +83,16 @@ class UserController extends AbstractController
         $hasAdminAccess = $this->AdminAccess();
         $searchTerm = $request->query->get('search');
         $userse = $request->query->get('userse');
+        $users = $this->getDoctrine()
+        ->getRepository(User::class)
+        ->findAll();
 
+    $pagination = $this->paginator->paginate(
+        $users,
+        $request->query->getInt('page', 1),
+        8
+    );
+    
         $queryBuilder = $entityManager
             ->getRepository(User::class)
             ->createQueryBuilder('u');
@@ -95,14 +110,9 @@ class UserController extends AbstractController
 
         $users = $queryBuilder->getQuery()->getResult();
 
-        /*   
-        $users = $entityManager
-            ->getRepository(User::class)
-            ->findAll();
-*/
         if ($hasAdminAccess) {
             return $this->render('user/index.html.twig', [
-                'users' => $users,
+                'users' => $pagination,
                 'searchTerm' => $searchTerm,
             ]);
         } else {
@@ -188,6 +198,55 @@ class UserController extends AbstractController
         ]);
     }
 
+    #[Route('/newAdmin', name: 'app_user_newAd', methods: ['GET', 'POST'])]
+    public function newAdmin(Request $request, EntityManagerInterface $entityManager, UserRepository $userRepository , AdminRepository $adminRepository): Response
+    {
+        $user = new User();
+        $addedUser = new User();
+        $admin = new Admin();
+        $form = $this->createForm(UserType::class, $user, [
+            'is_edit' => false,
+        ]);
+        $form->handleRequest($request);
+echo ('test');
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $role = 'admin';
+            $password = $form->get('password')->getData();
+            $hashedPassword = hash('sha256', $password);
+            $user = $form->getData();
+            $token = bin2hex(random_bytes(16));
+            $user->setToken($token);
+            $user->setRole($role);
+            $user->setEnabled(1);
+            $user->setPassword($hashedPassword);
+            $file = $form->get('file')->getData();
+            $entityManager->persist($user);
+            $entityManager->flush();
+            $email = $form->get('email')->getData();
+            $this->uploadImage($file, $user);
+
+            // $user->setRole($role);
+            $userRepository->save($user, true);
+
+                $addedUser = $userRepository->findOneUserByEmail($email);
+                $admin->setUser($addedUser);
+                $adminRepository->save($admin, true);
+           
+                $admin->setUser($user);
+                $entityManager->persist($admin);
+                $entityManager->flush();
+                return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
+
+            }
+        
+
+        return $this->renderForm('user/newAdmin.html.twig', [
+            'user' => $user,
+            'form' => $form,
+            'is_edit' => false,
+        ]);
+    }
     public function SendEmail(Mailer $mailer, User $user, String $token, String $subject)
     {
 
@@ -696,8 +755,13 @@ if($hasAccess){
         $entityManager->persist($user);
         $entityManager->flush();
         $vpn = "216" . $user->getPhonenumber();
-        $message = new SMSText($vpn, 'Vonage APIs', 'Hello this is your verification token' . $code);
-        $result = $client->messages()->send($message);
+        $message = [
+            'to' => $vpn,
+            'from' => 'ArtMart',
+            'text' => 'Hello this is your verification token' . $code
+        ];
+       
+        $client->message()->send($message);
 
 if($user->isEnabled()){
         return $this->redirectToRoute('app_user_TokenVerifPwd', ['userId' => $user->getUserId()], Response::HTTP_SEE_OTHER);
@@ -714,22 +778,7 @@ if($user->isEnabled()){
             return false; // return a value to indicate that access is not allowed
         }
     }
-     private function ClientAccess()
-    {
-        if ($this->connectedUser->getRole() === "client") {
-            return true; // return a value to indicate that access is allowed
-        } else {
-            return false; // return a value to indicate that access is not allowed
-        }
-    } 
-    private function ArtistAccess()
-    {
-        if ($this->connectedUser->getRole() === "artist") {
-           return true; // return a value to indicate that access is allowed
-        } else {
-            return false; // return a value to indicate that access is not allowed
-        }
-    }
+   
     private function ArtistClientAccess()
     {
         if ($this->connectedUser->getRole() == "artist" || $this->connectedUser->getRole() == "client") {

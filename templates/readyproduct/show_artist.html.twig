@@ -16,56 +16,7 @@
 	{% block stylesheets %}
 
 		<style>
-			.pagination {
-				display: flex;
-				justify-content: center;
-				margin-top: 20px;
-			}
-
-			.pagination ul {
-				display: flex;
-				flex-wrap: wrap;
-				list-style: none;
-				padding: 0;
-				margin: 0;
-			}
-
-			.pagination li {
-				margin: 0 5px;
-				border: 1px solid #ccc;
-				border-radius: 3px;
-				background-color: #f2f2f2;
-			}
-
-			.pagination li.active {
-				background-color: #333;
-			}
-
-			.pagination li span,
-			.pagination li a {
-				display: block;
-				padding: 5px 10px;
-				text-align: center;
-				color: #333;
-				text-decoration: none;
-				transition: all 0.2s ease-in-out;
-			}
-
-			.pagination li a:hover {
-				background-color: #333;
-				color: #fff;
-			}
-
-			.pagination li.disabled {
-				opacity: 0.5;
-				pointer-events: none;
-			}
-
-			.pagination li.disabled span {
-				color: #999;
-			}
-
-
+			
 			.ready-card {
 				margin-top: 0;
 				padding: 30px;
@@ -106,11 +57,14 @@
 			}
 
 			.ready-card img {
-				width: 100%;
-				height: 200px;
+				display: block;
+				margin-left: auto;
+				margin-right: auto;
+				width: 50%;
+				height: 50%;
 				object-fit: cover;
 				border-radius: 5px;
-				margin-bottom: 10px;
+				margin-bottom: 50px;
 			}
 
 			.ready-card:nth-child(4n + 1) {
@@ -201,8 +155,8 @@
 				background-image: none;
 				border: 1px solid #ccc;
 				border-radius: 4px;
-				-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
-				box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+				-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+				box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
 				-webkit-transition: border-color ease-in-out 0.15s, -webkit-box-shadow ease-in-out 0.15s;
 				transition: border-color ease-in-out 0.15s, -webkit-box-shadow ease-in-out 0.15s;
 				transition: box-shadow ease-in-out 0.15s, border-color ease-in-out 0.15s;
@@ -212,8 +166,8 @@
 			.form-control:focus {
 				border-color: #66afe9;
 				outline: 0;
-				-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102, 175, 233, .6);
-				box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102, 175, 233, .6);
+				-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);
+				box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);
 			}
 
 			.btn-search {
@@ -319,7 +273,7 @@
 
 			.align-price {
 				margin-top: 18px;
-				float: left;
+				align: left;
 			}
 
 			.align-review {
@@ -389,10 +343,6 @@
 						<div class="align-price">
 							<p>{{ readyproduct.price }}
 								TND</p>
-						</div>
-						<div class="align">
-
-							<a href="{{ path('app_readyproduct_edit', {'readyProductId': readyproduct.productId}) }}">edit</a>
 						</div>
 					</div>
 				</div>

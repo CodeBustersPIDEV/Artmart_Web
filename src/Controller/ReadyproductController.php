@@ -7,6 +7,7 @@ use App\Entity\Readyproduct;
 use App\Entity\Product;
 use App\Entity\User;
 use App\Entity\Productreview;
+use App\Form\CategoriesType;
 use App\Form\ReadyproductType;
 use App\Form\ProductreviewType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -22,6 +23,7 @@ use Symfony\Component\Mailer\MailerInterface;
 
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+
 
 
 #[Route('/readyproduct')]
@@ -44,12 +46,13 @@ class ReadyproductController extends AbstractController
     #[Route('/AscPrice', name: 'app_readyproduct__asc_price_index', methods: ['GET'])]
     public function orderByPriceAsc(Request $request, EntityManagerInterface $entityManager, PaginatorInterface $paginator): Response
     {
+        $hasArtistAccess = $this->ArtistAccess();
         $queryBuilder = $entityManager
             ->getRepository(Readyproduct::class)
             ->createQueryBuilder('r')
             ->innerJoin('r.productId', 'p')
             ->innerJoin('p.category', 'c')
-            ->andWhere('r.userId = :userId') // Filter by connected user's ID
+            ->andWhere('r.userId = :userId')
             ->setParameter('userId', $this->connectedUser->getUserId())
             ->orderBy('r.price', 'ASC');
 
@@ -74,27 +77,32 @@ class ReadyproductController extends AbstractController
             9
         );
 
-        // Fetch categories from the database
+
         $categories = $entityManager
             ->getRepository(Categories::class)
             ->findAll();
 
-        return $this->render('readyproduct/index.html.twig', [
-            'readyproducts' => $pagination,
-            'searchTerm' => $searchTerm,
-            'categories' => $categories, // Add categories to the view
-        ]);
+        if ($hasArtistAccess) {
+            return $this->render('readyproduct/index.html.twig', [
+                'readyproducts' => $pagination,
+                'searchTerm' => $searchTerm,
+                'categories' => $categories,
+            ]);
+        } else {
+            return $this->redirectToRoute('app_home', [], Response::HTTP_SEE_OTHER);
+        }
     }
 
     #[Route('/DescPrice', name: 'app_readyproduct__desc_price_index', methods: ['GET'])]
     public function orderByPriceDesc(Request $request, EntityManagerInterface $entityManager, PaginatorInterface $paginator): Response
     {
+        $hasArtistAccess = $this->ArtistAccess();
         $queryBuilder = $entityManager
             ->getRepository(Readyproduct::class)
             ->createQueryBuilder('r')
             ->innerJoin('r.productId', 'p')
             ->innerJoin('p.category', 'c')
-            ->andWhere('r.userId = :userId') // Filter by connected user's ID
+            ->andWhere('r.userId = :userId')
             ->setParameter('userId', $this->connectedUser->getUserId())
             ->orderBy('r.price', 'DESC');
 
@@ -119,21 +127,26 @@ class ReadyproductController extends AbstractController
             9
         );
 
-        // Fetch categories from the database
+
         $categories = $entityManager
             ->getRepository(Categories::class)
             ->findAll();
 
-        return $this->render('readyproduct/index.html.twig', [
-            'readyproducts' => $pagination,
-            'searchTerm' => $searchTerm,
-            'categories' => $categories, // Add categories to the view
-        ]);
+        if ($hasArtistAccess) {
+            return $this->render('readyproduct/index.html.twig', [
+                'readyproducts' => $pagination,
+                'searchTerm' => $searchTerm,
+                'categories' => $categories,
+            ]);
+        } else {
+            return $this->redirectToRoute('app_home', [], Response::HTTP_SEE_OTHER);
+        }
     }
 
     #[Route('/DescCat', name: 'app_readyproduct__desc_cat_index', methods: ['GET'])]
     public function orderByCategoryDesc(Request $request, EntityManagerInterface $entityManager, PaginatorInterface $paginator): Response
     {
+        $hasArtistAccess = $this->ArtistAccess();
         $searchTerm = $request->query->get('q');
         $category = $request->query->get('category');
 
@@ -142,7 +155,7 @@ class ReadyproductController extends AbstractController
             ->createQueryBuilder('r')
             ->innerJoin('r.productId', 'p')
             ->innerJoin('p.category', 'c')
-            ->andWhere('r.userId = :userId') // Filter by connected user's ID
+            ->andWhere('r.userId = :userId')
             ->orderBy('p.category', 'DESC');
 
         if ($searchTerm) {
@@ -152,7 +165,10 @@ class ReadyproductController extends AbstractController
 
         if ($category) {
             $queryBuilder->andWhere('c.categoriesId = :categoryId')
-                ->setParameter('categoryId', $category);
+                ->setParameter('categoryId', $category)
+                ->setParameter('userId', $this->connectedUser->getUserId());
+        } else {
+            $queryBuilder->setParameter('userId', $this->connectedUser->getUserId());
         }
 
         $queryBuilder->setParameter('userId', $this->connectedUser->getUserId());
@@ -165,20 +181,168 @@ class ReadyproductController extends AbstractController
             9
         );
 
-        // Fetch categories from the database
+
         $categories = $entityManager
             ->getRepository(Categories::class)
             ->findAll();
 
-        return $this->render('readyproduct/index.html.twig', [
-            'readyproducts' => $pagination,
-            'searchTerm' => $searchTerm,
-            'categories' => $categories, // Add categories to the view
-        ]);
+        if ($hasArtistAccess) {
+            return $this->render('readyproduct/index.html.twig', [
+                'readyproducts' => $pagination,
+                'searchTerm' => $searchTerm,
+                'categories' => $categories,
+            ]);
+        } else {
+            return $this->redirectToRoute('app_home', [], Response::HTTP_SEE_OTHER);
+        }
     }
 
     #[Route('/AscPriceClient', name: 'app_readyproduct__asc_price_index_client', methods: ['GET'])]
     public function orderByPriceAsc_client(Request $request, EntityManagerInterface $entityManager, PaginatorInterface $paginator): Response
+    {
+        $hasClientAccess = $this->ClientAccess();
+        $queryBuilder = $entityManager
+            ->getRepository(Readyproduct::class)
+            ->createQueryBuilder('r')
+            ->innerJoin('r.productId', 'p')
+            ->innerJoin('p.category', 'c')
+            ->orderBy('r.price', 'ASC');
+
+        $searchTerm = $request->query->get('q');
+        $category = $request->query->get('category');
+
+        if ($searchTerm) {
+            $queryBuilder->where('p.name LIKE :searchTerm')
+                ->setParameter('searchTerm', '%' . $searchTerm . '%');
+        }
+
+        if ($category) {
+            $queryBuilder->where('c.categoriesId = :categoryId')
+                ->setParameter('categoryId', $category);
+        }
+
+        $readyproducts = $queryBuilder->getQuery()->getResult();
+
+        $pagination = $paginator->paginate(
+            $readyproducts,
+            $request->query->getInt('page', 1),
+            9
+        );
+
+
+        $categories = $entityManager
+            ->getRepository(Categories::class)
+            ->findAll();
+
+        if ($hasClientAccess) {
+            return $this->render('readyproduct/client.html.twig', [
+                'readyproducts' => $pagination,
+                'searchTerm' => $searchTerm,
+                'categories' => $categories,
+            ]);
+        } else {
+            return $this->redirectToRoute('app_home', [], Response::HTTP_SEE_OTHER);
+        }
+    }
+
+    #[Route('/DescPriceClient', name: 'app_readyproduct__desc_price_index_client', methods: ['GET'])]
+    public function orderByPriceDesc_client(Request $request, EntityManagerInterface $entityManager, PaginatorInterface $paginator): Response
+    {
+        $hasClientAccess = $this->ClientAccess();
+        $queryBuilder = $entityManager
+            ->getRepository(Readyproduct::class)
+            ->createQueryBuilder('r')
+            ->innerJoin('r.productId', 'p')
+            ->innerJoin('p.category', 'c')
+            ->orderBy('r.price', 'DESC');
+
+        $searchTerm = $request->query->get('q');
+        $category = $request->query->get('category');
+
+        if ($searchTerm) {
+            $queryBuilder->where('p.name LIKE :searchTerm')
+                ->setParameter('searchTerm', '%' . $searchTerm . '%');
+        }
+
+        if ($category) {
+            $queryBuilder->where('c.categoriesId = :categoryId')
+                ->setParameter('categoryId', $category);
+        }
+
+        $readyproducts = $queryBuilder->getQuery()->getResult();
+
+        $pagination = $paginator->paginate(
+            $readyproducts,
+            $request->query->getInt('page', 1),
+            9
+        );
+
+
+        $categories = $entityManager
+            ->getRepository(Categories::class)
+            ->findAll();
+
+        if ($hasClientAccess) {
+            return $this->render('readyproduct/client.html.twig', [
+                'readyproducts' => $pagination,
+                'searchTerm' => $searchTerm,
+                'categories' => $categories,
+            ]);
+        } else {
+            return $this->redirectToRoute('app_home', [], Response::HTTP_SEE_OTHER);
+        }
+    }
+
+    #[Route('/client/DescCat', name: 'app_readyproduct__desc_cat_index_client', methods: ['GET'])]
+    public function orderByCategoryDescClient(Request $request, EntityManagerInterface $entityManager, PaginatorInterface $paginator): Response
+    {
+        $hasClientAccess = $this->ClientAccess();
+        $searchTerm = $request->query->get('q');
+        $category = $request->query->get('category');
+
+        $queryBuilder = $entityManager
+            ->getRepository(Readyproduct::class)
+            ->createQueryBuilder('r')
+            ->innerJoin('r.productId', 'p')
+            ->innerJoin('p.category', 'c')
+            ->orderBy('p.category', 'DESC');
+
+        if ($searchTerm) {
+            $queryBuilder->andWhere('p.name LIKE :searchTerm')
+                ->setParameter('searchTerm', '%' . $searchTerm . '%');
+        }
+
+        if ($category) {
+            $queryBuilder->andWhere('c.categoriesId = :categoryId')
+                ->setParameter('categoryId', $category);
+        }
+
+        $readyproducts = $queryBuilder->getQuery()->getResult();
+
+        $pagination = $paginator->paginate(
+            $queryBuilder,
+            $request->query->getInt('page', 1),
+            9
+        );
+
+
+        $categories = $entityManager
+            ->getRepository(Categories::class)
+            ->findAll();
+
+        if ($hasClientAccess) {
+            return $this->render('readyproduct/client.html.twig', [
+                'readyproducts' => $pagination,
+                'searchTerm' => $searchTerm,
+                'categories' => $categories,
+            ]);
+        } else {
+            return $this->redirectToRoute('app_home', [], Response::HTTP_SEE_OTHER);
+        }
+    }
+
+    #[Route('/AscPriceNoUser', name: 'app_readyproduct__asc_price_index_no_user', methods: ['GET'])]
+    public function orderByPriceAsc_no_user(Request $request, EntityManagerInterface $entityManager, PaginatorInterface $paginator): Response
     {
         $queryBuilder = $entityManager
             ->getRepository(Readyproduct::class)
@@ -208,20 +372,20 @@ class ReadyproductController extends AbstractController
             9
         );
 
-        // Fetch categories from the database
+
         $categories = $entityManager
             ->getRepository(Categories::class)
             ->findAll();
 
-        return $this->render('readyproduct/client.html.twig', [
+        return $this->render('readyproduct/no_user.html.twig', [
             'readyproducts' => $pagination,
             'searchTerm' => $searchTerm,
-            'categories' => $categories, // Add categories to the view
+            'categories' => $categories,
         ]);
     }
 
-    #[Route('/DescPriceClient', name: 'app_readyproduct__desc_price_index_client', methods: ['GET'])]
-    public function orderByPriceDesc_client(Request $request, EntityManagerInterface $entityManager, PaginatorInterface $paginator): Response
+    #[Route('/DescPriceNoUser', name: 'app_readyproduct__desc_price_index_no_user', methods: ['GET'])]
+    public function orderByPriceDesc_no_user(Request $request, EntityManagerInterface $entityManager, PaginatorInterface $paginator): Response
     {
         $queryBuilder = $entityManager
             ->getRepository(Readyproduct::class)
@@ -251,20 +415,19 @@ class ReadyproductController extends AbstractController
             9
         );
 
-        // Fetch categories from the database
+
         $categories = $entityManager
             ->getRepository(Categories::class)
             ->findAll();
 
-        return $this->render('readyproduct/client.html.twig', [
+        return $this->render('readyproduct/no_user.html.twig', [
             'readyproducts' => $pagination,
             'searchTerm' => $searchTerm,
-            'categories' => $categories, // Add categories to the view
+            'categories' => $categories,
         ]);
     }
-
-    #[Route('/client/DescCat', name: 'app_readyproduct__desc_cat_index_client', methods: ['GET'])]
-    public function orderByCategoryDescClient(Request $request, EntityManagerInterface $entityManager, PaginatorInterface $paginator): Response
+    #[Route('/DescCatNoUser', name: 'app_readyproduct__desc_cat_index_no_user', methods: ['GET'])]
+    public function orderByCategoryDescNoUser(Request $request, EntityManagerInterface $entityManager, PaginatorInterface $paginator): Response
     {
         $searchTerm = $request->query->get('q');
         $category = $request->query->get('category');
@@ -294,117 +457,28 @@ class ReadyproductController extends AbstractController
             9
         );
 
-        // Fetch categories from the database
+
         $categories = $entityManager
             ->getRepository(Categories::class)
             ->findAll();
 
-        return $this->render('readyproduct/index.html.twig', [
+        return $this->render('readyproduct/client.html.twig', [
             'readyproducts' => $pagination,
             'searchTerm' => $searchTerm,
-            'categories' => $categories, // Add categories to the view
-        ]);
-    }
-
-    #[Route('/AscPriceNoUser', name: 'app_readyproduct__asc_price_index_no_user', methods: ['GET'])]
-    public function orderByPriceAsc_no_user(Request $request, EntityManagerInterface $entityManager, PaginatorInterface $paginator): Response
-    {
-        $queryBuilder = $entityManager
-            ->getRepository(Readyproduct::class)
-            ->createQueryBuilder('r')
-            ->innerJoin('r.productId', 'p')
-            ->innerJoin('p.category', 'c')
-            ->andWhere('r.userId = :userId') // Filter by connected user's ID
-            ->setParameter('userId', $this->connectedUser->getUserId())
-            ->orderBy('r.price', 'ASC');
-
-        $searchTerm = $request->query->get('q');
-        $category = $request->query->get('category');
-
-        if ($searchTerm) {
-            $queryBuilder->where('p.name LIKE :searchTerm')
-                ->setParameter('searchTerm', '%' . $searchTerm . '%');
-        }
-
-        if ($category) {
-            $queryBuilder->where('c.categoriesId = :categoryId')
-                ->setParameter('categoryId', $category);
-        }
-
-        $readyproducts = $queryBuilder->getQuery()->getResult();
-
-        $pagination = $paginator->paginate(
-            $readyproducts,
-            $request->query->getInt('page', 1),
-            9
-        );
-
-        // Fetch categories from the database
-        $categories = $entityManager
-            ->getRepository(Categories::class)
-            ->findAll();
-
-        return $this->render('readyproduct/no_user.html.twig', [
-            'readyproducts' => $pagination,
-            'searchTerm' => $searchTerm,
-            'categories' => $categories, // Add categories to the view
-        ]);
-    }
-
-    #[Route('/DescPriceNoUser', name: 'app_readyproduct__desc_price_index_no_user', methods: ['GET'])]
-    public function orderByPriceDesc_no_user(Request $request, EntityManagerInterface $entityManager, PaginatorInterface $paginator): Response
-    {
-        $queryBuilder = $entityManager
-            ->getRepository(Readyproduct::class)
-            ->createQueryBuilder('r')
-            ->innerJoin('r.productId', 'p')
-            ->innerJoin('p.category', 'c')
-            ->andWhere('r.userId = :userId') // Filter by connected user's ID
-            ->setParameter('userId', $this->connectedUser->getUserId())
-            ->orderBy('r.price', 'DESC');
-
-        $searchTerm = $request->query->get('q');
-        $category = $request->query->get('category');
-
-        if ($searchTerm) {
-            $queryBuilder->where('p.name LIKE :searchTerm')
-                ->setParameter('searchTerm', '%' . $searchTerm . '%');
-        }
-
-        if ($category) {
-            $queryBuilder->where('c.categoriesId = :categoryId')
-                ->setParameter('categoryId', $category);
-        }
-
-        $readyproducts = $queryBuilder->getQuery()->getResult();
-
-        $pagination = $paginator->paginate(
-            $readyproducts,
-            $request->query->getInt('page', 1),
-            9
-        );
-
-        // Fetch categories from the database
-        $categories = $entityManager
-            ->getRepository(Categories::class)
-            ->findAll();
-
-        return $this->render('readyproduct/no_user.html.twig', [
-            'readyproducts' => $pagination,
-            'searchTerm' => $searchTerm,
-            'categories' => $categories, // Add categories to the view
+            'categories' => $categories,
         ]);
     }
 
     #[Route('/AscPriceAdmin', name: 'app_readyproduct__asc_price_index_admin', methods: ['GET'])]
     public function orderByPriceAsc_admin(Request $request, EntityManagerInterface $entityManager, PaginatorInterface $paginator): Response
     {
+        $hasAdminAccess = $this->AdminAccess();
         $queryBuilder = $entityManager
             ->getRepository(Readyproduct::class)
             ->createQueryBuilder('r')
             ->innerJoin('r.productId', 'p')
             ->innerJoin('p.category', 'c')
-            ->andWhere('r.userId = :userId') // Filter by connected user's ID
+            ->andWhere('r.userId = :userId')
             ->setParameter('userId', $this->connectedUser->getUserId())
             ->orderBy('r.price', 'ASC');
 
@@ -427,28 +501,33 @@ class ReadyproductController extends AbstractController
             ->getRepository(Productreview::class)
             ->findAll();
 
-        // Fetch categories from the database
+
         $categories = $entityManager
             ->getRepository(Categories::class)
             ->findAll();
 
-        return $this->render('readyproduct/admin.html.twig', [
-            'readyproducts' => $readyproducts,
-            'productreviews' => $productreviews,
-            'searchTerm' => $searchTerm,
-            'categories' => $categories, // Add categories to the view
-        ]);
+        if ($hasAdminAccess) {
+            return $this->render('readyproduct/admin.html.twig', [
+                'readyproducts' => $readyproducts,
+                'productreviews' => $productreviews,
+                'searchTerm' => $searchTerm,
+                'categories' => $categories,
+            ]);
+        } else {
+            return $this->redirectToRoute('app_home', [], Response::HTTP_SEE_OTHER);
+        }
     }
 
     #[Route('/DescPriceAdmin', name: 'app_readyproduct__desc_price_index_admin', methods: ['GET'])]
     public function orderByPriceDesc_admin(Request $request, EntityManagerInterface $entityManager, PaginatorInterface $paginator): Response
     {
+        $hasAdminAccess = $this->AdminAccess();
         $queryBuilder = $entityManager
             ->getRepository(Readyproduct::class)
             ->createQueryBuilder('r')
             ->innerJoin('r.productId', 'p')
             ->innerJoin('p.category', 'c')
-            ->andWhere('r.userId = :userId') // Filter by connected user's ID
+            ->andWhere('r.userId = :userId')
             ->setParameter('userId', $this->connectedUser->getUserId())
             ->orderBy('r.price', 'DESC');
 
@@ -477,22 +556,27 @@ class ReadyproductController extends AbstractController
             ->getRepository(Productreview::class)
             ->findAll();
 
-        // Fetch categories from the database
+
         $categories = $entityManager
             ->getRepository(Categories::class)
             ->findAll();
 
-        return $this->render('readyproduct/admin.html.twig', [
-            'readyproducts' => $readyproducts,
-            'productreviews' => $productreviews,
-            'searchTerm' => $searchTerm,
-            'categories' => $categories, // Add categories to the view
-        ]);
+        if ($hasAdminAccess) {
+            return $this->render('readyproduct/admin.html.twig', [
+                'readyproducts' => $readyproducts,
+                'productreviews' => $productreviews,
+                'searchTerm' => $searchTerm,
+                'categories' => $categories,
+            ]);
+        } else {
+            return $this->redirectToRoute('app_home', [], Response::HTTP_SEE_OTHER);
+        }
     }
 
     #[Route('/DescCatAdmin', name: 'app_readyproduct__desc_cat_index_admin', methods: ['GET'])]
     public function orderByCategoryDesc_admin(Request $request, EntityManagerInterface $entityManager, PaginatorInterface $paginator): Response
     {
+        $hasAdminAccess = $this->AdminAccess();
         $searchTerm = $request->query->get('q');
         $category = $request->query->get('category');
 
@@ -525,22 +609,27 @@ class ReadyproductController extends AbstractController
             ->getRepository(Productreview::class)
             ->findAll();
 
-        // Fetch categories from the database
+
         $categories = $entityManager
             ->getRepository(Categories::class)
             ->findAll();
 
-        return $this->render('readyproduct/admin.html.twig', [
-            'readyproducts' => $pagination,
-            'productreviews' => $productreviews,
-            'searchTerm' => $searchTerm,
-            'categories' => $categories, // Add categories to the view
-        ]);
+        if ($hasAdminAccess) {
+            return $this->render('readyproduct/admin.html.twig', [
+                'readyproducts' => $readyproducts,
+                'productreviews' => $productreviews,
+                'searchTerm' => $searchTerm,
+                'categories' => $categories,
+            ]);
+        } else {
+            return $this->redirectToRoute('app_home', [], Response::HTTP_SEE_OTHER);
+        }
     }
 
     #[Route('/admin', name: 'app_readyproduct_admin', methods: ['GET'])]
     public function indexadmin(Request $request, EntityManagerInterface $entityManager): Response
     {
+        $hasAdminAccess = $this->AdminAccess();
         $searchTerm = $request->query->get('s');
         $order = $request->query->get('order');
         $category = $request->query->get('category');
@@ -577,18 +666,23 @@ class ReadyproductController extends AbstractController
             ->getRepository(Categories::class)
             ->findAll();
 
-        return $this->render('readyproduct/admin.html.twig', [
-            'readyproducts' => $readyproducts,
-            'productreviews' => $productreviews,
-            'categories' => $categories,
-            'searchTerm' => $searchTerm,
-            'order' => $order,
-        ]);
+        if ($hasAdminAccess) {
+            return $this->render('readyproduct/admin.html.twig', [
+                'readyproducts' => $readyproducts,
+                'productreviews' => $productreviews,
+                'categories' => $categories,
+                'searchTerm' => $searchTerm,
+                'order' => $order,
+            ]);
+        } else {
+            return $this->redirectToRoute('app_home', [], Response::HTTP_SEE_OTHER);
+        }
     }
 
     #[Route('/artist', name: 'app_readyproduct_index', methods: ['GET'])]
     public function index(Request $request, EntityManagerInterface $entityManager, PaginatorInterface $paginator): Response
     {
+        $hasArtistAccess = $this->ArtistAccess();
         $searchTerm = $request->query->get('q');
         $order = $request->query->get('order');
         $category = $request->query->get('category');
@@ -598,7 +692,7 @@ class ReadyproductController extends AbstractController
             ->createQueryBuilder('r')
             ->innerJoin('r.productId', 'p')
             ->innerJoin('p.category', 'c')
-            ->andWhere('r.userId = :userId') // Filter by connected user's ID
+            ->andWhere('r.userId = :userId')
             ->setParameter('userId', $this->connectedUser->getUserId());
 
         if ($order === 'name') {
@@ -629,23 +723,28 @@ class ReadyproductController extends AbstractController
             9
         );
 
-        // Fetch categories from the database
+
         $categories = $entityManager
             ->getRepository(Categories::class)
             ->findAll();
 
-        return $this->render('readyproduct/index.html.twig', [
-            'readyproducts' => $pagination,
-            'productreviews' => $productreviews,
-            'searchTerm' => $searchTerm,
-            'order' => $order,
-            'categories' => $categories, // Add categories to the view
-        ]);
+        if ($hasArtistAccess) {
+            return $this->render('readyproduct/index.html.twig', [
+                'readyproducts' => $pagination,
+                'productreviews' => $productreviews,
+                'searchTerm' => $searchTerm,
+                'order' => $order,
+                'categories' => $categories,
+            ]);
+        } else {
+            return $this->redirectToRoute('app_home', [], Response::HTTP_SEE_OTHER);
+        }
     }
 
     #[Route('/client', name: 'app_readyproduct_client_index', methods: ['GET'])]
     public function index_client(Request $request, EntityManagerInterface $entityManager, PaginatorInterface $paginator): Response
     {
+        $hasClientAccess = $this->ClientAccess();
         $searchTerm = $request->query->get('q');
         $order = $request->query->get('order');
         $category = $request->query->get('category');
@@ -685,25 +784,47 @@ class ReadyproductController extends AbstractController
             9
         );
 
-        // Fetch categories from the database
+
         $categories = $entityManager
             ->getRepository(Categories::class)
             ->findAll();
 
-        return $this->render('readyproduct/client.html.twig', [
-            'readyproducts' => $pagination,
-            'productreviews' => $productreviews,
-            'searchTerm' => $searchTerm,
-            'order' => $order,
-            'categories' => $categories, // Add categories to the view
-        ]);
+        if ($hasClientAccess) {
+            return $this->render('readyproduct/client.html.twig', [
+                'readyproducts' => $pagination,
+                'productreviews' => $productreviews,
+                'searchTerm' => $searchTerm,
+                'order' => $order,
+                'categories' => $categories,
+            ]);
+        } else {
+            return $this->redirectToRoute('app_home', [], Response::HTTP_SEE_OTHER);
+        }
+    }
+
+    #[Route('/categories', name: 'app_readyproduct_cat_index', methods: ['GET'])]
+    public function index_cat(Request $request, EntityManagerInterface $entityManager, PaginatorInterface $paginator): Response
+    {
+        $hasArtistAccess = $this->ArtistAccess();
+        $categories = $entityManager
+            ->getRepository(Categories::class)
+            ->findAll();
+
+        if ($hasArtistAccess) {
+            return $this->render('readyproduct/categories.html.twig', [
+                'categories' => $categories,
+            ]);
+        } else {
+            return $this->redirectToRoute('app_home', [], Response::HTTP_SEE_OTHER);
+        }
     }
 
     #[Route('/', name: 'app_readyproduct_no_user_index', methods: ['GET'])]
-    public function index_no_user(Request $request, EntityManagerInterface $entityManager): Response
+    public function index_no_user(Request $request, EntityManagerInterface $entityManager, PaginatorInterface $paginator): Response
     {
         $searchTerm = $request->query->get('q');
         $order = $request->query->get('order');
+        $category = $request->query->get('category');
 
         $queryBuilder = $entityManager
             ->getRepository(Readyproduct::class)
@@ -717,6 +838,10 @@ class ReadyproductController extends AbstractController
             $queryBuilder->orderBy('p.weight', 'ASC');
         }
 
+        if ($category) {
+            $queryBuilder->andWhere('c.categoriesId = :categoryId')
+                ->setParameter('categoryId', $category);
+        }
         if ($searchTerm) {
             $queryBuilder->where('p.name LIKE :searchTerm')
                 ->setParameter('searchTerm', '%' . $searchTerm . '%');
@@ -728,11 +853,22 @@ class ReadyproductController extends AbstractController
             ->getRepository(Productreview::class)
             ->findAll();
 
+        $pagination = $paginator->paginate(
+            $queryBuilder->getQuery(),
+            $request->query->getInt('page', 1),
+            9
+        );
+
+        $categories = $entityManager
+            ->getRepository(Categories::class)
+            ->findAll();
+
         return $this->render('readyproduct/no_user.html.twig', [
-            'readyproducts' => $readyproducts,
+            'readyproducts' => $pagination,
             'productreviews' => $productreviews,
             'searchTerm' => $searchTerm,
             'order' => $order,
+            'categories' => $categories,
         ]);
     }
 
@@ -741,6 +877,7 @@ class ReadyproductController extends AbstractController
     #[Route('/new', name: 'app_readyproduct_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
+        $hasArtistAccess = $this->ArtistAccess();
         $readyproduct = new Readyproduct();
         $product = new Product();
         $product->setImage('http://localhost:88/PIDEV/BlogUploads/imagec.png');
@@ -753,10 +890,10 @@ class ReadyproductController extends AbstractController
             $readyproduct->setPrice($form->get('price')->getData());
             $readyproduct->setProductId($product);
 
-            // Set the user ID on the readyproduct object
+
             $readyproduct->setUserId($this->connectedUser);
 
-            // Get the user ID of the currently logged-in user
+
             $userId = $this->connectedUser->getUserId();
 
             $imageFile = $form->get('productId')->get('image')->getData();
@@ -773,7 +910,6 @@ class ReadyproductController extends AbstractController
                         $newFilename
                     );
                 } catch (FileException $e) {
-                    // handle exception
                 }
 
                 $product->setImage($imageURL);
@@ -786,15 +922,45 @@ class ReadyproductController extends AbstractController
             return $this->redirectToRoute('app_readyproduct_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('readyproduct/new.html.twig', [
-            'readyproduct' => $readyproduct,
-            'form' => $form,
-        ]);
+        if ($hasArtistAccess) {
+            return $this->renderForm('readyproduct/new.html.twig', [
+                'readyproduct' => $readyproduct,
+                'form' => $form,
+            ]);
+        } else {
+            return $this->redirectToRoute('app_home', [], Response::HTTP_SEE_OTHER);
+        }
+    }
+
+    #[Route('/newCat', name: 'app_readyproduct_new_cat', methods: ['GET', 'POST'])]
+    public function new_cat(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $hasArtistAccess = $this->ArtistAccess();
+        $category = new Categories();
+        $form = $this->createForm(CategoriesType::class, $category);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($category);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_readyproduct_cat_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        if ($hasArtistAccess) {
+            return $this->renderForm('readyproduct/new_cat.html.twig', [
+                'category' => $category,
+                'form' => $form,
+            ]);
+        } else {
+            return $this->redirectToRoute('app_home', [], Response::HTTP_SEE_OTHER);
+        }
     }
 
     #[Route('/newAdmin', name: 'app_readyproduct_new_admin', methods: ['GET', 'POST'])]
     public function new_admin(Request $request, EntityManagerInterface $entityManager, MailerInterface $mailer): Response
     {
+        $hasAdminAccess = $this->AdminAccess();
         $readyproduct = new Readyproduct();
         $product = new Product();
         $product->setImage('http://localhost:88/PIDEV/BlogUploads/imagec.png');
@@ -807,10 +973,10 @@ class ReadyproductController extends AbstractController
             $readyproduct->setPrice($form->get('price')->getData());
             $readyproduct->setProductId($product);
 
-            // Set the user ID on the readyproduct object
+
             $readyproduct->setUserId($this->connectedUser);
 
-            // Get the user ID of the currently logged-in user
+
             $userId = $this->connectedUser->getUserId();
 
             $imageFile = $form->get('productId')->get('image')->getData();
@@ -827,7 +993,6 @@ class ReadyproductController extends AbstractController
                         $newFilename
                     );
                 } catch (FileException $e) {
-                    // handle exception
                 }
 
                 $product->setImage($imageURL);
@@ -838,13 +1003,13 @@ class ReadyproductController extends AbstractController
             $entityManager->flush();
 
             $id = $form->get('userId')->getData();
-            // Get the user entity from the database
+
             $user = $entityManager->getRepository(User::class)->find($id);
 
-            // Get the email address of the user
+
             $userEmail = $user->getEmail();
 
-            // Send email to user's email address
+
             $email = (new MimeTemplatedEmail())
                 ->from($this->connectedUser->getEmail())
                 ->to($userEmail)
@@ -860,20 +1025,25 @@ class ReadyproductController extends AbstractController
             return $this->redirectToRoute('app_readyproduct_admin', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('readyproduct/new_admin.html.twig', [
-            'readyproduct' => $readyproduct,
-            'form' => $form,
-        ]);
+        if ($hasAdminAccess) {
+            return $this->renderForm('readyproduct/new_admin.html.twig', [
+                'readyproduct' => $readyproduct,
+                'form' => $form,
+            ]);
+        } else {
+            return $this->redirectToRoute('app_home', [], Response::HTTP_SEE_OTHER);
+        }
     }
 
 
     #[Route('/{readyProductId}', name: 'app_readyproduct_show', methods: ['GET'])]
     public function show(Readyproduct $readyproduct): Response
     {
+        $hasClientAccess = $this->ClientAccess();
         $productreviews = $this->managerRegistry->getRepository(Productreview::class)
             ->findBy(['readyProductId' => $readyproduct]);
 
-        // Calculate the average rating
+
         $totalRating = 0;
         $count = count($productreviews);
         foreach ($productreviews as $productreview) {
@@ -881,19 +1051,24 @@ class ReadyproductController extends AbstractController
         }
         $averageRating = $count > 0 ? $totalRating / $count : 0;
 
-        return $this->render('readyproduct/show.html.twig', [
-            'readyproduct' => $readyproduct,
-            'averageRating' => $averageRating,
-        ]);
+        if ($hasClientAccess) {
+            return $this->render('readyproduct/show.html.twig', [
+                'readyproduct' => $readyproduct,
+                'averageRating' => $averageRating,
+            ]);
+        } else {
+            return $this->redirectToRoute('app_home', [], Response::HTTP_SEE_OTHER);
+        }
     }
 
     #[Route('/artist/{readyProductId}', name: 'app_readyproduct_artist_show', methods: ['GET'])]
     public function show_artist(Readyproduct $readyproduct): Response
     {
+        $hasArtistAccess = $this->ArtistAccess();
         $productreviews = $this->managerRegistry->getRepository(Productreview::class)
             ->findBy(['readyProductId' => $readyproduct]);
 
-        // Calculate the average rating
+
         $totalRating = 0;
         $count = count($productreviews);
         foreach ($productreviews as $productreview) {
@@ -901,39 +1076,24 @@ class ReadyproductController extends AbstractController
         }
         $averageRating = $count > 0 ? $totalRating / $count : 0;
 
-        return $this->render('readyproduct/show_artist.html.twig', [
-            'readyproduct' => $readyproduct,
-            'averageRating' => $averageRating,
-        ]);
-    }
-
-    #[Route('/nu/{readyProductId}', name: 'app_readyproduct_no_user_show', methods: ['GET'])]
-    public function no_user_show(Readyproduct $readyproduct): Response
-    {
-        $productreviews = $this->managerRegistry->getRepository(Productreview::class)
-            ->findBy(['readyProductId' => $readyproduct]);
-
-        // Calculate the average rating
-        $totalRating = 0;
-        $count = count($productreviews);
-        foreach ($productreviews as $productreview) {
-            $totalRating += $productreview->getRating();
+        if ($hasArtistAccess) {
+            return $this->render('readyproduct/show_artist.html.twig', [
+                'readyproduct' => $readyproduct,
+                'averageRating' => $averageRating,
+            ]);
+        } else {
+            return $this->redirectToRoute('app_home', [], Response::HTTP_SEE_OTHER);
         }
-        $averageRating = $count > 0 ? $totalRating / $count : 0;
-
-        return $this->render('readyproduct/show.html.twig', [
-            'readyproduct' => $readyproduct,
-            'averageRating' => $averageRating,
-        ]);
     }
 
     #[Route('/admin/{readyProductId}', name: 'app_readyproduct_show_admin', methods: ['GET'])]
     public function admin_show(Readyproduct $readyproduct): Response
     {
+        $hasAdminAccess = $this->AdminAccess();
         $productreviews = $this->managerRegistry->getRepository(Productreview::class)
             ->findBy(['readyProductId' => $readyproduct]);
 
-        // Calculate the average rating
+
         $totalRating = 0;
         $count = count($productreviews);
         foreach ($productreviews as $productreview) {
@@ -941,15 +1101,20 @@ class ReadyproductController extends AbstractController
         }
         $averageRating = $count > 0 ? $totalRating / $count : 0;
 
-        return $this->render('readyproduct/show_admin.html.twig', [
-            'readyproduct' => $readyproduct,
-            'averageRating' => $averageRating,
-        ]);
+        if ($hasAdminAccess) {
+            return $this->render('readyproduct/show_admin.html.twig', [
+                'readyproduct' => $readyproduct,
+                'averageRating' => $averageRating,
+            ]);
+        } else {
+            return $this->redirectToRoute('app_home', [], Response::HTTP_SEE_OTHER);
+        }
     }
 
     #[Route('/{readyProductId}/edit', name: 'app_readyproduct_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Readyproduct $readyproduct, EntityManagerInterface $entityManager): Response
     {
+        $hasArtistAccess = $this->ArtistAccess();
         $form = $this->createForm(ReadyproductType::class, $readyproduct);
         $form->handleRequest($request);
         $product = $form->get('productId')->getData();
@@ -967,7 +1132,6 @@ class ReadyproductController extends AbstractController
                     $newFilename
                 );
             } catch (FileException $e) {
-                // handle exception if something happens during file upload
             }
 
             $product->setImage($imageURL);
@@ -979,15 +1143,20 @@ class ReadyproductController extends AbstractController
             return $this->redirectToRoute('app_readyproduct_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('readyproduct/edit.html.twig', [
-            'readyproduct' => $readyproduct,
-            'form' => $form,
-        ]);
+        if ($hasArtistAccess) {
+            return $this->renderForm('readyproduct/edit.html.twig', [
+                'readyproduct' => $readyproduct,
+                'form' => $form,
+            ]);
+        } else {
+            return $this->redirectToRoute('app_home', [], Response::HTTP_SEE_OTHER);
+        }
     }
 
     #[Route('/admin/{readyProductId}/edit', name: 'app_readyproduct_edit_admin', methods: ['GET', 'POST'])]
     public function editAdmin(Request $request, Readyproduct $readyproduct, EntityManagerInterface $entityManager): Response
     {
+        $hasAdminAccess = $this->AdminAccess();
         $form = $this->createForm(ReadyproductType::class, $readyproduct);
         $form->handleRequest($request);
         $product = $form->get('productId')->getData();
@@ -1005,7 +1174,6 @@ class ReadyproductController extends AbstractController
                     $newFilename
                 );
             } catch (FileException $e) {
-                // handle exception if something happens during file upload
             }
 
             $product->setImage($imageURL);
@@ -1017,10 +1185,14 @@ class ReadyproductController extends AbstractController
             return $this->redirectToRoute('app_readyproduct_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('readyproduct/edit_admin.html.twig', [
-            'readyproduct' => $readyproduct,
-            'form' => $form,
-        ]);
+        if ($hasAdminAccess) {
+            return $this->renderForm('readyproduct/edit_admin.html.twig', [
+                'readyproduct' => $readyproduct,
+                'form' => $form,
+            ]);
+        } else {
+            return $this->redirectToRoute('app_home', [], Response::HTTP_SEE_OTHER);
+        }
     }
 
     #[Route('/delete/{readyProductId}', name: 'app_readyproduct_delete', methods: ['GET'])]
@@ -1032,14 +1204,24 @@ class ReadyproductController extends AbstractController
         return $this->redirectToRoute('app_readyproduct_index', [], Response::HTTP_SEE_OTHER);
     }
 
+    #[Route('/admin/delete/{readyProductId}', name: 'app_readyproduct_admin_delete', methods: ['GET'])]
+    public function deleteAdmin(Request $request, Readyproduct $readyproduct, EntityManagerInterface $entityManager): Response
+    {
+        $entityManager->remove($readyproduct);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_readyproduct_admin', [], Response::HTTP_SEE_OTHER);
+    }
+
     #[Route('/artist/reviews/{readyProductId}', name: 'app_review_index', methods: ['GET'])]
     public function showReview(int $readyProductId): Response
     {
+        $hasArtistAccess = $this->ArtistAccess();
         $readyProduct = $this->managerRegistry->getRepository(ReadyProduct::class)->find($readyProductId);
         $productreviews = $this->managerRegistry->getRepository(Productreview::class)
             ->findBy(['readyProductId' => $readyProductId]);
 
-        // Calculate the average rating
+
         $totalRating = 0;
         $count = count($productreviews);
         foreach ($productreviews as $productreview) {
@@ -1047,21 +1229,53 @@ class ReadyproductController extends AbstractController
         }
         $averageRating = $count > 0 ? $totalRating / $count : 0;
 
-        return $this->render('productreview/show_reviews_artist.html.twig', [
-            'readyproduct' => $readyProduct,
-            'averageRating' => $averageRating,
-            'productreviews' => $productreviews,
-        ]);
+        if ($hasArtistAccess) {
+            return $this->render('productreview/show_reviews_artist.html.twig', [
+                'readyproduct' => $readyProduct,
+                'averageRating' => $averageRating,
+                'productreviews' => $productreviews,
+            ]);
+        } else {
+            return $this->redirectToRoute('app_home', [], Response::HTTP_SEE_OTHER);
+        }
+    }
+
+    #[Route('/admin/reviews/{readyProductId}', name: 'app_review_index_admin', methods: ['GET'])]
+    public function showReviewAdmin(int $readyProductId): Response
+    {
+        $hasAdminAccess = $this->AdminAccess();
+        $readyProduct = $this->managerRegistry->getRepository(ReadyProduct::class)->find($readyProductId);
+        $productreviews = $this->managerRegistry->getRepository(Productreview::class)
+            ->findBy(['readyProductId' => $readyProductId]);
+
+
+        $totalRating = 0;
+        $count = count($productreviews);
+        foreach ($productreviews as $productreview) {
+            $totalRating += $productreview->getRating();
+        }
+        $averageRating = $count > 0 ? $totalRating / $count : 0;
+
+        if ($hasAdminAccess) {
+            return $this->render('readyproduct/show_review_admin.html.twig', [
+                'readyproduct' => $readyProduct,
+                'averageRating' => $averageRating,
+                'productreviews' => $productreviews,
+            ]);
+        } else {
+            return $this->redirectToRoute('app_home', [], Response::HTTP_SEE_OTHER);
+        }
     }
 
     #[Route('/client/reviews/{readyProductId}', name: 'app_review_index_client', methods: ['GET'])]
     public function showReviewClient(int $readyProductId): Response
     {
+        $hasClientAccess = $this->ClientAccess();
         $readyProduct = $this->managerRegistry->getRepository(ReadyProduct::class)->find($readyProductId);
         $productreviews = $this->managerRegistry->getRepository(Productreview::class)
             ->findBy(['readyProductId' => $readyProductId]);
 
-        // Calculate the average rating
+
         $totalRating = 0;
         $count = count($productreviews);
         foreach ($productreviews as $productreview) {
@@ -1069,62 +1283,65 @@ class ReadyproductController extends AbstractController
         }
         $averageRating = $count > 0 ? $totalRating / $count : 0;
 
-        return $this->render('productreview/show_reviews.html.twig', [
-            'readyproduct' => $readyProduct,
-            'averageRating' => $averageRating,
-            'productreviews' => $productreviews,
-        ]);
+        if ($hasClientAccess) {
+            return $this->render('productreview/show_reviews.html.twig', [
+                'readyproduct' => $readyProduct,
+                'averageRating' => $averageRating,
+                'productreviews' => $productreviews,
+            ]);
+        } else {
+            return $this->redirectToRoute('app_home', [], Response::HTTP_SEE_OTHER);
+        }
     }
 
-    #[Route('/productreview/new', name: 'app_productreview_new', methods: ['GET', 'POST'])]
-    public function newReview(Request $request, EntityManagerInterface $entityManager): Response
+    #[Route('/productreview/new/{id}', name: 'app_productreview_new', methods: ['GET', 'POST'])]
+    public function newReview($id, Request $request, EntityManagerInterface $entityManager): Response
     {
+        $hasClientAccess = $this->ClientAccess();
         $productreview = new Productreview();
+        $rp = $this->managerRegistry->getRepository(ReadyProduct::class)->find($id);
+        $productreview->setReadyProductId($rp);
+        $productreview->setUserId($this->connectedUser);
         $form = $this->createForm(ProductreviewType::class, $productreview);
         $form->handleRequest($request);
-
+        $productreview->setDate(new \DateTime('now', new \DateTimeZone('America/New_York')));
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($productreview);
             $entityManager->flush();
-
-            return $this->redirectToRoute('app_productreview_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirect("/readyproduct/client/reviews/" . $id);
         }
 
-        return $this->renderForm('productreview/new.html.twig', [
-            'productreview' => $productreview,
-            'form' => $form,
-        ]);
+        if ($hasClientAccess) {
+            return $this->renderForm('productreview/new.html.twig', [
+                'productreview' => $productreview,
+                'form' => $form,
+            ]);
+        } else {
+            return $this->redirectToRoute('app_home', [], Response::HTTP_SEE_OTHER);
+        }
     }
     private function AdminAccess()
     {
         if ($this->connectedUser->getRole() == "admin") {
-            return true; // return a value to indicate that access is allowed
+            return true;
         } else {
-            return false; // return a value to indicate that access is not allowed
+            return false;
         }
     }
-     private function ClientAccess()
+    private function ClientAccess()
     {
         if ($this->connectedUser->getRole() === "client") {
-            return true; // return a value to indicate that access is allowed
+            return true;
         } else {
-            return false; // return a value to indicate that access is not allowed
+            return false;
         }
-    } 
+    }
     private function ArtistAccess()
     {
         if ($this->connectedUser->getRole() === "artist") {
-           return true; // return a value to indicate that access is allowed
+            return true;
         } else {
-            return false; // return a value to indicate that access is not allowed
-        }
-    }
-    private function ArtistClientAccess()
-    {
-        if ($this->connectedUser->getRole() == "artist" || $this->connectedUser->getRole() == "client") {
-            return true; // return a value to indicate that access is allowed
-        } else {
-            return false; // return a value to indicate that access is not allowed
+            return false;
         }
     }
 }
