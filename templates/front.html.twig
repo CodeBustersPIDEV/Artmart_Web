@@ -80,7 +80,9 @@
 											<em>our best products</em>
 										</h4>
 									</div>
-									{% block content %}{% endblock %}
+									{% block content %}
+									
+									{% endblock %}
 									<div class="col-lg-12">
 										<div class="main-button">
 											{% if app.session.get('user_id') %}
@@ -122,7 +124,7 @@
                 <div class="heading-section">
                   <h4>A selection of <em>our best products</em></h4>
                 </div>
-                   {% block content %}
+                   {% block content1 %}
   
     {% endblock %}
     <div class="col-lg-12">
