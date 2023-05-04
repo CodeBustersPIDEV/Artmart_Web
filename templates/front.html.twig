@@ -76,7 +76,7 @@ https://templatemo.com/tm-579-cyborg-gaming
                    {% block content %}
   
     {% endblock %}
-                  <div class="col-lg-12">
+    <div class="col-lg-12">
                     <div class="main-button">
                       <a href="{{ path('app_readyproduct_index') }}" >Discover More Products</a>
                     
@@ -85,8 +85,34 @@ https://templatemo.com/tm-579-cyborg-gaming
                 </div>
               </div>
             </div>
+
+                                <!-- ***** Most Popular Start ***** -->
+          <div class="most-popular">
+            <div class="row">
+              <div class="col-lg-12">
+    <div class="heading-section">
+                  <h4>Top Rated <em>Blogs</em></h4>
+                  {% block content2 %}
+  
+    {% endblock %}
+                </div>
+                  <div class="col-lg-12">
+                    <div class="main-button">
+                      <a href="{{ path('app_blogs_index') }}" >Discover More Blogs</a>
+                    
+                    </div>
+                  </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          {# </div> #}
+          <!-- ***** Most Popular End ***** -->
           </div>
           <!-- ***** Most Popular End ***** -->
+
+
+
 
           <!-- ***** Gaming Library Start ***** -->
           <div class="gaming-library">
