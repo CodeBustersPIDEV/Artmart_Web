@@ -217,12 +217,24 @@ content %}
 	}
 </style>
 
+<a href="{{ path('app_blogs_index') }}">back to list</a>
+
 <div class="blog__single">
+	{% if app.session.get('user_id') == blog.author.getUserID() %}
+	<div class="d-flex justify-content-end" style="padding: 5px;">
+	<a
+		href="{{ path('app_blogs_edit', { blogs_ID: blog.getBlogsId() }) }}"
+		class="btn btn-outline-success"
+		style="margin-right: 5px;"
+		>Edit</a
+	>
+
+	{{ include("blogs/_delete_form.html.twig") }}
+</div>
+	{% endif %}
+
 	<div class="container">
 		<div class="row">
-			{#
-			<div class="col-lg-9">
-				#}
 				<article class="blog__post__content">
 					<div class="row">
 						<div class="part1 col">
@@ -318,17 +330,8 @@ content %}
 										</div>
 									</div>
 									<div class="col-md-6">
-										{# {% set qr_code = builder.getString() %}
-										<img src="{{ qr_code }}" alt="QR Code" /> #}
 										<img src="{{ qr_code_url(url) }}" />
-
 										<div class="post__share">
-											{#
-											<form action="shareOnFacebook">
-												#} {#
-												<button id="shareFB">
-													#} {#
-													<i class="fa fa-facebook" style="color: aqua"></i> #}
 													<div
 														class="fb-share-button"
 														data-href="{{ url }}"
@@ -342,13 +345,6 @@ content %}
 															>Share</a
 														>
 													</div>
-													{#
-												</button>
-												#} {#
-											</form>
-											#} {# <a href="#"><i class="fa fa-twitter"></i></a>
-											<a href="#"><i class="fa fa-google"></i></a>
-											<a href="#"><i class="fa fa-pinterest"></i></a> #}
 										</div>
 									</div>
 								</div>
@@ -356,25 +352,10 @@ content %}
 						</div>
 					</div>
 				</article>
-				{#
-			</div>
-			#}
 		</div>
 	</div>
 </div>
-{% if app.session.get('user_id') == blog.author.getUserID() %}
 
-<a href="{{ path('app_blogs_index') }}">back to list</a>
-<div class="d-flex flex-row mb-3">
-	<a
-		href="{{ path('app_blogs_edit', { blogs_ID: blog.getBlogsId() }) }}"
-		class="btn btn-outline-success"
-		>Edit</a
-	>
-
-	{{ include("blogs/_delete_form.html.twig") }}
-	{% endif %}
-</div>
 <script
 	async
 	defer
@@ -382,23 +363,4 @@ content %}
 	src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v16.0&appId=889691142139779&autoLogAppEvents=1"
 	nonce="nox4HVEK"
 ></script>
-<script>
-	// const blogContent = document.querySelector("#blogContent");
-	// async function translateText() {}
-
-	// translateText();
-
-	// document.getElementById("shareFB").addEventListener("click", () => {
-	// 	const xhr = new XMLHttpRequest();
-	// 	xhr.open("POST", "../../src/Controller/BlogsController.php");
-	// 	xhr.setRequestHeader("Content-Type", "application/json");
-	// 	xhr.send(JSON.stringify({ blog: blog }));
-
-	// 	xhr.onreadystatechange = function () {
-	// 		if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-	// 			console.log(xhr.responseText);
-	// 		}
-	// 	};
-	// });
-</script>
 {% endblock %}
