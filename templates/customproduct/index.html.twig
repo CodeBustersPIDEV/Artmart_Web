@@ -7,10 +7,6 @@
 
 
 
-<h1>{{ 'hello'|trans }}</h1>
-
-
-
 <link rel="stylesheet" href="{{ asset('bundles/mercuryseriesflashy/css/flashy.css') }}">
       <!-- Flashy depends on jQuery -->
         <script src="//code.jquery.com/jquery.js"></script>
@@ -253,7 +249,24 @@
     margin-right: 5px;
   }
 
+a.chat-button {
+  display: inline-block;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+  text-decoration: none;
+  color: white;
+  background-color: #4CAF50;
+  border-radius: 5px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+  transition: all 0.2s ease-in-out;
+}
 
+a.chat-button:hover {
+  background-color: #3e8e41;
+  cursor: pointer;
+}
 </style>
 
 <center>
@@ -292,15 +305,18 @@
 			</div>
 		</div>
 	</a>
-
+	
 {% if customproducts.getTotalItemCount() > 0 %}
 <a href="{{ path('app_apply_clients') }}" class="link-style">Demands</a>
 <a href="{{ path('app_apply_clientdone') }}" class="link-style">Check Progress</a>
 <div>
 <center>
-<p  style=" color: #fff;">Total weight of displayed Products: {{ totalWeight }}</p>
-<a href="{{ path('app_customproduct_index', {'order': 'name', 'direction': (app.request.get('direction') == 'asc' ? 'desc' : 'asc')}) }}" class="orderby-link">Order by Name {{ app.request.get('direction') == 'asc' ? '&#9660;' : '&#9650;' }}</a>
-<a href="{{ path('app_customproduct_index', {'order': 'weight', 'direction': (app.request.get('direction') == 'asc' ? 'desc' : 'asc')}) }}" class="orderby-link">Order by Weight {{ app.request.get('direction') == 'asc' ? '&#9660;' : '&#9650;' }}</a>
+{% set direction = app.request.get('direction', 'asc') %}
+{% set orderNameDirection = (app.request.get('order') == 'name') ? (direction == 'asc' ? 'desc' : 'asc') : direction %}
+{% set orderWeightDirection = (app.request.get('order') == 'weight') ? (direction == 'asc' ? 'desc' : 'asc') : direction %}
+<p style="color: #fff;">Total weight of displayed Products: {{ totalWeight }}</p>
+<a href="{{ path('app_customproduct_index', {'order': 'name', 'direction': orderNameDirection }) }}" class="orderby-link">Order by Name {{ direction == 'asc' ? '&#9660;' : '&#9650;' }}</a>
+<a href="{{ path('app_customproduct_index', {'order': 'weight', 'direction': orderWeightDirection }) }}" class="orderby-link">Order by Weight {{ direction == 'asc' ? '&#9660;' : '&#9650;' }}</a>
      </center>
   	</div>
     
@@ -339,11 +355,13 @@
 	 {{ knp_pagination_render(customproducts) }}
 
 
+
 {% else %}
     <p>No custom products found.</p>
 {% endif %}
-
-
+<center>
+<a class="chat-button" href="{{ path('chat') }}">Ask for Help</a>
+</center>
 
 <script>
 // Add onclick event to all hyperlinks

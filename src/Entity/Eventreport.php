@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Symfony\Component\Validator\Constraints as Assert;
+
 use Doctrine\ORM\Mapping as ORM;
 
 
@@ -19,14 +21,25 @@ class Eventreport
      #[ORM\GeneratedValue(strategy: "IDENTITY")]
     private $reportid;
 
+    #[Assert\NotBlank]
     #[ORM\Column(name: "attendance", type: "integer",nullable: false)]
     private $attendance;
 
+    #[ORM\Column(name: "createdAt", type: "datetime", nullable: false,options:["default"=>"current_timestamp()"])]
+    private $createdAt;
+
+
     #[ORM\ManyToOne(targetEntity: "Event")]
     #[ORM\JoinColumn(name: "eventID", referencedColumnName: "eventID")]
+    #[Assert\NotBlank]
     private $event;
 
-    public function getReportid(): ?int
+    public function __construct()
+    {
+        $this->createdAt= new \DateTime();
+    }
+
+public function getReportid(): ?int
     {
         return $this->reportid;
     }
@@ -43,14 +56,26 @@ class Eventreport
         return $this;
     }
 
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
     public function getEvent(): ?Event
     {
         return $this->event;
     }
 
-    public function setEventid(?Event $eventid): self
+    public function setEvent(?Event $event): self
     {
-        $this->event = $eventid;
+        $this->event = $event;
 
         return $this;
     }

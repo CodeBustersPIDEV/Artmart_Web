@@ -1,26 +1,26 @@
-{% extends 'base.html.twig' %} 
-{% import "base.html.twig" as base %}
-{% block title %}Activity{% endblock %}
+{% extends 'baseF.html.twig' %}
+{% block content %}
 
-{% block body %}
-{{ base.NavBar() }}
-{% include('event/artist/eventBar.html.twig') %}
 
-    <h1>Activity</h1>
+    {% block body %}
+        {% include('event/artist/eventBar.html.twig') %}
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Activityid</th>
-                <td>{{ activity.activityid }}</td>
+        <h1 style="margin:20px; color: deeppink;"><u>{{ activity.title }}</u></h1>
+        <br>
+
+        <table>
+            <tbody>
+                <tr>
+                <th>Activity Title</th>
+                <td>{{ activity.title }}</td>
             </tr>
             <tr>
                 <th>Date</th>
                 <td>{{ activity.date ? activity.date|date('Y-m-d H:i:s') : '' }}</td>
             </tr>
             <tr>
-                <th>Title</th>
-                <td>{{ activity.title }}</td>
+                <th>Event</th>
+                <td>{{ activity.event.name }}</td>
             </tr>
             <tr>
                 <th>Host</th>
@@ -28,10 +28,95 @@
             </tr>
         </tbody>
     </table>
+    <div style="float: left; margin-top: 20px; margin-left: 220px;">
+        <a href="{{ path('app_activity_index_artist') }}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left"></i> Back to List
+        </a>
+        <div style="display: inline-block;">
+            <a href="{{ path('app_activity_edit_artist', {'activityid': activity.activityid}) }}" class="btn btn-outline-success" style="margin-right : 10px; margin-left : 10px">Edit</a>
+            <div style="float: right;">
+                {{ include('activity/artist/_delete_form.html.twig') }}
+            </div>
+        </div>
+    </div>
+    {% endblock %}
 
-    <a href="{{ path('app_activity_index_artist') }}">back to list</a>
+    {% block stylesheets %}
+        <style>
+            .enlarge {
+                max-width: 100%;
+                max-height: 100%;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                margin: auto;
+                z-index: 9999;
+                cursor: zoom-out;
+            }
+            table {
+                border-collapse: collapse;
+                width: 70%;
+                font-family: 'Open Sans', sans-serif;
+                background-color: #fff;
+                border: 1px solid #ddd;
+                margin: 0 auto; /* Add this line */
+            }
 
-    <a href="{{ path('app_activity_edit_artist', {'activityid': activity.activityid}) }}">edit</a>
 
-    {{ include('activity/artist/_delete_form.html.twig') }}
+            th, td {
+                text-align: left;
+                padding: 12px 8px;
+                border-bottom: 1px solid #ddd;
+            }
+
+            th {
+                background-color: #f5f5f5;
+                font-size: 16px;
+            }
+            td {
+            background-color: #fff;
+            padding-left: 20px;
+            }
+
+            tr:hover {
+                background-color: #f5f5f5;
+            }
+
+            img {
+                max-width: 200px;
+                max-height: 200px;
+            }
+
+            .button-group {
+                margin-top: 16px;
+            }
+
+            .button-group a {
+                margin-right: 8px;
+                color: #fff;
+                background-color: #4CAF50;
+                padding: 8px;
+                border-radius: 4px;
+                text-decoration: none;
+            }
+
+            .button-group a:hover {
+                background-color: #3e8e41;
+            }
+
+            .delete-form {
+                display: inline-block;
+                margin-left: 8px;
+            }
+
+            .category-icon {
+                font-size: 20px;
+                margin-right: 5px;
+            }
+        </style>
+
+    {% endblock %}
+
 {% endblock %}

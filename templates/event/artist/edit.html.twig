@@ -3,7 +3,9 @@
 {% block body %}
 	{% include('event/artist/eventBar.html.twig') %}
 
-<center><h1>Edit Event</h1>
+        <h1 style="margin:20px; color: deeppink;"><u>Edit Event</u></h1>
+        <br>
+
     <div class="form-container">
         {{ form_start(form,{ 'attr' :{ 'novalidate':'novalidate'}}) }}
         
@@ -16,7 +18,6 @@
         {{ form_row(form.startdate) }}
         {{ form_row(form.enddate) }}
         {{ form_row(form.status) }}
-        {{ form_row(form.user) }}     
 
         <div class="form-group">
             <style>input[type="file"] { display: none;}</style>
@@ -37,15 +38,15 @@
                 });
             </script>
         </div>
-
-        {{ include('event/_form.html.twig', {'button_label': 'Update'}) }}
+        <center>
+            {{ include('event/_form.html.twig', {'button_label': 'Update'}) }}
+        </center>
         {{ form_end(form) }}
         <a href="{{ path('app_event_index_artist') }}">
             <i class="fas fa-arrow-left"></i> Back to List
         </a>
     
     </div>
-</center>
 {% endblock %}
 
 {% block stylesheets %}

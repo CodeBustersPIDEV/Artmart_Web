@@ -35,13 +35,20 @@
 		color: gold;
 		font-size: x-large;
 	}
+	.err {
+		color: #e75e8d;
+	}
 </style>
 <link
 	rel="stylesheet"
 	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
 />
 
-{{ form_start(form, { attr: { class: "comment-form" } }) }}
+{{
+	form_start(form, {
+		attr: { class: "comment-form", novalidate: "novalidate" }
+	})
+}}
 <div class="row">
 	<div class="col-md-6">
 		<div class="form-group">
@@ -51,6 +58,9 @@
 					attr: { class: "form-control inpt", placeholder: "Comment" }
 				})
 			}}
+			<div class="form-error err">
+				{{ form_errors(form.content) }}
+			</div>
 		</div>
 	</div>
 	<div class="col-md-4">

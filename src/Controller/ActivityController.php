@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\User;
+use App\Repository\EventRepository;
 use App\Repository\UserRepository;   
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
@@ -103,14 +104,37 @@ class ActivityController extends AbstractController
 //////////////////////////////////////////////
 //////////////////////////////////////////////
     #[Route('/artist', name: 'app_activity_index_artist', methods: ['GET'])]
-    public function index(EntityManagerInterface $entityManager): Response
+    public function index(EntityManagerInterface $entityManager, EventRepository $eventRepository, Request $request): Response
     {
+        $connectedUserID = $this->connectedUser->getUserId();
+        $connectedUserRole = $this->connectedUser->getRole();
+
+        $eventID = $request->query->get('eventID');
+
+        $events = $eventRepository->findByUser($connectedUserID);
+
         $activities = $entityManager
             ->getRepository(Activity::class)
-            ->findAll();
+            ->createQueryBuilder('a')
+            ->join('a.event', 'e')
+            ->where('e.user = :userId')
+            ->setParameter('userId', $this->connectedUser->getUserId())
+            ->getQuery()
+            ->getResult();
+
+        if ($eventID) {
+            $activities = $entityManager
+            ->getRepository(Activity::class)
+            ->createQueryBuilder('e')
+            ->andWhere('e.event = :val')
+            ->setParameter('val', $eventID)
+            ->getQuery()
+            ->getResult();
+        }
 
         return $this->render('activity/artist/index.html.twig', [
             'activities' => $activities,
+            'events' => $events
         ]);
     }
 
