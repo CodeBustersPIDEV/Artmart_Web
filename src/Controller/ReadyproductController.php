@@ -1295,7 +1295,7 @@ class ReadyproductController extends AbstractController
     }
 
     #[Route('/productreview/new/{id}', name: 'app_productreview_new', methods: ['GET', 'POST'])]
-    public function newReview($id, Request $request, EntityManagerInterface $entityManager): Response
+    public function newReview($id, Request $request, EntityManagerInterface $entityManager, MailerInterface $mailer): Response
     {
         $hasClientAccess = $this->ClientAccess();
         $productreview = new Productreview();
@@ -1305,9 +1305,25 @@ class ReadyproductController extends AbstractController
         $form = $this->createForm(ProductreviewType::class, $productreview);
         $form->handleRequest($request);
         $productreview->setDate(new \DateTime('now', new \DateTimeZone('America/New_York')));
+
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($productreview);
             $entityManager->flush();
+
+            $artist = $rp->getUserId();
+
+            $email = (new MimeTemplatedEmail())
+                ->from($this->connectedUser->getEmail())
+                ->to($artist->getEmail())
+                ->subject('New product review added')
+                ->htmlTemplate('emails/new-review.html.twig')
+                ->context([
+                    'username' => $productreview->getReadyProductId()->getUserId(),
+                    'productreview' => $productreview,
+                ]);
+
+            $mailer->send($email);
+
             return $this->redirect("/readyproduct/client/reviews/" . $id);
         }
 
@@ -1320,6 +1336,7 @@ class ReadyproductController extends AbstractController
             return $this->redirectToRoute('app_home', [], Response::HTTP_SEE_OTHER);
         }
     }
+
     private function AdminAccess()
     {
         if ($this->connectedUser->getRole() == "admin") {
