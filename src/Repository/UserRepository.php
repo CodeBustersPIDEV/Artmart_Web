@@ -31,7 +31,7 @@ class UserRepository extends ServiceEntityRepository
     }
   }
 
- 
+
   public function remove(User $entity, bool $flush = false): void
   {
     $this->getEntityManager()->remove($entity);
@@ -57,6 +57,15 @@ class UserRepository extends ServiceEntityRepository
   //            ->getResult()
   //        ;
   //    }
+  public function countUsersByRole($role)
+  {
+    return $this->createQueryBuilder('u')
+      ->select('COUNT(u.userId)')
+      ->where('u.role = :role')
+      ->setParameter('role', $role)
+      ->getQuery()
+      ->getSingleScalarResult();
+  }
 
   public function findOneUserByEmail($email): ?User
   {
@@ -69,11 +78,10 @@ class UserRepository extends ServiceEntityRepository
 
   public function findByUserId(int $userId): ?User
   {
-      return $this->createQueryBuilder('u')
-          ->andWhere('u.user_ID = :userId')
-          ->setParameter('userId', $userId)
-          ->getQuery()
-          ->getOneOrNullResult()
-      ;
+    return $this->createQueryBuilder('u')
+      ->andWhere('u.user_ID = :userId')
+      ->setParameter('userId', $userId)
+      ->getQuery()
+      ->getOneOrNullResult();
   }
 }
