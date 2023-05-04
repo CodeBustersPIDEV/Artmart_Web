@@ -199,6 +199,51 @@
 		</style>
 	{% endblock %}
 	{% block body %}
+
+		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+		<script>
+			$(document).ready(function () {
+$('th').click(function () {
+var table = $(this).parents('table').eq(0)
+var rows = table.find('tr:gt(0)').toArray().sort(comparer($(this).index()))
+this.asc = !this.asc
+if (!this.asc) {
+rows = rows.reverse()
+}
+for (var i = 0; i < rows.length; i++) {
+table.append(rows[i])
+}
+})
+})
+
+function comparer(index) {
+return function (a, b) {
+var valA = getCellValue(a, index),
+valB = getCellValue(b, index)
+return $.isNumeric(valA) && $.isNumeric(valB) ? valA - valB : valA.toString().localeCompare(valB)
+}
+}
+
+function getCellValue(row, index) {
+return $(row).children('td').eq(index).text()
+}
+		</script>
+		<script>
+			$(document).ready(function () {
+$('#searchInput').keyup(function () {
+var searchText = $(this).val().toLowerCase();
+$('table tbody tr').each(function () {
+var rowText = $(this).text().toLowerCase();
+
+if (rowText.includes(searchText)) {
+$(this).show();
+} else {
+$(this).hide();
+}
+});
+});
+});
+		</script>
 		<div class="adminSection">
 			<br>
 			<form action="{{ path('app_readyproduct_index') }}" method="GET">
@@ -227,11 +272,12 @@
 							<option class="orderby-option-link" value="{{ category.categoriesId }}">{{ category.name }}</option>
 						{% endfor %}
 					</select>
-					<input type="text" id="search-term" name="s" class="form-control" value="{{ searchTerm }}" placeholder="Search by name...">
-					<a href="{{ path('app_readyproduct_admin') }}" class="link-style-cancel">
+
+					<input type="text" id="searchInput" placeholder="Search..."><a href="{{ path('app_readyproduct_admin') }}" class="link-style-cancel">
 						<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-lg" viewbox="0 0 16 16">
 							<path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z"/>
 						</svg>
+						Cancel all
 					</a>
 				</div>
 				<a href="{{ path('app_readyproduct_new_admin') }}" class="link-style">
@@ -244,72 +290,74 @@
 				<section id="ready-products">
 
 					<h3>Ready products</h3>
-					<table class="table">
-						<thead>
-							<tr>
-								<th>Name</th>
-								<th>User</th>
-								<th>Category</th>
-								<th>Dimensions</th>
-								<th>Material</th>
-								<th>Weight</th>
-								<th>Description</th>
-								<th>Price</th>
-								<th>Actions</th>
-							</tr>
-						</thead>
-						<tbody>
-							{% for readyproduct in readyproducts %}
-								<tr>
-									<td>{{ readyproduct.productId.name }}</td>
-									<td>{{ readyproduct.userId }}</td>
-									<td>{{ readyproduct.productId.category }}</td>
-									<td>{{ readyproduct.productId.dimensions }}</td>
-									<td>{{ readyproduct.productId.material }}</td>
-									<td>{{ readyproduct.productId.weight }}</td>
-									<td>{{ readyproduct.productId.description }}</td>
-									<td>{{ readyproduct.price }}</td>
-									<td>
-										<a href="{{ path('app_readyproduct_show_admin', {'readyProductId': readyproduct.readyProductId}) }}">show</a>
-										<a href="{{ path('app_readyproduct_delete', {'readyProductId': readyproduct.readyProductId}) }}">delete</a>
-									</td>
-								</tr>
-							{% else %}
-								<tr>
-									<td colspan="7">no records found</td>
-								</tr>
-							{% endfor %}
-						</tbody>
-					</table>
-				</section>
-
-				<section id="category">
-					<div class="col">
-						<h3>Categories</h3>
-
+					<div class="table-container">
 						<table class="table">
 							<thead>
 								<tr>
 									<th>Name</th>
+									<th>User</th>
+									<th>Category</th>
+									<th>Dimensions</th>
+									<th>Material</th>
+									<th>Weight (Kg)</th>
+									<th>Description</th>
+									<th>Price (TND)</th>
 									<th>Actions</th>
 								</tr>
 							</thead>
 							<tbody>
-								{% for category in categories %}
+								{% for readyproduct in readyproducts %}
 									<tr>
-										<td>{{ category.name }}</td>
+										<td>{{ readyproduct.productId.name }}</td>
+										<td>{{ readyproduct.userId }}</td>
+										<td>{{ readyproduct.productId.category }}</td>
+										<td>{{ readyproduct.productId.dimensions }}</td>
+										<td>{{ readyproduct.productId.material }}</td>
+										<td>{{ readyproduct.productId.weight }}</td>
+										<td>{{ readyproduct.productId.description }}</td>
+										<td>{{ readyproduct.price }}</td>
 										<td>
-											<a href="{{ path('app_categories_edit', {'categoriesId': category.categoriesId}) }}">edit</a>
-											<a href="{{ path('app_categories_delete', {'categoriesId': category.categoriesId}) }}">delete</a>
+											<a href="{{ path('app_readyproduct_show_admin', {'readyProductId': readyproduct.readyProductId}) }}">show</a>
+											<a href="{{ path('app_readyproduct_admin_delete', {'readyProductId': readyproduct.readyProductId}) }}">delete</a>
 										</td>
 									</tr>
 								{% else %}
 									<tr>
-										<td colspan="3">no records found</td>
+										<td colspan="7">no records found</td>
 									</tr>
 								{% endfor %}
 							</tbody>
 						</table>
+					</section>
+
+					<section id="category">
+						<div class="col">
+							<h3>Categories</h3>
+
+							<table class="table">
+								<thead>
+									<tr>
+										<th>Name</th>
+										<th>Actions</th>
+									</tr>
+								</thead>
+								<tbody>
+									{% for category in categories %}
+										<tr>
+											<td>{{ category.name }}</td>
+											<td>
+												<a href="{{ path('app_categories_edit', {'categoriesId': category.categoriesId}) }}">edit</a>
+												<a href="{{ path('app_categories_delete', {'categoriesId': category.categoriesId}) }}">delete</a>
+											</td>
+										</tr>
+									{% else %}
+										<tr>
+											<td colspan="3">no records found</td>
+										</tr>
+									{% endfor %}
+								</tbody>
+							</table>
+						</div>
 					</div>
 				</section>
 
@@ -338,7 +386,7 @@
 									<td>{{ productreview.text }}</td>
 									<td>{{ productreview.date ? productreview.date|date('Y-m-d H:i:s') : '' }}</td>
 									<td>
-										<a href="{{ path('app_review_index', {'readyProductId': productreview.readyProductId}) }}">show</a>
+										<a href="{{ path('app_review_index_admin', {'readyProductId': productreview.readyProductId}) }}">show</a>
 										<a href="{{ path('app_productreview_delete', {'reviewId': productreview.reviewId}) }}">delete</a>
 									</td>
 								</tr>

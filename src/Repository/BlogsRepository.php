@@ -68,6 +68,25 @@ class BlogsRepository extends ServiceEntityRepository
   //    /**
   //     * @return Blogs[] Returns an array of Blogs objects
   //     */
+
+  public function findAllTop4(): array
+  {
+    return $this->createQueryBuilder('b')
+      ->orderBy('b.nbViews', 'DESC')
+      ->setMaxResults(4)
+      ->getQuery()
+      ->getResult();
+  }
+
+  public function findTop3Rated(): array
+  {
+    return $this->createQueryBuilder('b')
+      ->orderBy('b.rating', 'DESC')
+      ->setMaxResults(3)
+      ->getQuery()
+      ->getResult();
+  }
+
   public function findAllDesc(): array
   {
     return $this->createQueryBuilder('b')
@@ -131,6 +150,17 @@ class BlogsRepository extends ServiceEntityRepository
     return $this->createQueryBuilder('b')
       ->where('b.title LIKE :searchTerm')
       ->setParameter('searchTerm', '%' . $searchTerm . '%')
+      ->getQuery()
+      ->getResult();
+  }
+
+  public function findMyBlogsByTerm($searchTerm, $user): array
+  {
+    return $this->createQueryBuilder('b')
+      ->where('b.title LIKE :searchTerm')
+      ->andWhere('b.author = :user')
+      ->setParameter('searchTerm', '%' . $searchTerm . '%')
+      ->setParameter('user', $user)
       ->getQuery()
       ->getResult();
   }

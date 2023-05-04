@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\DBAL\Types\Types;
 use App\Repository\BlogsRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 
@@ -15,27 +16,34 @@ class Blogs
     #[ORM\Id]
     #[ORM\Column(name: "blogs_ID", type: "integer", nullable: false)]
     #[ORM\GeneratedValue(strategy: "IDENTITY")]
+    #[Groups("blogs")]
     private $blogs_ID;
 
     #[ORM\Column(name: "title", type: "string", length: 255, nullable: false)]
     #[Assert\NotBlank(message: "Please Enter A Title For The Blog Post")]
+    #[Groups("blogs")]
     private $title;
 
     #[ORM\Column(name: "content", type: "text", length: 65535, nullable: false)]
     #[Assert\NotBlank(message: "Please Enter The Content For The Blog Post")]
+    #[Groups("blogs")]
     private $content;
 
     #[ORM\Column(name: "date", type: "datetime", nullable: false, options: ["default" => "current_timestamp()"])]
+    #[Groups("blogs")]
     private $date;
 
     #[ORM\Column(name: "rating", type: "float", precision: 10, scale: 0, nullable: true, options: ["default" => "NULL"])]
+    #[Groups("blogs")]
     private $rating;
 
     #[ORM\Column(name: "nb_views", type: "integer", nullable: false)]
+    #[Groups("blogs")]
     private $nbViews;
 
     #[ORM\ManyToOne(targetEntity: "User")]
     #[ORM\JoinColumn(name: "author", referencedColumnName: "user_ID")]
+    #[Groups("blogs")]
     private $author;
 
     public function getBlogsId(): ?int

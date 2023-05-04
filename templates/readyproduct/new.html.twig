@@ -92,21 +92,24 @@
 					{{ form_row(form.productId.name, {'attr': {'placeholder': 'e.g: Beautiful Painting'}}) }}
 					{{ form_row(form.productId.category) }}
 					{{ form_row(form.productId.description, {'attr': {'placeholder': 'Write a description for your product...'}}) }}
-					{{ form_row(form.price, {'attr': {'placeholder': 'e.g: 560'}}) }}
 					{{ form_row(form.userId) }}
 				</div>
 				<div class="col-md-6">
 					{{ form_row(form.productId.dimensions, {'attr': {'placeholder': 'e.g: 72" L x 30" H x 36" D'}}) }}
 					{{ form_row(form.productId.weight, {'attr': {'placeholder': 'e.g: 23'}}) }}
 					{{ form_row(form.productId.material, {'attr': {'placeholder': 'e.g: Paper'}}) }}
+					{{ form_row(form.price, {'attr': {'placeholder': 'e.g: 560'}}) }}
+					<br>
 					{{ form_label(form.productId.image, 'Product Image', {'style': 'color: #ec6090; cursor: pointer;'}) }}
-					{{ form_widget(form.productId.image, {'attr': {'style': 'display:none;'}}) }}
 					{% if readyproduct.productId.image is defined %}
-						<img id="preview-image" style="max-width: 128px" src="{{ asset(readyproduct.productId.image) }}" alt="Product image" onclick="document.getElementById('product_image').click()">
-						<span id="image-name"></span>
+						<img id="preview-image" style="max-width: 128px" src="{{ readyproduct.productId.image }}" alt="Product image" onclick="document.getElementById('product_image').click()">
+						<span id="image-name">{{ readyproduct.productId.name }}</span>
 					{% else %}
 						<img id="preview-image" style="max-width: 128px" src="{{ 'http://localhost/PIDEV/BlogUploads/imagec.png' }}" alt="Default product image" onclick="document.getElementById('product_image').click()">
 					{% endif %}
+
+					{{ form_widget(form.productId.image, {'attr': {'id': 'product_image', 'style': 'display:none;'}, 'label': 'Product Image', 'label_attr': {'style': 'color: #ec6090; cursor: pointer;'}, 'row_attr': {'style': 'margin-bottom: 20px;'}}) }}
+
 				</div>
 			</div>
 			{{ include('readyproduct/_form.html.twig', {'button_label': 'add'}) }}
@@ -114,18 +117,6 @@
 		</div>
 
 
-		<script>
-
-			// Add onclick event to all hyperlinks
-var links = document.getElementsByTagName("a");
-for (var i = 0; i < links.length; i++) {
-links[i].setAttribute("onclick", "playSound()");
-}
-var linkss = document.getElementsByTagName("button");
-for (var i = 0; i < linkss.length; i++) {
-linkss[i].setAttribute("onclick", "playSound()");
-}
-		</script>
 		<script>
 			document.getElementById('product_image').addEventListener('change', function (e) {
 var fileName = e.target.files[0].name;
@@ -137,5 +128,7 @@ document.getElementById('preview-image').setAttribute('src', e.target.result);
 reader.readAsDataURL(e.target.files[0]);
 });
 		</script>
+
+
 	{% endblock %}
 {% endblock %}
