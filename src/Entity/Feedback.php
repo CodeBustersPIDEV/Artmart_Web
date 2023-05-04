@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Symfony\Component\Validator\Constraints as Assert;
+
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -19,9 +21,11 @@ class Feedback
     #[ORM\GeneratedValue(strategy: "IDENTITY")]
     private $feedbackid;
 
+    #[Assert\NotBlank]
     #[ORM\Column(name: "rating", type: "integer", nullable: false)]
     private $rating;
 
+    #[Assert\NotBlank]
     #[ORM\Column(name: "comment", type: "text",  length:65535,nullable: false)]
     private $comment;
 

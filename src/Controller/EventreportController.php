@@ -2,6 +2,9 @@
 
 namespace App\Controller;
 
+use Dompdf\Dompdf;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use App\Entity\Activity;
 use App\Entity\Eventreport;
 use App\Form\EventreportType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -75,7 +78,7 @@ class EventreportController extends AbstractController
         $form = $this->createForm(EventreportType::class, $eventreport);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {     
             $entityManager->flush();
 
             return $this->redirectToRoute('app_eventreport_index_admin', [], Response::HTTP_SEE_OTHER);
@@ -105,7 +108,13 @@ class EventreportController extends AbstractController
     {
         $eventreports = $entityManager
             ->getRepository(Eventreport::class)
-            ->findAll();
+            ->createQueryBuilder('er')
+            ->join('er.event', 'e')
+            ->where('e.user = :userId')
+            ->setParameter('userId', $this->connectedUser->getUserId())
+            ->getQuery()
+            ->getResult();
+
 
         return $this->render('eventreport/artist/index.html.twig', [
             'eventreports' => $eventreports,
@@ -203,4 +212,26 @@ class EventreportController extends AbstractController
         }
     }
 
+    #[Route('export/Pdf/{id}', name: 'app_event_export_pdf', methods: ['GET','POST'])]
+    public function exportEventReportPdf(Eventreport $report)
+    {
+        $html = '<h1>Event Report</h1>';
+        $html .= '<p><strong>Report ID:</strong> '.$report->getReportid().'</p>';
+        $html .= '<p><strong>Event Name:</strong> '.$report->getEvent()->getName().'</p>';
+        $html .= '<p><strong>Attendance:</strong> '.$report->getAttendance().'</p>';
+    
+        $dompdf = new Dompdf();
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4', 'portrait');
+        $dompdf->render();
+    
+        $response = new Response($dompdf->output(), 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="event-report.pdf"'
+        ]);
+    
+        return $response;
+    }
+    
+    
 }

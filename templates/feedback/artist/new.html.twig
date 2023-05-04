@@ -1,14 +1,201 @@
-{% extends 'base.html.twig' %} 
-{% import "base.html.twig" as base %}
-{% block title %}New Feedback{% endblock %}
+{% extends 'baseF.html.twig' %}
 
-{% block body %}
-{{ base.NavBar() }}
-{% include('event/artist/eventBar.html.twig') %}
+{% block content %}
+    {% block body %}
+        {% include('event/artist/eventBar.html.twig') %}
 
-    <h1>Create new Feedback</h1>
+        <h1 style="display:inline-block; margin: 20px;">Create Feedback</h1>
+        <div class="form-container">
+            {{ form_start(form, { 'attr': { 'novalidate': 'novalidate', 'id': 'feedback-form' } }) }}
 
-    {{ include('feedback/_form.html.twig') }}
+            {{ form_row(form.rating) }}
+            {{ form_row(form.comment) }}
+<center>
+            <button type="submit" class="btn btn-outline-primary" id="submit-feedback-btn">Add Feedback</button>
+</center>
 
-    <a href="{{ path('app_feedback_index_artist') }}">back to list</a>
+            {{ form_end(form) }}
+            <a href="{{ path('app_event_show_artist', {'eventid': feedback.event.eventid}) }}">
+                <i class="fas fa-arrow-left"></i> Back to List
+            </a>        
+        </div>
+    {% endblock %}
+
+    {% block javascripts %}
+        <script>
+            const submitButton = document.getElementById('submit-feedback-btn');
+            const form = document.getElementById('feedback-form');
+
+            submitButton.addEventListener('click', function(event) {
+                event.preventDefault();
+                const confirmDialog = confirm('Are you sure you want to submit this feedback?');
+                if (confirmDialog) {
+                    form.submit();
+                }
+            });
+        </script>
+    {% endblock %}
+
+    {% block stylesheets %}
+        <style>
+            /* Add your styles here */
+            .rating-inline label {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            width: 2em;
+            height: 2em;
+            margin-right: 1em;
+            background-color: #fff;
+            box-shadow: 0 0.2em 0.4em rgba(0, 0, 0, 0.1);
+            transition: all 0.2s ease-in-out;
+            }
+
+            .rating-inline input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+            }
+
+            .rating-inline label:hover,
+            .rating-inline input[type="radio"]:checked + label {
+            background-color: #428bca;
+            color: #fff;
+            box-shadow: 0 0.2em 0.4em rgba(0, 0, 0, 0.2);
+            }
+
+            label {
+                display: block;
+                margin-bottom: 10px;
+                font-weight: bold;
+            }
+            input[type="text"],
+            textarea {
+                display: block;
+                width: 100%;
+                padding: 10px;
+                margin-bottom: 20px;
+                border-radius: 5px;
+                border: 1px solid #ccc;
+            }
+            select {
+                display: block;
+                width: 100%;
+                padding: 10px;
+                margin-bottom: 20px;
+                border-radius: 5px;
+                border: 1px solid #ccc;
+                background-color: #fff;
+            }
+            .btn-primary {
+                background-color: #4CAF50;
+                color: #fff;
+                border: none;
+            }
+            .btn-primary:hover {
+                background-color: #3e8e41;
+            }
+            .btn-secondary {
+                background-color: #f2f2f2;
+                color: #333;
+                border: none;
+            }
+            .btn-secondary:hover {
+                background-color: #ccc;
+            }
+            .error {
+                color: #f00;
+                font-weight: bold;
+            }
+            .form-container {
+                width: 50%;
+                margin: auto;
+                background-color: #f2f2f2;
+                padding: 20px;
+                border-radius: 10px;
+            }
+            .form-container h1 {
+                text-align: center;
+                margin-bottom: 20px;
+            }
+        </style>
+    {% endblock %}
 {% endblock %}
+
+{# {% extends 'baseF.html.twig' %} 
+{% block content %}
+{% block body %}
+	{% include('event/artist/eventBar.html.twig') %}
+
+    <h1 style="display:inline-block; margin: 20px;">Create Feedback</h1>
+    <div class="form-container">
+
+    {{ form_start(form,{ 'attr' :{ 'novalidate':'novalidate'}}) }}
+
+        {{ form_row(form.rating) }}
+        {{ form_row(form.comment) }}
+
+        {{ include('event/_form.html.twig', {'button_label': 'Add feedback'}) }}
+
+    {{ form_end(form) }}
+        <a href="{{ path('app_event_index_admin') }}">
+            <i class="fas fa-arrow-left"></i> Back to List
+        </a>
+    </div>
+{% endblock %}
+
+{% block stylesheets %}
+<style>
+/* Add your styles here */
+label {
+display: block;
+margin-bottom: 10px;
+font-weight: bold;
+}
+input[type="text"],
+textarea {
+display: block;
+width: 100%;
+padding: 10px;
+margin-bottom: 20px;
+border-radius: 5px;
+border: 1px solid #ccc;
+}
+select {
+display: block;
+width: 100%;
+padding: 10px;
+margin-bottom: 20px;
+border-radius: 5px;
+border: 1px solid #ccc;
+background-color: #fff;
+}
+input[type="submit"] {
+background-color: #4CAF50;
+color: #fff;
+padding: 10px 20px;
+border: none;
+border-radius: 5px;
+cursor: pointer;
+}
+input[type="submit"]:hover {
+background-color: #3e8e41;
+}
+.error {
+color: #f00;
+font-weight: bold;
+}
+.form-container {
+width: 50%;
+margin: auto;
+background-color: #f2f2f2;
+padding: 20px;
+border-radius: 10px;
+}
+.form-container h1 {
+text-align: center;
+margin-bottom: 20px;
+}
+</style>
+{% endblock %}
+{% endblock %} #}
