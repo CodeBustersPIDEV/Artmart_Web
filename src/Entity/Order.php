@@ -183,6 +183,6 @@ class Order
 
     public function __toString(): string
     {
-        return $this->getShippingaddress();
+        return $this->getOrderId();
     }
 }
