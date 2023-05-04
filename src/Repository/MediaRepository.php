@@ -34,7 +34,7 @@ class MediaRepository extends ServiceEntityRepository
     $extension = strtoupper(pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION));
     $entity->setFileName(pathinfo($file->getClientOriginalName(), PATHINFO_BASENAME));
     $entity->setFileType($extension);
-    $entity->setFilePath(implode('/', $fileBaseUrl) . '/' . pathinfo($file->getClientOriginalName(), PATHINFO_BASENAME));
+    $entity->setFilePath($fileBaseUrl . '/' . pathinfo($file->getClientOriginalName(), PATHINFO_BASENAME));
     $entity->setBlog($blog);
   }
 
@@ -43,7 +43,7 @@ class MediaRepository extends ServiceEntityRepository
     $extension = strtoupper(pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION));
     $entity->setFileName(pathinfo($file->getClientOriginalName(), PATHINFO_BASENAME));
     $entity->setFileType($extension);
-    $entity->setFilePath(implode('/', $fileBaseUrl) . '/' . pathinfo($file->getClientOriginalName(), PATHINFO_BASENAME));
+    $entity->setFilePath($fileBaseUrl . '/' . pathinfo($file->getClientOriginalName(), PATHINFO_BASENAME));
   }
 
   public function deleteFile($filename)

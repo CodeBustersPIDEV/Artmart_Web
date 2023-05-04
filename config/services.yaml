@@ -5,10 +5,9 @@
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
   destinationPath: "C:\\xampp\\htdocs\\PIDEV\\BlogUploads\\"
-  file_base_url:
-    host: "http://localhost"
-    path: "PIDEV/BlogUploads"
-    google_recaptcha_site_key: '%env(GOOGLE_RECAPTCHA_SITE_KEY)%'
+  file_base_url: "http://localhost/PIDEV/BlogUploads"
+
+  google_recaptcha_site_key: '%env(GOOGLE_RECAPTCHA_SITE_KEY)%'
 
 services:
   Knp\Component\Pager\PaginatorInterface: '@knp_paginator'
