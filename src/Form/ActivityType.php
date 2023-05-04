@@ -17,8 +17,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class ActivityType extends AbstractType
 {
     private User $connectedUser;
-
-   
+ 
     public function __construct(SessionInterface $session, UserRepository $userRepository)
     {
         if ($session != null) {
