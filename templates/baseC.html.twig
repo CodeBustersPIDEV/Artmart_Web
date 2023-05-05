@@ -50,8 +50,9 @@
    
     </ul>
 
-    {% if app.session.get('user_id') %}	
-  <p>Welcome {{ app.session.get('user_name') }}!</p>
+    {% set connectedUser = returnConnectedUser() %}
+    {% if app.session.get('user_id') %}
+		<p>Welcome {{connectedUser.username }}!</p>
   <a	class="btn btn-outline-primary mr-2"	href="/logout"	style="--clr: #ffc0cb"><span>Logout</span><i></i></a>
 {% endif %}
     

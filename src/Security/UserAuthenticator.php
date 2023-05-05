@@ -74,11 +74,12 @@ class UserAuthenticator extends AbstractLoginFormAuthenticator
         
         if($user != null){
             $hashedPassword = hash('sha256', $password);
-          if($user->isEnabled() && !$user->isBlocked() ){
+          if($user->isEnabled() && !$user->isBlocked()){
             if($hashedPassword==$user->getPassword()){
             $session = $request->getSession();
             $session->set('user_id', $user->getUserId());
             $session->set('user_role', $user->getRole());
+            $session->set('username',$userIdentifier);
             $user->setLastLogin(new \DateTime());
             $this->entityManager->persist($user);
             $this->entityManager->flush();

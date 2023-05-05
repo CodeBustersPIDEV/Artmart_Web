@@ -200,7 +200,7 @@ class ApplyController extends AbstractController
         }
  
         $sid    = "AC85fdc289caf6aa747109220798d39394";
-        $token  = "e49f01d504058b7dedc46fb77ca21965";
+        $token  = "c5bbd095c5dd95f2b213143467f09638";
         $twilio = new Client($sid, $token);
     
         $message = $twilio->messages
@@ -231,7 +231,7 @@ class ApplyController extends AbstractController
             throw $this->createNotFoundException('Apply not found');
         }
         $sid    = "AC85fdc289caf6aa747109220798d39394";
-        $token  = "e49f01d504058b7dedc46fb77ca21965";
+        $token  = "c5bbd095c5dd95f2b213143467f09638";
         $twilio = new Client($sid, $token);
     
         $message = $twilio->messages
