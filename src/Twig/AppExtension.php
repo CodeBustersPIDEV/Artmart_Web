@@ -3,12 +3,15 @@
 namespace App\Twig;
 
 use App\Entity\Media;
+use App\Entity\Participation;
 use App\Entity\User;
 use App\Repository\BlogsRepository;
+use App\Repository\EventRepository;
 use App\Repository\HasBlogCategoryRepository;
 use App\Repository\HasTagRepository;
 use App\Repository\MediaRepository;
 use App\Repository\UserRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
@@ -20,9 +23,11 @@ class AppExtension extends AbstractExtension
   private HasBlogCategoryRepository $hasBlogCategoryRepository;
   private BlogsRepository $blogsRepository;
   private User $connectedUser;
+  private $en;
 
-  public function __construct(SessionInterface $session, BlogsRepository $blogsRepository, UserRepository $userRepository, MediaRepository $MediaRepository, HasTagRepository $hasTagRepository, HasBlogCategoryRepository $hasBlogCategoryRepository)
+  public function __construct(EntityManagerInterface $entityManager,SessionInterface $session, BlogsRepository $blogsRepository, UserRepository $userRepository, MediaRepository $MediaRepository, HasTagRepository $hasTagRepository, HasBlogCategoryRepository $hasBlogCategoryRepository)
   {
+    $this->en=$entityManager->getRepository(Participation::class);
     $this->MediaRepository = $MediaRepository;
     $this->blogsRepository = $blogsRepository;
     $this->hasTagRepository = $hasTagRepository;
@@ -44,7 +49,15 @@ class AppExtension extends AbstractExtension
       new TwigFunction('getNbBlogsPerCat', [$this, 'getNbBlogsPerCat']),
       new TwigFunction('getTop3Rated', [$this, 'getTop3Rated']),
       new TwigFunction('returnConnectedUser', [$this, 'returnConnectedUser']),
+      new TwigFunction('getParticipation', [$this, 'getParticipation']),
     ];
+  }
+
+  public function getParticipation($connectedUserID, $eventID) {
+    return $this->en->findOneBy([
+      'user' => $connectedUserID,
+      'event' => $eventID,    
+    ]);
   }
 
   public function getBlogsMedia(int $blog_id)

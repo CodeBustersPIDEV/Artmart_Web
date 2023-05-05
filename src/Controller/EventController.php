@@ -327,18 +327,12 @@ class EventController extends AbstractController
                 9
             );
 
-            $getParticipation = function($connectedUserID, $eventID) {
-                return $this->getDoctrine()->getRepository(Participation::class)->findOneBy([
-                    'user' => $connectedUserID,
-                    'event' => $eventID,
-                ]);
-            };
               
             return $this->render('event/artist/index.html.twig', [
                 'events' => $pages,
                 'searchTerm' => $searchTerm,
                 'showOtherEvents' => $showOtherEvents,
-                'getParticipation' => $getParticipation,
+                // 'getParticipation' => $getParticipation,
             ]);
             // }
         } else {

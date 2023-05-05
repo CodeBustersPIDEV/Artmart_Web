@@ -108,7 +108,7 @@
   <div class="row" style="margin:20px">
 
     {% for event in events %}
-    {# {% set participation = getParticipation(connectedUser.userid, event.eventid) %} #}
+    {% set participation = getParticipation(connectedUser.userid, event.eventid) %}
 
       <div class="col-md-4">
         <div class="custom-card">
@@ -127,9 +127,9 @@
             {% else %}
               <div class="button-group">
                 <a href="{{ path('app_event_show_artist', {'eventid': event.eventid}) }}" class="btn btn-primary">Show</a>
-                {# {% if participation %}
-                    <p>Participation found!</p>
-                {% endif %} #}
+                {% if participation %}
+                    <p style="color: green; float:right; margin-top: 30px">Participated ✅</p>
+                {% endif %}
                 {# <a href="{{ path('app_participation_new_artist', {'eventid': event.eventid}) }}" class="btn btn-secondary">Participate</a>
                 <a href="{{ path('app_feedback_new_artist', {'eventid': event.eventid}) }}" class="btn btn-secondary">Rate</a> #}
               </div>
