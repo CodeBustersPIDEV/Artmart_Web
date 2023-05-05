@@ -213,7 +213,8 @@ class EventController extends AbstractController
                     $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
                     $newFilename = $originalFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
                     $destinationPath = $this->getParameter('destinationPath') . '/' . $newFilename;
-                    $imageURL = $this->getParameter('file_base_url')['host'] . '/' . $this->getParameter('file_base_url')['path'] . '/' . $newFilename;
+                    $imageURL = $this->getParameter('file_base_url') . '/' . $newFilename;
+
                     $imagePath = $this->getParameter('destinationPath') . '/' . $newFilename;
                 
                     try {
@@ -447,7 +448,8 @@ class EventController extends AbstractController
                     $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
                     $newFilename = $originalFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
                     $destinationPath = $this->getParameter('destinationPath') . '/' . $newFilename;
-                    $imageURL = $this->getParameter('file_base_url')['host'] . '/' . $this->getParameter('file_base_url')['path'] . '/' . $newFilename;
+                    $imageURL = $this->getParameter('file_base_url') . '/' . $newFilename;
+
                     $imagePath = $this->getParameter('destinationPath') . '/' . $newFilename;
                 
                     try {

@@ -22,7 +22,7 @@
         <div class="form-group">
             <style>input[type="file"] { display: none;}</style>
             {{ form_row(form.image) }}
-            <img id="preview-image" style="max-width: 128px" src="{{ asset('imagescustom/' ~ event.image) }}" alt="event image" onclick="document.getElementById('event_image').click()">
+            <img id="preview-image" style="max-width: 128px" src="{{ asset(event.image) }}" alt="event image" onclick="document.getElementById('event_image').click()">
             </br>
             <span id="image-name"></span>
 
