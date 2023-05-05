@@ -34,12 +34,12 @@ class FeedbackController extends AbstractController
     #[Route('/admin', name: 'app_feedback_index_admin', methods: ['GET'])]
     public function index(EntityManagerInterface $entityManager): Response
     {
-        $feedback = $entityManager
+        $feedbacks = $entityManager
             ->getRepository(Feedback::class)
             ->findAll();
 
         return $this->render('feedback/admin/index.html.twig', [
-            'feedback' => $feedback,
+            'feedbacks' => $feedbacks,
         ]);
     }
 
