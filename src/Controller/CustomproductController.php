@@ -653,7 +653,7 @@ class CustomproductController extends AbstractController
         $entityManager->flush();
 
         $sid    = "AC85fdc289caf6aa747109220798d39394";
-        $token  = "8acba1bd4bfc10782d6dccac2023e541";
+        $token  = "e49f01d504058b7dedc46fb77ca21965";
         $twilio = new Client($sid, $token);
     
         $message = $twilio->messages

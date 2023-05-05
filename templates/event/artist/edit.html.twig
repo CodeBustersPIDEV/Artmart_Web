@@ -1,6 +1,60 @@
 {% extends 'baseF.html.twig' %} 
 {% block content %}
 {% block body %}
+<style>
+/* Add your styles here */
+label {
+display: block;
+margin-bottom: 10px;
+font-weight: bold;
+}
+input[type="text"],
+textarea {
+display: block;
+width: 100%;
+padding: 10px;
+margin-bottom: 20px;
+border-radius: 5px;
+border: 1px solid #ccc;
+}
+select {
+display: block;
+width: 100%;
+padding: 10px;
+margin-bottom: 20px;
+border-radius: 5px;
+border: 1px solid #ccc;
+background-color: #fff;
+}
+input[type="submit"] {
+background-color: #4CAF50;
+color: #fff;
+padding: 10px 20px;
+border: none;
+border-radius: 5px;
+cursor: pointer;
+}
+input[type="submit"]:hover {
+background-color: #3e8e41;
+}
+.error {
+color: #f00;
+font-weight: bold;
+}
+.form-container {
+width: 50%;
+margin: auto;
+background-color: #f2f2f2;
+padding: 20px;
+border-radius: 10px;
+}
+.form-container h1 {
+text-align: center;
+margin-bottom: 20px;
+}
+
+
+</style>
 	{% include('event/artist/eventBar.html.twig') %}
 
         <h1 style="margin:20px; color: deeppink;"><u>Edit Event</u></h1>
@@ -18,11 +72,11 @@
         {{ form_row(form.startdate) }}
         {{ form_row(form.enddate) }}
         {{ form_row(form.status) }}
-
-        <div class="form-group">
+  
+          <div class="form-group">
             <style>input[type="file"] { display: none;}</style>
             {{ form_row(form.image) }}
-            <img id="preview-image" style="max-width: 128px" src="{{ asset('imagescustom/' ~ event.image) }}" alt="event image" onclick="document.getElementById('event_image').click()">
+            <img id="preview-image" style="max-width: 128px" src="{{ asset(event.image) }}" alt="event image" onclick="document.getElementById('event_image').click()">
             </br>
             <span id="image-name"></span>
 
@@ -37,7 +91,6 @@
                     reader.readAsDataURL(e.target.files[0]);
                 });
             </script>
-        </div>
         <center>
             {{ include('event/_form.html.twig', {'button_label': 'Update'}) }}
         </center>
