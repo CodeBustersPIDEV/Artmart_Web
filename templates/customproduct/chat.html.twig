@@ -72,11 +72,26 @@
     color: white;
     cursor: pointer;
 }
+.password-input-container {
+
+}
+
+.password-gif {
+
+  top: 100%;
+  right: 10px;
+
+}
+img {
+width:30%;
+  
+}
 </style>
 
 
 <div class="container">
 <h2 class="page-title">ArtSmart - The Creative Companion for ArtMart !</h2>
+  
 <div>
 <div class="container">
 
@@ -85,10 +100,38 @@
         <div style="display: flex;">
             <input type="text" id="user-message" placeholder="Type your message...">
             <button  id="send-button">Send</button>
+            
         </div>
+      <center>   <div class=" password-input-container">
+      <img src="/b.PNG" alt="password not entered" class="password-gif">
+
+    </div> </center>
     </div>
 </div>
 
+
+
+
+<script>
+  var passwordInput = document.getElementById( 'user-message');
+  var passwordGif = document.querySelector('.password-gif');
+
+  passwordInput.addEventListener('input', function() {
+    if (passwordInput.value === '') {
+      passwordGif.src = '/b.PNG';
+    } else {
+      passwordGif.src = '/a.PNG';
+    }
+  });
+
+  passwordInput.addEventListener('focus', function() {
+    passwordGif.style.display = 'block';
+  });
+
+  passwordInput.addEventListener('blur', function() {
+    passwordGif.style.display = 'none';
+  });
+</script>
 
 <script>
     const userMessage = document.getElementById('user-message');
