@@ -3,25 +3,24 @@
 {% block body %}
 	{% include('event/artist/eventBar.html.twig') %}
 
-        <h1 style="margin:20px; color: deeppink;"><u>Edit Report</u></h1>
-        <br>
+    <h1 style="margin:20px; color: deeppink;">Edit Report</h1>
+    <br>
+
 
     <div class="form-container">
-        {{ form_start(form,{ 'attr' :{ 'novalidate':'novalidate'}}) }}
-        
-        {{ form_row(form.attendance) }}
-        </br>
-        {{ form_row(form.event) }}
 
-        <center>
-            {{ include('eventreport/_form.html.twig', {'button_label': 'Update'}) }}
-        </center>
+        {{ form_start(form,{ 'attr' :{ 'novalidate':'novalidate'}}) }}
+
+            {{ form_row(form.attendance) }} </br>
+            {{ form_row(form.event) }}
+
+            {{ include('eventreport/_form.html.twig', {'button_label': 'Add'}) }}
         {{ form_end(form) }}
         <a href="{{ path('app_eventreport_index_artist') }}">
             <i class="fas fa-arrow-left"></i> Back to List
         </a>
-    
     </div>
+
 {% endblock %}
 
 {% block stylesheets %}

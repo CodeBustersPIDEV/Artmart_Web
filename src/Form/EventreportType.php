@@ -30,8 +30,17 @@ class EventreportType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('attendance')
-            ->add('event', EntityType::class, [
+            ->add('attendance');
+
+        // Add the user field only if connectedUser has the admin role
+        if ($this->connectedUser->getRole() === 'admin') {
+            $builder->add('event', EntityType::class, [
+                'class' => Event::class,
+                'choice_label' => 'name',
+                'placeholder' => 'Choose an event',
+            ]);
+        } else if ($this->connectedUser->getRole() === 'artist') {
+            $builder->add('event', EntityType::class, [
                 'class' => Event::class,
                 'choice_label' => 'name',
                 'placeholder' => 'Choose an event',
@@ -40,8 +49,9 @@ class EventreportType extends AbstractType
                         ->where('e.user = :user')
                         ->setParameter('user', $this->connectedUser);
                 },
-            ]);
-    }
+            ]);            
+        }
+        }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
