@@ -19,25 +19,24 @@
         {{ form_row(form.startdate) }}
         {{ form_row(form.enddate) }}
         {{ form_row(form.status) }}
-        {{ form_label(form.image, 'Event Image') }}
-        {{ form_widget(form.image, {'attr': {'style': 'display:none;'}}) }}
-        {% if event.image is defined %}
-            <img id="preview-image" style="max-width: 128px" src="{{ asset(event.image) }}" alt="Event image" onclick="document.getElementById('event_image').click()">
+             <div class="form-group">
+            <style>input[type="file"] { display: none;}</style>
+            {{ form_row(form.image) }}
+            <img id="preview-image" style="max-width: 128px" src="{{ asset(event.image) }}" alt="event image" onclick="document.getElementById('event_image').click()">
+            </br>
             <span id="image-name"></span>
-        {% else %}
-            <img id="preview-image" style="max-width: 128px" src="{{ 'http://localhost/PIDEV/BlogUploads/imagec.png' }}" alt="Default event image" onclick="document.getElementById('event_image').click()">
-        {% endif %}
-        <script>
-            document.getElementById('product_image').addEventListener('change', function(e) {
-                var fileName = e.target.files[0].name;
-                document.getElementById('image-name').innerHTML = fileName;
-                var reader = new FileReader();
-                reader.onload = function (e) {
-                    document.getElementById('preview-image').setAttribute('src', e.target.result);
-                }
-                reader.readAsDataURL(e.target.files[0]);
-            });
-        </script>
+
+            <script>
+                document.getElementById('event_image').addEventListener('change', function(e) {
+                    var fileName = e.target.files[0].name;
+                    document.getElementById('image-name').innerHTML = fileName;
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        document.getElementById('preview-image').setAttribute('src', e.target.result);
+                    }
+                    reader.readAsDataURL(e.target.files[0]);
+                });
+            </script>
 
 
         {{ include('event/_form.html.twig', {'button_label': 'add'}) }}
