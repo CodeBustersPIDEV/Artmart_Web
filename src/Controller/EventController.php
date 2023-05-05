@@ -85,7 +85,7 @@ class EventController extends AbstractController
             'searchTerm' => $searchTerm,
             'showOtherEvents' => $showOtherEvents,
         ]);
- }
+    }
 
        ///////////////////////////////////////////////       /////////////////////////////////////////////////
       ///////////////////////////////////////////////       /////////////////////////////////////////////////
@@ -168,7 +168,7 @@ class EventController extends AbstractController
                     $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
                     $newFilename = $originalFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
                     $destinationPath = $this->getParameter('destinationPath') . '/' . $newFilename;
-                    $imageURL = $this->getParameter('file_base_url')['host'] . '/' . $this->getParameter('file_base_url')['path'] . '/' . $newFilename;
+                    $imageURL = $this->getParameter('file_base_url') . '/' . $newFilename;
                     $imagePath = $this->getParameter('destinationPath') . '/' . $newFilename;
                 
                     try {
@@ -326,11 +326,19 @@ class EventController extends AbstractController
                 $request->query->getInt('page', 1),
                 9
             );
-        
+
+            $getParticipation = function($connectedUserID, $eventID) {
+                return $this->getDoctrine()->getRepository(Participation::class)->findOneBy([
+                    'user' => $connectedUserID,
+                    'event' => $eventID,
+                ]);
+            };
+              
             return $this->render('event/artist/index.html.twig', [
                 'events' => $pages,
                 'searchTerm' => $searchTerm,
                 'showOtherEvents' => $showOtherEvents,
+                'getParticipation' => $getParticipation,
             ]);
             // }
         } else {
@@ -360,7 +368,7 @@ class EventController extends AbstractController
                     $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
                     $newFilename = $originalFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
                     $destinationPath = $this->getParameter('destinationPath') . '/' . $newFilename;
-                    $imageURL = $this->getParameter('file_base_url')['host'] . '/' . $this->getParameter('file_base_url')['path'] . '/' . $newFilename;
+                    $imageURL = $this->getParameter('file_base_url') . '/' . $newFilename;
                     $imagePath = $this->getParameter('destinationPath') . '/' . $newFilename;
                 
                     try {

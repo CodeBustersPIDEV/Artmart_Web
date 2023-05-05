@@ -3,49 +3,51 @@
 {% block body %}
 	{% include('event/admin/eventBar.html.twig') %}
 
-    <h1 style="margin:20px; color: #007bff;"><u>Create new event</u></h1>
+    <h1 style="margin:20px; color: #007bff;">Create new event</h1>
     <br>
 
     <div class="form-container">
 
-    {{ form_start(form,{ 'attr' :{ 'novalidate':'novalidate'}}) }}
+        {{ form_start(form,{ 'attr' :{ 'novalidate':'novalidate'}}) }}
 
-        {{ form_row(form.name) }}
-        {{ form_row(form.location) }}
-        {{ form_row(form.type) }}
-        {{ form_row(form.description) }}
-        {{ form_row(form.entryfee) }}
-        {{ form_row(form.capacity) }}
-        {{ form_row(form.startdate) }}
-        {{ form_row(form.enddate) }}
-        {{ form_row(form.status) }}
-        {{ form_row(form.user) }}        
-             <div class="form-group">
-            <style>input[type="file"] { display: none;}</style>
-            {{ form_row(form.image) }}
-            <img id="preview-image" style="max-width: 128px" src="{{ asset(event.image) }}" alt="event image" onclick="document.getElementById('event_image').click()">
-            </br>
-            <span id="image-name"></span>
+            {{ form_row(form.name) }}
+            {{ form_row(form.location) }}
+            {{ form_row(form.type) }}
+            {{ form_row(form.description) }}
+            {{ form_row(form.entryfee) }}
+            {{ form_row(form.capacity) }}
+            {{ form_row(form.startdate) }}
+            {{ form_row(form.enddate) }}
+            {{ form_row(form.status) }}
+            {{ form_row(form.user) }}        
 
-            <script>
-                document.getElementById('event_image').addEventListener('change', function(e) {
-                    var fileName = e.target.files[0].name;
-                    document.getElementById('image-name').innerHTML = fileName;
-                    var reader = new FileReader();
-                    reader.onload = function (e) {
-                        document.getElementById('preview-image').setAttribute('src', e.target.result);
-                    }
-                    reader.readAsDataURL(e.target.files[0]);
-                });
-            </script>
+            <div class="form-group">
+                <style>input[type="file"] { display: none;}</style>
+                {{ form_row(form.image) }}
+                <img id="preview-image" style="max-width: 128px" src="{{ asset(event.image) }}" alt="event image" onclick="document.getElementById('event_image').click()">
+                </br>
+                <span id="image-name"></span>
 
-        {{ include('event/_form.html.twig', {'button_label': 'add'}) }}
-        {{ form_end(form) }}
-        <a href="{{ path('app_event_index_admin') }}">
-            <i class="fas fa-arrow-left"></i> Back to List
-        </a>
+                <script>
+                    document.getElementById('event_image').addEventListener('change', function(e) {
+                        var fileName = e.target.files[0].name;
+                        document.getElementById('image-name').innerHTML = fileName;
+                        var reader = new FileReader();
+                        reader.onload = function (e) {
+                            document.getElementById('preview-image').setAttribute('src', e.target.result);
+                        }
+                        reader.readAsDataURL(e.target.files[0]);
+                    });
+                </script>
+
+                {{ include('event/_form.html.twig', {'button_label': 'Add'}) }}
+                {{ form_end(form) }}
+                <a href="{{ path('app_event_index_admin') }}">
+                    <i class="fas fa-arrow-left"></i> Back to List
+                </a>
+            </div>
     </div>
-    </br>   
+</br></br>      
 {% endblock %}
 
 {% block stylesheets %}

@@ -5,7 +5,7 @@
     {% block body %}
         {% include('event/artist/eventBar.html.twig') %}
 
-        <h1 style="margin:20px; color: deeppink;"><u>{{ eventreport.event.name }}</u></h1>
+        <h1 style="margin:20px; color: deeppink;">Report details</h1>
         <br>
             <a style="margin-left:220px;" href="{{ path('app_event_export_pdf', { id: eventreport.reportid }) }}" class="btn btn-outline-primary">Make Pdf</a>
         </br>
@@ -17,6 +17,10 @@
                     <td>{{ eventreport.event.user.name }}</td>
                 </tr>
 
+                <tr>
+                    <th>Event</th>
+                    <td>{{ eventreport.event.name }}</td>
+                </tr>
                 <tr>
                     <th>Type</th>
                     <td>{{ eventreport.event.type }}</td>
