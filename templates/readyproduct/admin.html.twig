@@ -367,7 +367,6 @@ $(this).hide();
 					<table class="table">
 						<thead>
 							<tr>
-								<th>Product</th>
 								<th>Title</th>
 								<th>User</th>
 								<th>Rating</th>
@@ -379,7 +378,6 @@ $(this).hide();
 						<tbody>
 							{% for productreview in productreviews %}
 								<tr>
-									<td>{{ productreview.readyProductId.productId.name }}</td>
 									<td>{{ productreview.title }}</td>
 									<td>{{ productreview.userId }}</td>
 									<td>{{ productreview.rating }}</td>
