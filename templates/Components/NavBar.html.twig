@@ -193,7 +193,7 @@
 	</div>
 	<div class="userButtons">
 		{% if app.session.get('user_id') %}
-		<p>Welcome {{ app.session.get("user_name") }}!</p>
+		<p>Welcome {{ connectedUser.username}}!</p>
 		<a class="signIn_btn btns" href="/logout" style="--clr: #ffc0cb">
 			<span>Logout</span>
 			<i></i>
