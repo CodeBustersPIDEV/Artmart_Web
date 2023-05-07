@@ -176,7 +176,6 @@
 			{% if app.session.get('user_role') == "client" %}
 				<a href="{{ path('app_readyproduct_client_index') }}">Products</a>
 				<a href="{{ path('app_customproduct_index') }}">Custom Products</a>
-				<a href="{{ path('app_event_index_client') }}">Events</a>
 				<a href="{{ path('app_wishlist_index') }}">Shopping Cart</a>
 			{% elseif app.session.get('user_role') == "artist" %}
 				<a href="{{ path('app_readyproduct_index') }}">Products</a>
@@ -187,17 +186,17 @@
 			{% endif %}
 		{% else %}
 			<a href="{{ path('app_readyproduct_no_user_index') }}">Products</a>
-			<a href="{{ path('app_event_index') }}">Events</a>
 		{% endif %}
 		<div class="dot"></div>
 	</div>
 	<div class="userButtons">
 		{% if app.session.get('user_id') %}
-		<p>Welcome {{ app.session.get("user_name") }}!</p>
 		<a class="signIn_btn btns" href="/logout" style="--clr: #ffc0cb">
 			<span>Logout</span>
 			<i></i>
 		</a>
+	<p>Welcome {{ connectedUser.usename }}!</p>
+
 		{% else %}
 		<a
 			class="signIn_btn btns"
