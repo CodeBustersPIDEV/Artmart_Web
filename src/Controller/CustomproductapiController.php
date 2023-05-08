@@ -8,12 +8,16 @@ use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Customproduct;
 use App\Entity\Product;
 use App\Entity\User;
+use App\Entity\Apply;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use App\Repository\UserRepository;
 #[Route('/api')]
 class CustomproductapiController extends AbstractController
 {
+ 
     #[Route('/customproduct', name: 'app_customproductapi', methods:['GET'])]
     public function index(EntityManagerInterface $entityManager): Response
     {
@@ -114,5 +118,38 @@ public function editcustomprodcut(Request $request, $id): JsonResponse
         $response = new JsonResponse(['status' => 'deleted'], Response::HTTP_OK);
         return $response;
     }
+    #[Route('/customproduct/{customProductId}/apply', name: 'app_customproduct_apply', methods: ['GET', 'POST'])]
+    public function apply(int $customProductId): JsonResponse
+
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+
+        $customProduct = $entityManager->getRepository(Customproduct::class)->find($customProductId);
+
+        if (!$customProduct) {
+            throw $this->createNotFoundException('Unable to find Customproduct entity.');
+        }
+        $existingApply = $entityManager->getRepository(Apply::class)->findOneBy(['customproduct' => $customProduct]);
+
+        if ($existingApply) {
+            $this->addFlash('warning', 'An apply already exists for this custom product.');
+            return $this->redirectToRoute('app_apply_pending');
+        }
+
+        $apply = new Apply();
+        $apply->setStatus('pending');
+        $userRepository = $this->getDoctrine()->getRepository(User::class);
+        $artist = $userRepository->find(1);
+        $apply->setArtist($artist);
+        $apply->setCustomproduct($customProduct);
+
+        $entityManager->persist($apply);
+        $entityManager->flush();
+        $response = new JsonResponse(['status' => 'edited'], Response::HTTP_OK);
+        return $response;
+    }
+ 
+ 
+    
 
 }
