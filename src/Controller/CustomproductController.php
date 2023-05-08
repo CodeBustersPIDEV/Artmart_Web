@@ -141,66 +141,6 @@ class CustomproductController extends AbstractController
    
     }
     
-    #[Route('/Customindexmobile', name: 'Customindexmobile',methods:['GET'])]
-    public function indexmobile(EntityManagerInterface $entityManager,NormalizerInterface $normalizer): Response
-    {
-        $customProducts = $entityManager
-            ->getRepository(Customproduct::class)
-            ->findAll();
-            
-        $result = [];
-        foreach ($customProducts as $customProduct) {
-            $result[] = [
-                'customProductId' => $customProduct->getCustomProductId(),
-                'clientId' => $customProduct->getClient()->getUserId(),
-                'productId' => $customProduct->getProduct()->getProductId()
-            ];
-        }
-        $Customnormalizer = $normalizer->normalize($result);
-
-      $json = json_encode($Customnormalizer);
-      return new Response($json);
-    }
-
-    #[Route('/showmobile/{customProductId}', name: 'showmobile', methods: ['GET'])]
-    public function showmobile(Customproduct $customproduct,NormalizerInterface $normalizer): Response
-    {
-        $product = $customproduct->getProduct();
-        $Customnormalizer = $normalizer->normalize($product,'json', ['groups'=> "custom_product"]);
-
-        $json = json_encode($Customnormalizer);
-        return new Response($json);
-
-    }
-    #[Route('/newmobile', name: 'newmobile', methods: ['GET', 'POST'])]
-    public function newmobile(Request $request, EntityManagerInterface $entityManager, NormalizerInterface $normalizer): JsonResponse
-    {
-        $client = $request->query->get('client');
-        $product = $request->query->get('product');
-    
-        // Find the product by its ID
-        $productEntity = $entityManager->getRepository(Product::class)->find($product);
-        $clientEntity = $entityManager->getRepository(User::class)->find($client);
-    
-        if (!$productEntity) {
-            // Handle error if product does not exist
-            return new JsonResponse(['error' => 'Product not found'], Response::HTTP_NOT_FOUND);
-        }
-    
-        // Create a new custom product
-        $customProduct = new CustomProduct();
-        $customProduct->setClient($clientEntity);
-        $customProduct->setProduct($productEntity);
-    
-        // Save the custom product to the database
-        $entityManager->persist($customProduct);
-        $entityManager->flush();
-    
-        // Return the serialized custom product as a JSON response
-        $formatted = $normalizer->normalize($customProduct);
-        return new JsonResponse($formatted);
-    }
-    
  
 
     #[Route('/admin', name: 'app_customproduct_admin', methods: ['GET'])]
