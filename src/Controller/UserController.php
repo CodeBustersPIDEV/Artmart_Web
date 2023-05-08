@@ -2,38 +2,38 @@
 
 namespace App\Controller;
 
+
+use DateTime;
+use Vonage\Client;
 use App\Entity\User;
-use App\Entity\Artist;
-use App\Entity\Clients;
 use App\Entity\Admin;
+use Twig\Environment;
+use App\Entity\Artist;
 use App\Form\UserType;
-use App\Repository\ArtistRepository;
-use App\Repository\ClientRepository;
+use App\Entity\Clients;
+use Vonage\SMS\Message\SMS;
 use App\Repository\UserRepository;
-use App\Repository\AdminRepository;
 use App\Form\TokenVerificationType;
 use App\Form\VerificationEmailType;
+use App\Repository\AdminRepository;
+use App\Repository\ArtistRepository;
+use App\Repository\ClientRepository;
+use Symfony\Component\Mailer\Mailer;
+use Vonage\Client\Credentials\Basic;
 use Doctrine\ORM\EntityManagerInterface;
+use Vonage\Messages\Channel\SMS\SMSText;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\File\Exception\FileException;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Bridge\Twig\Mime\TemplatedEmail;
-use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\Mailer\Mailer;
-use Symfony\Component\Mime\Address;
-use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Twig\Environment;
-use Vonage\Client;
-use Knp\Component\Pager\PaginatorInterface;
-use Vonage\Client\Credentials\Basic;
-use Vonage\Messages\Channel\SMS\SMSText;
-use DateTime;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Vonage\SMS\Message\SMS;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail as MimeTemplatedEmail;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 
 #[Route('/user')]
 class UserController extends AbstractController
@@ -59,8 +59,6 @@ class UserController extends AbstractController
     public function uploadImage(UploadedFile $file, User $user): void
     {
         $destinationFilePath = $this->getParameter('destinationPath');
-        $newdestinationFilePath = $this->getParameter('file_base_url');
-        $filePath = sprintf('%s/%s', $newdestinationFilePath['host'], $newdestinationFilePath['path']);
         // Get the original filename of the uploaded file
         $filename = $file->getClientOriginalName();
         if (!is_uploaded_file($file->getPathname())) {
@@ -73,7 +71,7 @@ class UserController extends AbstractController
         }
         // Move the uploaded file to the destination
         $file->move($destinationFilePath, $filename);
-        $user->setPicture($filePath . '/' . $filename);
+        $user->setPicture('http://localhost/PIDEV/BlogUploads/'.$filename);
     }
     #[Route('/chart-data', name: 'chart_data')]
     public function userRolesChart(UserRepository $userRepository): Response
@@ -263,23 +261,18 @@ class UserController extends AbstractController
     public function SendEmail(Mailer $mailer, User $user, String $token, String $subject)
     {
 
-        $email = (new TemplatedEmail())
-            ->from(new Address('samar.hamdi@esprit.tn', 'Artmart'))
-            ->to($user->getEmail())
-            ->subject($subject)
-            ->htmlTemplate('user/email_token.html.twig')
-            ->context([
-                'user' => $user,
-                'token' => $token,
-            ]);
+        $email = (new MimeTemplatedEmail())
+        ->from('samar.hamdi@esprit.tn')
+        ->to($user->getEmail())
+        ->subject($subject)
+        ->htmlTemplate('user/email_token.html.twig')
+        ->context([
+            'user' => $user,
+            'token' => $token,
+        ]);
 
-        $sent = $mailer->send($email);
+    $mailer->send($email);
 
-        if ($sent > 0) {
-            $this->addFlash('success', 'Your registration token has been sent to your email.');
-        } else {
-            $this->addFlash('error', 'There was an error sending your registration token. Please try again later.');
-        }
     }
     #[Route('/{userId}/show', name: 'app_user_show', methods: ['GET'])]
     public function show(User $user, ClientRepository $clientRepository, ArtistRepository $artistRepository, AdminRepository $adminRepository): Response
@@ -531,7 +524,7 @@ class UserController extends AbstractController
         }
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted() ) {
             $pictureField = $form->get('file')->getData();
             if ($pictureField == null) {
                 $user->setPicture($user->getPicture());
