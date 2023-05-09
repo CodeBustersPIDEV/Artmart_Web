@@ -129,13 +129,6 @@ public function editcustomprodcut(Request $request, $id): JsonResponse
         if (!$customProduct) {
             throw $this->createNotFoundException('Unable to find Customproduct entity.');
         }
-        $existingApply = $entityManager->getRepository(Apply::class)->findOneBy(['customproduct' => $customProduct]);
-
-        if ($existingApply) {
-            $this->addFlash('warning', 'An apply already exists for this custom product.');
-            return $this->redirectToRoute('app_apply_pending');
-        }
-
         $apply = new Apply();
         $apply->setStatus('pending');
         $userRepository = $this->getDoctrine()->getRepository(User::class);
