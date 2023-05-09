@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Event;
+use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -54,7 +55,6 @@ class EventApiController extends AbstractController
         $user = $entityManager->getRepository(User::class)->find($userID);
     
         $event->setName($request->request->get('name'));
-        $event->setDescription($request->request->get('description'));
         $event->setLocation($request->request->get('location'));
         $event->setType($request->request->get('type'));
         $event->setDescription($request->request->get('description'));
