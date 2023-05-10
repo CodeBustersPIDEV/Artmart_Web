@@ -25,16 +25,16 @@ class ReadyproductapiController extends AbstractController
         $responseArray = array();
         foreach ($readyprodcut as $readyprodcut) {
             $responseArray[] = array(
-                'readyProductId' => $readyprodcut->getreadyProductId(),
-                'product' => $readyprodcut->getproductId()->getName(),
-                'product1' => $readyprodcut->getproductId()->getDescription(),
-                'product2' => $readyprodcut->getproductId()->getDimensions(),
-                'product3' => $readyprodcut->getproductId()->getWeight(),
-                'product4' => $readyprodcut->getproductId()->getMaterial(),
-                'product5' => $readyprodcut->getproductId()->getImage(),
-                'user' => $readyprodcut->getUserId(),
+                'readyProductId' => $readyprodcut->getReadyProductId(),
+                'product' => $readyprodcut->getProductId()->getName(),
+                'product1' => $readyprodcut->getProductId()->getDescription(),
+                'product2' => $readyprodcut->getProductId()->getDimensions(),
+                'product3' => $readyprodcut->getProductId()->getWeight(),
+                'product4' => $readyprodcut->getProductId()->getMaterial(),
+                'product5' => $readyprodcut->getProductId()->getImage(),
+                'user' => $readyprodcut->getUserId()->getUserId(),
                 'product6' => $readyprodcut->getPrice(),
-                'product7' => $readyprodcut->getproductId()->getCategoryId()
+                'product7' => $readyprodcut->getProductId()->getCategoryId()
             );
         }
 
