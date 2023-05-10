@@ -35,6 +35,25 @@ class BlogCategoryapiController extends AbstractController
 
         return $response;
     }
+
+    #[Route('/OneBlogCategory/{id}', name: 'app_OneBlogCategoryapi', methods: ['GET'])]
+    public function indexOne(BlogcategoriesRepository $blogcategoriesRepository, $id): Response
+    {
+        $category = $blogcategoriesRepository->find($id);
+        $responseArray = array();
+        $responseArray[] = array(
+            'categoryId' => $category->getCategoriesId(),
+            'name' => $category->getName()
+        );
+
+
+        $responseData = json_encode($responseArray);
+        $response = new Response($responseData);
+        $response->headers->set('Content-Type', 'application/json');
+
+        return $response;
+    }
+
     #[Route('/BlogCategoryDel/{id}', name: 'BlogCategory_delete', methods: ['DELETE'])]
     public function deletecategory(int $id, BlogcategoriesRepository $blogcategoriesRepository): JsonResponse
     {
@@ -44,7 +63,7 @@ class BlogCategoryapiController extends AbstractController
             throw $this->createNotFoundException('This Blog Category does not exist');
         }
 
-        $blogcategoriesRepository->remove($category);
+        $blogcategoriesRepository->remove($category, true);
 
         $response = new JsonResponse(['status' => 'deleted'], Response::HTTP_OK);
         return $response;

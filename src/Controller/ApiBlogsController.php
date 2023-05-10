@@ -8,7 +8,9 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Media;
 use App\Entity\Blogs;
+use App\Entity\HasBlogCategory;
 use App\Entity\User;
+use App\Repository\BlogcategoriesRepository;
 use App\Repository\BlogsRepository;
 use App\Repository\HasBlogCategoryRepository;
 use App\Repository\HasTagRepository;
@@ -42,7 +44,7 @@ class ApiBlogsController extends AbstractController
         'date' => $blog->getDate(),
         'rating' => $blog->getRating(),
         'nbViews' => $blog->getNbViews(),
-        'category' => $blog_category->getCategory()->getName(),
+        'category' => $blog_category->getCategory()->getCategoriesId(),
         'tags' => $tags,
         'author' => $blog->getAuthor()->getUserId(),
         'image' => $blog_media->getFilePath() . ""
@@ -56,8 +58,31 @@ class ApiBlogsController extends AbstractController
     return $response;
   }
 
+  #[Route('/blogNew/add', name: 'app_newBlog_api', methods: ['GET', 'POST'])]
+  public function addBlog(BlogsRepository $blogsRepository, BlogcategoriesRepository $blogcategoriesRepository, MediaRepository $mediaRepository, HasBlogCategoryRepository $hasBlogCategoryRepository, HasTagRepository $hasTagRepository, Request $request, UserRepository $userRepository): JsonResponse
+  {
+    $blog = new Blogs();
+    $blog->setTitle($request->request->get('title'));
+    $blog->setContent($request->request->get('content'));
+    $authorID = $request->request->getInt('author');
+    $author = $userRepository->find($authorID);
+    $blog->setAuthor($author);
+    $blogsRepository->save($blog, true);
+
+    $foundBlog = $blogsRepository->findOneByTitle($request->request->get('title'));
+    $idCategorie = $request->request->getInt('categoryId');
+    $category = $blogcategoriesRepository->find($idCategorie);
+    $hasCat = new HasBlogCategory();
+    $hasCat->setBlog($foundBlog);
+    $hasCat->setCategory($category);
+    $hasBlogCategoryRepository->save($hasCat, true);
+
+    $response = new JsonResponse(['status' => 'added'], Response::HTTP_CREATED);
+    return $response;
+  }
+
   #[Route('/blog/{id}', name: 'blog_delete', methods: ['DELETE'])]
-  public function deletecustomproduct(int $id, BlogsRepository $blogsRepository, MediaRepository $mediaRepository, HasBlogCategoryRepository $hasBlogCategoryRepository, HasTagRepository $hasTagRepository): JsonResponse
+  public function deleteBlog(int $id, BlogsRepository $blogsRepository, MediaRepository $mediaRepository, HasBlogCategoryRepository $hasBlogCategoryRepository, HasTagRepository $hasTagRepository): JsonResponse
   {
     $blog = $blogsRepository->find($id);
     $blog_media = $mediaRepository->findOneMediaByBlogID($id);
