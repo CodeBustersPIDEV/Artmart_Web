@@ -42,10 +42,10 @@ class ApiBlogsController extends AbstractController
         'date' => $blog->getDate(),
         'rating' => $blog->getRating(),
         'nbViews' => $blog->getNbViews(),
-        'category' => $blog_category->getCategory()->getName(),
+        'category' => $blog_category ? $blog_category->getCategory()->getName() : "N/A",
         'tags' => $tags,
         'author' => $blog->getAuthor()->getUserId(),
-        'image' => $blog_media->getFilePath() . ""
+        'image' => $blog_media ? $blog_media->getFilePath() . "" : "N/A"
       );
     }
 
