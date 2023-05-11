@@ -6,7 +6,6 @@ use App\Entity\User;
 use App\Entity\Admin;
 use App\Entity\Artist;
 use App\Entity\Clients;
-use App\Entity\Categories;
 use App\Repository\UserRepository;
 use App\Repository\AdminRepository;
 use App\Repository\ArtistRepository;
@@ -34,7 +33,9 @@ class UserApiController extends AbstractController
         $responseArray = array();
         foreach ($user as $user) {
             $responseArray[] = array(
+
                 'user_id'=>$user->getUserId(),
+
                 'name' => $user->getName(),
                 'username' => $user->getUsername(),
                 'phonenumber' => $user->getPhonenumber(),
@@ -73,7 +74,11 @@ class UserApiController extends AbstractController
         $user->setPicture("http://localhost/PIDEV/BlogUploads/user.png");
         $entityManager->persist($user);
         $entityManager->flush();
+        $user->setPicture($request->request->get('file'));
+        $user->setEmail($request->request->get('email'));
 
+        $entityManager->persist($user);
+        $entityManager->flush();
         if ($user->getRole() === 'client') {
             $addedUser = $userRepository->findOneUserByEmail($user->getEmail());
             $client->setUser($addedUser);
@@ -93,7 +98,9 @@ class UserApiController extends AbstractController
         return $response;
     }
    
-    #[Route('/user/edit/{id}', name: 'user_edit', methods: ['PUT'])]
+
+    
+    #[Route('/user/{id}', name: 'user_edit', methods: ['PUT'])]
     public function edituser(Request $request, User $user, ArtistRepository $artistRepository, AdminRepository $adminRepository): JsonResponse
     {
 
@@ -105,7 +112,6 @@ class UserApiController extends AbstractController
         if (!$user) {
             return new JsonResponse(['status' => 'Failed']);
         }
-
        
         if ($role === 'artist' && $artist) {
         $artist->getBio($request->request->get('bio'));
@@ -119,6 +125,23 @@ class UserApiController extends AbstractController
         $user->setUsername($request->request->get('username'));
         $user->setPhonenumber($request->request->get('phonenumber'));
         $user->setBirthday(new \DateTime($request->request->get('birthday')));
+    
+        if ($role === 'artist' && $artist) {
+            $artist->setBio($request->request->get('bio'));
+            $entityManager->persist($artist);
+
+        }
+    
+        if ($role === 'admin' && $admin) {
+            $admin->setDepartment($request->request->get('department'));
+            $entityManager->persist($admin);
+
+        }
+    
+        $user->setName($request->request->get('name'));
+        $user->setUsername($request->request->get('username'));
+        $user->setPhonenumber($request->request->get('phonenumber'));
+        $user->setPicture($request->request->get('file'));
         $user->setEmail($request->request->get('email'));
 
         $entityManager->persist($user);
@@ -127,6 +150,7 @@ class UserApiController extends AbstractController
         $response = new JsonResponse(['status' => 'edited'], Response::HTTP_OK);
         return $response;
     }
+
     #[Route('/user/signin', name: 'user_login', methods: ['POST'])]
     public function signinAction(Request $request)
     {
