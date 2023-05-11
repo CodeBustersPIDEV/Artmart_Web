@@ -51,6 +51,7 @@ class ApiBlogsController extends AbstractController
         'tags' => $tags,
         'author' => $blog->getAuthor()->getUserId(),
         'image' => $blog_media == null ? "N/A" :  $blog_media->getFilePath() . ""
+
       );
     }
 
