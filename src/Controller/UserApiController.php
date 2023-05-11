@@ -35,7 +35,6 @@ class UserApiController extends AbstractController
             $responseArray[] = array(
 
                 'user_id'=>$user->getUserId(),
-
                 'name' => $user->getName(),
                 'username' => $user->getUsername(),
                 'phonenumber' => $user->getPhonenumber(),
@@ -43,7 +42,7 @@ class UserApiController extends AbstractController
                 'password' => $user->getPassword(),
                 'birthday' => $user->getBirthday(),
                 'role' => $user->getRole(),
-                'file'=>$user->getPicture()
+                'file'=>$user->getPicture().""
             );
         }
 
@@ -71,14 +70,9 @@ class UserApiController extends AbstractController
         $user->setBirthday(new \DateTime($request->request->get('birthday')));
         $user->setEmail($request->request->get('email'));
         $user->setPhonenumber($request->request->get('phonenumber'));
-        $user->setPicture("http://localhost/PIDEV/BlogUploads/user.png");
+        $user->setPicture("http://localhost/PIDEV/BlogUploads/user.png"."");
         $entityManager->persist($user);
-        $entityManager->flush();
-        $user->setPicture($request->request->get('file'));
-        $user->setEmail($request->request->get('email'));
-
-        $entityManager->persist($user);
-        $entityManager->flush();
+        $entityManager->flush();        
         if ($user->getRole() === 'client') {
             $addedUser = $userRepository->findOneUserByEmail($user->getEmail());
             $client->setUser($addedUser);
