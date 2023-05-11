@@ -91,7 +91,7 @@
 					{% if customproducts|length > i %}
 						{% set customproduct = customproducts[i] %}
 						<div class="custom-card">
-						<img src="{{ customproduct.productId.image }}" alt="{{ customproduct.productId.name }} image"/>
+							<img src="{{ customproduct.productId.image }}" alt="{{ customproduct.productId.name }} image"/>
 							<h2>{{ customproduct.productId.name }}</h2>
 							<p>{{ customproduct.productId.description }}</p>
 						</div>
@@ -108,25 +108,30 @@
 {% block content2 %}
 
 
-	
-
-
-		<div class="row">
-			{% set top3blogs = getTop3Rated() %}
-			{% for blog in top3blogs %}
+	<div class="row">
+		{% set top3blogs = getTop3Rated() %}
+		{% for blog in top3blogs %}
 			{% set blog_media =getBlogsMedia(blog.getBlogsId()) %}
-				<div class="col-md-4">
-						<div class="custom-card">
+			<div class="col-md-4">
+				<div class="custom-card">
+					{% if blog_media !=null %}
 						<img src="{{ blog_media.getFilePath() }}" alt="{{ blog.title }} image"/>
-							<h2>{{ blog.title }}</h2>
-							<div class="d-flex justify-content-end align-items-center">
-							<i class="fa-solid fa-star small-image fa-lg align-self-center" style="color: gold;"></i><h6 style="margin-left: 2.5px;">  {{ blog.rating }} </h6></div>
-							{# <a href="{{ path('app_blogs_show', { blogs_ID: blog.getBlogsId() }) }}" class="link-offset-2 link-underline link-underline-opacity-0">Read More</a> #}
-						</div>
-				</div>
-			{% endfor %}
-		</div>
+					{% else %}
+						<img src="{{ asset('assets/Blog/img/default-product.png') }}" alt="{{ blog.title }} image"/>
+					{% endif %}
 
+					<h2>{{ blog.title }}</h2>
+					<div class="d-flex justify-content-end align-items-center">
+						<i class="fa-solid fa-star small-image fa-lg align-self-center" style="color: gold;"></i>
+						<h6 style="margin-left: 2.5px;">
+							{{ blog.rating }}
+						</h6>
+					</div>
+					{# <a href="{{ path('app_blogs_show', { blogs_ID: blog.getBlogsId() }) }}" class="link-offset-2 link-underline link-underline-opacity-0">Read More</a> #}
+				</div>
+			</div>
+		{% endfor %}
+	</div>
 
 
 {% endblock %}

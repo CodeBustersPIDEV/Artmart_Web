@@ -25,16 +25,16 @@ class ReadyproductapiController extends AbstractController
         $responseArray = array();
         foreach ($readyprodcut as $readyprodcut) {
             $responseArray[] = array(
-                'readyProductId' => $readyprodcut->getreadyProductId(),
-                'product' => $readyprodcut->getproductId()->getName(),
-                'product1' => $readyprodcut->getproductId()->getDescription(),
-                'product2' => $readyprodcut->getproductId()->getDimensions(),
-                'product3' => $readyprodcut->getproductId()->getWeight(),
-                'product4' => $readyprodcut->getproductId()->getMaterial(),
-                'product5' => $readyprodcut->getproductId()->getImage(),
-                'user' => $readyprodcut->getUserId(),
+                'readyProductId' => $readyprodcut->getReadyProductId(),
+                'product' => $readyprodcut->getProductId()->getName(),
+                'product1' => $readyprodcut->getProductId()->getDescription(),
+                'product2' => $readyprodcut->getProductId()->getDimensions(),
+                'product3' => $readyprodcut->getProductId()->getWeight(),
+                'product4' => $readyprodcut->getProductId()->getMaterial(),
+                'product5' => $readyprodcut->getProductId()->getImage(),
+                'user' => $readyprodcut->getUserId()->getUserId(),
                 'product6' => $readyprodcut->getPrice(),
-                'product7' => $readyprodcut->getproductId()->getCategoryId()
+                'product7' => $readyprodcut->getProductId()->getCategoryId()
             );
         }
 
@@ -75,15 +75,16 @@ class ReadyproductapiController extends AbstractController
     }
 
     #[Route('/readyproduct/{id}', name: 'readyproduct_edit', methods: ['PUT'])]
-    public function editreadyprodcut(Request $request, $id): JsonResponse
+    public function editreadyproduct(Request $request, $id): JsonResponse
     {
         $entityManager = $this->getDoctrine()->getManager();
-        $readyproduct = $entityManager->getRepository(readyproduct::class)->find($id);
+        $readyproduct = $entityManager->getRepository(Readyproduct::class)->find($id);
         if (!$readyproduct) {
+            dump('failed !');
             return new JsonResponse(['status' => 'Faild']);;
         }
 
-        $product = $readyproduct->getProduct();
+        $product = $readyproduct->getProductId();
         $product->setName($request->request->get('name'));
         $product->setDescription($request->request->get('description'));
         $product->setDimensions($request->request->get('dimensions'));
@@ -95,9 +96,9 @@ class ReadyproductapiController extends AbstractController
         $product->setCategory($categorie);
         $idUser = $request->request->getInt('user');
         $user = $entityManager->getRepository(User::class)->find($idUser);
-        $readyproduct->setClient($user);
+        $readyproduct->setUserId($user);
         $readyproduct->setPrice($request->request->get('price'));
-        $entityManager->persist($product);
+        $entityManager->persist($readyproduct);
         $entityManager->flush();
 
         $response = new JsonResponse(['status' => 'edited'], Response::HTTP_OK);
@@ -118,6 +119,32 @@ class ReadyproductapiController extends AbstractController
         $entityManager->flush();
 
         $response = new JsonResponse(['status' => 'deleted'], Response::HTTP_OK);
+        return $response;
+    }
+
+    #[Route('/readyproduct/{id}', name: 'readyproduct_get', methods: ['GET'])]
+    public function getProductById(int $id, EntityManagerInterface $entityManager): JsonResponse
+    {
+        $readyproduct = $entityManager->getRepository(Readyproduct::class)->find($id);
+
+        if (!$readyproduct) {
+            return new JsonResponse(['error' => 'Ready product not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        $responseData = [
+            'readyProductId' => $readyproduct->getReadyProductId(),
+            'product' => $readyproduct->getProductId()->getName(),
+            'product1' => $readyproduct->getProductId()->getDescription(),
+            'product2' => $readyproduct->getProductId()->getDimensions(),
+            'product3' => $readyproduct->getProductId()->getWeight(),
+            'product4' => $readyproduct->getProductId()->getMaterial(),
+            'product5' => $readyproduct->getProductId()->getImage(),
+            'user' => $readyproduct->getUserId()->getUserId(),
+            'product6' => $readyproduct->getPrice(),
+            'product7' => $readyproduct->getProductId()->getCategoryId()
+        ];
+
+        $response = new JsonResponse($responseData, Response::HTTP_OK);
         return $response;
     }
 }
