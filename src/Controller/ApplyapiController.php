@@ -7,6 +7,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Twilio\Rest\Client;
 use Symfony\Component\HttpFoundation\JsonResponse;  
 #[Route('/api')]
 class ApplyapiController extends AbstractController
@@ -37,6 +38,17 @@ class ApplyapiController extends AbstractController
     public function finish(int $applyId): JsonResponse
 
     {
+        $sid    = "AC85fdc289caf6aa747109220798d39394";
+        $token  = "a7cf8e9f23b024eecf639933d2d169c1";
+        $twilio = new Client($sid, $token);
+    
+        $message = $twilio->messages
+          ->create("whatsapp:+21698238240", 
+            array(
+              "from" => "whatsapp:+14155238886",
+              "body" => "you have a Custom Product apply"
+            )
+            );
         $entityManager = $this->getDoctrine()->getManager();
 
         $apply = $entityManager->getRepository(Apply::class)->find($applyId);

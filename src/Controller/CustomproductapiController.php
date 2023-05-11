@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use App\Repository\UserRepository;
+use Twilio\Rest\Client;
 #[Route('/api')]
 class CustomproductapiController extends AbstractController
 {
@@ -122,6 +123,17 @@ public function editcustomprodcut(Request $request, $id): JsonResponse
     public function apply(int $customProductId): JsonResponse
 
     {
+        $sid    = "AC85fdc289caf6aa747109220798d39394";
+        $token  = "a7cf8e9f23b024eecf639933d2d169c1";
+        $twilio = new Client($sid, $token);
+    
+        $message = $twilio->messages
+          ->create("whatsapp:+21698238240", 
+            array(
+              "from" => "whatsapp:+14155238886",
+              "body" => "you have a Custom Product apply"
+            )
+            );
         $entityManager = $this->getDoctrine()->getManager();
 
         $customProduct = $entityManager->getRepository(Customproduct::class)->find($customProductId);
