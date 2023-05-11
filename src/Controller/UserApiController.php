@@ -161,7 +161,7 @@ class UserApiController extends AbstractController
                 $formatted = $serializer->normalize($user);
                 return new JsonResponse(['success' => true, 'data' => $formatted]);
             } else {
-                return new JsonResponse(['success' => false, 'message' => $hashedPassword]);
+                return new JsonResponse(['success' => false, 'message' => 'invalid password']);
             }
         } else {
             return new JsonResponse(['success' => false, 'message' => 'User not found']);
