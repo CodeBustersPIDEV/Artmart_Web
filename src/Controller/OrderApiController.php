@@ -103,6 +103,21 @@ class OrderApiController extends AbstractController
         return $response;
     }
 
+    #[Route('/po/add', name: 'po_api', methods: ['GET', 'POST'])]
+    public function addListPo(Request $request): JsonResponse
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        $so = new Paymentoption();
+        
+        $so->setName($request->request->get('name'));
+        $so->setAvailablecountries($request->request->get('country'));
+
+        $entityManager->persist($so);
+        $entityManager->flush();
+
+        $response = new JsonResponse(['status' => 'added'], Response::HTTP_CREATED);
+        return $response;
+    }
 
     #[Route('/order/add', name: 'ordeapi', methods: ['POST'])]
     public function addrder(Request $request): JsonResponse
@@ -196,6 +211,21 @@ class OrderApiController extends AbstractController
         $response = new JsonResponse(['status' => 'edited'], Response::HTTP_OK);
         return $response;
     }
+    
+    #[Route('/paymentoption/{id}', name: 'po_edit_api', methods: ['PUT'])]
+    public function editPo($id,Request $request): JsonResponse
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        $po =  $entityManager->getRepository(Paymentoption::class)->find($id);
+        $po->setName($request->request->get('name'));
+        $po->setAvailablecountries($request->request->get('country'));
+
+        $entityManager->persist($po);
+        $entityManager->flush();
+
+        $response = new JsonResponse(['status' => 'added'], Response::HTTP_CREATED);
+        return $response;
+    }
 #endregion
     /*=======================================================================*/
 #region Delete
@@ -207,6 +237,23 @@ class OrderApiController extends AbstractController
 
         if (!$so) {
             throw $this->createNotFoundException('The Shipping Option does not exist');
+        }
+
+        $entityManager->remove($so);
+        $entityManager->flush();
+
+        $response = new JsonResponse(['status' => 'deleted'], Response::HTTP_OK);
+        return $response;
+    }
+
+    #[Route('/paymentoption/{id}', name: 'api_delete_po', methods: ['DELETE'])]
+    public function deletPo(int $id): JsonResponse
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        $so = $entityManager->getRepository(Paymentoption::class)->find($id);
+
+        if (!$so) {
+            throw $this->createNotFoundException('The Payment Option does not exist');
         }
 
         $entityManager->remove($so);
