@@ -3,16 +3,32 @@
 namespace App\Controller;
 
 use App\Entity\Participation;
+use App\Entity\User;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/api')]
 class ParticipationApiController extends AbstractController
 {
+    private User $connectedUser;
+
+   
+    public function __construct(SessionInterface $session, UserRepository $userRepository)
+    {
+        if ($session != null) {
+            $connectedUserID = $session->get('user_id');
+            if (is_int($connectedUserID)) {
+                $this->connectedUser = $userRepository->find((int) $connectedUserID);
+            }
+        }
+    }
+    
     #[Route('/participation', name: 'participations', methods: ['GET'])]
     public function index(EntityManagerInterface $entityManager): Response
     {        
@@ -101,6 +117,54 @@ class ParticipationApiController extends AbstractController
 
         $response = new JsonResponse(['status' => 'deleted'], Response::HTTP_OK);
         return $response;
+    }
+
+    #[Route('/artist/participate/{eventid}', name: 'parrr', methods: ['GET', 'POST'])]
+    public function neww(EntityManagerInterface $entityManager, $eventid): JsonResponse
+    {
+        $connectedUserID = $this->connectedUser->getUserId();
+    
+        
+        // Get the event
+        $event = $entityManager->getRepository(Event::class)->findOneBy([
+            'eventid' => $eventid,
+            'status' => ['Scheduled', 'Started'],
+        ]);
+
+        // Check if the event is scheduled or started
+
+
+        // Check if participation already exists
+        // $existingParticipation = $entityManager->getRepository(Participation::class)->findOneBy([
+        //     'user' => 1,
+        //     'event' => $eventid,    
+        // ]);
+    
+        // if ($existingParticipation) {
+        //     // Participation already exists, handle accordingly
+        //     throw $this->createNotFoundException('You are already participating in this event.');
+        // }
+    
+        if (!$event) {
+            throw $this->createNotFoundException('You cannot participate in this event at the moment.');
+        }
+        
+        // Participation does not exist, create new participation
+        $participation = new Participation();
+
+        $userRepository = $this->getDoctrine()->getRepository(User::class);
+        $artist = $userRepository->find(1);
+
+
+        $participation->setUser($artist);
+        $participation->setEvent($eventid);
+    
+        $entityManager->persist($participation);
+        $entityManager->flush();
+    
+        $response = new JsonResponse(['status' => 'edited'], Response::HTTP_OK);
+        return $response;
+
     }
 
 }
