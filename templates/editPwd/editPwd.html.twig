@@ -1,0 +1,91 @@
+{% extends 'baseF.html.twig' %}
+
+{% block title %}Token Verification{% endblock %}
+
+{% block stylesheets %}
+  {{ parent() }}
+  <style>
+    .section {
+      padding: 80px 0;
+    }
+
+    h1 {
+      margin-bottom: 40px;
+      font-size: 36px;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .form-control {
+      border-radius: 0;
+      padding: 12px 20px;
+      font-size: 16px;
+      border: none;
+      border-bottom: 2px solid #e1e1e1;
+    }
+
+    .form-control:focus {
+      border-color: #007bff;
+      box-shadow: none;
+    }
+
+    .button {
+      margin-top: 30px;
+      text-align: center;
+    }
+
+    .btn {
+      border-radius: 0;
+      font-size: 16px;
+      padding: 12px 30px;
+      letter-spacing: 1px;
+      font-weight: 600;
+    }
+
+    .btn-outline-primary {
+      color: #007bff;
+      border-color: #007bff;
+    }
+
+    .btn-outline-primary:hover {
+      color: #fff;
+      background-color: #007bff;
+      border-color: #007bff;
+    }
+  </style>
+{% endblock %}
+
+{% block content %}
+  <section class="section">
+    <div class="container">
+      <div class="row">
+        <div class="col"></div>
+        <div class="col-sm-12">
+    <h1>New Password </h1>
+
+          
+      <!-- Start the form and add a class attribute to it -->
+      {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+      <div class="form-group">
+      {{ form_row(form.password, {'attr': {'class': 'form-control', 'id': 'password'}}) }}
+  
+  {% if form.password.vars.errors|length %}
+  {% for error in form.password.vars.errors %}
+      <div class="alert alert-danger">{{ error.message }}</div>
+  {% endfor %}
+{% endif %}
+</div>
+<br></br>  
+        
+    <div class="button" style="text-align: center">
+<button type="submit" class="btn btn-outline-primary mr-2" id="submitBtn">
+    {{ button_label|default('Edit Password') }}
+</button>
+</div>
+{{ form_end(form) }}
+</div>
+</div>
+</div>
+</section>
+<br><br><br><br><br><br><br><br><br><br><br>
+{% endblock %}

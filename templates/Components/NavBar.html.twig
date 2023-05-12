@@ -1,0 +1,230 @@
+<link rel="stylesheet" href="{{ asset('assets/Components/NavBar.css') }}" />
+
+<style>
+	.logo {
+		width: 125px;
+		display: flex;
+		justify-content: flex-start;
+		align-items: center;
+		transform: translateX(-40%);
+	}
+	.logo_img {
+		width: 125px;
+	}
+	.userButtons {
+		display: flex;
+		flex-direction: row;
+		justify-content: flex-end;
+		/* align-items: center; */
+	}
+
+	.btns {
+		position: relative;
+		background: #444;
+		color: #fff;
+		text-decoration: none;
+		text-transform: uppercase;
+		border: none;
+		letter-spacing: 1px;
+		font-size: 18px;
+		padding: 5px 15px;
+		transition: 0.2s;
+	}
+
+	.btns:hover {
+		letter-spacing: 1.5px;
+		padding: 5.1px 15.1px;
+		background: var(--clr);
+		color: var(--clr);
+		/* box-shadow: 0 0 35px var(--clr); */
+		animation: box 3s infinite;
+	}
+
+	.btns::before {
+		content: "";
+		position: absolute;
+		inset: 2px;
+		background: #272822;
+	}
+
+	.btns span {
+		position: relative;
+		z-index: 1;
+	}
+
+	.btns i {
+		position: absolute;
+		inset: 0;
+		display: block;
+	}
+
+	.btns i::before {
+		content: "";
+		position: absolute;
+		width: 10px;
+		height: 2px;
+		left: 80%;
+		top: -2px;
+		border: 2px solid var(--clr);
+		background: #272822;
+		transition: 0.2s;
+	}
+
+	.btns:hover i::before {
+		width: 15px;
+		left: 20%;
+		animation: move 3s infinite;
+	}
+
+	.btns i::after {
+		content: "";
+		position: absolute;
+		width: 10px;
+		height: 2px;
+		left: 20%;
+		bottom: -2px;
+		border: 2px solid var(--clr);
+		background: #272822;
+		transition: 0.2s;
+	}
+
+	.btns:hover i::after {
+		width: 15px;
+		left: 80%;
+		animation: move 3s infinite;
+	}
+
+	@keyframes move {
+		0% {
+			transform: translateX(0);
+		}
+
+		50% {
+			transform: translateX(5px);
+		}
+
+		100% {
+			transform: translateX(0);
+		}
+	}
+
+	@keyframes box {
+		0% {
+			box-shadow: #27272c;
+		}
+
+		50% {
+			box-shadow: 0 0 25px var(--clr);
+		}
+
+		100% {
+			box-shadow: #27272c;
+		}
+	}
+	.signIn_btn {
+		margin-right: 4px;
+	}
+	.signUp_btn {
+		margin-left: 4px;
+	}
+
+	/* media query for small screens */
+	@media (max-width: 1093px) {
+		.menu-toggle {
+			display: flex;
+		}
+		/* hide the navigation menu by default */
+		.navMenu .options {
+			display: none;
+		}
+
+		/* show the menu toggle button */
+		.menu-toggle {
+			display: block;
+		}
+
+		/* style the expanded navigation menu */
+		.navMenu .options.expanded {
+			display: flex;
+			flex-direction: column;
+			position: absolute;
+			top: 100%;
+			left: 0;
+			width: 100%;
+			background-color: #272727;
+			padding: 1rem;
+			z-index: 2;
+		}
+	}
+</style>
+{% set connectedUser = returnConnectedUser() %}
+<nav class="navMenu">
+	<div class="logo">
+		<a href="/">
+			<img
+				src="{{ asset('assets/ArtMart_Logo.png') }}"
+				class="logo_img"
+				alt="ArtMart Logo"
+			/>
+		</a>
+	</div>
+	<div class="options">
+		<a href="/">Home</a>
+		<a href="{{ path('app_blogs_index') }}">Blog</a>
+		{% if app.session.get('user_id') %}
+			<a href="{{ path('app_user_Profile', {'userId': app.session.get('user_id')}) }}">Profile</a>
+			{% if app.session.get('user_role') == "client" %}
+				<a href="{{ path('app_readyproduct_client_index') }}">Products</a>
+				<a href="{{ path('app_customproduct_index') }}">Custom Products</a>
+				<a href="{{ path('app_event_index_client') }}">Events</a>
+				<a href="{{ path('app_wishlist_index') }}">Shopping Cart</a>
+			{% elseif app.session.get('user_role') == "artist" %}
+				<a href="{{ path('app_readyproduct_index') }}">Products</a>
+				<a href="{{ path('app_customproduct_artist') }}">Custom Products</a>
+				<a href="{{ path('app_event_index_artist') }}">Events</a>
+			{% elseif app.session.get('user_role') == "admin" %}
+				<a href="{{ path('app_admin') }}">Admin Panel</a>
+			{% endif %}
+		{% else %}
+			<a href="{{ path('app_readyproduct_no_user_index') }}">Products</a>
+			<a href="{{ path('app_event_index') }}">Events</a>
+		{% endif %}
+		<div class="dot"></div>
+	</div>
+	<div class="userButtons">
+		{% if app.session.get('user_id') %}
+		<p>Welcome {{ connectedUser.username}}!</p>
+		<a class="signIn_btn btns" href="/logout" style="--clr: #ffc0cb">
+			<span>Logout</span>
+			<i></i>
+		</a>
+	<p>Welcome!</p>
+
+		{% else %}
+		<a
+			class="signIn_btn btns"
+			href="{{ path('app_login') }}"
+			style="--clr: #ffc0cb"
+		>
+			<span>Sign In</span>
+			<i></i>
+		</a>
+		<a
+			class="signUp_btn btns"
+			href="{{ path('app_user_new') }}"
+			style="--clr: #ffc0cb"
+		>
+			<span>Sign Up</span>
+			<i></i>
+		</a>
+		{% endif %}
+	</div>
+</nav>
+<script>
+	const menuToggle = document.querySelector(".menu-toggle");
+	const menuOptions = document.querySelector(".navMenu .options");
+
+	menuToggle.addEventListener("click", () => {
+		menuOptions.classList.toggle("expanded");
+	});
+</script>

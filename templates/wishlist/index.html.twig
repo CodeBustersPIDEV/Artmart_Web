@@ -1,0 +1,295 @@
+{% extends 'baseF.html.twig' %}
+
+{% block content %}
+
+{% block title %}
+        <h4><em>My</em> Shopping Cart</h4>
+<br><br>
+{% endblock %}
+
+{% block stylesheets %}
+
+<style>
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.pagination ul {
+  display: flex;
+  flex-wrap: wrap;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.pagination li {
+  margin: 0 5px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  background-color: #f2f2f2;
+}
+
+.pagination li.active {
+  background-color: #333;
+}
+
+.pagination li span,
+.pagination li a {
+  display: block;
+  padding: 5px 10px;
+  text-align: center;
+  color: #333;
+  text-decoration: none;
+  transition: all 0.2s ease-in-out;
+}
+
+.pagination li a:hover {
+  background-color: #333;
+  color: #fff;
+}
+
+.pagination li.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.pagination li.disabled span {
+  color: #999;
+}
+
+
+.ready-card {
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    margin: 10px;
+    padding: 20px;
+    display: inline-block;
+    width: 100%;
+    background-color: #232931;
+    transition: box-shadow 0.2s ease-in-out;
+}
+
+.ready-card:hover {
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.3);
+    transform: translateY(-2px);
+}
+
+.ready-card h2 {
+    margin-top: 0px;
+    margin-bottom: 10px;
+    font-size: 24px;
+    color: #FFFFFF;
+}
+
+.ready-card p {
+    margin-top: 0px;
+    color: #FFFFFF;
+}
+
+.ready-card a {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 12px 20px;
+    background-color: #AA336A;
+    color: #FFFFFF;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.ready-card a:hover {
+    background-color: #0D6E72;
+}
+
+.ready-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.ready-card:nth-child(4n+1) {
+    clear: left;
+}
+.orderby-link {
+  display: inline-block;
+  padding: 8px 16px;
+  background-color: #AA336A;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  font-size: 16px;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.orderby-link:hover {
+  background-color: #AA336A;
+}
+
+/* Search Bar */
+.form-control {
+  display: inline-block;
+  width: 70%;
+  padding: 6px 12px;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #55595c;
+  background-color: #fff;
+  background-image: none;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+          box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+  -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+  transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+  transition: box-shadow ease-in-out .15s,border-color ease-in-out .15s;
+  transition: box-shadow ease-in-out .15s,border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+}
+
+.form-control:focus {
+  border-color: #66afe9;
+  outline: 0;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6);
+          box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6);
+}
+
+.btn-search {
+  display: inline-block;
+  width: 20%;
+  padding: 6px 12px;
+  margin-left: 10px;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #fff;
+  background-color: #17a2b8;
+  border: 1px solid #17a2b8;
+  border-radius: 4px;
+  -webkit-transition: background-color ease-in-out .15s,border-color ease-in-out .15s;
+  transition: background-color ease-in-out .15s,border-color ease-in-out .15s;
+  cursor: pointer;
+}
+
+.btn-search:hover {
+  background-color: #117a8b;
+  border-color: #10707f;
+}
+
+
+
+.link-style {
+  display: inline-block;
+  padding: 10px 20px;
+  margin-right: 20px;
+  border-radius: 4px;
+  color: white;
+  background-color: #43464B;
+  font-weight: bold;
+  text-decoration: none;
+  float: right;
+}
+
+.link-style:hover {
+  background-color: #3e8e41;
+  color: white;
+}
+
+.link-style-cancel {
+  display: inline-block;
+  padding: 5px 10px;
+  margin-right: 20px;
+  border-radius: 4px;
+  color: white;
+  background-color: #43464B;
+  font-weight: bold;
+  text-decoration: none;
+  float: center;
+}
+
+.link-style-cancel:hover {
+  background-color: #AA336A;
+  color: white;
+}
+
+.form-control {
+    width: 20%;
+}
+
+input#search-term {
+    float: center;
+}
+
+#button mid {
+    background-color: #AA336A;
+}
+
+.button {
+    button-color: #AA336A;
+    background: #AA336A;
+}
+
+#form-check-label {
+  float: center;
+  background-color: #FFFFFF;
+}
+
+.form-check-input:checked {
+    background-color: #AA336A;
+    border-color: #AA336A;
+}
+
+th,td{
+   color:white;
+}
+</style>
+
+
+
+{% endblock %}
+
+{% block body %}
+<a href="{{ path('app_readyproduct_index') }}" class="link-style"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
+  <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"/>
+</svg> Browse Marketplace</a>
+<a href="{{ path('my_order_index') }}" class="link-style"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
+  <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"/>
+</svg> My Orders</a>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Product Ref</th>
+                <th>Date</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for wishlist in wishlists %}
+            <tr>
+                <td>000P0{{ wishlist.productid }}</td>
+                <td>{{ wishlist.date ? wishlist.date|date('Y-m-d') : '' }}</td>
+                <td>{{ wishlist.quantity }}</td>
+                <td>{{ wishlist.price }} DT</td>
+                <td>
+                    <a href="/readyproduct/{{wishlist.productid}}">Show</a>
+                    <a href="/wishlist/delete/{{wishlist.wishlistId}}">Remove</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="7">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <a href="{{ path('app_payment') }}" class="link-style"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
+  <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"/>
+</svg> Checkout</a>
+{% endblock %}
+{% endblock %}

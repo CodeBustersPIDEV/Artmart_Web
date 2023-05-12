@@ -1,0 +1,457 @@
+{% extends 'baseB.html.twig' %} {% block content %} {% block stylesheets %}
+<link rel="stylesheet" href="{{ asset('assets/Blog/CSS/AdminPage.css') }}" />
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css"
+	rel="stylesheet"
+	integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp"
+	crossorigin="anonymous"
+/>
+<style>
+	.nav_links {
+		cursor: pointer;
+	}
+	.adminSection {
+		margin-left: 5px;
+	}
+	th {
+		cursor: pointer;
+	}
+</style>
+{% endblock %} {% block body %}
+<div class="adminSection">
+	<ul class="nav nav-pills">
+		<li class="nav-item">
+			<a class="nav-link nav_links active" id="homeLink">Main</a>
+		</li>
+		<li class="nav-item">
+			<a class="nav-link nav_links" id="blogLink">Blogs</a>
+		</li>
+		<li class="nav-item">
+			<a class="nav-link nav_links" id="blogCategoryLink">Blog Categories</a>
+		</li>
+		<li class="nav-item">
+			<a class="nav-link nav_links" id="tagsLink">Tags</a>
+		</li>
+	</ul>
+	<section id="home">
+		<h2>Home Section</h2>
+	<br>
+	<canvas id="myChart"></canvas>
+
+	</section>
+
+	<section id="blogs">
+		<h3>Blogs</h3>
+		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+		<script>
+			$(document).ready(function () {
+				$("th").click(function () {
+					var table = $(this).parents("table").eq(0);
+					var rows = table
+						.find("tr:gt(0)")
+						.toArray()
+						.sort(comparer($(this).index()));
+					this.asc = !this.asc;
+					if (!this.asc) {
+						rows = rows.reverse();
+					}
+					for (var i = 0; i < rows.length; i++) {
+						table.append(rows[i]);
+					}
+				});
+			});
+
+			function comparer(index) {
+				return function (a, b) {
+					var valA = getCellValue(a, index),
+						valB = getCellValue(b, index);
+					return $.isNumeric(valA) && $.isNumeric(valB)
+						? valA - valB
+						: valA.toString().localeCompare(valB);
+				};
+			}
+
+			function getCellValue(row, index) {
+				return $(row).children("td").eq(index).text();
+			}
+		</script>
+		<script>
+			$(document).ready(function () {
+				$("#searchInput").keyup(function () {
+					var searchText = $(this).val().toLowerCase();
+					$("table tbody tr").each(function () {
+						var rowText = $(this).text().toLowerCase();
+
+						if (rowText.includes(searchText)) {
+							$(this).show();
+						} else {
+							$(this).hide();
+						}
+					});
+				});
+			});
+		</script>
+		<center>
+			<input type="text" id="searchInput" placeholder="Search..." />
+		</center>
+		<a href="{{ path('app_blogs_newAdmin') }}">
+			<div data-tooltip="Blog" class="button mid">
+				<div class="button-wrapper">
+					<div class="text">Create New</div>
+					<span class="icon">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							width="16"
+							height="16"
+							fill="currentColor"
+							class="bi bi-file-earmark-plus-fill"
+							viewbox="0 0 16 16"
+						>
+							<path
+								d="M9.293 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.707A1 1 0 0 0 13.707 4L10 .293A1 1 0 0 0 9.293 0zM9.5 3.5v-2l3 3h-2a1 1 0 0 1-1-1zM8.5 7v1.5H10a.5.5 0 0 1 0 1H8.5V11a.5.5 0 0 1-1 0V9.5H6a.5.5 0 0 1 0-1h1.5V7a.5.5 0 0 1 1 0z"
+							/>
+						</svg>
+					</span>
+				</div>
+			</div>
+		</a>
+
+		<table class="table">
+			<thead>
+				<tr>
+					<th>Title</th>
+					<th>Date</th>
+					<th>Rating</th>
+					<th>NbViews</th>
+					<th>Author</th>
+					<th>Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for blog in blogs %}
+				<tr>
+					<td>{{ blog.title }}</td>
+					<td>{{ blog.date ? blog.date|date('Y-m-d') : '' }}</td>
+					<td>{{ blog.rating }}</td>
+					<td>{{ blog.nbViews }}</td>
+					<td>
+						<a
+							href="{{
+								path('app_user_show', { userId: blog.author.getUserId() })
+							}}"
+							>{{ blog.author.name }}</a
+						>
+					</td>
+					<td>
+						<a
+							href="{{
+								path('app_blogs_show', { blogs_ID: blog.getBlogsId() })
+							}}"
+							class="btn btn-outline-primary"
+							>Show</a
+						>
+						<a
+							href="{{
+								path('app_blogs_delete', { blogs_ID: blog.getBlogsId() })
+							}}"
+							class="btn btn-outline-danger"
+							>Delete</a
+						>
+					</td>
+				</tr>
+				{% else %}
+				<tr>
+					<td colspan="7">no records found</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</section>
+
+	<section id="blogCategory">
+		<div class="col">
+			<h3>Blog Categories</h3>
+			<script>
+				$(document).ready(function () {
+					$("th").click(function () {
+						var table = $(this).parents("table").eq(0);
+						var rows = table
+							.find("tr:gt(0)")
+							.toArray()
+							.sort(comparer($(this).index()));
+						this.asc = !this.asc;
+						if (!this.asc) {
+							rows = rows.reverse();
+						}
+						for (var i = 0; i < rows.length; i++) {
+							table.append(rows[i]);
+						}
+					});
+				});
+
+				function comparer(index) {
+					return function (a, b) {
+						var valA = getCellValue(a, index),
+							valB = getCellValue(b, index);
+						return $.isNumeric(valA) && $.isNumeric(valB)
+							? valA - valB
+							: valA.toString().localeCompare(valB);
+					};
+				}
+
+				function getCellValue(row, index) {
+					return $(row).children("td").eq(index).text();
+				}
+			</script>
+			<script>
+				$(document).ready(function () {
+					$("#searchInputCat").keyup(function () {
+						var searchText = $(this).val().toLowerCase();
+						$("table tbody tr").each(function () {
+							var rowText = $(this).text().toLowerCase();
+
+							if (rowText.includes(searchText)) {
+								$(this).show();
+							} else {
+								$(this).hide();
+							}
+						});
+					});
+				});
+			</script>
+			<center>
+				<input type="text" id="searchInputCat" placeholder="Search..." />
+			</center>
+			<a href="{{ path('app_blogcategories_new') }}">
+				<div data-tooltip="Category" class="button mid">
+					<div class="button-wrapper">
+						<div class="text">Create New</div>
+						<span class="icon">
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								width="16"
+								height="16"
+								fill="currentColor"
+								class="bi bi-file-earmark-plus-fill"
+								viewbox="0 0 16 16"
+							>
+								<path
+									d="M9.293 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.707A1 1 0 0 0 13.707 4L10 .293A1 1 0 0 0 9.293 0zM9.5 3.5v-2l3 3h-2a1 1 0 0 1-1-1zM8.5 7v1.5H10a.5.5 0 0 1 0 1H8.5V11a.5.5 0 0 1-1 0V9.5H6a.5.5 0 0 1 0-1h1.5V7a.5.5 0 0 1 1 0z"
+								/>
+							</svg>
+						</span>
+					</div>
+				</div>
+			</a>
+
+			<table class="table">
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th># of Blogs</th>
+						<th align="middle">Actions</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for blogcategory in blogCategories %}
+					<tr>
+						<td>{{ blogcategory.name }}</td>
+						<td>
+							{{ getNbBlogsPerCat(blogcategory.categoriesId) }}
+						</td>
+						<td>
+							{#
+							<a
+								href="{{
+									path('app_blogcategories_delete', {
+										categoriesId: blogcategory.categoriesId
+									})
+								}}"
+								class="btn btn-outline-danger"
+								>Delete</a
+							>
+							#}
+							<div class="d-flex justify-content-evenly">
+								{{ include("blogcategories/_delete_form.html.twig") }}
+								<a
+									href="{{
+										path('app_blogcategories_edit', {
+											categoriesId: blogcategory.categoriesId
+										})
+									}}"
+									class="btn btn-outline-success"
+									>Edit</a
+								>
+							</div>
+						</td>
+					</tr>
+					{% else %}
+					<tr>
+						<td colspan="3">no records found</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</section>
+
+	<section id="tags">
+		<div class="col">
+			<h3>Tags</h3>
+			<script>
+				$(document).ready(function () {
+					$("th").click(function () {
+						var table = $(this).parents("table").eq(0);
+						var rows = table
+							.find("tr:gt(0)")
+							.toArray()
+							.sort(comparer($(this).index()));
+						this.asc = !this.asc;
+						if (!this.asc) {
+							rows = rows.reverse();
+						}
+						for (var i = 0; i < rows.length; i++) {
+							table.append(rows[i]);
+						}
+					});
+				});
+
+				function comparer(index) {
+					return function (a, b) {
+						var valA = getCellValue(a, index),
+							valB = getCellValue(b, index);
+						return $.isNumeric(valA) && $.isNumeric(valB)
+							? valA - valB
+							: valA.toString().localeCompare(valB);
+					};
+				}
+
+				function getCellValue(row, index) {
+					return $(row).children("td").eq(index).text();
+				}
+			</script>
+			<script>
+				$(document).ready(function () {
+					$("#searchInputTags").keyup(function () {
+						var searchText = $(this).val().toLowerCase();
+						$("table tbody tr").each(function () {
+							var rowText = $(this).text().toLowerCase();
+
+							if (rowText.includes(searchText)) {
+								$(this).show();
+							} else {
+								$(this).hide();
+							}
+						});
+					});
+				});
+			</script>
+			<center>
+				<input type="text" id="searchInputTags" placeholder="Search..." />
+			</center>
+			<a href="{{ path('app_tags_new') }}">
+				<div data-tooltip="Tag" class="button mid">
+					<div class="button-wrapper">
+						<div class="text">Create New</div>
+						<span class="icon">
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								width="16"
+								height="16"
+								fill="currentColor"
+								class="bi bi-file-earmark-plus-fill"
+								viewbox="0 0 16 16"
+							>
+								<path
+									d="M9.293 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.707A1 1 0 0 0 13.707 4L10 .293A1 1 0 0 0 9.293 0zM9.5 3.5v-2l3 3h-2a1 1 0 0 1-1-1zM8.5 7v1.5H10a.5.5 0 0 1 0 1H8.5V11a.5.5 0 0 1-1 0V9.5H6a.5.5 0 0 1 0-1h1.5V7a.5.5 0 0 1 1 0z"
+								/>
+							</svg>
+						</span>
+					</div>
+				</div>
+			</a>
+
+			<table class="table">
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th># of Blogs</th>
+						<th>Actions</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for tag in tags %}
+					<tr>
+						<td>{{ tag.name }}</td>
+						<td>{{ getNbBlogsPerTag(tag.tagsId) }}</td>
+						<td>
+							<div class="d-flex justify-content-evenly">
+								{{ include("tags/_delete_form.html.twig") }}
+								<a
+									href="{{ path('app_tags_edit', { tagsId: tag.tagsId }) }}"
+									class="btn btn-outline-success"
+									>Edit</a
+								>
+							</div>
+						</td>
+					</tr>
+					{% else %}
+					<tr>
+						<td colspan="3">no records found</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</section>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    $(document).ready(function() {
+        $.ajax({
+            url: "{{ path('chart_data') }}",
+            method: 'GET',
+            success: function(data) {
+                var ctx = document.getElementById('myChart').getContext('2d');
+								console.log(data)
+                var myChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: data.map(function(blog) { return blog.title; }),
+                        datasets: [{
+                            label: 'Number of Views',
+                            data: data.map(function(blog) { return blog.nbviews; }),
+                            backgroundColor: [
+                                'rgba(255, 99, 132, 0.2)',
+                                'rgba(54, 162, 235, 0.2)',
+                                'rgba(255, 206, 86, 0.2)'
+                            ],
+                            borderColor: [
+                                'rgba(255, 99, 132, 1)',
+                                'rgba(54, 162, 235, 1)',
+                                'rgba(255, 206, 86, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            yAxes: [{
+                                ticks: {
+                                    beginAtZero: true
+                                }
+                            }]
+                        }
+                    }
+                });
+            }
+        });
+    });
+</script>
+<script
+	src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.bundle.min.js"
+	integrity="sha384-qKXV1j0HvMUeCBQ+QVp7JcfGl760yU08IQ+GpUo5hlbpg51QRiuqHAJz8+BrxE/N"
+	crossorigin="anonymous"
+></script>
+{% endblock %} {% endblock %}

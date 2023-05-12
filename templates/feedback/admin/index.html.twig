@@ -1,0 +1,190 @@
+{% extends 'baseE.html.twig' %} 
+{% block content %}
+
+{% block body %}
+	{% include('event/admin/eventBar.html.twig') %}
+
+<!-- Add this to your head section -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css">
+
+<!-- Add this at the end of your body section -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <div class="select-container">
+        <form action="{{ path('app_feedback_index_admin') }}" method="GET">
+        <div class="form-group">
+            <input type="text" id="searchInput" class="form-control" placeholder="Search...">
+        </div>
+        </form>
+  </div>
+
+  <link rel="stylesheet" href="{{ asset('assets/Components/specialOrder.css') }}"/>
+  <a href="{{ path('app_feedback_new_admin') }}">
+    <div data-tooltip="New feedback" class="button mid">
+      <div class="button-wrapper">
+        <div class="text">Create New</div>
+        <span class="icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-earmark-plus-fill" viewbox="0 0 16 16">
+            <path d="M9.293 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.707A1 1 0 0 0 13.707 4L10 .293A1 1 0 0 0 9.293 0zM9.5 3.5v-2l3 3h-2a1 1 0 0 1-1-1zM8.5 7v1.5H10a.5.5 0 0 1 0 1H8.5V11a.5.5 0 0 1-1 0V9.5H6a.5.5 0 0 1 0-1h1.5V7a.5.5 0 0 1 1 0z"/>
+          </svg>
+        </span>
+      </div>
+    </div>
+  </a>
+
+<div class="table-container">
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">User</th>
+      <th scope="col">Role</th>
+      <th scope="col">Event</th>
+      <th scope="col">Rating</th>
+      <th scope="col">Comment</th>
+      <th scope="col">Date posted</th>
+      <th scope="col">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for feedback in feedbacks %}
+    <tr>
+      <td>{{ feedback.user.name }}</td>
+      <td>{{ feedback.user.role }}</td>
+      <td>{{ feedback.event.name }}</td>
+      <td>{{ feedback.rating }}</td>
+<td class="comment" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ feedback.comment }}">{{ feedback.comment }}</td>
+      <td>{{ feedback.date ? feedback.date|date('d-m-Y ~ H:i:s') : '' }}</td>
+      <td>
+        <div style="display: inline-block;">
+          <a href="{{ path('app_feedback_show_admin', {'feedbackid': feedback.feedbackid}) }}" class="btn btn-outline-primary">Show</a>
+          <a href="{{ path('app_feedback_edit_admin', {'feedbackid': feedback.feedbackid}) }}" class="btn btn-outline-success" style="margin-right: 4px;">Edit</a>
+          <div style="float: right;">
+              {{ include('feedback/admin/_delete_form.html.twig') }}
+          </div>
+        </div>
+      </td>
+    </tr>
+    {% else %}
+    <tr>
+      <td colspan="3">No records found</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+
+  <br>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+  $('th').click(function() {
+    var table = $(this).parents('table').eq(0)
+    var rows = table.find('tr:gt(0)').toArray().sort(comparer($(this).index()))
+    this.asc = !this.asc
+    if (!this.asc) { rows = rows.reverse() }
+    for (var i = 0; i < rows.length; i++) { table.append(rows[i]) }
+  })
+})
+
+function comparer(index) {
+  return function(a, b) {
+    var valA = getCellValue(a, index), valB = getCellValue(b, index)
+    return $.isNumeric(valA) && $.isNumeric(valB) ? valA - valB : valA.toString().localeCompare(valB)
+  }
+}
+
+function getCellValue(row, index){ return $(row).children('td').eq(index).text() }
+</script>
+<script>
+$(document).ready(function() {
+  $('#searchInput').keyup(function() {
+    var searchText = $(this).val().toLowerCase();
+    $('table tbody tr').each(function() {
+      var rowText = $(this).text().toLowerCase();
+
+      if (rowText.includes(searchText)) {
+        $(this).show();
+      } else {
+        $(this).hide();
+      }
+    });
+  });
+});
+
+$(function () {
+  var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+  var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+    return new bootstrap.Tooltip(tooltipTriggerEl)
+  })
+})
+
+</script>
+{% endblock %}
+
+{% block stylesheets %}
+  <style>
+    /* Add your styles here */
+    .comment {
+        max-width: 30px;
+        overflow: hidden;
+    }
+
+    .custom-card img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        border-radius: 5px;
+        margin-bottom: 10px;
+    }
+    select {
+      border-radius: 5px;
+      padding: 5px;
+      font-size: 16px;
+    }
+    .select-container {
+      display: flex;
+      margin: 20px;
+    }
+
+    .select-container form {
+      margin-right: 10px;
+    }
+
+    /* Search Bar */
+    .form-control {
+      display: inline-block;
+      max-width: 400px;
+      padding: 6px 12px;
+      margin-bottom: 20px;
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 1.5;
+      color: #55595c;
+      background-color: #fff;
+      background-image: none;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+              box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+      -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+      transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+      transition: box-shadow ease-in-out .15s,border-color ease-in-out .15s;
+      transition: box-shadow ease-in-out .15s,border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+    }
+
+    .form-control:focus {
+      border-color: #66afe9;
+      outline: 0;
+      -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6);
+              box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6);
+    }
+    img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    }
+  </style>
+{% endblock %}
+{% endblock %}

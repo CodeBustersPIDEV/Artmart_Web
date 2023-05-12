@@ -1,0 +1,35 @@
+{% extends 'baseO.html.twig' %} {% block content %} {% block stylesheets %}
+<link rel="stylesheet" href="{{ asset('assets/Blog/CSS/AdminPage.css') }}" />
+<style>
+	.nav_links {
+		cursor: pointer;
+	}
+	.adminSection {
+		margin-left: 5px;
+	}
+</style>
+{% endblock %} {% block body %}
+	{% include('order/orderBar.html.twig') %}
+	<link rel="stylesheet" href="{{ asset('assets/Components/specialOrder.css') }}"/>
+
+	<a href="{{ path('app_orderrefund_index') }}">
+		<button>
+			<span>Back</span>
+		</button>
+	</a>
+	<div class="card mid">
+		<div class="card-details">
+			<p class="text-title">Order Refund ID: {{ orderrefund.orderrefundId }}</p>
+			<p class="text-body">Refund Amount : {{ orderrefund.refundamount }}</p>
+			<p class="text-body">Reason : {{ orderrefund.reason }}</p>
+			<p class="text-body">Date : {{ orderrefund.date ? orderrefund.date|date('Y-m-d') : '' }}</p>
+		</div>
+    </div>
+	<a href="{{ path('app_orderrefund_edit', {'orderrefundId': orderrefund.orderrefundId}) }}">
+		<button>
+			<span>Edit</span>
+		</button>
+	</a>
+    {{ include('orderrefund/_delete_form.html.twig') }}
+{% endblock %}
+{% endblock %}

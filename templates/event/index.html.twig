@@ -1,0 +1,199 @@
+{% extends 'baseF.html.twig' %} 
+{% block content %}
+{% block body %}
+	{% include('event/artist/eventBar.html.twig') %}
+
+  <center>
+    <form action="{{ path('app_event_index_artist') }}" method="GET">
+      <div class="form-group">
+        <input type="text" id="search-term" name="q" class="form-control" value="{{ searchTerm }}"placeholder="Search..."> 
+      </div>
+    </form>
+  </center>
+  
+  <div class="select-container">
+
+    <form action="{{ path('app_event_index_artist') }}" method="get">
+      <p style="display:inline-block; margin-right: 10px;">Sort by Name</p>
+      <select name="name" onchange="this.form.submit()">
+        <option value="" {% if app.request.query.get('name') is empty %} selected {% endif %} disabled>Choose an option</option>
+        <option value="asc" {% if app.request.query.get('name') == 'asc' %} selected {% endif %}>Ascending Name</option>
+        <option value="desc" {% if app.request.query.get('name') == 'desc' %} selected {% endif %}>Descending Name</option>
+      </select>
+    </form>
+
+      
+    <form action="{{ path('app_event_index_artist') }}" method="get">
+      <p style="display:inline-block; margin-right: 10px;">Sort by Price</p>
+      <select name="feeOrder" onchange="this.form.submit()">
+        <option value="" disabled {{ app.request.query.get('feeOrder') is empty ? 'selected' : '' }}>Choose an option</option>
+        <option value="asc" {{ app.request.query.get('feeOrder') == 'asc' ? 'selected' : '' }}>Ascending Price</option>
+        <option value="desc" {{ app.request.query.get('feeOrder') == 'desc' ? 'selected' : '' }}>Descending Price</option>
+      </select>
+    </form>
+
+    <form action="{{ path('app_event_index_artist') }}" method="get">
+      <p style="display:inline-block; margin-right: 10px;">Sort by Type</p>
+      <select name="type" onchange="this.form.submit()">
+        <option value="" disabled {{ app.request.query.get('type') is empty ? 'selected' : '' }}>Choose an option</option>
+        <option value="Auction" {{ app.request.query.get('type') == 'Auction' ? 'selected' : '' }}>Auction</option>
+        <option value="Art Fair" {{ app.request.query.get('type') == 'Art Fair' ? 'selected' : '' }}>Art Fair</option>
+        <option value="Exhibition" {{ app.request.query.get('type') == 'Exhibition' ? 'selected' : '' }}>Exhibition</option>
+        <option value="Open Gallery" {{ app.request.query.get('type') == 'Open Gallery' ? 'selected' : '' }}>Open Gallery</option>
+      </select>
+    </form>
+
+    <form action="{{ path('app_event_index_artist') }}" method="get">
+      <p style="display:inline-block; margin-right: 10px;">Sort by Status</p>
+      <select name="status" onchange="this.form.submit()">
+        <option value="" disabled {{ app.request.query.get('status') is empty ? 'selected' : '' }}>Choose an option</option>
+        <option value="Scheduled" {{ app.request.query.get('status') == 'Scheduled' ? 'selected' : '' }}>Scheduled</option>
+        <option value="Started" {{ app.request.query.get('status') == 'Started' ? 'selected' : '' }}>Started</option>
+        <option value="Finished" {{ app.request.query.get('status') == 'Finished' ? 'selected' : '' }}>Finished</option>
+        <option value="Postponed" {{ app.request.query.get('status') == 'Postponed' ? 'selected' : '' }}>Postponed</option>
+        <option value="Cancelled" {{ app.request.query.get('status') == 'Cancelled' ? 'selected' : '' }}>Cancelled</option>
+      </select>
+    </form>
+  </div>
+
+  {# <h1>Event List</h1> #}
+  <link rel="stylesheet" href="{{ asset('assets/Components/specialOrder.css') }}"/>
+  <a href="{{ path('app_event_new_artist') }}">
+    <div data-tooltip="New Event" class="button mid">
+      <div class="button-wrapper">
+        <div class="text">Create New</div>
+        <span class="icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-earmark-plus-fill" viewbox="0 0 16 16">
+            <path d="M9.293 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.707A1 1 0 0 0 13.707 4L10 .293A1 1 0 0 0 9.293 0zM9.5 3.5v-2l3 3h-2a1 1 0 0 1-1-1zM8.5 7v1.5H10a.5.5 0 0 1 0 1H8.5V11a.5.5 0 0 1-1 0V9.5H6a.5.5 0 0 1 0-1h1.5V7a.5.5 0 0 1 1 0z"/>
+          </svg>
+        </span>
+      </div>
+    </div>
+  </a>
+
+  <div class="row" style="margin:20px">
+    {% for event in events %}
+      <div class="col-md-4">
+        <div class="custom-card">
+          <img class="card-img-top" src="{{ asset('imagescustom/' ~ event.image) }}" alt="{{ event.name }} image" />
+          <div class="card-body">
+            <h5 class="card-title">{{ event.name }}</h5>
+            <p class="card-text">{{ event.description }}</p>
+            <a href="{{ path('app_event_show_artist', {'eventid': event.eventid}) }}" class="btn btn-primary">Show</a>
+            <a href="{{ path('app_event_edit_artist', {'eventid': event.eventid}) }}" class="btn btn-secondary">Edit</a>
+          </div>
+        </div>
+      </div>
+    {% else %}
+    <p>No records found</p>
+    {% endfor %}
+  </div>
+  <br>
+{% endblock %}
+
+{% block stylesheets %}
+  <style>
+    /* Add your styles here */
+.custom-card {
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    margin-bottom: 30px;
+    padding: 20px;
+    display: inline-block;
+    width: 100%;
+    background-color: #232931;
+    transition: box-shadow 0.2s ease-in-out;
+}
+
+.custom-card:hover {
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.3);
+    transform: translateY(-2px);
+}
+
+.custom-card h2 {
+    margin-top: 0px;
+    margin-bottom: 10px;
+    font-size: 24px;
+    color: #FFFFFF;
+}
+
+.custom-card p {
+    margin-top: 0px;
+    color: #FFFFFF;
+}
+
+.custom-card a {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 12px 20px;
+    background-color: #AA336A;
+    color: #FFFFFF;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.custom-card a:hover {
+    background-color: #0D6E72;
+}
+
+.custom-card img {
+    width: 100%;
+    height: 240px;
+    object-fit: cover;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.custom-card:nth-child(4n+1) {
+    clear: left;
+}
+
+    select {
+      border-radius: 5px;
+      padding: 5px;
+      font-size: 16px;
+    }
+    .select-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 20px;
+    }
+
+    .select-container form {
+      margin-right: 10px;
+    }
+
+    /* Search Bar */
+    .form-control {
+      display: inline-block;
+      max-width: 400px;
+      padding: 6px 12px;
+      margin-bottom: 20px;
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 1.5;
+      color: #55595c;
+      background-color: #fff;
+      background-image: none;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+              box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+      -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+      transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+      transition: box-shadow ease-in-out .15s,border-color ease-in-out .15s;
+      transition: box-shadow ease-in-out .15s,border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+    }
+
+    .form-control:focus {
+      border-color: #66afe9;
+      outline: 0;
+      -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6);
+              box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6);
+    }
+
+  </style>
+{% endblock %}
+{% endblock %}

@@ -1,0 +1,159 @@
+{% extends 'baseF.html.twig' %}
+{% block content %}
+{% block title %}
+        <h4><em>Custom</em> Products</h4>
+{% endblock %}
+
+{% block stylesheets %}
+    <style>
+table {
+border-collapse: collapse;
+width: 100%;
+font-family: 'Open Sans', sans-serif;
+background-color: #fff;
+border: 1px solid #ddd;
+}
+
+
+th, td {
+    text-align: left;
+    padding: 12px 8px;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: #f5f5f5;
+    font-size: 16px;
+}
+td {
+   background-color: #fff;
+   padding-left: 20px;
+}
+
+tr:hover {
+    background-color: #f5f5f5;
+}
+
+img {
+    max-width: 200px;
+    max-height: 200px;
+}
+
+.button-group {
+    margin-top: 16px;
+}
+
+.button-group a {
+    margin-right: 8px;
+    color: #fff;
+    background-color: #4CAF50;
+    padding: 8px;
+    border-radius: 4px;
+    text-decoration: none;
+}
+
+.button-group a:hover {
+    background-color: #3e8e41;
+}
+
+.delete-form {
+    display: inline-block;
+    margin-left: 8px;
+}
+
+.category-icon {
+    font-size: 20px;
+    margin-right: 5px;
+}
+</style>
+
+{% endblock %}
+
+{% block body %}
+
+ 
+
+    <table>
+        <tbody>
+        <tr>
+            <th><i class="fa fa-tags fa-beat category-icon" aria-hidden="true"></i> Product:</th>
+            <td>{{ product.name }}</td>
+        </tr>
+        <tr>
+            <th><i class="fa fa-bookmark fa-beat category-icon" aria-hidden="true"></i> Category:</th>
+            <td>{{ product.category }}</td>
+        </tr>
+        <tr>
+            <th><i class="fa fa-info-circle fa-beat category-icon" aria-hidden="true"></i> Description:</th>
+            <td>{{ product.description }}</td>
+        </tr>
+        <tr>
+<th><i class="fa fa-arrows-alt fa-beat category-icon" aria-hidden="true"></i> Dimensions:</th>
+            <td>{{ product.dimensions }}</td>
+        </tr>
+        <tr>
+            <th><i class="fa fa-balance-scale fa-beat category-icon" aria-hidden="true"></i> Weight:</th>
+            <td>{{ product.weight }}</td>
+        </tr>
+        <tr>
+            <th><i class="fa fa-cubes fa-beat category-icon" aria-hidden="true"></i> Material:</th>
+            <td>{{ product.material }}</td>
+        </tr>
+     <tr>
+  <th><i class="fa fa-file-image fa-beat category-icon" aria-hidden="true"></i> Image:</th>
+  {{ include('customproduct/_delete_form.html.twig') }}
+  <td><img src="{{ asset(customproduct.product.image)  }}" alt="Product Image" onclick="showImage(this)"></td>
+  
+</tr>
+  
+<script>
+function showImage(img) {
+  img.classList.toggle("enlarge");
+}
+</script>
+
+<style>
+.enlarge {
+  max-width: 100%;
+  max-height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+  z-index: 9999;
+  cursor: zoom-out;
+}
+</style>
+
+    </tbody>
+</table>
+
+    <div class="button-group">
+                     <a href="{{ path('app_customproduct_index') }}">
+  <i class="fas fa-arrow-left"></i> Back to List
+</a>
+      
+    </div>
+
+      
+ <script>
+// Add onclick event to all hyperlinks
+var links = document.getElementsByTagName("a");
+for (var i = 0; i < links.length; i++) {
+  links[i].setAttribute("onclick", "playSound()");
+}
+var linkss = document.getElementsByTagName("button");
+for (var i = 0; i < linkss.length; i++) {
+  linkss[i].setAttribute("onclick", "playSound()");
+}
+
+// Play sound function
+function playSound() {
+  var audio = new Audio('{{ asset('js/ab.mp3') }}');
+  audio.play();
+}
+</script>
+{% endblock %}
+{% endblock %}

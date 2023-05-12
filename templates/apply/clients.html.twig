@@ -1,0 +1,120 @@
+{% extends 'baseF.html.twig' %}
+{% block content %}
+
+{% block body %}
+
+    <h1>Demands</h1>
+    <link rel="stylesheet" href="{{ asset('bundles/mercuryseriesflashy/css/flashy.css') }}">
+      <!-- Flashy depends on jQuery -->
+        <script src="//code.jquery.com/jquery.js"></script>
+    <!-- Load Flashy default JavaScript -->
+    <script src="{{ asset('bundles/mercuryseriesflashy/js/flashy.js') }}"></script>
+    <!-- Include Flashy default partial -->
+{{ include('@MercurySeriesFlashy/flashy.html.twig') }}
+<!--flashy!-->
+    <link rel="stylesheet" href="{{ asset('bundles/mercuryseriesflashy/css/flashy.css') }}">
+    <link href="//fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href='//fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700' rel='stylesheet'>
+
+<!--flashy!-->
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Product Name</th>
+                  <th>Artist</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for apply in applies %}
+            <tr>
+                <td>{{ apply.customproduct.product.name }}</td>
+                   <td>{{ apply.artist }}</td>
+                <td>{{ apply.status }}</td>
+                <td>
+                    {% if apply.status == 'pending' %}
+                    <div class="actions">
+                        <form method="POST" action="{{ path('app_apply_mark_accept') }}">
+                            <input type="hidden" name="applyId" value="{{ apply.applyId }}">
+                            <button type="submit" onclick="return confirmMarkaccept()" class="btn btn-success">accept</button>
+                        </form>
+                        
+                         <form method="POST" action="{{ path('app_apply_mark_refused') }}">
+                            <input type="hidden" name="applyId" value="{{ apply.applyId }}">
+                            <button type="submit" onclick="return confirmMarkrefuse()" class="btn btn-danger">refuse</button>
+                        </form>
+                        </div>
+                    {% endif %}
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+                <a href="{{ path('app_customproduct_index') }}">
+  <i class="fas fa-arrow-left"></i> Back to List
+</a>
+{% endblock %}
+{% block javascripts %}
+    <script>
+        function confirmMarkaccept() {
+            return confirm('Are you sure you want to accept this demand?');
+        }
+         function confirmMarkrefuse() {
+            return confirm('Are you sure you want to refuse this demand?');
+        }
+    </script>
+
+
+<script>
+// Add onclick event to all hyperlinks
+var links = document.getElementsByTagName("a");
+for (var i = 0; i < links.length; i++) {
+  links[i].setAttribute("onclick", "playSound()");
+}
+var linkss = document.getElementsByTagName("button");
+for (var i = 0; i < linkss.length; i++) {
+  linkss[i].setAttribute("onclick", "playSound()");
+}
+
+// Play sound function
+function playSound() {
+  var audio = new Audio('{{ asset('js/ab.mp3') }}');
+  audio.play();
+}
+</script>
+  <style>
+
+
+.actions button {
+  margin-bottom: 5px;
+}
+
+      .table {
+        width: 100%;
+        margin-top: 20px;
+        background-color: #fff;
+        border-collapse: collapse;
+        border-spacing: 0;
+      }
+      .table th, .table td {
+        text-align: center;
+        padding: 8px;
+        vertical-align: middle;
+        border: 1px solid #ddd;
+      }
+      .table th {
+        font-weight: bold;
+        background-color: #f5f5f5;
+        border-bottom: 2px solid #ddd;
+      }
+      .table td:last-child {
+        text-align: center;
+      }
+    </style>
+{% endblock %}
+{% endblock %}

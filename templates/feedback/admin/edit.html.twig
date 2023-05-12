@@ -1,0 +1,114 @@
+{% extends 'baseE.html.twig' %} 
+{% block content %}
+    {% block body %}
+        {% include('event/admin/eventBar.html.twig') %}
+
+            <h1 style="margin:20px; color: #007bff;">Edit feedback</h1>
+            <br>
+
+        <div class="form-container">
+            {{ form_start(form,{ 'attr' :{ 'novalidate':'novalidate'}}) }}
+            
+            {{ form_row(form.rating) }}
+            {{ form_row(form.comment) }}
+            {{ form_row(form.event) }}
+            {{ form_row(form.user) }}
+
+            <center>
+                {{ include('feedback/_form.html.twig', {'button_label': 'Update'}) }}
+            </center>
+            {{ form_end(form) }}
+            <a href="{{ path('app_feedback_index_admin') }}">
+                <i class="fas fa-arrow-left"></i> Back to List
+            </a>
+        
+        </div>        
+        </br></br>
+
+    {% endblock %}
+
+    {% block stylesheets %}
+        <style>
+            /* Add your styles here */
+            .rating-inline label {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            width: 2em;
+            height: 2em;
+            margin-right: 1em;
+            background-color: #fff;
+            box-shadow: 0 0.2em 0.4em rgba(0, 0, 0, 0.1);
+            transition: all 0.2s ease-in-out;
+            }
+
+            .rating-inline input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+            }
+
+            .rating-inline label:hover,
+            .rating-inline input[type="radio"]:checked + label {
+            background-color: #428bca;
+            color: #fff;
+            box-shadow: 0 0.2em 0.4em rgba(0, 0, 0, 0.2);
+            }
+
+            label {
+                display: block;
+                margin-bottom: 10px;
+                font-weight: bold;
+            }
+            input[type="text"],
+            textarea {
+                display: block;
+                width: 100%;
+                padding: 10px;
+                margin-bottom: 20px;
+                border-radius: 5px;
+                border: 1px solid #ccc;
+            }
+            select {
+                display: block;
+                width: 100%;
+                padding: 10px;
+                margin-bottom: 20px;
+                border-radius: 5px;
+                border: 1px solid #ccc;
+                background-color: #fff;
+            }
+            .btn-primary {
+                background-color: #4CAF50;
+                color: #fff;
+                border: none;
+            }
+            .btn-primary:hover {
+                background-color: #3e8e41;
+            }
+            .btn-secondary {
+                background-color: #f2f2f2;
+                color: #333;
+                border: none;
+            }
+            .btn-secondary:hover {
+                background-color: #ccc;
+            }
+            .error {
+                color: #f00;
+                font-weight: bold;
+            }
+            .form-container {
+                width: 50%;
+                margin: auto;
+                background-color: #f2f2f2;
+                padding: 20px;
+                border-radius: 10px;
+            }
+            .form-container h1 {
+                text-align: center;
+                margin-bottom: 20px;
+            }
+        </style>
+    {% endblock %}
+{% endblock %}

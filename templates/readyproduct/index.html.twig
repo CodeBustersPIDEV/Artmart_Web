@@ -1,0 +1,532 @@
+{% extends 'baseF.html.twig' %}
+
+{% block content %}
+
+	{% block title %}
+		<br><br>
+		<h4>
+			<em>Ready</em>
+			Products</h4>
+
+		<form action="{{ path('app_readyproduct_index') }}" method="GET">
+			<div class="form-group">
+				<a href="{{ path('app_readyproduct_cat_index') }}" class="link-style-cat">
+					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-gear-fill" viewbox="0 0 16 16">
+						<path d="M9.405 1.05c-.413-1.4-2.397-1.4-2.81 0l-.1.34a1.464 1.464 0 0 1-2.105.872l-.31-.17c-1.283-.698-2.686.705-1.987 1.987l.169.311c.446.82.023 1.841-.872 2.105l-.34.1c-1.4.413-1.4 2.397 0 2.81l.34.1a1.464 1.464 0 0 1 .872 2.105l-.17.31c-.698 1.283.705 2.686 1.987 1.987l.311-.169a1.464 1.464 0 0 1 2.105.872l.1.34c.413 1.4 2.397 1.4 2.81 0l.1-.34a1.464 1.464 0 0 1 2.105-.872l.31.17c1.283.698 2.686-.705 1.987-1.987l-.169-.311a1.464 1.464 0 0 1 .872-2.105l.34-.1c1.4-.413 1.4-2.397 0-2.81l-.34-.1a1.464 1.464 0 0 1-.872-2.105l.17-.31c.698-1.283-.705-2.686-1.987-1.987l-.311.169a1.464 1.464 0 0 1-2.105-.872l-.1-.34zM8 10.93a2.929 2.929 0 1 1 0-5.86 2.929 2.929 0 0 1 0 5.858z"/>
+					</svg>
+					Manage categories</a>
+				<a href="{{ path('app_readyproduct_new') }}" class="link-style">
+					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewbox="0 0 16 16">
+						<path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"/>
+					</svg>
+					Add new product</a>
+				<button type="button" style="background-color: #43464B; align: left;" class="btn btn-dark dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+					Order by Price
+				</button>
+				<ul class="dropdown-menu">
+					<li class="d-flex">
+						<a class="dropdown-item align-self-center" href="{{ path('app_readyproduct__asc_price_index') }}">
+							<i class="fa-solid fa-sort-up"></i>
+							Lowest to highest
+						</a>
+					</li>
+					<li class="d-flex">
+						<a class="dropdown-item align-self-center" href="{{ path('app_readyproduct__desc_price_index') }}">
+							<i class="fa-solid fa-sort-down"></i>
+							Highest to lowest
+						</a>
+					</li>
+				</ul>
+				<select id="category-select" class="orderby-link" name="category">
+					<option value="">Order by category</option>
+					{% for category in categories %}
+						<option class="orderby-option-link" value="{{ category.categoriesId }}">{{ category.name }}</option>
+					{% endfor %}
+				</select>
+				<input type="text" id="searchInput" placeholder="Search..."/>
+				<a href="{{ path('app_readyproduct_index') }}" class="link-style-cancel">
+					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-lg" viewbox="0 0 16 16">
+						<path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z"/>
+					</svg>
+					Cancel all
+				</a>
+			</div>
+
+		</form>
+		<br><br>
+	{% endblock %}
+
+	<link rel="stylesheet" href="{{ asset('assets/Blog/CSS/BlogList.css') }}"/>
+
+	{% block stylesheets %}
+
+		<style>
+			.pagination {
+				display: flex;
+				justify-content: center;
+				margin-top: 20px;
+			}
+
+			.pagination ul {
+				display: flex;
+				flex-wrap: wrap;
+				list-style: none;
+				padding: 0;
+				margin: 0;
+			}
+
+			.pagination li {
+				margin: 0 5px;
+				border: 1px solid #ccc;
+				border-radius: 3px;
+				background-color: #f2f2f2;
+			}
+
+			.pagination li.active {
+				background-color: #333;
+			}
+
+			.pagination li span,
+			.pagination li a {
+				display: block;
+				padding: 5px 10px;
+				text-align: center;
+				color: #333;
+				text-decoration: none;
+				transition: all 0.2s ease-in-out;
+			}
+
+			.pagination li a:hover {
+				background-color: #333;
+				color: #fff;
+			}
+
+			.pagination li.disabled {
+				opacity: 0.5;
+				pointer-events: none;
+			}
+
+			.pagination li.disabled span {
+				color: #999;
+			}
+
+			.ready-card {
+				width: 370px;
+				max-width: 100%;
+				border-radius: 10px;
+				box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+				margin: 10px;
+				padding: 20px;
+				display: flex;
+				flex-direction: column;
+				background-color: #232931;
+				transition: box-shadow 0.2s ease-in-out;
+				overflow: hidden;
+			}
+
+
+			.ready-card:hover {
+				box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+				transform: translateY(-2px);
+			}
+
+			.ready-card h2 {
+				margin-top: 0;
+				margin-bottom: 10px;
+				font-size: 24px;
+				color: #FFFFFF;
+			}
+
+			.ready-card p {
+				margin-top: 0;
+				color: #FFFFFF;
+				white-space: nowrap;
+				text-overflow: ellipsis;
+				overflow: hidden;
+			}
+
+			.ready-card a {
+				display: inline-block;
+				margin-top: 10px;
+				padding: 12px 20px;
+				background-color: #AA336A;
+				color: #FFFFFF;
+				border-radius: 5px;
+				text-decoration: none;
+				transition: background-color 0.2s ease-in-out;
+			}
+
+			.ready-card a:hover {
+				background-color: #0D6E72;
+			}
+
+			.ready-card img {
+				display: inline-block;
+				width: 100%;
+				height: 200px;
+				object-fit: cover;
+				border-radius: 5px;
+				margin-bottom: 10px;
+			}
+
+			.card-container {
+				display: flex;
+				flex-direction: column;
+				flex-wrap: wrap;
+				justify-content: space-between;
+				margin: 10px;
+				padding: 0;
+				list-style: none;
+				max-width: 100%;
+			}
+
+			.col-sm-4 {
+				flex-basis: 30%;
+			}
+
+			@media(max-width: 992px) {
+				.col-sm-4 {
+					flex-basis: 48%;
+				}
+			}
+
+			@media(max-width: 768px) {
+				.col-sm-4 {
+					flex-basis: 100%;
+				}
+			}
+
+			.orderby-link {
+				display: inline-block;
+				background-color: #43464B;
+				padding: 4px 5px 5px 9px;
+				color: white;
+				text-decoration: none;
+				font-size: 16px;
+				border-radius: 4px;
+				border-color: #43464B;
+				transition: background-color 0.3s ease;
+			}
+
+
+			.orderby-option-link {
+				display: inline-block;
+				background-color: white;
+				padding: 4px 5px 5px 9px;
+				color: black;
+				text-decoration: none;
+				font-size: 16px;
+				border-radius: 4px;
+				border-color: #43464B;
+				transition: background-color 0.3s ease;
+			}
+
+			.orderby-option-link:hover {
+				background-color: #e9ecef;
+			}
+
+			/* Search Bar */
+			.form-control {
+				display: inline-block;
+				width: 70%;
+				padding: 6px 12px;
+				font-size: 14px;
+				font-weight: 400;
+				line-height: 1.5;
+				color: #55595c;
+				background-color: #fff;
+				background-image: none;
+				border: 1px solid #ccc;
+				border-radius: 4px;
+				-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+				box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+				-webkit-transition: border-color ease-in-out 0.15s, -webkit-box-shadow ease-in-out 0.15s;
+				transition: border-color ease-in-out 0.15s, -webkit-box-shadow ease-in-out 0.15s;
+				transition: box-shadow ease-in-out 0.15s, border-color ease-in-out 0.15s;
+				transition: box-shadow ease-in-out 0.15s, border-color ease-in-out 0.15s, -webkit-box-shadow ease-in-out 0.15s;
+			}
+
+			.form-control:focus {
+				border-color: #66afe9;
+				outline: 0;
+				-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);
+				box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);
+			}
+
+			.btn-search {
+				display: inline-block;
+				width: 20%;
+				padding: 6px 12px;
+				margin-left: 10px;
+				font-size: 14px;
+				font-weight: 400;
+				line-height: 1.5;
+				color: #fff;
+				background-color: #17a2b8;
+				border: 1px solid #17a2b8;
+				border-radius: 4px;
+				-webkit-transition: background-color ease-in-out 0.15s, border-color ease-in-out 0.15s;
+				transition: background-color ease-in-out 0.15s, border-color ease-in-out 0.15s;
+				cursor: pointer;
+			}
+
+			.btn-search:hover {
+				background-color: #117a8b;
+				border-color: #10707f;
+			}
+
+
+			.link-style {
+				display: inline-block;
+				padding: 8px 14px 5px 8px;
+				margin-right: 20px;
+				border-radius: 4px;
+				color: white;
+				background-color: #43464B;
+				font-weight: bold;
+				text-decoration: none;
+				float: left;
+			}
+
+			.link-style:hover {
+				background-color: #3e8e41;
+				color: white;
+			}
+
+			.link-style-cat {
+				display: inline-block;
+				padding: 8px 14px 5px 8px;
+				margin-right: 20px;
+				border-radius: 4px;
+				color: white;
+				background-color: #43464B;
+				font-weight: bold;
+				text-decoration: none;
+				float: right;
+			}
+
+			.link-style-cat:hover {
+				background-color: #3e8e41;
+				color: white;
+			}
+
+			.link-style-cancel {
+				display: inline-block;
+				padding: 5px 10px;
+				margin-right: 20px;
+				border-radius: 4px;
+				color: white;
+				background-color: #43464B;
+				font-weight: bold;
+				text-decoration: none;
+				float: center;
+			}
+
+			.link-style-cancel:hover {
+				background-color: #AA336A;
+				color: white;
+			}
+
+			.form-control {
+				width: 20%;
+			}
+
+			input#search-term {
+				float: center;
+			}
+
+			#button mid {
+				background-color: #AA336A;
+			}
+
+			.button {
+				button-color: #AA336A;
+				background: #AA336A;
+			}
+
+			#form-check-label {
+				float: center;
+				background-color: #FFFFFF;
+			}
+
+			.form-check-input:checked {
+				background-color: #AA336A;
+				border-color: #AA336A;
+			}
+
+			.pill {
+				display: inline-block;
+				background-color: #0D6E72;
+				color: #fff;
+				border-radius: 20px;
+				padding: 2px 5px;
+				margin-right: 10px;
+				font-size: 70%;
+				text-align: left;
+				float: right;
+			}
+
+			.align {
+				text-align: right;
+			}
+
+			.align a {
+				text-align: right;
+				padding: 5px 10px;
+			}
+
+			.align-price {
+				margin-top: 18px;
+				float: left;
+			}
+
+			.align-review:hover {
+				color: #0D6E72;
+			}
+
+			#review {
+				display: inline-block;
+				padding: 0;
+				margin-right: 0;
+				border-radius: 0;
+				text-color: #0D6E72;
+				background-color: initial;
+				font-weight: normal;
+				text-decoration: none;
+				float: none;
+			}
+
+			#review:hover {
+				color: #0D6E72;
+			}
+
+			.desc {
+				max-width: 270px;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+			}
+		</style>
+
+
+	{% endblock %}
+
+	{% block body %}
+
+		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+		<script>
+			function comparer(index) {
+return function (a, b) {
+var valA = $(a).find('.sort-value').eq(index).text(),
+valB = $(b).find('.sort-value').eq(index).text();
+if (index === 0) {
+return valA.localeCompare(valB);
+} else {
+return $.isNumeric(valA) && $.isNumeric(valB) ? valA - valB : valA.localeCompare(valB);
+}
+}
+}
+
+$('.sort-btn').click(function () {
+var container = $(this).closest('.ready-card'),
+items = container.find('.sort-item').toArray().sort(comparer($(this).index())),
+asc = $(this).hasClass('asc');
+
+if (! asc) {
+items = items.reverse();
+}
+
+container.find('.sort-item-container').empty().append(items);
+container.find('.sort-btn').removeClass('asc desc');
+$(this).toggleClass('asc desc');
+});
+
+$('#searchInput').keyup(function () {
+var searchText = $(this).val().toLowerCase();
+$('.ready-card').each(function () {
+var matches = $(this).find('.search-value').filter(function () {
+var text = $(this).text().toLowerCase();
+return searchText === '' || searchText.length < 2 || text.includes(searchText);
+});
+
+if (matches.length > 0) {
+$(this).closest('.col-sm-4').show();
+} else {
+$(this).closest('.col-sm-4').hide();
+}
+});
+});
+		</script>
+		<ul class="card-container">
+			{% set count = 0 %}
+			{% for readyproduct in readyproducts %}
+				{% if count % 3 == 0 %}
+					<div class="row">
+					{% endif %}
+
+					<div class="col-sm-4">
+						<div class="ready-card sort-item">
+							<div id="sort-item-container">
+								<img class="search-value" src="{{ asset(readyproduct.productId.image) }}" alt="{{ readyproduct.productId.name }} image"/>
+								<div>
+									<p class="pill">{{ readyproduct.productId.category }}</p>
+								</div>
+								<h2 class="sort-value search-value">{{ readyproduct.productId.name }}</h2>
+								<p class="search-value">
+									<strong>Made by:</strong>
+									{{ readyproduct.userId }}
+								</p>
+								<br>
+								<p class="desc search-value">{{ readyproduct.productId.description }}</p>
+								<br>
+								<div class="align-review">
+									<a id="review" href="{{ path('app_review_index', {'readyProductId': readyproduct.readyProductId})}}">
+
+										<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bookmark-star-fill" viewbox="0 0 16 16">
+											<path fill-rule="evenodd" d="M2 15.5V2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.74.439L8 13.069l-5.26 2.87A.5.5 0 0 1 2 15.5zM8.16 4.1a.178.178 0 0 0-.32 0l-.634 1.285a.178.178 0 0 1-.134.098l-1.42.206a.178.178 0 0 0-.098.303L6.58 6.993c.042.041.061.1.051.158L6.39 8.565a.178.178 0 0 0 .258.187l1.27-.668a.178.178 0 0 1 .165 0l1.27.668a.178.178 0 0 0 .257-.187L9.368 7.15a.178.178 0 0 1 .05-.158l1.028-1.001a.178.178 0 0 0-.098-.303l-1.42-.206a.178.178 0 0 1-.134-.098L8.16 4.1z"/>
+										</svg>
+										Check reviews
+									</a>
+								</div>
+								<br>
+								<div class="align-price">
+									<p class="search-value">{{ readyproduct.price }}
+										TND</p>
+								</div>
+								<div class="align">
+									<a class="sort-btn" href="{{ path('app_readyproduct_artist_show', {'readyProductId': readyproduct.readyProductId}) }}">show</a>
+									<a class="sort-btn" href="{{ path('app_readyproduct_edit', {'readyProductId': readyproduct.readyProductId}) }}">edit</a>
+									<a class="sort-btn" href="{{ path('app_readyproduct_delete', {'readyProductId': readyproduct.readyProductId}) }}">delete</a>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					{% if count % 3 == 2 %}
+					</div>
+				{% endif %}
+
+				{% set count = count + 1 %}
+			{% else %}
+				{% if count % 3 != 0 %}
+				</div>
+			{% endif %}
+			<p>no ready products found</p>
+		{% endfor %}
+	</ul>
+
+	{{ knp_pagination_render(readyproducts) }}
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.bundle.min.js" integrity="sha384-qKXV1j0HvMUeCBQ+QVp7JcfGl760yU08IQ+GpUo5hlbpg51QRiuqHAJz8+BrxE/N" crossorigin="anonymous"></script>
+
+
+	<script>
+		const categorySelect = document.getElementById('category-select');
+categorySelect.addEventListener('change', (event) => {
+const selectedValue = event.target.value;
+if (selectedValue) {
+window.location.href = "{{ path('app_readyproduct__desc_cat_index') }}?category=" + selectedValue;
+}
+});
+	</script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.3/umd/popper.min.js"></script>
+{% endblock %}{% endblock %}

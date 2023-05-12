@@ -1,0 +1,61 @@
+	.chip-select {
+	  display: flex;
+	  flex-wrap: wrap;
+	  align-items: center;
+	  border: 1px solid #ccc;
+	  padding: 5px;
+	  border-radius: 5px;
+	}
+
+	.selected-chips {
+	  display: flex;
+	  flex-wrap: wrap;
+	  gap: 5px;
+	}
+
+	.selected-chips .chip {
+	  display: flex;
+	  align-items: center;
+	  background-color: #ccc;
+	  color: #333;
+	  border-radius: 20px;
+	  padding: 5px 10px;
+	  margin-right: 5px;
+	}
+
+	.selected-chips .chip .close {
+	  margin-left: 5px;
+	  cursor: pointer;
+	}
+
+	/* input[type="text"] {
+	  flex: 1;
+	  outline: none;
+	  padding: 5px;
+		color: white;
+				background: transparent !important;
+	}
+
+	input[type="text"]::placeholder {
+	  color: white;
+		
+	} */
+
+  .blogImg{
+    margin-top: 7px;
+  }
+		.addTagsInput {
+			background: transparent !important;
+			color: white !important;
+			border-color: white !important;
+		}
+	
+		.inputLabel {
+			color: white;
+		}
+	
+		.inputBg {
+			background: transparent !important;
+			color: white !important;
+			border-color: white !important;
+		}

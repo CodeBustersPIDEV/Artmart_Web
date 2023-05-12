@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}{% import "base.html.twig" as base %} {% block
+title %}Apply index{% endblock %} {% block body %}
+{{ base.NavBar() }}
+<table class="table">
+	<thead>
+		<tr>
+			<th>Product Name</th>
+				<th>artist</th>
+			<th>Status</th>
+			<th>actions</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for apply in applies %}
+		<tr>
+			<td>{{ apply.customproduct.product.name }}</td>
+				<td>{{ apply.artist }}</td>
+			<td>{{ apply.status }}</td>
+			<td>
+				<a href="{{ path('app_apply_show', { applyId: apply.applyId }) }}"
+					>show</a
+				>
+
+				<a href="{{ path('app_apply_edit', { applyId: apply.applyId }) }}"
+					>edit</a
+				>
+			</td>
+		</tr>
+		{% else %}
+		<tr>
+			<td colspan="3">no records found</td>
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>
+
+<a href="{{ path('app_apply_new') }}">Create new</a>
+
+
+<script>
+// Add onclick event to all hyperlinks
+var links = document.getElementsByTagName("a");
+for (var i = 0; i < links.length; i++) {
+  links[i].setAttribute("onclick", "playSound()");
+}
+var linkss = document.getElementsByTagName("button");
+for (var i = 0; i < linkss.length; i++) {
+  linkss[i].setAttribute("onclick", "playSound()");
+}
+
+// Play sound function
+function playSound() {
+  var audio = new Audio('{{ asset('js/ab.mp3') }}');
+  audio.play();
+}
+</script>
+{% endblock %}

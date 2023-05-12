@@ -1,0 +1,4 @@
+<form method="post" action="{{ path('app_feedback_delete_admin', {'feedbackid': feedback.feedbackid}) }}" onsubmit="return confirm('Are you sure you want to delete this item?');">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ feedback.feedbackid) }}">
+    <button type="submit" class="btn btn-outline-danger">Delete</button>
+</form>

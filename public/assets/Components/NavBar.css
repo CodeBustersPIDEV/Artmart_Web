@@ -1,0 +1,236 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap");
+
+
+.logo_img {
+  width: 125px;
+}
+.navMenu {
+  font-family: "Poppins";
+  background: #272727;
+  position: sticky;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100px;
+  left:0;
+  top:0;
+  position: relative;
+}
+
+.logo {
+  left: 30;
+  position: relative;
+}
+
+.navMenu a {
+  text-align: center;
+  color: #f6f4e6;
+  text-decoration: solid;
+  font-size: 18px;
+  font-weight: 500;
+  display: inline-block;
+  width: 120px;
+  -webkit-transition: all 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
+}
+
+.navMenu a:hover {
+  color: #AA336A;
+}
+
+.navMenu .dot {
+  width: 6px;
+  height: 6px;
+  background: #AA336A;
+  border-radius: 50%;
+  opacity: 0;
+  -webkit-transform: translateX(50px);
+  transform: translateX(50px);
+  -webkit-transition: all 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
+}
+
+
+.navMenu a:nth-child(1):hover~.dot {
+  -webkit-transform: translateX(60px);
+  transform: translateX(60px);
+  -webkit-transition: all 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
+  opacity: 1;
+}
+
+.navMenu a:nth-child(2):hover~.dot {
+  -webkit-transform: translateX(185px);
+  transform: translateX(185px);
+  -webkit-transition: all 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
+  opacity: 1;
+}
+
+.navMenu a:nth-child(3):hover~.dot {
+  -webkit-transform: translateX(310px);
+  transform: translateX(310px);
+  -webkit-transition: all 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
+  opacity: 1;
+}
+
+.navMenu a:nth-child(4):hover~.dot {
+  -webkit-transform: translateX(425px);
+  transform: translateX(425px);
+  -webkit-transition: all 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
+  opacity: 1;
+}
+.navMenu a:nth-child(5):hover~.dot {
+  -webkit-transform: translateX(550px);
+  transform: translateX(550px);
+  -webkit-transition: all 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
+  opacity: 1;
+}
+.navMenu a:nth-child(6):hover~.dot {
+  -webkit-transform: translateX(675px);
+  transform: translateX(675px);
+  -webkit-transition: all 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
+  opacity: 1;
+}
+.navMenu a:nth-child(7):hover~.dot {
+  -webkit-transform: translateX(800px);
+  transform: translateX(800px);
+  -webkit-transition: all 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
+  opacity: 1;
+}
+
+.logo {
+  width: 125px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  transform: translateX(-40%);
+}
+
+.logo_img {
+  width: 125px;
+}
+
+.userButtons {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  /* align-items: center; */
+}
+
+.btns {
+  position: relative;
+  background: #444;
+  color: #fff;
+  text-decoration: none;
+  border: none;
+  letter-spacing: 1px;
+  font-size: 18px;
+  padding: 5px 15px;
+  transition: 0.2s;
+}
+
+.btns:hover {
+  letter-spacing: 2px;
+  padding: 5.1px 15.1px;
+  background: var(--clr);
+  color: var(--clr);
+  /* box-shadow: 0 0 35px var(--clr); */
+  animation: box 3s infinite;
+}
+
+.btns::before {
+  content: "";
+  position: absolute;
+  inset: 2px;
+  background: #272822;
+}
+
+.btns span {
+  position: relative;
+  z-index: 1;
+}
+
+.btns i {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+
+.btns i::before {
+  content: "";
+  position: absolute;
+  width: 10px;
+  height: 2px;
+  left: 80%;
+  top: -2px;
+  border: 2px solid var(--clr);
+  background: #272822;
+  transition: 0.3s;
+}
+
+.btns:hover i::before {
+  width: 15px;
+  left: 20%;
+  animation: move 3s infinite;
+}
+
+.btns i::after {
+  content: "";
+  position: absolute;
+  width: 10px;
+  height: 2px;
+  left: 20%;
+  bottom: -2px;
+  border: 2px solid var(--clr);
+  background: #272822;
+  transition: 0.3s;
+}
+
+.btns:hover i::after {
+  width: 15px;
+  left: 80%;
+  animation: move 3s infinite;
+}
+
+@keyframes move {
+  0% {
+    transform: translateX(0);
+  }
+
+  50% {
+    transform: translateX(5px);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@keyframes box {
+  0% {
+    box-shadow: #27272c;
+  }
+
+  50% {
+    box-shadow: 0 0 25px var(--clr);
+  }
+
+  100% {
+    box-shadow: #27272c;
+  }
+}
+
+.signIn_btn {
+  margin-right: 5px;
+}
+
+.signUp_btn {
+  margin-left: 5px;
+}

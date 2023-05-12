@@ -1,0 +1,134 @@
+{% extends 'baseF.html.twig' %}
+{% block content %}
+	<a href="{{ path('app_readyproduct_index') }}">
+		<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-return-left" viewbox="0 0 16 16">
+			<path fill-rule="evenodd" d="M14.5 1.5a.5.5 0 0 1 .5.5v4.8a2.5 2.5 0 0 1-2.5 2.5H2.707l3.347 3.346a.5.5 0 0 1-.708.708l-4.2-4.2a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 8.3H12.5A1.5 1.5 0 0 0 14 6.8V2a.5.5 0 0 1 .5-.5z"/>
+		</svg>
+		back to list</a>
+	<br><br>
+	{% block title %}
+		<h4>
+			<em>Add</em>
+			Product</h4>
+	{% endblock %}
+	{% block stylesheets %}
+		<style>
+			/* Add your styles here */
+			label {
+				display: block;
+				margin-bottom: 10px;
+				font-weight: bold;
+				color: #f2f2f2;
+			}
+			input[type="text"],
+			textarea {
+				display: block;
+				width: 100%;
+				padding: 10px;
+				margin-bottom: 20px;
+				border-radius: 5px;
+				border: 1px solid #ccc;
+			}
+			select {
+				display: block;
+				width: 100%;
+				padding: 10px;
+				margin-bottom: 20px;
+				border-radius: 5px;
+				border: 1px solid #ccc;
+				background-color: #fff;
+			}
+			input[type="submit"] {
+				background-color: #4CAF50;
+				color: #fff;
+				padding: 10px 20px;
+				border: none;
+				border-radius: 5px;
+				cursor: pointer;
+			}
+			input[type="submit"]:hover {
+				background-color: #3e8e41;
+			}
+			.error {
+				color: #f00;
+				font-weight: bold;
+			}
+			.form-container {
+				width: 70%;
+				margin: auto;
+				background-color: #232931;
+				padding: 20px;
+				border-radius: 10px;
+			}
+			.form-container h1 {
+				text-align: center;
+				margin-bottom: 20px;
+			}
+
+			.form-control {
+				color: #55595c;
+			}
+			.btn {
+				background-color: #4CAF50;
+				color: white;
+				padding: 12px 24px;
+				border: none;
+				border-radius: 4px;
+				display: center;
+			}
+
+			.btn:hover {
+				background-color: #4CAF50;
+				color: black;
+			}
+		</style>
+	{% endblock %}
+	{% block body %}
+
+		<div class="form-container">
+			{{ form_start(form,{ 'attr' :{ 'novalidate':'novalidate'}}) }}
+			<div class="row">
+				<div class="col-md-6">
+					{{ form_row(form.productId.name, {'attr': {'placeholder': 'e.g: Beautiful Painting'}}) }}
+					{{ form_row(form.productId.category) }}
+					{{ form_row(form.productId.description, {'attr': {'placeholder': 'Write a description for your product...'}}) }}
+					{{ form_row(form.userId) }}
+				</div>
+				<div class="col-md-6">
+					{{ form_row(form.productId.dimensions, {'attr': {'placeholder': 'e.g: 72" L x 30" H x 36" D'}}) }}
+					{{ form_row(form.productId.weight, {'attr': {'placeholder': 'e.g: 23'}}) }}
+					{{ form_row(form.productId.material, {'attr': {'placeholder': 'e.g: Paper'}}) }}
+					{{ form_row(form.price, {'attr': {'placeholder': 'e.g: 560'}}) }}
+					<br>
+					{{ form_label(form.productId.image, 'Product Image', {'style': 'color: #ec6090; cursor: pointer;'}) }}
+					{% if readyproduct.productId.image is defined %}
+						<img id="preview-image" style="max-width: 128px" src="{{ readyproduct.productId.image }}" alt="Product image" onclick="document.getElementById('product_image').click()">
+						<span id="image-name">{{ readyproduct.productId.name }}</span>
+					{% else %}
+						<img id="preview-image" style="max-width: 128px" src="{{ 'http://localhost/PIDEV/BlogUploads/imagec.png' }}" alt="Default product image" onclick="document.getElementById('product_image').click()">
+					{% endif %}
+
+					{{ form_widget(form.productId.image, {'attr': {'id': 'product_image', 'style': 'display:none;'}, 'label': 'Product Image', 'label_attr': {'style': 'color: #ec6090; cursor: pointer;'}, 'row_attr': {'style': 'margin-bottom: 20px;'}}) }}
+
+				</div>
+			</div>
+			{{ include('readyproduct/_form.html.twig', {'button_label': 'add'}) }}
+			{{ form_end(form) }}
+		</div>
+
+
+		<script>
+			document.getElementById('product_image').addEventListener('change', function (e) {
+var fileName = e.target.files[0].name;
+document.getElementById('image-name').innerHTML = fileName;
+var reader = new FileReader();
+reader.onload = function (e) {
+document.getElementById('preview-image').setAttribute('src', e.target.result);
+}
+reader.readAsDataURL(e.target.files[0]);
+});
+		</script>
+
+
+	{% endblock %}
+{% endblock %}

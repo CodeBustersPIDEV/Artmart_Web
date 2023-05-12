@@ -1,0 +1,55 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Salesreport index{% endblock %}
+
+{% block body %}
+    <h1>Salesreport index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>SalesreportId</th>
+                <th>Productid</th>
+                <th>Totalsales</th>
+                <th>Averagesalesperday</th>
+                <th>Date</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for salesreport in salesreports %}
+            <tr>
+                <td>{{ salesreport.salesreportId }}</td>
+                <td>{{ salesreport.productid }}</td>
+                <td>{{ salesreport.totalsales }}</td>
+                <td>{{ salesreport.averagesalesperday }}</td>
+                <td>{{ salesreport.date ? salesreport.date|date('Y-m-d') : '' }}</td>
+                   <td> <a href="{{ path('app_salesreport_show', {'salesreportId': salesreport.salesreportId}) }}">
+							<button class="btn3">
+								<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewbox="0 0 16 16">
+									<path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+									<path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+								</svg>
+								More
+							</button>
+						</a>
+                    <a href="{{ path('app_salesreport_edit', {'salesreportId': salesreport.salesreportId}) }}"
+							<button class="btn2">
+								<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pen-fill" viewbox="0 0 16 16">
+									<path d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001z"/>
+								</svg>
+								Edit
+							</button>
+						</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_salesreport_new') }}">Create new</a>
+{% endblock %}

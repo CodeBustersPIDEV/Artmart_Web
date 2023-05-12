@@ -1,0 +1,4 @@
+# config/packages/mailers.yaml
+framework:
+    mailer:
+        dsn: 'smtp://samar.hamdi@esprit.tn:pika05072001@smtp.gmail.com:465?encryption=ssl'
