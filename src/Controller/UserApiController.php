@@ -172,11 +172,6 @@ public function signinAction(Request $request)
     $em = $this->getDoctrine()->getManager();
     $user = $em->getRepository(User::class)->findOneBy(['username' => $username]);
 
-<<<<<<< Updated upstream
-    if ($user) {
-        if ($hashedPassword == $user->getPassword()) {
-            return new JsonResponse(['success' => true, 'data' => $user->getUserId()]);
-=======
         $hashedPassword = hash('sha256', $request->request->get('password'));
        
         $em = $this->getDoctrine()->getManager();
@@ -189,10 +184,7 @@ public function signinAction(Request $request)
             } else {
                 return new JsonResponse(['success' => false, 'message' => 'invalid password']);
             }
->>>>>>> Stashed changes
-        } else {
-            return new JsonResponse(['success' => false, 'message' => 'Invalid password']);
-        }
+        
     } else {
         return new JsonResponse(['success' => false, 'message' => 'User not found']);
     }
