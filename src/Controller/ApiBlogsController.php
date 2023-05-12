@@ -21,7 +21,6 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use App\Repository\UserRepository;
 
-use function PHPUnit\Framework\isNull;
 
 #[Route('/api')]
 class ApiBlogsController extends AbstractController
@@ -74,11 +73,11 @@ class ApiBlogsController extends AbstractController
     $blogsRepository->save($blog, true);
 
     $foundBlog = $blogsRepository->findOneByTitle($request->request->get('title'));
-    $idCategorie = $request->request->getInt('categoryId');
-    $category = $blogcategoriesRepository->find($idCategorie);
+    $idCategorie = $request->request->get('categoryId');
+    $foundCat = $blogcategoriesRepository->findOneByName($idCategorie);
     $hasCat = new HasBlogCategory();
     $hasCat->setBlog($foundBlog);
-    $hasCat->setCategory($category);
+    $hasCat->setCategory($foundCat);
     $hasBlogCategoryRepository->save($hasCat, true);
 
     $response = new JsonResponse(['status' => 'added'], Response::HTTP_CREATED);
@@ -96,11 +95,13 @@ class ApiBlogsController extends AbstractController
     if (!$blog) {
       throw $this->createNotFoundException('This Blog does not exist');
     }
-    $mediaRepository->remove($blog_media, true);
-    $hasBlogCategoryRepository->remove($blog_category, true);
-    foreach ($blog_tags as $tag) {
-      $hasTagRepository->remove($tag, true);
+    if ($blog_media != null) {
+      $mediaRepository->remove($blog_media, true);
     }
+    $hasBlogCategoryRepository->remove($blog_category, true);
+    // foreach ($blog_tags as $tag) {
+    //   $hasTagRepository->remove($tag, true);
+    // }
     $blogsRepository->remove($blog, true);
 
     $response = new JsonResponse(['status' => 'deleted'], Response::HTTP_OK);

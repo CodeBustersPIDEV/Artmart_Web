@@ -10,6 +10,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail as MimeTemplatedEmail;
+use Symfony\Component\Mailer\MailerInterface;
 
 #[Route('/api')]
 class ProductreviewapiController extends AbstractController
@@ -46,7 +48,7 @@ class ProductreviewapiController extends AbstractController
 
 
     #[Route('/productreview/add', name: 'productreview', methods: ['GET', 'POST'])]
-    public function addproductreview(Request $request): JsonResponse
+    public function addproductreview(Request $request, MailerInterface $mailer): JsonResponse
     {
         $entityManager = $this->getDoctrine()->getManager();
         $productreview = new Productreview();
@@ -60,6 +62,19 @@ class ProductreviewapiController extends AbstractController
 
         $entityManager->persist($productreview);
         $entityManager->flush();
+
+        $email = (new MimeTemplatedEmail())
+            ->from('sender@example.com')
+            ->to($user->getEmail())
+            ->subject('A new product review has been added.')
+            ->htmlTemplate('emails/new-review.html.twig')
+            ->context([
+                'username' => $productreview->getReadyProductId()->getUserId(),
+                'productreview' => $productreview,
+            ]);
+
+        $mailer->send($email);
+
 
         $response = new JsonResponse(['status' => 'added'], Response::HTTP_CREATED);
         return $response;

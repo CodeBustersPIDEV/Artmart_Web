@@ -10,6 +10,10 @@ parameters:
   google_recaptcha_site_key: '%env(GOOGLE_RECAPTCHA_SITE_KEY)%'
 
 services:
+  Symfony\Component\Serializer\Serializer: ~
+  App\Controller\ApiCommentsController:
+      arguments:
+          - '@serializer'
   Knp\Component\Pager\PaginatorInterface: '@knp_paginator'
   App\Form\Type\BlogCategoryType:
     arguments:
