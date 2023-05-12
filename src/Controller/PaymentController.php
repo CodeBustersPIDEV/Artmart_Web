@@ -20,11 +20,13 @@ use App\Entity\Orderstatus;
 
 class PaymentController extends AbstractController
 {
-    //localhost:8000/success
     #[Route('/payment', name: 'app_payment')]
     public function index(Request $request,EntityManagerInterface $entityManager): Response
     {
         $session = $request->getSession();
+        if($session->get('user_id')==""){
+            return $this->redirect("https://localhost:8000/login");
+        }
         $session->get('user_id');
         $queryBuilder = $entityManager
         ->getRepository(Wishlist::class)

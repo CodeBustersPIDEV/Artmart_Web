@@ -21,6 +21,8 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use App\Repository\UserRepository;
 
+use function PHPUnit\Framework\isNull;
+
 #[Route('/api')]
 class ApiBlogsController extends AbstractController
 {
@@ -32,6 +34,7 @@ class ApiBlogsController extends AbstractController
     foreach ($blogs as $blog) {
       $blog_media = $mediaRepository->findOneMediaByBlogID($blog->getBlogsId());
       $blog_category = $hasBlogCategoryRepository->findOneByBlogID($blog->getBlogsId());
+
       $blog_tags = $hasTagRepository->findAllBlogsByBlogID($blog->getBlogsId());
       $tags = [];
       foreach ($blog_tags as $tag) {
@@ -44,10 +47,11 @@ class ApiBlogsController extends AbstractController
         'date' => $blog->getDate(),
         'rating' => $blog->getRating(),
         'nbViews' => $blog->getNbViews(),
-        'category' => $blog_category->getCategory()->getCategoriesId(),
+        'category' =>  $blog_category == null ? 0 : $blog_category->getCategory()->getCategoriesId(),
         'tags' => $tags,
         'author' => $blog->getAuthor()->getUserId(),
-        'image' => $blog_media->getFilePath() . ""
+        'image' => $blog_media == null ? "N/A" :  $blog_media->getFilePath() . ""
+
       );
     }
 
