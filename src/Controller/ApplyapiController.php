@@ -34,6 +34,7 @@ class ApplyapiController extends AbstractController
 
         return $response;
     }
+
     #[Route('/apply/{applyId}/apply', name: 'app_apply_apply', methods: ['GET', 'POST'])]
     public function finish(int $applyId): JsonResponse
 
@@ -46,7 +47,7 @@ class ApplyapiController extends AbstractController
           ->create("whatsapp:+21698238240", 
             array(
               "from" => "whatsapp:+14155238886",
-              "body" => "you have a Custom Product apply"
+              "body" => "your apply is done !"
             )
             );
         $entityManager = $this->getDoctrine()->getManager();
@@ -58,7 +59,7 @@ class ApplyapiController extends AbstractController
         }
 
        
-        $apply->setStatus('refused');
+        $apply->setStatus('done');
 
         $entityManager->persist($apply);
         $entityManager->flush();
@@ -82,4 +83,5 @@ class ApplyapiController extends AbstractController
         $response = new JsonResponse(['status' => 'deleted'], Response::HTTP_OK);
         return $response;
     }
+
 }
