@@ -111,7 +111,7 @@ class UserApiController extends AbstractController
    
 
     
-    #[Route('/user/{id}', name: 'user_edit', methods: ['PUT'])]
+    #[Route('/user/edit/{id}', name: 'user_edit', methods: ['POST'])]
     public function edituser(Request $request, User $user, ArtistRepository $artistRepository, AdminRepository $adminRepository): JsonResponse
     {
 
@@ -172,9 +172,24 @@ public function signinAction(Request $request)
     $em = $this->getDoctrine()->getManager();
     $user = $em->getRepository(User::class)->findOneBy(['username' => $username]);
 
+<<<<<<< Updated upstream
     if ($user) {
         if ($hashedPassword == $user->getPassword()) {
             return new JsonResponse(['success' => true, 'data' => $user->getUserId()]);
+=======
+        $hashedPassword = hash('sha256', $request->request->get('password'));
+       
+        $em = $this->getDoctrine()->getManager();
+        $user = $em->getRepository(User::class)->findOneBy(['username' => $username]);
+    
+        if ($user) {
+            if ($hashedPassword== $user->getPassword()) {
+               
+                return new JsonResponse(['success' => true, 'data' => $user->getUserId()]);
+            } else {
+                return new JsonResponse(['success' => false, 'message' => 'invalid password']);
+            }
+>>>>>>> Stashed changes
         } else {
             return new JsonResponse(['success' => false, 'message' => 'Invalid password']);
         }
