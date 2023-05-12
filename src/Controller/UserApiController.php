@@ -15,15 +15,19 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
-use Symfony\Component\Serializer\Serializer;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Psr\Log\LoggerInterface;
+use Vonage\Client\Credentials\Basic;
+use Vonage\client;
 
 
 #[Route('/api_user')]
 class UserApiController extends AbstractController
 {
-
+    public function __construct(
+        private LoggerInterface $logger,
+    ) {
+    }
     #[Route('/user', name: 'app_userapi', methods: ['GET'])]
     public function index(EntityManagerInterface $entityManager): Response
     {
@@ -54,7 +58,12 @@ class UserApiController extends AbstractController
     }
     #[Route('/user/add', name: 'user', methods: ['GET', 'POST'])]
     public function adduser(Request $request, UserRepository $userRepository, ArtistRepository $artistRepository, ClientRepository $clientRepository, AdminRepository $adminRepository): JsonResponse
-    {
+    { 
+        
+        
+        $basic  = new Basic('f871a0cc', 'Fx3aGR7W6cEy6qcQ');
+        $clients = new Client($basic);
+
         $entityManager = $this->getDoctrine()->getManager();
         $user = new User();
         $admin = new Admin();
@@ -72,7 +81,15 @@ class UserApiController extends AbstractController
         $user->setPhonenumber($request->request->get('phonenumber'));
         $user->setPicture("http://localhost/PIDEV/BlogUploads/user.png"."");
         $entityManager->persist($user);
-        $entityManager->flush();        
+        $entityManager->flush();   
+       /* $vpn = "216" . $user->getPhonenumber();
+        $message = [
+            'to' => $vpn,
+            'from' => 'ArtMart',
+            'text' => 'Hello this is your verification token' . $code
+        ];
+        $clients->message()->send($message);
+           */
         if ($user->getRole() === 'client') {
             $addedUser = $userRepository->findOneUserByEmail($user->getEmail());
             $client->setUser($addedUser);
@@ -86,7 +103,7 @@ class UserApiController extends AbstractController
             $admin->setUser($addedUser);
             $adminRepository->save($admin, true);
         }
-
+       
 
         $response = new JsonResponse(['status' => 'added'], Response::HTTP_CREATED);
         return $response;
@@ -146,27 +163,27 @@ class UserApiController extends AbstractController
     }
 
     #[Route('/user/signin', name: 'user_login', methods: ['POST'])]
-    public function signinAction(Request $request)
-    {
-        $username = $request->query->get("username");
+   
+public function signinAction(Request $request)
+{
+    $username = $request->query->get("username");
+    $hashedPassword = hash('sha256', $request->request->get('password'));
+   
+    $em = $this->getDoctrine()->getManager();
+    $user = $em->getRepository(User::class)->findOneBy(['username' => $username]);
 
-        $hashedPassword = hash('sha256', $request->request->get('password'));
-       
-        $em = $this->getDoctrine()->getManager();
-        $user = $em->getRepository(User::class)->findOneBy(['username' => $username]);
-    
-        if ($user) {
-            if ($hashedPassword== $user->getPassword()) {
-                $serializer = new Serializer([new ObjectNormalizer()]);
-                $formatted = $serializer->normalize($user);
-                return new JsonResponse(['success' => true, 'data' => $formatted]);
-            } else {
-                return new JsonResponse(['success' => false, 'message' => 'invalid password']);
-            }
+    if ($user) {
+        if ($hashedPassword == $user->getPassword()) {
+            return new JsonResponse(['success' => true, 'data' => $user->getUserId()]);
         } else {
-            return new JsonResponse(['success' => false, 'message' => 'User not found']);
+            return new JsonResponse(['success' => false, 'message' => 'Invalid password']);
         }
+    } else {
+        return new JsonResponse(['success' => false, 'message' => 'User not found']);
     }
+}   
+
+
     
 
 
@@ -200,6 +217,45 @@ class UserApiController extends AbstractController
 
 
         $response = new JsonResponse(['status' => 'deleted'], Response::HTTP_OK);
+        return $response;
+    }
+    #[Route('/user/verifyToken/{id}', name: 'user_verif', methods: ['POST'])]
+    public function verifyToken( User $user,Request $request): Response
+    {      
+        
+        $token = $request->query->get("token");
+
+        if ($user) {
+            if ($token == $user->getToken()) {
+                return new JsonResponse(['success' => true, 'data' => $user->getUserId()]);
+            } else {
+                return new JsonResponse(['success' => false, 'message' => 'Invalid password']);
+            }
+        } else {
+            return new JsonResponse(['success' => false, 'message' => 'User not found']);
+        }
+
+
+
+        $response = new JsonResponse(['status' => 'verified'], Response::HTTP_OK);
+        return $response;
+    }
+
+
+    #[Route('/user/block/{id}', name: 'user_block', methods: ['POST'])]
+    public function block( User $user,Request $request): Response
+    {      
+        
+    
+        $response = new JsonResponse(['status' => 'blocked'], Response::HTTP_OK);
+        return $response;
+    }
+    #[Route('/user/unblocked/{id}', name: 'user_unblock', methods: ['POST','DELETE'])]
+    public function unblock( User $user,Request $request): Response
+    {      
+        
+    
+        $response = new JsonResponse(['status' => 'blocked'], Response::HTTP_OK);
         return $response;
     }
 }
