@@ -64,8 +64,8 @@ class ProductreviewapiController extends AbstractController
         $entityManager->flush();
 
         $email = (new MimeTemplatedEmail())
-            ->from('sender@example.com')
-            ->to($user->getEmail())
+            ->from('samar.hamdi@esprit.tn')
+            ->to('rima.essaidi@esprit.tn')
             ->subject('A new product review has been added.')
             ->htmlTemplate('emails/new-review.html.twig')
             ->context([

@@ -147,7 +147,7 @@ class OrderApiController extends AbstractController
         $mail->Port = 587;
         
         $mail->setFrom('magicbook.pi@gmail.com', 'Department of orders');
-        $mail->addAddress('mahourabensalem@gmail.com', 'You');
+        $mail->addAddress('mouhamedamir.soltani@esprit.tn', 'You');
         $mail->Subject = 'New Order is on hold';
         $mail->Body = 'Your Order is still on hold please continue the payment threw this link :  https://localhost:8000/payment ';
         if ($mail->send()) {

@@ -20,7 +20,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use App\Repository\UserRepository;
-
+use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 #[Route('/api')]
 class ApiBlogsController extends AbstractController
@@ -61,6 +62,37 @@ class ApiBlogsController extends AbstractController
     return $response;
   }
 
+  public function setMediaInfo(Blogs $blog, UploadedFile $file, $entity, $fileBaseUrl)
+  {
+    $destinationFilePath = $this->getParameter('destinationPath');
+    $file->move($destinationFilePath, pathinfo($file->getClientOriginalName(), PATHINFO_BASENAME));
+    $extension = strtoupper(pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION));
+    $entity->setFileName(pathinfo($file->getClientOriginalName(), PATHINFO_BASENAME));
+    $entity->setFileType($extension);
+    $entity->setFilePath($fileBaseUrl . '/' . pathinfo($file->getClientOriginalName(), PATHINFO_BASENAME));
+    $entity->setBlog($blog);
+  }
+
+  public function filePreparations($path)
+  {
+
+    // Extract the file name from the path
+    $fileName = basename($path);
+
+    // Create a new File object using the file path
+    $file = new File($path);
+
+    // Create a new UploadedFile object using the File object
+    $uploadedFile = new UploadedFile(
+      $file->getPathname(),
+      $fileName,
+      $file->getMimeType(),
+      null,
+      true // Set $test to true to prevent moving the file
+    );
+    return $uploadedFile;
+  }
+
   #[Route('/blogNew/add', name: 'app_newBlog_api', methods: ['GET', 'POST'])]
   public function addBlog(BlogsRepository $blogsRepository, BlogcategoriesRepository $blogcategoriesRepository, MediaRepository $mediaRepository, HasBlogCategoryRepository $hasBlogCategoryRepository, HasTagRepository $hasTagRepository, Request $request, UserRepository $userRepository): JsonResponse
   {
@@ -78,6 +110,16 @@ class ApiBlogsController extends AbstractController
     $hasCat = new HasBlogCategory();
     $hasCat->setBlog($foundBlog);
     $hasCat->setCategory($foundCat);
+
+    $blog_media = new Media();
+    $fileBaseUrl = $this->getParameter('file_base_url');
+    $file = $this->filePreparations($request->request->get('image'));
+    $this->setMediaInfo($foundBlog, $file, $blog_media, $fileBaseUrl);
+    $entityManager = $this->getDoctrine()->getManager();
+    $entityManager->persist($blog_media);
+    $entityManager->flush();
+
+
     $hasBlogCategoryRepository->save($hasCat, true);
 
     $response = new JsonResponse(['status' => 'added'], Response::HTTP_CREATED);
@@ -95,9 +137,8 @@ class ApiBlogsController extends AbstractController
     if (!$blog) {
       throw $this->createNotFoundException('This Blog does not exist');
     }
-    if ($blog_media != null) {
-      $mediaRepository->remove($blog_media, true);
-    }
+    $mediaRepository->remove($blog_media, true);
+
     $hasBlogCategoryRepository->remove($blog_category, true);
     // foreach ($blog_tags as $tag) {
     //   $hasTagRepository->remove($tag, true);
