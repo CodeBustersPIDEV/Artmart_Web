@@ -160,9 +160,11 @@ class UserApiController extends AbstractController
     }
 
     #[Route('/user/signin', name: 'user_login', methods: ['POST'])]
+
     public function signinAction(Request $request)
     {
         $username = $request->query->get("username");
+
         $hashedPassword = hash('sha256', $request->request->get('password'));
 
         $em = $this->getDoctrine()->getManager();
